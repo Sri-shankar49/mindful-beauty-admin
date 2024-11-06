@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="95" height="34" viewBox="0 0 95 34">
+  <g id="Group_1878" data-name="Group 1878" transform="translate(-1771 -288)">
+    <g id="Rectangle_1125" data-name="Rectangle 1125" transform="translate(1771 288)" fill="#fff" stroke="red" stroke-width="1">
+      <rect width="95" height="34" rx="6" stroke="none"/>
+      <rect x="0.5" y="0.5" width="94" height="33" rx="5.5" fill="none"/>
+    </g>
+    <text id="Delete" transform="translate(1803 312)" fill="red" font-size="18" font-family="Roboto-Regular, Roboto"><tspan x="0" y="0">Delete</tspan></text>
+    <g id="trash" transform="translate(1783.504 296.289)">
+      <path id="Path_942" data-name="Path 942" d="M15.792,2.9h-2.25A3.636,3.636,0,0,0,9.985,0H8.533A3.636,3.636,0,0,0,4.976,2.9H2.726a.726.726,0,1,0,0,1.452h.726v9.436a3.634,3.634,0,0,0,3.629,3.629h4.355a3.634,3.634,0,0,0,3.629-3.629V4.355h.726a.726.726,0,1,0,0-1.452ZM8.533,1.452H9.985A2.182,2.182,0,0,1,12.038,2.9H6.479A2.182,2.182,0,0,1,8.533,1.452Zm5.081,12.34a2.178,2.178,0,0,1-2.178,2.178H7.081A2.178,2.178,0,0,1,4.9,13.792V4.355h8.711Z" transform="translate(-2)" fill="red"/>
+      <path id="Path_943" data-name="Path 943" d="M9.726,15.807a.726.726,0,0,0,.726-.726V10.726a.726.726,0,0,0-1.452,0v4.355A.726.726,0,0,0,9.726,15.807Z" transform="translate(-3.919 -2.741)" fill="red"/>
+      <path id="Path_944" data-name="Path 944" d="M13.726,15.807a.726.726,0,0,0,.726-.726V10.726a.726.726,0,0,0-1.452,0v4.355A.726.726,0,0,0,13.726,15.807Z" transform="translate(-5.015 -2.741)" fill="red"/>
+    </g>
+  </g>
+</svg>

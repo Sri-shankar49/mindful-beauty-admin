@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="83" height="34" viewBox="0 0 83 34">
+  <g id="Group_1877" data-name="Group 1877" transform="translate(-1670 -288)">
+    <g id="Rectangle_1124" data-name="Rectangle 1124" transform="translate(1670 288)" fill="#fff" stroke="#0f9f2b" stroke-width="1">
+      <rect width="83" height="34" rx="6" stroke="none"/>
+      <rect x="0.5" y="0.5" width="82" height="33" rx="5.5" fill="none"/>
+    </g>
+    <text id="Edit" transform="translate(1710 312)" fill="#0f9f2b" font-size="18" font-family="Roboto-Regular, Roboto"><tspan x="0" y="0">Edit</tspan></text>
+    <g id="g2151" transform="translate(2029.002 1394.201)">
+      <path id="path851" d="M-326.152-1094.438a.854.854,0,0,0,0-1.266l-4.234-4.234a.894.894,0,0,0-1.266,0l-6.867,6.855-6.858,6.846c-.354,2.2-.717,4.4-1.071,6.6l6.57-1.1c3.552-3.552,5.231-5.224,6.925-6.912s3.36-3.348,6.8-6.788Z" transform="translate(0)" fill="none" stroke="#0f9f2b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.26"/>
+      <rect id="rect919" width="1.294" height="7.872" rx="0.647" transform="matrix(-0.707, 0.707, -0.707, -0.707, -327.779, -1092.809)" fill="#0f9f2b"/>
+      <path id="path925" d="M-342.522-953.755l-3.777-3.777-.149,3.874Z" transform="translate(0 -125.984)" fill="#0f9f2b"/>
+      <rect id="rect927" width="1.294" height="7.872" rx="0.647" transform="matrix(-0.707, 0.707, -0.707, -0.707, -338.871, -1081.787)" fill="#0f9f2b"/>
+    </g>
+  </g>
+</svg>
