@@ -1,7 +1,6 @@
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField'
-import { MdFormatListBulletedAdd } from 'react-icons/md'
 import { PiCopySimpleLight } from "react-icons/pi";
 import { IoCloseCircle } from 'react-icons/io5'
 

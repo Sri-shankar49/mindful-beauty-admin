@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import addUser from "../../assets/icons/addUser.svg"
+import { useState } from 'react'
 import resetPasswordButton from "../../assets/icons/resetPasswordButton.png"
 import editButton from "../../assets/icons/editButton.png"
 import deleteButton from "../../assets/icons/deleteButton.png"

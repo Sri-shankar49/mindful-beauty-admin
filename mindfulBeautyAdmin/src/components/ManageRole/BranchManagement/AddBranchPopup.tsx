@@ -4,7 +4,6 @@ import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField';
 import { Button } from '@/common/Button';
-import { FiUpload } from 'react-icons/fi';
 import { MdCloudUpload } from "react-icons/md";
 
 interface AddBranchPopupProps {
@@ -85,7 +84,7 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                     <div>
                                         {/* Logo Display Area */}
                                         <div className="w-fit mx-auto pb-5">
-                                            <img src={logo} alt="Uploaded logo" className="w-full h-24 object-cover" />
+                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
                                         </div>
 
                                         {/* File Upload Area */}
