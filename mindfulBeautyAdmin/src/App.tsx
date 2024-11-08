@@ -13,9 +13,20 @@ import { ServiceManagement } from './pages/ServiceManagement';
 import { SalesTransactions } from './pages/SalesTransactions';
 import { RatingsReviews } from './pages/RatingsReviews';
 import { Reports } from './pages/Reports';
+
 import { RolesManagement } from './components/ManageRole/RolesManagement';
 import { StaffManagement } from './components/ManageRole/StaffManagement';
 import { BranchManagement } from './components/ManageRole/BranchManagement';
+
+import { AddServices } from './components/ServiceListing/AddServices';
+import { ServiceList } from './components/ServiceListing/ServiceList';
+
+import { AllBooking } from './components/ServiceManagement/AllBooking';
+import { Schedule } from './components/ServiceManagement/Schedule';
+import { Inprogress } from './components/ServiceManagement/Inprogress';
+import { Completed } from './components/ServiceManagement/Completed';
+import { Cancelled } from './components/ServiceManagement/Cancelled';
+
 
 
 function App() {
@@ -61,8 +72,19 @@ function App() {
               <Route path="BranchManagement" element={<BranchManagement />} />
             </Route>
 
-            <Route path="/ServiceListing" element={<ServiceListing />} />
-            <Route path="/ServiceManagement" element={<ServiceManagement />} />
+            <Route path="/ServiceListing" element={<ServiceListing />}>
+              <Route path="ServiceList" element={<ServiceList />} />
+              <Route path="AddServices" element={<AddServices />} />
+            </Route>
+
+            <Route path="/ServiceManagement" element={<ServiceManagement />}>
+              <Route path="AllBooking" element={<AllBooking />} />
+              <Route path="Schedule" element={<Schedule />} />
+              <Route path="Inprogress" element={<Inprogress />} />
+              <Route path="Completed" element={<Completed />} />
+              <Route path="Cancelled" element={<Cancelled />} />
+            </Route>
+
             <Route path="/SalesTransactions" element={<SalesTransactions />} />
             <Route path="/RatingsReviews" element={<RatingsReviews />} />
             <Route path="/Reports" element={<Reports />} />

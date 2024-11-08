@@ -13,7 +13,11 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({ label, name, type = "text", value, placeholder, onChange, error, required = false, ...rest }, ref) => {
     return (
         <div>
-            <label htmlFor={name} className="text-mindfulWhite font-semibold block mb-1"> {label} {required && <span className="text-main">*</span>}</label>
+            <label htmlFor={name} className="text-mindfulWhite font-semibold block">
+                {label}
+                {required && <span className="text-main">*</span>}
+            </label>
+            
             <input
                 type={type}
                 id={name}

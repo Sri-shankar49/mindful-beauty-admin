@@ -2,7 +2,7 @@ import React from 'react'
 
 export const RolesManagement = () => {
     return (
-        <div>
+        <div className="">
             <div>
                 <h5 className="text-3xl font-semibold py-5">User Role Manager</h5>
             </div>

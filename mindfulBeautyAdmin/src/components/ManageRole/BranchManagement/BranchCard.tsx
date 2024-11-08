@@ -4,6 +4,9 @@ import managerImg from "../../../assets/images/managerImg.png"
 import imgRounded from "../../../assets/images/imgRounded.png"
 import { MdMoreVert } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { IoEyeOutline } from "react-icons/io5";
+import { MdModeEdit } from "react-icons/md";
+import { MdDeleteForever } from "react-icons/md";
 
 
 export const BranchCard = () => {
@@ -78,32 +81,38 @@ export const BranchCard = () => {
                         </div>
                     </div>
 
-                    <div className="relative">
+                    <div
+                        className="relative"
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    >
                         <MdMoreVert
                             className="text-[36px] text-mindfulgrey font-semibold cursor-pointer"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
+
                         />
 
                         {/* More Options */}
                         <div>
                             {moreHover && (
-                                <div className="absolute top-[-5rem] right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                                <div className="absolute top-[-6.5rem] right-5 mt-2 w-28 bg-white rounded-md shadow-lg py-1 z-20">
                                     <Link to="">
-                                        <div className="block px-4 py-2 text-gray-800 hover:bg-gray">
-                                            Profile
+                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
+                                            <IoEyeOutline className="text-[18px] text-mindfulBlack mr-2" />
+                                            View
                                         </div>
                                     </Link>
 
                                     <Link to="">
-                                        <div className="block px-4 py-2 text-gray-800 hover:bg-gray">
-                                            Profile
+                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
+                                            <MdModeEdit className="text-[18px] text-mindfulBlack mr-2" />
+                                            Edit
                                         </div>
                                     </Link>
 
                                     <Link to="">
-                                        <div className="block px-4 py-2 text-gray-800 hover:bg-gray">
-                                            Profile
+                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
+                                            <MdDeleteForever className="text-[18px] text-mindfulBlack mr-2" />
+                                            Delete
                                         </div>
                                     </Link>
                                 </div>

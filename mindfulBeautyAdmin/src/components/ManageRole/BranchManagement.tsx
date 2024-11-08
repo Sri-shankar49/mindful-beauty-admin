@@ -1,10 +1,22 @@
-import addUser from "../../assets/icons/addUser.svg"
+import { useState } from "react"
 import { Button } from '@/common/Button'
-import React from 'react'
 import { BranchCard } from "./BranchManagement/BranchCard"
 import { TbHomePlus } from "react-icons/tb";
+import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
 
 export const BranchManagement = () => {
+
+    // State Declaration for branch popup
+    const [showBranchPopup, setShowBranchPopup] = useState(false);
+
+    const openBranchPopup = () => {
+        setShowBranchPopup(true);
+    }
+
+    const closeBranchPopup = () => {
+        setShowBranchPopup(false);
+    }
+
     return (
         <div>
             <div className="flex items-center justify-between">
@@ -13,7 +25,10 @@ export const BranchManagement = () => {
                 </div>
 
                 {/* Add New Branch */}
-                <div className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group">
+                <div
+                    onClick={openBranchPopup}
+                    className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
+                >
                     <div>
                         <TbHomePlus className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
                     </div>
@@ -34,6 +49,8 @@ export const BranchManagement = () => {
                 <BranchCard />
                 <BranchCard />
             </div>
+
+            {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} />}
         </div>
     )
 }

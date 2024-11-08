@@ -1,11 +1,24 @@
-import React from 'react'
-import deleteButton from "../../assets/icons/deleteButton.png"
+import React, { useState } from 'react'
 import addUser from "../../assets/icons/addUser.svg"
 import resetPasswordButton from "../../assets/icons/resetPasswordButton.png"
 import editButton from "../../assets/icons/editButton.png"
+import deleteButton from "../../assets/icons/deleteButton.png"
 import { Button } from '@/common/Button'
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { AddStaffPopup } from './StaffManagement/AddStaffPopup'
+
+
 export const StaffManagement = () => {
+
+    const [showStaffPopup, setShowStaffpopup] = useState(false);
+
+    const openStaffPopup = () => {
+        setShowStaffpopup(true);
+    }
+
+    const closeStaffPopup = () => {
+        setShowStaffpopup(false);
+    }
     return (
         <div>
             <div className="flex items-center justify-between">
@@ -14,7 +27,9 @@ export const StaffManagement = () => {
                 </div>
 
                 {/* Add New Staff */}
-                <div className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group">
+                <div
+                    onClick={openStaffPopup}
+                    className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group">
                     <div>
                         <AiOutlineUserAdd className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
                     </div>
@@ -88,6 +103,8 @@ export const StaffManagement = () => {
                     </tbody>
                 </table>
             </div>
+
+            {showStaffPopup && <AddStaffPopup closePopup={closeStaffPopup} />}
         </div>
     )
 }

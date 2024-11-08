@@ -10,7 +10,7 @@ export const SignIn = () => {
 
   return (
     <div>
-      <div className="bg-SignInBgImg bg-cover bg-no-repeat max-h-dvh">
+      <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
 
         <div className="w-3/4 mx-auto h-dvh flex items-center">
           <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg">
