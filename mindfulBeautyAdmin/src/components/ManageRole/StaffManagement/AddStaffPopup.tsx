@@ -3,7 +3,7 @@ import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField';
 import React from 'react'
 import { IoCloseCircle } from 'react-icons/io5';
-import { MdCloudUpload, MdSearch } from 'react-icons/md';
+import { MdCloudUpload } from 'react-icons/md';
 import { PiCamera } from "react-icons/pi";
 
 interface AddStaffPopupProps {
