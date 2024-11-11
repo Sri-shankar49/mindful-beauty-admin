@@ -27,7 +27,7 @@ export const AreaChart = () => {
             { month: "Jul", avgTemp: 22.8, iceCreamSales: 1254000 },
             { month: "Sep", avgTemp: 14.5, iceCreamSales: 950000 },
             { month: "Nov", avgTemp: 8.9, iceCreamSales: 200000 },
-        ] as IData[],
+        ],
         // Series: Defines which chart type and data to use
         series: [
             {

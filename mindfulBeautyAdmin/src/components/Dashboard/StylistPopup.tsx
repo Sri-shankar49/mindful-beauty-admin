@@ -1,6 +1,4 @@
 import { Button } from '@/common/Button';
-import { SelectField } from '@/common/SelectField';
-import React from 'react'
 import { IoCloseCircle } from 'react-icons/io5';
 import stylist from "../../assets/images/stylist.png"
 
