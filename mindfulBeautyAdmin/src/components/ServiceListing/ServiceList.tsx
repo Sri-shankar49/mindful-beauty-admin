@@ -3,6 +3,7 @@ import editButton from "../../assets/icons/editButton.png"
 import deleteButton from "../../assets/icons/deleteButton.png"
 import rectangleBlack from "../../assets/images/rectangleBlack.png"
 import { EditServicePopup } from "./AddServices/EditServicePopup";
+import { Button } from "@/common/Button";
 
 
 export const ServiceList = () => {
@@ -52,7 +53,11 @@ export const ServiceList = () => {
                             <td className="text-start px-2 py-5">200</td>
                             <td className="text-start px-2 py-5">15 mins</td>
                             <td className="text-start px-2 py-5">
-                                <button className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1">Active</button>
+                                <Button
+                                    buttonType="button"
+                                    buttonTitle={"Active"}
+                                    className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1"
+                                />
                             </td>
 
                             <td className="px-2 py-5">
@@ -93,9 +98,11 @@ export const ServiceList = () => {
                             <td className="text-start px-2 py-5">2,200</td>
                             <td className="text-start px-2 py-5">30 mins</td>
                             <td className="text-start px-2 py-5">
-                                <button className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1">
-                                    InActive
-                                </button>
+                                <Button
+                                    buttonType="button"
+                                    buttonTitle={"InActive"}
+                                    className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1"
+                                />
                             </td>
 
                             <td className="px-2 py-5">

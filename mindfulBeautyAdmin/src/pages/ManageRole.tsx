@@ -15,7 +15,9 @@ export const ManageRole = () => {
             <ul className="flex items-center space-x-10">
               <NavLink
                 to="RolesManagement"
-                className="active-sub-nav"
+                className={({ isActive }) =>
+                  isActive ? "active-sub-nav  active" : undefined
+                }
                 aria-current="page"
               >
                 <li>Roles Management</li>
@@ -23,20 +25,24 @@ export const ManageRole = () => {
 
               <NavLink
                 to="StaffManagement"
-                className="active-sub-nav"
+                className={({ isActive }) =>
+                  isActive ? "active-sub-nav active" : undefined
+                }
                 aria-current="page"
-
               >
                 <li>Staff Management</li>
               </NavLink>
 
               <NavLink
                 to="BranchManagement"
-                className="active-sub-nav"
+                className={({ isActive }) =>
+                  isActive ? "active-sub-nav" : undefined
+                }
                 aria-current="page"
               >
                 <li>Branch Management</li>
               </NavLink>
+
             </ul>
 
             <div>

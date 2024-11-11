@@ -2,7 +2,7 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SignIn } from './pages/SignIn';
 import ScrollToTop from './common/ScrollToTop';
 import { LoginLayout } from './layout/LoginLayout';
@@ -67,12 +67,22 @@ function App() {
             <Route path="/Dashboard" element={<Dashboard />} />
 
             <Route path="/ManageRole" element={<ManageRole />} >
+
+              {/* Redirect to RolesManagement when /ManageRole is accessed */}
+              <Route index element={<Navigate to="RolesManagement" replace />} />
+
+              {/* Sub-routes */}
               <Route path="RolesManagement" element={<RolesManagement />} />
               <Route path="StaffManagement" element={<StaffManagement />} />
               <Route path="BranchManagement" element={<BranchManagement />} />
             </Route>
 
             <Route path="/ServiceListing" element={<ServiceListing />}>
+
+              {/* Redirect to ServiceList when /ServiceListing is accessed */}
+              <Route index element={<Navigate to="ServiceList" replace />} />
+
+              {/* Sub-routes */}
               <Route path="ServiceList" element={<ServiceList />} />
               <Route path="AddServices" element={<AddServices />} />
             </Route>
