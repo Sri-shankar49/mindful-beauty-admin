@@ -9,9 +9,6 @@ import { StylistPopup } from "@/components/Dashboard/StylistPopup"
 import Select, { SingleValue } from 'react-select';
 import stylist from "../assets/images/stylist.png"
 
-
-// 
-
 // Define the type for each option
 interface StylistOption {
   value: number;
@@ -218,12 +215,27 @@ export const Dashboard = () => {
                           // error="This field is required."
                           /> */}
 
-                          <Select
+                          {/* <Select
                             placeholder="Select Option"
                             value={selectedStylistOption}
                             options={stylistData}
                             onChange={handleStylistOption}
                             getOptionLabel={(option) => (
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                <span style={{ marginLeft: 5 }}>{option.text}</span>
+                              </div>
+                            )}
+                            getOptionValue={(option) => option.value.toString()}
+                          /> */}
+
+                          <Select
+                            placeholder="Select Option"
+                            value={selectedStylistOption}
+                            options={stylistData}
+                            onChange={handleStylistOption}
+                            getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                            formatOptionLabel={(option) => (
                               <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
                                 <span style={{ marginLeft: 5 }}>{option.text}</span>
