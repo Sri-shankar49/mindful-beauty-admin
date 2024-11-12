@@ -10,6 +10,8 @@ import Select, { SingleValue } from 'react-select';
 import stylist from "../assets/images/stylist.png"
 
 
+// 
+
 // Define the type for each option
 interface StylistOption {
   value: number;
