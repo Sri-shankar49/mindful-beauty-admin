@@ -6,8 +6,55 @@ import { BarChart } from "@/components/Dashboard/BarChart"
 import { RangeChart } from "@/components/Dashboard/RangeChart"
 import { DenialPopup } from "@/components/Dashboard/DenialPopup"
 import { StylistPopup } from "@/components/Dashboard/StylistPopup"
+import Select, { SingleValue } from 'react-select';
+import stylist from "../assets/images/stylist.png"
+
+
+// Define the type for each option
+interface StylistOption {
+  value: number;
+  text: string;
+  icon: string; // URL or path to the image
+}
+
 
 export const Dashboard = () => {
+
+  const stylistData: StylistOption[] = [
+    {
+      value: 1,
+      text: 'Swetha',
+      icon: `${stylist}`
+    },
+    {
+      value: 2,
+      text: 'Swetha',
+      icon: `${stylist}`
+    },
+    {
+      value: 3,
+      text: 'Swetha',
+      icon: `${stylist}`
+    },
+    {
+      value: 4,
+      text: 'Swetha',
+      icon: `${stylist}`
+    }
+  ];
+
+
+  const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
+
+
+  // handle onChange event of the dropdown
+  const handleStylistOption = (option: SingleValue<StylistOption>) => {
+    setSelectedStylistOption(option);
+
+    // Open Stylist Popup
+    setShowStylistPopup(true);
+  };
+
 
   // State declaration for Denial Popup
   const [showDenialPopup, setShowDenialPopup] = useState(false);
@@ -23,9 +70,9 @@ export const Dashboard = () => {
     setShowDenialPopup(false);
   }
 
-  const openStylistPopup = () => {
-    setShowStylistPopup(true);
-  }
+  // const openStylistPopup = () => {
+  //   setShowStylistPopup(true);
+  // }
 
   const closeStylistPopup = () => {
     setShowStylistPopup(false);
@@ -154,7 +201,7 @@ export const Dashboard = () => {
                       <td className="text-start px-2 py-5">
                         {/* Branch Select Field */}
                         <div>
-                          <SelectField
+                          {/* <SelectField
                             onChange={openStylistPopup}
                             label=""
                             name="branch"
@@ -167,7 +214,27 @@ export const Dashboard = () => {
                               { value: "swetha", label: "Swetha" },
                             ]}
                           // error="This field is required."
+                          /> */}
+
+                          <Select
+                            placeholder="Select Option"
+                            value={selectedStylistOption}
+                            options={stylistData}
+                            onChange={handleStylistOption}
+                            getOptionLabel={(option) => (
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                <span style={{ marginLeft: 5 }}>{option.text}</span>
+                              </div>
+                            )}
+                            getOptionValue={(option) => option.value.toString()}
                           />
+
+                          {/* {selectedStylistOption && (
+                            <div style={{ marginTop: 20, lineHeight: '25px' }}>
+                              <b>Selected Option:</b> {selectedStylistOption.text}
+                            </div>
+                          )} */}
                         </div>
                       </td>
 

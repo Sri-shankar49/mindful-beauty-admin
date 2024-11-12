@@ -36,7 +36,7 @@ export const ManageRole = () => {
               <NavLink
                 to="BranchManagement"
                 className={({ isActive }) =>
-                  isActive ? "active-sub-nav" : undefined
+                  isActive ? "active-sub-nav active" : undefined
                 }
                 aria-current="page"
               >
