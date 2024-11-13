@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
+import { Link } from 'react-router-dom';
 
 export const Register = () => {
 
@@ -119,10 +120,13 @@ export const Register = () => {
           </div>
 
           <div className="mt-10">
-            <Button
-              buttonTitle={'Register'}
-              className="w-full bg-mindfulgrey border-[1px] border-mindfulgrey text-mindfulWhite rounded-[5px] font-semibold px-2 py-2 focus-within:outline-none hover:bg-main hover:border-[1px] hover:border-mindfulWhite"
-            />
+            <Link to="/GeneralInfoForm">
+              <Button
+                buttonTitle={'Register'}
+                className="w-full bg-mindfulgrey border-[1px] border-mindfulgrey text-mindfulWhite rounded-[5px] font-semibold px-2 py-2 focus-within:outline-none hover:bg-main hover:border-[1px] hover:border-mindfulWhite"
+              />
+            </Link>
+
           </div>
         </form>
       </div>

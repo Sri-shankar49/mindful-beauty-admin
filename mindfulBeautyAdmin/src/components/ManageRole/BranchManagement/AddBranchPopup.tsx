@@ -18,6 +18,8 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
     // Handle file change event
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+        console.log(file, "file");
+        
         if (file) {
             const previewUrl = URL.createObjectURL(file); // Generate a preview URL for the uploaded file
             console.log(previewUrl, "previewUrl");

@@ -26,6 +26,9 @@ import { Schedule } from './components/ServiceManagement/Schedule';
 import { Inprogress } from './components/ServiceManagement/Inprogress';
 import { Completed } from './components/ServiceManagement/Completed';
 import { Cancelled } from './components/ServiceManagement/Cancelled';
+import { GeneralInfoForm } from './pages/GeneralInfoForm';
+import { BankAccInfoForm } from './pages/BankAccInfoForm';
+import { TaxInfoForm } from './pages/TaxInfoForm';
 
 
 
@@ -61,6 +64,9 @@ function App() {
 
         <Routes>
           <Route path="/" element={<SignIn />} />
+          <Route path="/GeneralInfoForm" element={<GeneralInfoForm />} />
+          <Route path="/BankAccInfoForm" element={<BankAccInfoForm />} />
+          <Route path="/TaxInfoForm" element={<TaxInfoForm />} />
 
           {/* Login Layout Routes */}
           <Route path="/" element={<LoginLayout />}>
