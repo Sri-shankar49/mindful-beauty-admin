@@ -1,4 +1,3 @@
-import React from 'react'
 import ProgressBar from "@ramonak/react-progress-bar";
 import userProfile from "../../assets/icons/userProfile.svg"
 import { Button } from '@/common/Button';
