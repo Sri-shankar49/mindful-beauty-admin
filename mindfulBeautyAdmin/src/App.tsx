@@ -14,6 +14,9 @@ import { SalesTransactions } from './pages/SalesTransactions';
 import { RatingsReviews } from './pages/RatingsReviews';
 import { Reports } from './pages/Reports';
 
+import { DashBoardData } from './components/Dashboard/DashBoardData';
+import { ProfileProgress } from './components/Dashboard/ProfileProgress';
+
 import { RolesManagement } from './components/ManageRole/RolesManagement';
 import { StaffManagement } from './components/ManageRole/StaffManagement';
 import { BranchManagement } from './components/ManageRole/BranchManagement';
@@ -70,7 +73,16 @@ function App() {
 
           {/* Login Layout Routes */}
           <Route path="/" element={<LoginLayout />}>
-            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Dashboard" element={<Dashboard />} >
+
+              {/* Redirect to DashBoardData when /Dashboard is accessed */}
+              <Route index element={<Navigate to="ProfileProgress" replace />} />
+
+
+              {/* Sub-routes */}
+              <Route path="DashBoardData" element={<DashBoardData />} />
+              <Route path="ProfileProgress" element={<ProfileProgress />} />
+            </Route>
 
             <Route path="/ManageRole" element={<ManageRole />} >
 

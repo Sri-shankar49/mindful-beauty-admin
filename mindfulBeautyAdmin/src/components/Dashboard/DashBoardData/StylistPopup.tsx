@@ -1,6 +1,6 @@
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
-import stylist from "../../assets/images/stylist.png"
+import stylist from "../../../assets/images/stylist.png"
 
 interface StylistPopupProps {
     closePopup: () => void;

@@ -9,7 +9,7 @@ export const GeneralInfoForm = () => {
             <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
 
                 <div className="w-3/4 mx-auto h-dvh flex items-center">
-                    <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg">
+                    <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg z-0">
                         {/* <div className="bg-mindfulWhite rounded-lg drop-shadow-md"> */}
 
                         <div className="w-full px-5 py-5">
@@ -34,8 +34,8 @@ export const GeneralInfoForm = () => {
                                         <div className="w-3/4 mx-auto relative flex justify-between items-center">
 
                                             {/* Back Line */}
-                                            <div className="w-full absolute top-5 left-0">
-                                                <div className="w-full h-[2px] bg-mindfulBlack rounded-lg z-[10]"></div>
+                                            <div className="w-full absolute top-5 left-0 z-[-1]">
+                                                <div className="w-full h-[2px] bg-mindfulgrey rounded-lg z-[10]"></div>
                                             </div>
 
                                             {/* One Icon */}
@@ -50,7 +50,7 @@ export const GeneralInfoForm = () => {
                                             {/* Two Icon */}
                                             <Link to="/DateTime">
                                                 <div
-                                                    className="bg-mindfulgrey text-mindfulWhite w-[40px] h-[40px] border-2 border-mindfulBlack rounded-full z-10 flex justify-center items-center"
+                                                    className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
                                                 >
                                                     2
                                                 </div>
@@ -59,7 +59,7 @@ export const GeneralInfoForm = () => {
                                             {/* Three Icon */}
                                             {/* <Link to="/Cart"> */}
                                             <div
-                                                className="bg-mindfulgrey text-mindfulWhite w-[40px] h-[40px] border-2 border-mindfulBlack rounded-full flex justify-center items-center"
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center"
                                             >
                                                 3
                                             </div>

@@ -9,7 +9,7 @@ export const BankAccInfoForm = () => {
             <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
 
                 <div className="w-3/4 mx-auto h-dvh flex items-center">
-                    <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg">
+                    <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg z-0">
                         {/* <div className="bg-mindfulWhite rounded-lg drop-shadow-md"> */}
 
                         <div className="w-full px-5 py-5">
@@ -34,43 +34,39 @@ export const BankAccInfoForm = () => {
                                         <div className="w-3/4 mx-auto relative flex justify-between items-center">
 
                                             {/* Back Line */}
-                                            <div className="w-full absolute top-5 left-0">
-                                                <div className="w-full h-[2px] bg-mindfulBlack rounded-lg z-[10]"></div>
+                                            <div className="w-full absolute top-5 left-0 z-[-1]">
+                                                <div className="w-full h-[2px] bg-mindfulgrey rounded-lg"></div>
                                             </div>
 
                                             {/* One Icon */}
-                                            <Link to="/Login">
+                                            <Link to="/BankAccInfoForm">
                                                 <div
-                                                    className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
+                                                    className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
                                                 >
                                                     1
                                                 </div>
                                             </Link>
 
                                             {/* Two Icon */}
-                                            <Link to="/DateTime">
-                                                <div
-                                                    className="bg-mindfulgrey text-mindfulWhite w-[40px] h-[40px] border-2 border-mindfulBlack rounded-full z-10 flex justify-center items-center"
-                                                >
-                                                    2
-                                                </div>
-                                            </Link>
+                                            <div
+                                                className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
+                                            >
+                                                2
+                                            </div>
 
                                             {/* Three Icon */}
-                                            {/* <Link to="/Cart"> */}
                                             <div
-                                                className="bg-mindfulgrey text-mindfulWhite w-[40px] h-[40px] border-2 border-mindfulBlack rounded-full flex justify-center items-center"
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center"
                                             >
                                                 3
                                             </div>
-                                            {/* </Link> */}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Sub Heading */}
                                 <div className="text-center py-2">
-                                    <h5 className="text-lg text-mindfulBlack font-semibold">General Information</h5>
+                                    <h5 className="text-lg text-mindfulBlack font-semibold">Bank Account Information</h5>
                                 </div>
 
                                 <div>
@@ -191,12 +187,14 @@ export const BankAccInfoForm = () => {
                                                 />
 
                                                 {/* Back Button */}
-                                                <Button
-                                                    // onClick={closePopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Back"
-                                                    className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
-                                                />
+                                                <Link to="/GeneralInfoForm">
+                                                    <Button
+                                                        // onClick={closePopup}
+                                                        buttonType="button"
+                                                        buttonTitle="Back"
+                                                        className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
+                                                    />
+                                                </Link>
 
                                                 {/* Next Button */}
                                                 <Link to="/TaxInfoForm">
