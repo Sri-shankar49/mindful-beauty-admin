@@ -106,6 +106,11 @@ function App() {
             </Route>
 
             <Route path="/ServiceManagement" element={<ServiceManagement />}>
+
+              {/* Redirect to AllBooking when /ServiceManagement is accessed */}
+              <Route index element={<Navigate to="AllBooking" replace />} />
+
+              {/* Sub-routes */}
               <Route path="AllBooking" element={<AllBooking />} />
               <Route path="Schedule" element={<Schedule />} />
               <Route path="Inprogress" element={<Inprogress />} />
