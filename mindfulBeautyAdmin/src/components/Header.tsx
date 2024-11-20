@@ -2,7 +2,7 @@ import { FaBell } from "react-icons/fa6";
 import { FaUserLarge } from "react-icons/fa6";
 import mindfulBeautyLogoSmall from "../assets/icons/mindfulBeautyLogoSmall.png";
 import ashtamudiLogo from "../assets/icons/ashtamudiLogo.png";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 export const Header = () => {
     return (
@@ -13,9 +13,11 @@ export const Header = () => {
                     {/* Admin Logo */}
                     <div className="flex justify-center items-center space-x-3">
                         {/* Mindful Beauty Logo */}
-                        <div>
-                            <img src={mindfulBeautyLogoSmall} alt="mindful beauty logo" />
-                        </div>
+                        <Link to="/Dashboard">
+                            <div>
+                                <img src={mindfulBeautyLogoSmall} alt="mindful beauty logo" />
+                            </div>
+                        </Link>
 
                         {/* Vertical line */}
                         <div className="bg-mindfulgrey w-[1px] h-10"></div>

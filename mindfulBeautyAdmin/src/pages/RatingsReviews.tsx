@@ -1,5 +1,9 @@
+import { RatingReviewsTable } from "@/components/RatingsReviews/RatingReviewsTable"
+
 export const RatingsReviews = () => {
   return (
-    <div>RatingsReviews</div>
+    <div>
+      <RatingReviewsTable />
+    </div>
   )
 }

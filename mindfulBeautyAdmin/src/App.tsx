@@ -24,14 +24,24 @@ import { BranchManagement } from './components/ManageRole/BranchManagement';
 import { AddServices } from './components/ServiceListing/AddServices';
 import { ServiceList } from './components/ServiceListing/ServiceList';
 
+import { BookingStatus } from './components/ServiceManagement/BookingStatus';
+import { EditServices } from './components/ServiceManagement/EditServices';
+
 import { AllBooking } from './components/ServiceManagement/AllBooking';
 import { Schedule } from './components/ServiceManagement/Schedule';
 import { Inprogress } from './components/ServiceManagement/Inprogress';
 import { Completed } from './components/ServiceManagement/Completed';
 import { Cancelled } from './components/ServiceManagement/Cancelled';
+
+
 import { GeneralInfoForm } from './pages/GeneralInfoForm';
 import { BankAccInfoForm } from './pages/BankAccInfoForm';
 import { TaxInfoForm } from './pages/TaxInfoForm';
+
+import { GeneralInfoFreelanceForm } from './pages/GeneralInfoFreelanceForm';
+import { BankAccInfoFreelanceForm } from './pages/BankAccInfoFreelanceForm';
+import { TaxInfoFreelanceForm } from './pages/TaxInfoFreelanceForm';
+
 
 
 
@@ -71,12 +81,17 @@ function App() {
           <Route path="/BankAccInfoForm" element={<BankAccInfoForm />} />
           <Route path="/TaxInfoForm" element={<TaxInfoForm />} />
 
+          <Route path="/GeneralInfoFreelanceForm" element={<GeneralInfoFreelanceForm />} />
+          <Route path="/BankAccInfoFreelanceForm" element={<BankAccInfoFreelanceForm />} />
+          <Route path="/TaxInfoFreelanceForm" element={<TaxInfoFreelanceForm />} />
+
+
           {/* Login Layout Routes */}
           <Route path="/" element={<LoginLayout />}>
             <Route path="/Dashboard" element={<Dashboard />} >
 
               {/* Redirect to DashBoardData when /Dashboard is accessed */}
-              <Route index element={<Navigate to="ProfileProgress" replace />} />
+              <Route index element={<Navigate to="DashBoardData" replace />} />
 
 
               {/* Sub-routes */}
@@ -107,15 +122,25 @@ function App() {
 
             <Route path="/ServiceManagement" element={<ServiceManagement />}>
 
-              {/* Redirect to AllBooking when /ServiceManagement is accessed */}
-              <Route index element={<Navigate to="AllBooking" replace />} />
+              {/* Redirect to BookingStatus when /ServiceManagement is accessed */}
+              <Route index element={<Navigate to="BookingStatus" replace />} />
 
-              {/* Sub-routes */}
-              <Route path="AllBooking" element={<AllBooking />} />
-              <Route path="Schedule" element={<Schedule />} />
-              <Route path="Inprogress" element={<Inprogress />} />
-              <Route path="Completed" element={<Completed />} />
-              <Route path="Cancelled" element={<Cancelled />} />
+              {/* BookingStatus sub-routes */}
+              <Route path="BookingStatus" element={<BookingStatus />}>
+
+                {/* Redirect to AllBooking when /BookingStatus is accessed */}
+                <Route index element={<Navigate to="AllBooking" replace />} />
+
+                <Route path="AllBooking" element={<AllBooking />} />
+                <Route path="Schedule" element={<Schedule />} />
+                <Route path="Inprogress" element={<Inprogress />} />
+                <Route path="Completed" element={<Completed />} />
+                <Route path="Cancelled" element={<Cancelled />} />
+              </Route>
+
+              {/* EditServices route */}
+              <Route path="EditServices" element={<EditServices />} />
+
             </Route>
 
             <Route path="/SalesTransactions" element={<SalesTransactions />} />
@@ -124,7 +149,7 @@ function App() {
           </Route>
         </Routes>
 
-      </BrowserRouter>
+      </BrowserRouter >
 
     </>
   )

@@ -6,7 +6,7 @@ import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";
 import { SelectField } from "@/common/SelectField";
 
-export const TaxInfoForm = () => {
+export const TaxInfoFreelanceForm = () => {
 
     const [selectedFile1, setSelectedFile1] = useState<File | null>(null);
     const [selectedFile2, setSelectedFile2] = useState<File | null>(null);
@@ -51,7 +51,7 @@ export const TaxInfoForm = () => {
                                         />
                                     </div>
 
-                                    <h5 className="text-3xl text-mindfulWhite">Salon Service Registration Forms</h5>
+                                    <h5 className="text-3xl text-mindfulWhite">Freelancer Service Registration Forms</h5>
                                 </div>
 
                                 {/* Steps Indicator */}
@@ -221,7 +221,7 @@ export const TaxInfoForm = () => {
 
                                                 {/* Type of ID */}
                                                 <div>
-                                                    <div className="text-center py-2">
+                                                    <div className="text-start py-2">
                                                         <h5 className="text-lg text-mindfulBlack font-semibold py-2">
                                                             Proof of Identity
                                                         </h5>
@@ -252,7 +252,7 @@ export const TaxInfoForm = () => {
 
                                                 {/* Proof of Address */}
                                                 <div>
-                                                    <div className="text-center py-2">
+                                                    <div className="text-start py-2">
                                                         <h5 className="text-lg text-mindfulBlack font-semibold py-2">
                                                             Proof of Address
                                                         </h5>
@@ -392,7 +392,7 @@ export const TaxInfoForm = () => {
                                                 />
 
                                                 {/* Back Button */}
-                                                <Link to="/BankAccInfoForm">
+                                                <Link to="/BankAccInfoFreelanceForm">
                                                     <Button
                                                         buttonType="button"
                                                         buttonTitle="Back"

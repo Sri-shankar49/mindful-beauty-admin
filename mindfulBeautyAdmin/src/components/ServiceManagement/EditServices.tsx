@@ -1,31 +1,19 @@
-import { useState } from 'react';
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField'
-import { PiCopySimpleLight } from "react-icons/pi";
+// import { PiCopySimpleLight } from "react-icons/pi";
 import { IoCloseCircle } from 'react-icons/io5'
-import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
 
 
-export const AddServices = () => {
-
-    const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
-
-    const openCopyServicesPopup = () => {
-        setShowCopyServicesPopup(true);
-    }
-
-    const closeCopyServicesPopup = () => {
-        setShowCopyServicesPopup(false);
-    }
+export const EditServices = () => {
     return (
-        <div>
-            <div className="bg-mindfulLightPink h-dvh px-5 py-5" >
+        <div className="bg-mindfulLightPink h-dvh px-5 py-5" >
 
-                <div className="bg-mindfulWhite px-5 py-5">
+            <div className="bg-mindfulWhite px-5 py-5">
+                <div>
                     <div className="">
                         <div>
-                            <h5 className="text-3xl font-semibold py-5">Add Services</h5>
+                            <h5 className="text-3xl font-semibold py-5">Edit Services</h5>
                         </div>
 
 
@@ -40,7 +28,7 @@ export const AddServices = () => {
                                             {/* Grid Column One */}
                                             <div className="space-y-5">
                                                 {/* City */}
-                                                <div>
+                                                {/* <div>
                                                     <label
                                                         htmlFor="city"
                                                         className="text-md text-mindfulBlack font-semibold mb-1"
@@ -59,7 +47,7 @@ export const AddServices = () => {
                                                         ]}
                                                         className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                     />
-                                                </div>
+                                                </div> */}
 
                                                 {/* Category */}
                                                 <div>
@@ -87,7 +75,7 @@ export const AddServices = () => {
                                             <div className="space-y-5">
 
                                                 {/* Branch */}
-                                                <div>
+                                                {/* <div>
                                                     <label
                                                         htmlFor="branch"
                                                         className="text-md text-mindfulBlack font-semibold mb-1"
@@ -104,7 +92,7 @@ export const AddServices = () => {
                                                         ]}
                                                         className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                     />
-                                                </div>
+                                                </div> */}
 
                                                 {/* Sub Category */}
                                                 <div>
@@ -240,10 +228,10 @@ export const AddServices = () => {
                                             <h5 className="text-2xl font-semibold py-3">Active Services</h5>
                                         </div>
 
-                                        <div className="flex items-center space-x-5">
-                                            {/* Copy Services */}
+                                        {/* <div className="flex items-center space-x-5">
+                                            Copy Services
                                             <div
-                                                onClick={openCopyServicesPopup}
+                                                // onClick={openBranchPopup}
                                                 className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
                                             >
                                                 <div>
@@ -257,7 +245,7 @@ export const AddServices = () => {
                                                 />
                                             </div>
 
-                                            {/* Branch Select Field */}
+                                            Branch Select Field
                                             <div>
                                                 <SelectField
                                                     label=""
@@ -273,108 +261,214 @@ export const AddServices = () => {
                                                 // error="This field is required."
                                                 />
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
 
 
                                 {/* Content */}
                                 <div>
-                                    <div className="border-b-[1px] py-3">
-                                        <h5 className="text-md text-mindfulBlack font-semibold">Skin</h5>
-                                    </div>
-
-                                    <div className="border-b-2 px-5 pb-5">
-                                        {/* Heading */}
-                                        <div className="py-3">
-                                            <p className="text-md text-mindfulBlack font-semibold">Facial</p>
+                                    {/* Skin */}
+                                    <div>
+                                        <div className="border-b-[1px] py-3">
+                                            <h5 className="text-md text-mindfulBlack font-semibold">Skin</h5>
                                         </div>
 
+                                        <div className="border-b-[1px] px-5 pb-5">
+                                            {/* Heading */}
+                                            <div className="py-3">
+                                                <p className="text-md text-mindfulBlack font-semibold">Facial</p>
+                                            </div>
 
-                                        {/* Pricing Table */}
-                                        <div>
-                                            <table className="w-full">
-                                                <thead>
-                                                    <tr className="border-b-[1px] border-dashed">
-                                                        <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">SKU ID</th>
-                                                        <th className="w-72 text-sm text-start text-mindfulgrey font-normal px-2 py-2">Service</th>
-                                                        <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Prices (Rs)</th>
-                                                        <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Timing</th>
-                                                        <th className="text-sm text-center text-mindfulgrey font-normal px-2 py-2">Action</th>
-                                                    </tr>
-                                                </thead>
 
-                                                <tbody>
+                                            {/* Pricing Table */}
+                                            <div>
+                                                <table className="w-full">
+                                                    <thead>
+                                                        <tr className="border-b-[1px] border-dashed">
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">SKU ID</th>
+                                                            <th className="w-72 text-sm text-start text-mindfulgrey font-normal px-2 py-2">Service</th>
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Prices (Rs)</th>
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Timing</th>
+                                                            <th className="text-sm text-center text-mindfulgrey font-normal px-2 py-2">Action</th>
+                                                        </tr>
+                                                    </thead>
 
-                                                    <tr className="border-b-2 border-dashed">
-                                                        <td className="px-2 py-5">MB94873</td>
-                                                        <td className="px-2 py-5">Acne Facial</td>
-                                                        <td className="px-2 py-5">
-                                                            <div>
-                                                                <InputField
-                                                                    label={''}
-                                                                    placeholder="250"
-                                                                    className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <SelectField
-                                                                    label={''}
-                                                                    options={[
-                                                                        { value: "15mins", label: "15 mins" },
-                                                                        { value: "30mins", label: "30 mins" },
-                                                                        { value: "45mins", label: "45 mins" },
-                                                                        { value: "60mins", label: "60 mins" },
-                                                                    ]}
-                                                                    className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="w-fit mx-auto">
-                                                                <IoCloseCircle className="text-[28px] text-mindfulRed" />
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                    <tbody>
 
-                                                    <tr className="border-b-2 border-dashed">
-                                                        <td className="px-2 py-5">MB94873</td>
-                                                        <td className="px-2 py-5">Acne Facial</td>
-                                                        <td className="px-2 py-5">
-                                                            <div>
-                                                                <InputField
-                                                                    label={''}
-                                                                    placeholder="250"
-                                                                    className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <SelectField
-                                                                    label={''}
-                                                                    options={[
-                                                                        { value: "15mins", label: "15 mins" },
-                                                                        { value: "30mins", label: "30 mins" },
-                                                                        { value: "45mins", label: "45 mins" },
-                                                                        { value: "60mins", label: "60 mins" },
-                                                                    ]}
-                                                                    className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="w-fit mx-auto">
-                                                                <IoCloseCircle className="text-[28px] text-mindfulRed" />
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                                        <tr className="border-b-2 border-dashed">
+                                                            <td className="px-2 py-5">MB94873</td>
+                                                            <td className="px-2 py-5">Acne Facial</td>
+                                                            <td className="px-2 py-5">
+                                                                <div>
+                                                                    <InputField
+                                                                        label={''}
+                                                                        placeholder="250"
+                                                                        className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <SelectField
+                                                                        label={''}
+                                                                        options={[
+                                                                            { value: "15mins", label: "15 mins" },
+                                                                            { value: "30mins", label: "30 mins" },
+                                                                            { value: "45mins", label: "45 mins" },
+                                                                            { value: "60mins", label: "60 mins" },
+                                                                        ]}
+                                                                        className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className="w-fit mx-auto">
+                                                                    <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr className="border-b-2 border-dashed">
+                                                            <td className="px-2 py-5">MB94873</td>
+                                                            <td className="px-2 py-5">Acne Facial</td>
+                                                            <td className="px-2 py-5">
+                                                                <div>
+                                                                    <InputField
+                                                                        label={''}
+                                                                        placeholder="250"
+                                                                        className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <SelectField
+                                                                        label={''}
+                                                                        options={[
+                                                                            { value: "15mins", label: "15 mins" },
+                                                                            { value: "30mins", label: "30 mins" },
+                                                                            { value: "45mins", label: "45 mins" },
+                                                                            { value: "60mins", label: "60 mins" },
+                                                                        ]}
+                                                                        className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className="w-fit mx-auto">
+                                                                    <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+
+
+                                    {/* Threading */}
+                                    <div>
+                                        {/* <div className="border-b-[1px] py-3">
+                                            <h5 className="text-md text-mindfulBlack font-semibold">Threading</h5>
+                                        </div> */}
+
+                                        <div className="border-b-[1px] px-5 pb-5">
+                                            {/* Heading */}
+                                            <div className="py-3">
+                                                <p className="text-md text-mindfulBlack font-semibold">Threading</p>
+                                            </div>
+
+
+                                            {/* Pricing Table */}
+                                            <div>
+                                                <table className="w-full">
+                                                    <thead>
+                                                        <tr className="border-b-[1px] border-dashed">
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">SKU ID</th>
+                                                            <th className="w-72 text-sm text-start text-mindfulgrey font-normal px-2 py-2">Service</th>
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Prices (Rs)</th>
+                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Timing</th>
+                                                            <th className="text-sm text-center text-mindfulgrey font-normal px-2 py-2">Action</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+
+                                                        <tr className="border-b-2 border-dashed">
+                                                            <td className="px-2 py-5">MB94873</td>
+                                                            <td className="px-2 py-5">Acne Facial</td>
+                                                            <td className="px-2 py-5">
+                                                                <div>
+                                                                    <InputField
+                                                                        label={''}
+                                                                        placeholder="250"
+                                                                        className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <SelectField
+                                                                        label={''}
+                                                                        options={[
+                                                                            { value: "15mins", label: "15 mins" },
+                                                                            { value: "30mins", label: "30 mins" },
+                                                                            { value: "45mins", label: "45 mins" },
+                                                                            { value: "60mins", label: "60 mins" },
+                                                                        ]}
+                                                                        className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className="w-fit mx-auto">
+                                                                    <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr className="border-b-2 border-dashed">
+                                                            <td className="px-2 py-5">MB94873</td>
+                                                            <td className="px-2 py-5">Acne Facial</td>
+                                                            <td className="px-2 py-5">
+                                                                <div>
+                                                                    <InputField
+                                                                        label={''}
+                                                                        placeholder="250"
+                                                                        className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <SelectField
+                                                                        label={''}
+                                                                        options={[
+                                                                            { value: "15mins", label: "15 mins" },
+                                                                            { value: "30mins", label: "30 mins" },
+                                                                            { value: "45mins", label: "45 mins" },
+                                                                            { value: "60mins", label: "60 mins" },
+                                                                        ]}
+                                                                        className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className="w-fit mx-auto">
+                                                                    <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
 
 
                                     {/* Update Button */}
@@ -386,13 +480,13 @@ export const AddServices = () => {
                                     </div>
 
                                 </div>
+
+
                             </div>
 
                         </div>
                     </div>
                 </div>
-
-                {showCopyServicesPopup && <CopyServicesPopup closePopup={closeCopyServicesPopup} />}
             </div>
         </div>
     )

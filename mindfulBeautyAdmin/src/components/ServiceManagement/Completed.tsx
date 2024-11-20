@@ -9,6 +9,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
+import { Pagination } from "@/common/Pagination";
 
 // Define the type for each option
 interface StylistOption {
@@ -386,6 +387,12 @@ export const Completed = () => {
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
       {showPaymentDetailsPopup && <PaymentDetailsPopup closePopup={closePaymentDetailsPopup} />}
       {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} />}
+
+
+      {/* Pagination */}
+      <div>
+        <Pagination />
+      </div>
 
     </div>
   )

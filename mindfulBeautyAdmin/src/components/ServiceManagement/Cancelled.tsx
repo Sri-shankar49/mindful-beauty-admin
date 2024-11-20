@@ -5,6 +5,7 @@ import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { SelectField } from "@/common/SelectField";
+import { Pagination } from "@/common/Pagination";
 
 // Define the type for each option
 interface StylistOption {
@@ -301,6 +302,12 @@ export const Cancelled = () => {
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+
+
+      {/* Pagination */}
+      <div>
+        <Pagination />
+      </div>
     </div>
   )
 }

@@ -1,11 +1,30 @@
 import { useState } from 'react'
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const Register = () => {
 
+
   const [activeUser, setActiveUser] = useState("salon");
+
+  const navigate = useNavigate();
+
+
+  const handleRegistrationUser = () => {
+    console.log(activeUser);
+
+    if (activeUser === "freelancer") {
+      console.log("freelancer");
+      navigate("/GeneralInfoFreelanceForm");
+    }
+    else if (activeUser === "salon") {
+      console.log("salon");
+      navigate("/GeneralInfoForm");
+    }
+
+
+  }
 
   return (
     <div>
@@ -120,12 +139,13 @@ export const Register = () => {
           </div>
 
           <div className="mt-10">
-            <Link to="/GeneralInfoForm">
-              <Button
-                buttonTitle={'Register'}
-                className="w-full bg-mindfulgrey border-[1px] border-mindfulgrey text-mindfulWhite rounded-[5px] font-semibold px-2 py-2 focus-within:outline-none hover:bg-main hover:border-[1px] hover:border-mindfulWhite"
-              />
-            </Link>
+            {/* <Link to="/GeneralInfoFreelanceForm"> */}
+            <Button
+              onClick={handleRegistrationUser}
+              buttonTitle={'Register'}
+              className="w-full bg-mindfulgrey border-[1px] border-mindfulgrey text-mindfulWhite rounded-[5px] font-semibold px-2 py-2 focus-within:outline-none hover:bg-main hover:border-[1px] hover:border-mindfulWhite"
+            />
+            {/* </Link> */}
 
           </div>
         </form>

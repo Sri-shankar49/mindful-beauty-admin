@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import editButton from "../../assets/icons/editButton.png"
 // import deleteButton from "../../assets/icons/deleteButton.png"
@@ -6,6 +7,7 @@ import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { SelectField } from "@/common/SelectField";
+import { Pagination } from "@/common/Pagination";
 
 // Define the type for each option
 interface StylistOption {
@@ -171,11 +173,19 @@ export const Inprogress = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -252,11 +262,19 @@ export const Inprogress = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -325,11 +343,19 @@ export const Inprogress = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -340,6 +366,12 @@ export const Inprogress = () => {
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+
+
+      {/* Pagination */}
+      <div>
+        <Pagination />
+      </div>
     </div>
   )
 }

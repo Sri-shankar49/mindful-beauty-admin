@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import editButton from "../../assets/icons/editButton.png"
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
@@ -7,6 +8,7 @@ import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { SelectField } from "@/common/SelectField";
+import { Pagination } from "@/common/Pagination";
 
 // Define the type for each option
 interface StylistOption {
@@ -173,11 +175,19 @@ export const AllBooking = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    aria-label="Edit Services" // Accessibility improvement
+                    className="edit-button"  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -254,11 +264,19 @@ export const AllBooking = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    aria-label="Edit Services" // Accessibility improvement
+                    className="edit-button"  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -327,11 +345,19 @@ export const AllBooking = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    aria-label="Edit Services" // Accessibility improvement
+                    className="edit-button"  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -342,6 +368,12 @@ export const AllBooking = () => {
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+
+
+      {/* Pagination */}
+      <div>
+        <Pagination />
+      </div>
     </div>
   )
 }

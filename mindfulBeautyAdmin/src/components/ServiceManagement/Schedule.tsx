@@ -6,6 +6,8 @@ import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { SelectField } from "@/common/SelectField";
+import { Link } from "react-router-dom";
+import { Pagination } from "@/common/Pagination";
 
 // Define the type for each option
 interface StylistOption {
@@ -171,11 +173,19 @@ export const Schedule = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -252,11 +262,19 @@ export const Schedule = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                  // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -325,11 +343,19 @@ export const Schedule = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                <button
-                // onClick={openEditService}
+                <Link
+                  to="/ServiceManagement/EditServices"
+                  aria-current="page"
+                  aria-label="Edit Services" // Accessibility improvement
                 >
-                  <img src={editButton} alt="editButton" />
-                </button>
+                  <button
+                    // onClick={openEditService}
+                    type="button"
+                    className=""  // Optional: Add a class for better styling control
+                  >
+                    <img src={editButton} alt="editButton" />
+                  </button>
+                </Link>
               </td>
 
 
@@ -340,6 +366,12 @@ export const Schedule = () => {
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+
+
+      {/* Pagination */}
+      <div>
+        <Pagination />
+      </div>
     </div>
   )
 }

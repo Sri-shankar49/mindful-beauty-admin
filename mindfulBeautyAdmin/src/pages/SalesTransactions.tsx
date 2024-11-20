@@ -1,5 +1,9 @@
+import { SalesTransactionsTable } from "@/components/SalesTransactions/SalesTransactionsTable"
+
 export const SalesTransactions = () => {
   return (
-    <div>SalesTransactions</div>
+    <div>
+      <SalesTransactionsTable />
+    </div>
   )
 }
