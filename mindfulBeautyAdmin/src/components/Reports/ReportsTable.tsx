@@ -1,11 +1,8 @@
-import React, { useState } from 'react'
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { FiDownload } from "react-icons/fi";
+import { useState } from 'react'
 // import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
-import { InvoicePopup } from '../ServiceManagement/Completed/InvoicePopup';
+// import { InvoicePopup } from '../ServiceManagement/Completed/InvoicePopup';
 import { Button } from '@/common/Button';
 import { InputField } from '@/common/InputField';
-import { FaCalendarDays } from "react-icons/fa6";
 import { BiCalendar } from "react-icons/bi";
 import { SelectField } from '@/common/SelectField';
 import { Pagination } from '@/common/Pagination';
@@ -13,15 +10,15 @@ import { Pagination } from '@/common/Pagination';
 export const ReportsTable = () => {
 
     // State Declaration for Invoice Popup
-    const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+    // const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
-    const openInvoicePopup = () => {
-        setShowInvoicePopup(!showInvoicePopup)
-    }
+    // const openInvoicePopup = () => {
+    //     setShowInvoicePopup(!showInvoicePopup)
+    // }
 
-    const closeInvoicePopup = () => {
-        setShowInvoicePopup(false)
-    }
+    // const closeInvoicePopup = () => {
+    //     setShowInvoicePopup(false)
+    // }
 
     return (
         <div>
@@ -216,7 +213,7 @@ export const ReportsTable = () => {
                 </div>
             </div>
 
-            {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} />}
+            {/* {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} />} */}
 
 
 

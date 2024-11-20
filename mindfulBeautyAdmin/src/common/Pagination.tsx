@@ -1,4 +1,3 @@
-import React from 'react'
 import { SelectField } from './SelectField'
 import { BiSolidLeftArrow } from "react-icons/bi";
 import { BiSolidRightArrow } from "react-icons/bi";
