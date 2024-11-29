@@ -12,7 +12,7 @@ export const Login = () => {
     };
 
     const handleVerifyOtp = () => {
-        setIsOtpGenerated(false)
+        setIsOtpGenerated(false);
     }
 
     return (

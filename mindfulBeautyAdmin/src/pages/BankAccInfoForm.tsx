@@ -1,10 +1,90 @@
+import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as zod from "zod";
+import { bankAccInfo } from "@/api/apiConfig";
 
-export const BankAccInfoForm = () => {
+// Define Zod schema for validation
+const bankAccInfoSchema = zod.object({
+    bankAccHolderName: zod.string().min(3, "Bank Account Holder Name is required"),
+    bankName: zod.string().min(3, "Bank Name is required"),
+    bankAccountNumber: zod.string().regex(/^[0-9]{10}$/, { message: "Bank Account Number must be 10 digits" }),
+    accountType: zod.string().min(1, "Account Type is required"),
+    bankBranch: zod.string().optional(),
+    ifscCode: zod.string().optional(),
+});
+
+type BankAccInfoFormData = zod.infer<typeof bankAccInfoSchema>;
+
+
+export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
+
+    const handleBackButton = () => {
+        navigate("/GeneralInfoForm");
+    }
+
+
+
+    // React Hook Form setup with Zod validation
+    const { register, handleSubmit, formState: { errors } } = useForm<BankAccInfoFormData>({
+        resolver: zodResolver(bankAccInfoSchema),
+    });
+
+
+    const onSubmit = async (data: BankAccInfoFormData) => {
+        setLoading(true);
+        setError(null);
+
+        console.log("Bank Account Info Form Submitted Data", data);
+
+        try {
+
+            // Getting the ProviderID from session storage
+            const sessionProviderID = sessionStorage.getItem("providerID");
+            if (!sessionProviderID) {
+                throw new Error("Provider ID is missing from session storage.");
+            }
+
+            const bankAccInfoData = await bankAccInfo(
+                parseInt(sessionProviderID),
+                data.bankAccHolderName,
+                data.bankName,
+                data.bankAccountNumber,
+                data.accountType,
+                data.bankBranch || "", // Provide default value
+                data.ifscCode || "", // Provide default value
+            );
+
+            console.log("Bank Account Info Data", bankAccInfoData);
+
+            // Navigate to the next step
+            navigate("/TaxInfoForm");
+        }
+
+        catch (error: any) {
+            setError(error.message || "Something went wrong");
+        }
+
+        finally {
+            setLoading(false)
+        }
+    }
+
+
+    // if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
     return (
+
         <div>
             <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
 
@@ -39,7 +119,7 @@ export const BankAccInfoForm = () => {
                                             </div>
 
                                             {/* One Icon */}
-                                            <Link to="/BankAccInfoForm">
+                                            <Link to="/GeneralInfoForm">
                                                 <div
                                                     className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
                                                 >
@@ -70,7 +150,7 @@ export const BankAccInfoForm = () => {
                                 </div>
 
                                 <div>
-                                    <form action="" method="post">
+                                    <form onSubmit={handleSubmit(onSubmit)}>
                                         <div className="grid grid-cols-3 gap-5">
 
                                             {/* Bank Account Holder Name */}
@@ -82,11 +162,14 @@ export const BankAccInfoForm = () => {
                                                 </label>
                                                 <InputField
                                                     label={''}
-                                                    name="accHolderName"
+                                                    // name="accHolderName"
                                                     id="accHolderName"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("bankAccHolderName")}
                                                 />
+
+                                                {errors.bankAccHolderName && <p className="text-sm text-red-600">{errors.bankAccHolderName.message}</p>}
                                             </div>
 
                                             {/* Bank Name */}
@@ -98,45 +181,55 @@ export const BankAccInfoForm = () => {
                                                 </label>
                                                 <InputField
                                                     label={''}
-                                                    name="bankName"
+                                                    // name="bankName"
                                                     id="bankName"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("bankName")}
                                                 />
+
+                                                {errors.bankName && <p className="text-sm text-red-600">{errors.bankName.message}</p>}
                                             </div>
 
                                             {/* Bank Account Number */}
                                             <div>
                                                 <label
-                                                    htmlFor="contactNumber"
+                                                    htmlFor="bankAccountNumber"
                                                     className="text-lg text-mindfulBlack">
                                                     Bank Account Number
                                                 </label>
                                                 <InputField
                                                     label={''}
                                                     type="number"
-                                                    name="contactNumber"
-                                                    id="contactNumber"
+                                                    // name="bankAccountNumber"
+                                                    id="bankAccountNumber"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("bankAccountNumber")}
+
                                                 />
+                                                {errors.bankAccountNumber && <p className="text-sm text-red-600">{errors.bankAccountNumber.message}</p>}
+
                                             </div>
 
                                             {/* Account Type */}
                                             <div>
                                                 <label
-                                                    htmlFor="emailAddress"
+                                                    htmlFor="accountType"
                                                     className="text-lg text-mindfulBlack">
                                                     Account Type
                                                 </label>
                                                 <InputField
                                                     label={''}
                                                     type="email"
-                                                    name="emailAddress"
-                                                    id="emailAddress"
+                                                    // name="accountType"
+                                                    id="accountType"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("accountType")}
                                                 />
+                                                {errors.accountType && <p className="text-sm text-red-600">{errors.accountType.message}</p>}
+
                                             </div>
 
                                             {/* Bank Branch */}
@@ -148,10 +241,11 @@ export const BankAccInfoForm = () => {
                                                 </label>
                                                 <InputField
                                                     label={''}
-                                                    name="bankBranch"
+                                                    // name="bankBranch"
                                                     id="bankBranch"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("bankBranch")}
                                                 />
                                             </div>
 
@@ -164,10 +258,11 @@ export const BankAccInfoForm = () => {
                                                 </label>
                                                 <InputField
                                                     label={''}
-                                                    name="ifscCode"
+                                                    // name="ifscCode"
                                                     id="ifscCode"
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("ifscCode")}
                                                 />
                                             </div>
 
@@ -180,30 +275,30 @@ export const BankAccInfoForm = () => {
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Reset Button */}
                                                 <Button
-                                                    // onClick={closePopup}
+                                                    onClick={() => location.reload()}
                                                     buttonType="button"
                                                     buttonTitle="Reset"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                                                 />
 
                                                 {/* Back Button */}
-                                                <Link to="/GeneralInfoForm">
-                                                    <Button
-                                                        // onClick={closePopup}
-                                                        buttonType="button"
-                                                        buttonTitle="Back"
-                                                        className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
-                                                    />
-                                                </Link>
+                                                {/* <Link to="/GeneralInfoForm"> */}
+                                                <Button
+                                                    onClick={handleBackButton}
+                                                    buttonType="button"
+                                                    buttonTitle="Back"
+                                                    className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
+                                                />
+                                                {/* </Link> */}
 
                                                 {/* Next Button */}
-                                                <Link to="/TaxInfoForm">
-                                                    <Button
-                                                        buttonType="submit"
-                                                        buttonTitle="Next"
-                                                        className="bg-main text-md text-mindfulWhite  font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
-                                                    />
-                                                </Link>
+                                                {/* <Link to="/TaxInfoForm"> */}
+                                                <Button
+                                                    buttonType="submit"
+                                                    buttonTitle={loading ? "Submitting" : "Next"}
+                                                    className="bg-main text-md text-mindfulWhite  font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
+                                                />
+                                                {/* </Link> */}
 
                                             </div>
                                         </div>
