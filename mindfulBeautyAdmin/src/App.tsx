@@ -77,11 +77,36 @@ function App() {
 
         <Routes>
           <Route path="/" element={<SignIn />} />
-          <Route path="/GeneralInfoForm" element={<GeneralInfoForm />} />
-          <Route path="/BankAccInfoForm" element={<BankAccInfoForm />} />
-          <Route path="/TaxInfoForm" element={<TaxInfoForm />} />
+          <Route path="/GeneralInfoForm" element={
+            <GeneralInfoForm
+              emailAddress={''}
+              contactNumber={''}
+              ownersName={''}
+              salonName={''}
+            />
+          } />
+          <Route path="/BankAccInfoForm" element={
+            <BankAccInfoForm
+              bankAccHolderName={''}
+              bankName={''}
+              bankAccountNumber={''}
+              accountType={''}
+            />
+          } />
+          <Route path="/TaxInfoForm" element={
+            <TaxInfoForm
+              taxIdentificationNumber={''}
+              gstNumber={''}
+            />
+          } />
 
-          <Route path="/GeneralInfoFreelanceForm" element={<GeneralInfoFreelanceForm />} />
+          <Route path="/GeneralInfoFreelanceForm" element={
+            <GeneralInfoFreelanceForm
+              fullName={''}
+              emailAddress={''}
+              contactNumber={''}
+            />
+          } />
           <Route path="/BankAccInfoFreelanceForm" element={<BankAccInfoFreelanceForm />} />
           <Route path="/TaxInfoFreelanceForm" element={<TaxInfoFreelanceForm />} />
 

@@ -1,4 +1,4 @@
-import { apiUrl, apiAxios } from './apiUrl';
+import { apiAxios } from './apiUrl';
 
 export const fetchLogin = async (phoneNumber: number) => {
   try {

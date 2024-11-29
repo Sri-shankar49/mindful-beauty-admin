@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";

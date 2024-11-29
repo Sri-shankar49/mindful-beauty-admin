@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { Slider } from "@/components/ui/slider"
@@ -86,7 +86,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             formData.append("travel_capability_kms", data.travelCapability || "");
             // formData.append("certifications", data.certifications || "");
             formData.append("available_slots", data.slots || "");
-            formData.append("willing_to_work_holidays", willingToWork);
+            formData.append("willing_to_work_holidays", willingToWork.toString());
 
             // Append optional fields if they exist
             // if (data.certifications) {

@@ -52,7 +52,7 @@ export const SignIn = () => {
 
               <div>
                 {activeSection === "login" && <Login />}
-                {activeSection === "register" && <Register />}
+                {activeSection === "register" && <Register location={''} name={''} email={''} phone={''} />}
 
               </div>
             </div>
