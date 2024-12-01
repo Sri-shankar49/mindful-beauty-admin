@@ -1,5 +1,6 @@
 import { apiAxios } from './apiUrl';
 
+// Root Page --> Login Form
 export const fetchLogin = async (phoneNumber: number) => {
   try {
     const response = await apiAxios.post(`/provider-api/login/`, {
@@ -17,9 +18,36 @@ export const fetchLogin = async (phoneNumber: number) => {
   }
   catch (error: any) {
     console.error("Error fetching Login API:", error.message || error);
-    throw new Error("Unable to fetch Login API. Please try again later.");
+    throw new Error(error.response.data.message || "Unable to fetch Login API. Please try again later.");
   }
 }
+
+
+// Root Page --> Verify OTP
+// Login page -> OTP API
+export const verifyOTP = async (phoneNumber: string, otp: string) => {
+  try {
+    const response = await apiAxios.post("/provider-api/verify-otp/",
+      {
+        phone: phoneNumber,
+        otp: otp, // Convert the OTP array to a string
+      },
+    );
+    console.log("OTP response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Invalid OTP response");
+    }
+
+    return response.data;
+  }
+  catch (error: any) {
+    console.error("Error validating OTP:", error.message || error);
+    throw new Error("Unable to validate OTP. Please try again later.");
+  }
+}
+
 
 // Root Page --> New to Mindful Beauty
 export const loginRegister = async (userName: string, userEmail: string, userPhoneNumber: number, serviceType: number, userLocation: string) => {
