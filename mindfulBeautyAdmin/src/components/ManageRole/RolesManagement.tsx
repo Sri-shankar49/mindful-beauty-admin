@@ -10,10 +10,10 @@ export const RolesManagement = () => {
                 <table className="w-full">
                     <thead className="border-y-2 border-mindfulgrey">
                         <tr className="">
-                            <th className="w-[40%] text-start px-2 py-3">Actions</th>
-                            <th className="w-[20%] px-2 py-3">Admin</th>
-                            <th className="w-[20%] px-2 py-3">Member</th>
-                            <th className="w-[20%] px-2 py-3">Manager</th>
+                            <th className="w-[80%] text-start px-2 py-3">Actions</th>
+                            <th className="w-[10%] px-2 py-3">Manager</th>
+                            <th className="w-[10%] px-2 py-3">Admin</th>
+                            {/* <th className="w-[20%] px-2 py-3">Member</th> */}
                         </tr>
                     </thead>
 
@@ -32,12 +32,12 @@ export const RolesManagement = () => {
                                     <span></span>
                                 </label>
                             </td>
-                            <td className="text-center px-2 py-2">
+                            {/* <td className="text-center px-2 py-2">
                                 <label className="cl-checkbox">
                                     <input type="checkbox" />
                                     <span></span>
                                 </label>
-                            </td>
+                            </td> */}
                             <td className="text-center px-2 py-2">
                                 <label className="cl-checkbox">
                                     <input type="checkbox" />

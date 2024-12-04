@@ -1,16 +1,76 @@
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/common/Button';
 import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField';
-import React from 'react'
 import { IoCloseCircle } from 'react-icons/io5';
 import { MdCloudUpload } from 'react-icons/md';
 import { PiCamera } from "react-icons/pi";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as zod from "zod";
+import { staffList } from '@/api/apiConfig';
 
 interface AddStaffPopupProps {
     closePopup: () => void;
 }
 
+interface StaffManagementProps {
+    id: number;
+    name: string;
+    role_name: string;
+    branch_name: string;
+    status: string;
+}
+
+// Zod schema for form validation
+const addStaffSchema = zod.object({
+    name: zod.string().min(1, "Name is required"),
+    role: zod.string().min(1, "Role is required"),
+    branch: zod.string().min(1, "Branch is required"),
+    photo: zod.any().optional(), // Optional file input
+});
+
+type addStaffFormData = zod.infer<typeof addStaffSchema>;
+
+
 export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
+
+    const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
+
+    const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
+    const [error, setError] = useState<string | null>(null);
+
+    const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<addStaffFormData>({
+        resolver: zodResolver(addStaffSchema),
+    });
+
+    useEffect(() => {
+
+        const fetchStaffList = async () => {
+            setLoading(true); // Set loading to true before fetching
+            try {
+                const data = await staffList();
+                setStaffListData(data || []); // Fallback to an empty array if data is null
+                console.log("Staff list data log:", data);
+            } catch (error: any) {
+                setError(error.message || 'Failed to fetch staff list');
+            } finally {
+                setLoading(false); // Ensure loading is false after fetching
+            }
+        };
+
+        fetchStaffList();
+    }, []);
+
+
+    const onSubmit = (data: addStaffFormData) => {
+        console.log("Submitted data:", data);
+        closePopup(); // Close popup after submission
+    };
+
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
 
     return (
@@ -37,7 +97,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                             </div>
 
                             <div className="">
-                                <form action="" method="post">
+                                <form action="" method="post" onClick={handleSubmit(onSubmit)}>
                                     <div className="">
 
                                         {/* Add Staff Form */}
@@ -54,11 +114,16 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                                 <InputField
                                                     label={''}
                                                     type="text"
-                                                    name="name"
+                                                    // name="name"
                                                     id="name"
                                                     placeholder="Name"
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("name")}
                                                 />
+
+                                                {errors.name && (
+                                                    <p className="text-sm text-red-600">{errors.name.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Role */}
@@ -72,16 +137,25 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
                                                 <SelectField
                                                     label={''}
-                                                    name="role"
+                                                    // name="role"
                                                     id="role"
-                                                    options={[
-                                                        { value: "kochi", label: "Kochi" },
-                                                        { value: "trivandrum", label: "Trivandrum" },
-                                                        { value: "kollam", label: "Kollam" },
-                                                        { value: "thrissur", label: "Thrissur" },
-                                                    ]}
+                                                    // options={[]}
+                                                    // options={[
+                                                    //     { value: "kochi", label: "Kochi" },
+                                                    //     { value: "trivandrum", label: "Trivandrum" },
+                                                    //     { value: "kollam", label: "Kollam" },
+                                                    //     { value: "thrissur", label: "Thrissur" },
+                                                    // ]}
+                                                    options={staffListData.map((staff) => (
+                                                        { value: staff.role_name, label: staff.role_name }
+                                                    ))}
                                                     className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("role")}
                                                 />
+
+                                                {errors.role && (
+                                                    <p className="text-sm text-red-600">{errors.role.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Branch */}
@@ -95,16 +169,24 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
                                                 <SelectField
                                                     label={''}
-                                                    name="branch"
+                                                    // name="branch"
                                                     id="branch"
-                                                    options={[
-                                                        { value: "kochi", label: "Kochi" },
-                                                        { value: "trivandrum", label: "Trivandrum" },
-                                                        { value: "kollam", label: "Kollam" },
-                                                        { value: "thrissur", label: "Thrissur" },
-                                                    ]}
+                                                    // options={[
+                                                    //     { value: "kochi", label: "Kochi" },
+                                                    //     { value: "trivandrum", label: "Trivandrum" },
+                                                    //     { value: "kollam", label: "Kollam" },
+                                                    //     { value: "thrissur", label: "Thrissur" },
+                                                    // ]}
+                                                    options={staffListData.map((staff) => (
+                                                        { value: staff.branch_name, label: staff.branch_name }
+                                                    ))}
                                                     className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("branch")}
                                                 />
+
+                                                {errors.branch && (
+                                                    <p className="text-sm text-red-600 ">{errors.branch.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Upload Photo */}
@@ -147,6 +229,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                                                 accept="image/*"
                                                                 // onChange={handleFileChange}
                                                                 className="hidden"
+                                                                // {...register("photo")}
                                                             />
                                                         </div>
                                                     </div>

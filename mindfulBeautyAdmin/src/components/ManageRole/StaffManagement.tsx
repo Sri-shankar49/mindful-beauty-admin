@@ -1,13 +1,27 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import resetPasswordButton from "../../assets/icons/resetPasswordButton.png"
 import editButton from "../../assets/icons/editButton.png"
 import deleteButton from "../../assets/icons/deleteButton.png"
 import { Button } from '@/common/Button'
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { AddStaffPopup } from './StaffManagement/AddStaffPopup'
+import { AddStaffPopup } from './StaffManagement/AddStaffPopup';
+import { staffList } from '@/api/apiConfig'
+
+interface StaffManagementProps {
+    id: number;
+    name: string;
+    role_name: string;
+    branch_name: string;
+    status: string;
+}
 
 
-export const StaffManagement = () => {
+export const StaffManagement: React.FC<StaffManagementProps> = () => {
+
+    const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
+    const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
+    const [error, setError] = useState<string | null>(null);
+
 
     const [showStaffPopup, setShowStaffpopup] = useState(false);
 
@@ -18,6 +32,30 @@ export const StaffManagement = () => {
     const closeStaffPopup = () => {
         setShowStaffpopup(false);
     }
+
+    useEffect(() => {
+
+        const fetchStaffList = async () => {
+            setLoading(true); // Set loading to true before fetching
+            try {
+                const data = await staffList();
+                setStaffListData(data || []); // Fallback to an empty array if data is null
+                console.log("Staff list data log:", data);
+            } catch (error: any) {
+                setError(error.message || 'Failed to fetch staff list');
+            } finally {
+                setLoading(false); // Ensure loading is false after fetching
+            }
+        };
+
+        fetchStaffList();
+    }, []);
+
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
+
     return (
         <div>
             <div className="flex items-center justify-between">
@@ -66,7 +104,44 @@ export const StaffManagement = () => {
                         </tr> */}
 
                         {/* Content & Checkbox */}
-                        <tr className="border-b-2">
+                        {staffListData.length > 0 ? (
+                            staffListData.map((staff) => (
+                                <tr key={staff.id} className="border-b-2">
+                                    <td className="text-center px-2 py-2">
+                                        <label className="cl-checkbox">
+                                            <input type="checkbox" />
+                                            <span></span>
+                                        </label>
+                                    </td>
+                                    <td className="px-2 py-5">{staff.name}</td>
+                                    <td className="text-center px-2 py-5">{staff.role_name}</td>
+                                    <td className="text-center px-2 py-5">{staff.branch_name}</td>
+                                    <td className="text-center px-2 py-5">{staff.status}</td>
+                                    <td className="px-2 py-5">
+                                        <div className="flex items-center space-x-5">
+                                            <button>
+                                                <img src={resetPasswordButton} alt="Reset Password" />
+                                            </button>
+                                            <button>
+                                                <img src={editButton} alt="Edit" />
+                                            </button>
+                                            <button>
+                                                <img src={deleteButton} alt="Delete" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={6} className="text-center py-5">
+                                    No staff data available.
+                                </td>
+                            </tr>
+                        )}
+
+                        {/* <tr className="border-b-2">
+
                             <td className="text-center px-2 py-2">
                                 <label className="cl-checkbox">
                                     <input type="checkbox" />
@@ -81,10 +156,10 @@ export const StaffManagement = () => {
 
                             <td className="px-2 py-5">
                                 <div className="flex items-center space-x-5">
-                                    {/* <button
+                                    <button
                                         className="bg-mindfulWhite text-md text-mindfulYellow border-2 border-mindfulYellow rounded-[6px] px-2 py-1">
                                         Reset Password
-                                    </button> */}
+                                    </button>
                                     <button>
                                         <img src={resetPasswordButton} alt="resetPasswordButton" />
                                     </button>
@@ -97,13 +172,13 @@ export const StaffManagement = () => {
                                 </div>
                             </td>
 
+                        </tr> */}
 
-                        </tr>
                     </tbody>
                 </table>
             </div>
 
             {showStaffPopup && <AddStaffPopup closePopup={closeStaffPopup} />}
-        </div>
+        </div >
     )
 }

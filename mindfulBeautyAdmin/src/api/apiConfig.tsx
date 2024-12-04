@@ -17,17 +17,16 @@ export const fetchLogin = async (phoneNumber: number) => {
     return response.data;
   }
   catch (error: any) {
-    console.error("Error fetching Login API:", error.message || error);
+    console.error("Error fetching Login API:", error.response.data.message || error);
     throw new Error(error.response.data.message || "Unable to fetch Login API. Please try again later.");
   }
 }
 
 
 // Root Page --> Verify OTP
-// Login page -> OTP API
 export const verifyOTP = async (phoneNumber: string, otp: string) => {
   try {
-    const response = await apiAxios.post("/provider-api/verify-otp/",
+    const response = await apiAxios.post("/provider-api/login/verify-otp/",
       {
         phone: phoneNumber,
         otp: otp, // Convert the OTP array to a string
@@ -43,8 +42,8 @@ export const verifyOTP = async (phoneNumber: string, otp: string) => {
     return response.data;
   }
   catch (error: any) {
-    console.error("Error validating OTP:", error.message || error);
-    throw new Error("Unable to validate OTP. Please try again later.");
+    console.error("Error validating OTP:", error.response.data.message || error);
+    throw new Error(error.response.data.message || "Unable to validate OTP. Please try again later.");
   }
 }
 
@@ -216,11 +215,11 @@ export const bankAccInfo = async (
 
 
 // Tax Information Form
-export const taxInfo = async (formData: FormData) => {
+export const taxInfo = async (formData: FormData): Promise<unknown> => {
   try {
 
     // Debugging: Log the FormData contents
-    console.log("Sending the following FormData:");
+    console.log("Sending the following taxInfo FormData:");
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
@@ -251,4 +250,52 @@ export const taxInfo = async (formData: FormData) => {
 
 
 
+// Manage Role Page -- --> Staff Management
+// GET Method from the API
+export const staffList = async () => {
+  try {
+    const response = await apiAxios.get(`/provider-api/staff-list/`);
+
+    console.log("Staff list GET Method response", response.data.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch staff list");
+    }
+
+    return response.data.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching staff list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch staff list. Please try again later.");
+  }
+}
+
+
+
+// Manage Role Page -- --> Staff Management
+// POST Method from the API
+export const addStaff = async (formData: FormData): Promise<unknown> => {
+  try {
+    const response = await apiAxios.post(`/provider-api/staff-list/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+    });
+
+    console.log("Staff list POST Method response:", response.data.data);
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 201) {
+      throw new Error("Failed to add staff. Invalid server response.");
+    }
+
+    return response.data.data; // Return the actual response data
+
+  }
+  catch (error: any) {
+    console.error("Error adding staff:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add staff. Please try again later.");
+  }
+}
 

@@ -39,7 +39,10 @@ export const GenerateOtp: React.FC<GenerateOtpProps> = ({ onGenerateOtp }) => {
             console.log('OTP Generated Response:', loginData);
 
             if (loginData.status === "success") {
-                sessionStorage.setItem("phoneNumber", data.phoneNumber)
+                // sessionStorage.setItem("phoneNumber", data.phoneNumber)
+                // Store the phone number in sessionStorage
+                sessionStorage.setItem('EnteredPhoneNumber', String(data.phoneNumber));  // Use setItem to store the value
+                console.log("Entered Phone Number data log:", String(data.phoneNumber));
             }
 
             // Trigger the parent callback on successful OTP generation

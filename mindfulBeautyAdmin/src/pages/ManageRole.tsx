@@ -46,7 +46,7 @@ export const ManageRole = () => {
             </ul>
 
             <div>
-              <div className="relative">
+              <div className="relative z-[-1]">
                 {/* <input
                   type="text"
                   name=""
