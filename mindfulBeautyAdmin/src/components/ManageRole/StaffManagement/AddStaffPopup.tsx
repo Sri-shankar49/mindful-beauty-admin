@@ -40,7 +40,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
     const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
 
-    const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<addStaffFormData>({
+    const { register, handleSubmit, formState: { errors } } = useForm<addStaffFormData>({
         resolver: zodResolver(addStaffSchema),
     });
 
@@ -229,7 +229,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                                                 accept="image/*"
                                                                 // onChange={handleFileChange}
                                                                 className="hidden"
-                                                                // {...register("photo")}
+                                                            // {...register("photo")}
                                                             />
                                                         </div>
                                                     </div>
