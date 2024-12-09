@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import editButton from "../../assets/icons/editButton.png"
 import deleteButton from "../../assets/icons/deleteButton.png"
 import rectangleBlack from "../../assets/images/rectangleBlack.png"
@@ -9,11 +9,31 @@ import { Link, NavLink } from "react-router-dom";
 import { SelectField } from "@/common/SelectField";
 import { MdFormatListBulletedAdd, MdSearch } from "react-icons/md";
 import { InputField } from "@/common/InputField";
+import { servicesList } from "@/api/apiConfig";
+import { DeleteServicesPopup } from "./DeleteServicesPopup";
+
+interface ServiceListProps {
+    service_id: number;
+    service_name: string;
+    category: string;
+    subcategory: string;
+    price: string;
+    service_time: string;
+    status: string;
+    sku_value: string;
+}
 
 
-export const ServiceList = () => {
+export const ServiceList: React.FC<ServiceListProps> = () => {
 
     const [showEditServicePopup, setShowEditServicePopup] = useState(false);
+    const [showDeleteServicePopup, setShowDeleteServicePopup] = useState(false);
+
+    const [serviceListData, setServiceListData] = useState<ServiceListProps[]>([])
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+
 
     const openEditService = () => {
         setShowEditServicePopup(!showEditServicePopup)
@@ -22,6 +42,47 @@ export const ServiceList = () => {
     const closeEditService = () => {
         setShowEditServicePopup(false)
     }
+
+    const openDeleteServicePopup = (serviceID: number) => {
+        setShowDeleteServicePopup(true);
+        setSelectedStaffID(serviceID)
+        console.log("Delete the selected service with ID:", serviceID);
+
+    }
+
+    const closeDeleteServicePopup = () => {
+        setShowDeleteServicePopup(false);
+    }
+
+
+
+    useEffect(() => {
+        // Fetch data from API
+        const fetchServiceListData = async () => {
+
+            // Login Provider ID
+            const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+            console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+            try {
+                setLoading(true);
+                // const data: BranchCardProps[] = await branchList();
+                // const data = await servicesList(Number(sessionLoginProviderID));
+                const data = await servicesList(Number(1));
+                setServiceListData(data.results || []);
+                console.log("Fetched Service List data log:", data);
+            } catch (error: any) {
+                setError(error.message || "Failed to fetch service list data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchServiceListData();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -106,8 +167,59 @@ export const ServiceList = () => {
                                 </thead>
 
                                 <tbody>
+                                    {serviceListData.length > 0 ? (
+                                        serviceListData.map((service) => (
+                                            <tr key={service.service_id} className="border-b-2">
+                                                <td className="text-start px-2 py-5">{service.sku_value}</td>
+                                                <td className="text-start px-2 py-5">
+                                                    <div className="flex items-center space-x-3">
+                                                        <div>
+                                                            <img src={rectangleBlack} alt="rectangle black" />
+                                                        </div>
+
+                                                        <p className="text-md text-mindfulBlack">{service.service_name}</p>
+                                                    </div>
+                                                </td>
+                                                <td className="text-start px-2 py-5">{service.category}</td>
+                                                <td className="text-start px-2 py-5">{service.subcategory}</td>
+                                                <td className="text-start px-2 py-5">{service.price}</td>
+                                                <td className="text-start px-2 py-5">{service.service_time}</td>
+                                                <td className="text-start px-2 py-5">
+                                                    {service.status === "Active" ? (
+                                                        <Button
+                                                            buttonType="button"
+                                                            buttonTitle={"Active"}
+                                                            className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1"
+                                                        />
+                                                    ) : (<Button
+                                                        buttonType="button"
+                                                        buttonTitle={"InActive"}
+                                                        className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1"
+                                                    />)}
+
+                                                </td>
+                                                <td className="px-2 py-5">
+                                                    <div className="flex items-center space-x-5">
+                                                        <button onClick={openEditService}>
+                                                            <img src={editButton} alt="editButton" />
+                                                        </button>
+                                                        <button onClick={() => openDeleteServicePopup(Number(service.service_id))}>
+                                                            <img src={deleteButton} alt="deleteButton" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={6} className="text-center py-5">
+                                                No service data available.
+                                            </td>
+                                        </tr>
+                                    )}
+
                                     {/* Content */}
-                                    <tr className="border-b-2">
+                                    {/* <tr className="border-b-2">
                                         <td className="text-start px-2 py-5">MB94873</td>
                                         <td className="text-start px-2 py-5">
                                             <div className="flex items-center space-x-3">
@@ -132,13 +244,6 @@ export const ServiceList = () => {
 
                                         <td className="px-2 py-5">
                                             <div className="flex items-center space-x-5">
-                                                {/* <button
-                                        className="bg-mindfulWhite text-md text-mindfulYellow border-2 border-mindfulYellow rounded-[6px] px-2 py-1">
-                                        Reset Password
-                                    </button> */}
-                                                {/* <button>
-                                        <img src={resetPasswordButton} alt="resetPasswordButton" />
-                                    </button> */}
                                                 <button onClick={openEditService}>
                                                     <img src={editButton} alt="editButton" />
                                                 </button>
@@ -149,10 +254,10 @@ export const ServiceList = () => {
                                         </td>
 
 
-                                    </tr>
+                                    </tr> */}
 
                                     {/* Content */}
-                                    <tr className="border-b-2">
+                                    {/* <tr className="border-b-2">
                                         <td className="text-start px-2 py-5">MB94873</td>
                                         <td className="text-start px-2 py-5">
                                             <div className="flex items-center space-x-3">
@@ -186,12 +291,14 @@ export const ServiceList = () => {
                                             </div>
                                         </td>
 
-                                    </tr>
+                                    </tr> */}
                                 </tbody>
                             </table>
                         </div>
 
                         {showEditServicePopup && <EditServicePopup closePopup={closeEditService} />}
+                        {showDeleteServicePopup && <DeleteServicesPopup closePopup={closeDeleteServicePopup} serviceID={Number(selectedStaffID)} />}
+
                         {/* Pagination */}
                         <div>
                             <Pagination />

@@ -24,9 +24,9 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                     className={className} // Add any specific styling here
                     {...rest} // Spread the rest props to ensure all standard select props are passed down
                 >
-                    <option value="" selected disabled>
+                    {/* <option value="" selected disabled>
                         Select an option
-                    </option>
+                    </option> */}
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}

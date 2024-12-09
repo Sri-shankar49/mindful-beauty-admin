@@ -253,16 +253,22 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 // Manage Role Page -- --> Staff Management
 // GET Method from the API
 export const staffList = async () => {
-  try {
-    const response = await apiAxios.get(`/provider-api/staff-list/`);
 
-    console.log("Staff list GET Method response", response.data.data);
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  try {
+    const response = await apiAxios.get(`/provider-api/staff-list/1`);
+
+    console.log("Staff list GET Method response", response.data);
 
     if (!response.data || response.status !== 200) {
       throw new Error("Failed to fetch staff list");
     }
 
-    return response.data.data;
+    return response.data;
 
   }
   catch (error: any) {
@@ -273,24 +279,90 @@ export const staffList = async () => {
 
 
 
+// Manage Role Page -- --> Add Staff Popup Branch Select Option
+// GET Method from the API
+export const staffBranchList = async () => {
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  try {
+    // const response = await apiAxios.get(`/provider-api/staff_branches/${sessionLoginProviderID}`);
+    const response = await apiAxios.get(`/provider-api/staff-list/1`);
+
+    console.log("Staff branch list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch staff branch list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching staff branch list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch staff branch list. Please try again later.");
+  }
+}
+
+
+
+// Manage Role Page -- --> Add Staff Popup Branch Select Option
+// GET Method from the API
+export const staffRoleList = async () => {
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  try {
+    // const response = await apiAxios.get(`/provider-api/provider_roles/${sessionLoginProviderID}`);
+    const response = await apiAxios.get(`/provider-api/provider_roles/`);
+
+    console.log("Staff role list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch staff role list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching staff role list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch staff role list. Please try again later.");
+  }
+}
+
+
+
 // Manage Role Page -- --> Staff Management
 // POST Method from the API
 export const addStaff = async (formData: FormData): Promise<unknown> => {
   try {
+
+    // Debugging: Log the FormData contents
+    console.log("Sending the following add staff FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+
     const response = await apiAxios.post(`/provider-api/staff-list/`, formData, {
       headers: {
         "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
       },
     });
 
-    console.log("Staff list POST Method response:", response.data.data);
+    console.log("Staff list POST Method response:", response.data);
 
     // Validate HTTP status
     if (!response.data || response.status !== 201) {
       throw new Error("Failed to add staff. Invalid server response.");
     }
 
-    return response.data.data; // Return the actual response data
+    return response.data; // Return the actual response data
 
   }
   catch (error: any) {
@@ -299,3 +371,203 @@ export const addStaff = async (formData: FormData): Promise<unknown> => {
   }
 }
 
+
+
+// Manage Role Page -- --> Staff Management
+// DELETE Method from the API
+export const deleteStaff = async (staffID: number) => {
+
+  try {
+    const response = await apiAxios.delete(`/provider-api/staff-edit-delete/`, {
+      data: { staff_id: staffID }, // Include staff_id in the data property
+
+    });
+
+    console.log("Staff list DELETE Method response:", response.data);   // Log the response data for debugging purposes
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 204) {
+      throw new Error("Failed to add staff. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+  }
+  catch (error: any) {
+    console.error("Error deleting staff:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to delete staff. Please try again later.");
+  }
+
+
+}
+
+
+
+// Manage Role Page -- --> Branch Management
+// GET Method from the API
+export const branchList = async () => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/branches-list/`);
+
+    console.log("Branch list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch branch list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching branch list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch branch list. Please try again later.");
+  }
+}
+
+
+
+// Manage Role Page -- --> Branch Management
+// POST Method from the API
+export const addBranch = async (formData: FormData): Promise<unknown> => {
+  try {
+
+    // Debugging: Log the FormData contents
+    console.log("Sending the following add branch FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+
+    const response = await apiAxios.post(`/provider-api/branches/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+    });
+
+    console.log("Branch list POST Method response:", response.data);
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 201) {
+      throw new Error("Failed to add branch. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+
+  }
+  catch (error: any) {
+    console.error("Error adding branch:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add branch. Please try again later.");
+  }
+}
+
+
+
+// Manage Role Page -- --> Branch Management
+// DELETE Method from the API
+export const deleteBranch = async (branchID: number) => {
+
+  try {
+    const response = await apiAxios.delete(`/provider-api/branch/`, {
+      data: { branch_id: branchID }, // Include branch_id in the data property
+
+    });
+
+    console.log("Branch list DELETE Method response:", response.data);   // Log the response data for debugging purposes
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 204) {
+      throw new Error("Failed to delete branch. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+  }
+  catch (error: any) {
+    console.error("Error deleting branch:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to delete branch. Please try again later.");
+  }
+
+}
+
+
+
+// Service Listing Page -- --> Services List
+// GET Method from the API
+export const servicesList = async (providerID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/provider-services/`, {
+      params: {
+        provider_id: providerID,
+      }
+    });
+
+    console.log("Service list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch services list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching services list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch services list. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing Page -- --> Service List
+// DELETE Method from the API
+export const deleteService = async (serviceID: number) => {
+
+  try {
+    const response = await apiAxios.delete(`/provider-api/provider-services/delete/`, {
+      data: {
+        provider_service_id: serviceID   // Include provider_service_id in the data property
+      },
+
+    });
+
+    console.log("Service list DELETE Method response:", response.data);   // Log the response data for debugging purposes
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 204) {
+      throw new Error("Failed to delete service. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+  }
+  catch (error: any) {
+    console.error("Error deleting service:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to delete service. Please try again later.");
+  }
+
+}
+
+
+
+
+// Ratings & Reviews Page -- --> Branch Management
+// GET Method from the API
+export const reviewsList = async () => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/reviews/`);
+
+    console.log("Reviews list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch reviews list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching reviews list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch reviews list. Please try again later.");
+  }
+}

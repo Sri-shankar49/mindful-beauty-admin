@@ -6,9 +6,12 @@ import { Button } from '@/common/Button'
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { AddStaffPopup } from './StaffManagement/AddStaffPopup';
 import { staffList } from '@/api/apiConfig'
+import { EditStaffPopup } from './StaffManagement/EditStaffPopup'
+import { Pagination } from '@/common/Pagination'
+import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup'
 
 interface StaffManagementProps {
-    id: number;
+    staff?: number;
     name: string;
     role_name: string;
     branch_name: string;
@@ -21,16 +24,37 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
     const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
+    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
 
 
-    const [showStaffPopup, setShowStaffpopup] = useState(false);
+    const [showAddStaffPopup, setShowAddStaffpopup] = useState(false);
+    const [showEditStaffPopup, setShowEditStaffpopup] = useState(false);
+    const [showDeleteStaffPopup, setShowDeleteStaffpopup] = useState(false);
 
-    const openStaffPopup = () => {
-        setShowStaffpopup(true);
+    const openAddStaffPopup = () => {
+        setShowAddStaffpopup(true);
     }
 
-    const closeStaffPopup = () => {
-        setShowStaffpopup(false);
+    const closeAddStaffPopup = () => {
+        setShowAddStaffpopup(false);
+    }
+
+    const openEditStaffPopup = () => {
+        setShowEditStaffpopup(true);
+    }
+
+    const closeEditStaffPopup = () => {
+        setShowEditStaffpopup(false);
+    }
+
+    const openDeleteStaffPopup = (staffID: number) => {
+        setShowDeleteStaffpopup(true);
+        setSelectedStaffID(staffID);
+        console.log("Delete the selected staff with ID:", staffID);
+    }
+
+    const closeDeleteStaffPopup = () => {
+        setShowDeleteStaffpopup(false);
     }
 
     useEffect(() => {
@@ -39,7 +63,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
             setLoading(true); // Set loading to true before fetching
             try {
                 const data = await staffList();
-                setStaffListData(data || []); // Fallback to an empty array if data is null
+                setStaffListData(data.results.data || []); // Fallback to an empty array if data is null
                 console.log("Staff list data log:", data);
             } catch (error: any) {
                 setError(error.message || 'Failed to fetch staff list');
@@ -65,7 +89,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
                 {/* Add New Staff */}
                 <div
-                    onClick={openStaffPopup}
+                    onClick={openAddStaffPopup}
                     className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group">
                     <div>
                         <AiOutlineUserAdd className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
@@ -106,7 +130,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                         {/* Content & Checkbox */}
                         {staffListData.length > 0 ? (
                             staffListData.map((staff) => (
-                                <tr key={staff.id} className="border-b-2">
+                                <tr key={staff.staff} className="border-b-2">
                                     <td className="text-center px-2 py-2">
                                         <label className="cl-checkbox">
                                             <input type="checkbox" />
@@ -122,10 +146,10 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                             <button>
                                                 <img src={resetPasswordButton} alt="Reset Password" />
                                             </button>
-                                            <button>
+                                            <button onClick={openEditStaffPopup}>
                                                 <img src={editButton} alt="Edit" />
                                             </button>
-                                            <button>
+                                            <button onClick={() => openDeleteStaffPopup(Number(staff.staff))}>
                                                 <img src={deleteButton} alt="Delete" />
                                             </button>
                                         </div>
@@ -178,7 +202,14 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                 </table>
             </div>
 
-            {showStaffPopup && <AddStaffPopup closePopup={closeStaffPopup} />}
+            {/* Pagination */}
+            <div>
+                <Pagination />
+            </div>
+
+            {showAddStaffPopup && <AddStaffPopup closePopup={closeAddStaffPopup} />}
+            {showEditStaffPopup && <EditStaffPopup closePopup={closeEditStaffPopup} />}
+            {showDeleteStaffPopup && <DeleteStaffPopup closePopup={closeDeleteStaffPopup} staffID={Number(selectedStaffID)} />}
         </div >
     )
 }

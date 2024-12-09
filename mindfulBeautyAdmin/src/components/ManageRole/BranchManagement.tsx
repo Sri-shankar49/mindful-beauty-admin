@@ -1,13 +1,31 @@
-import { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from '@/common/Button'
 import { BranchCard } from "./BranchManagement/BranchCard"
 import { TbHomePlus } from "react-icons/tb";
 import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
+import { branchList } from "@/api/apiConfig";
+import { DeleteBranchPopup } from "./BranchManagement/DeleteBranchPopup";
 
-export const BranchManagement = () => {
+// Define the type for BranchCardProps if it's not imported
+interface BranchCardProps {
+    branch_id: string;
+    branch_name: string;
+    phone: string;
+    location: string;
+    logo: string;
+}
+
+export const BranchManagement: React.FC<BranchCardProps> = () => {
 
     // State Declaration for branch popup
     const [showBranchPopup, setShowBranchPopup] = useState(false);
+    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+    const [showDeleteBranchPopup, setShowDeleteBranchpopup] = useState(false);
+
+
+    const [branchListData, setBranchListdata] = useState<BranchCardProps[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const openBranchPopup = () => {
         setShowBranchPopup(true);
@@ -16,6 +34,37 @@ export const BranchManagement = () => {
     const closeBranchPopup = () => {
         setShowBranchPopup(false);
     }
+
+
+    const openDeleteBranchPopup = (staffID: number) => {
+        setShowDeleteBranchpopup(true);
+        setSelectedStaffID(staffID);
+        console.log("Delete the selected staff with ID:", staffID);
+    }
+
+    const closeDeleteBranchPopup = () => {
+        setShowDeleteBranchpopup(false);
+    }
+
+
+    useEffect(() => {
+        // Fetch data from API
+        const fetchBranchListData = async () => {
+            try {
+                setLoading(true);
+                // const data: BranchCardProps[] = await branchList();
+                const data = await branchList();
+                setBranchListdata(data.results.data || []);
+                console.log("Fetched Branch List data log:", data.results);
+            } catch (error: any) {
+                setError(error.message || "Failed to fetch branch list data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBranchListData();
+    }, []);
 
     return (
         <div>
@@ -44,13 +93,26 @@ export const BranchManagement = () => {
 
             {/* Branch Card */}
             <div className="grid grid-cols-4 gap-5">
+                {branchListData.length > 0 ? (
+                    branchListData.map((branch) => (
+                        <BranchCard
+                            branchID={branch.branch_id}
+                            branchName={branch.branch_name}
+                            phone={branch.phone}
+                            location={branch.location}
+                            logo={branch.logo}
+                        />
+                    ))
+                ) : (
+                    <div className="text-gray-500">No branches available.</div>
+                )}
+                {/* <BranchCard />
                 <BranchCard />
-                <BranchCard />
-                <BranchCard />
-                <BranchCard />
+                <BranchCard /> */}
             </div>
 
             {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} />}
+            {/* {showDeleteBranchPopup && <DeleteBranchPopup closePopup={closeDeleteBranchPopup} branchID={Number(selectedStaffID)} />} */}
         </div>
     )
 }

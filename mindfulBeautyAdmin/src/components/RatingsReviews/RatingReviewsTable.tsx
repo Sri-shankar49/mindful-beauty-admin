@@ -3,8 +3,47 @@ import { InputField } from '@/common/InputField'
 import { MdSearch } from 'react-icons/md'
 import { FaSort } from "react-icons/fa";
 import { Pagination } from '@/common/Pagination';
+import { useEffect, useState } from 'react';
+import { reviewsList } from '@/api/apiConfig';
 
-export const RatingReviewsTable = () => {
+interface RatingReviewsTableProps {
+  review_id?: string;
+  created_at: string;
+  order_id?: string;
+  user_id?: string;
+  customer_name: string;
+  rating: string;
+  comment: string;
+}
+
+export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
+
+  const [reviewsListData, setReviewsListData] = useState<RatingReviewsTableProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+
+    const fetchReviewsList = async () => {
+      setLoading(true); // Set loading to true before fetching
+      try {
+        const data = await reviewsList();
+        setReviewsListData(data.results || []); // Fallback to an empty array if data is null
+        console.log("Reviews list data log:", data);
+      } catch (error: any) {
+        setError(error.message || 'Failed to fetch staff list');
+      } finally {
+        setLoading(false); // Ensure loading is false after fetching
+      }
+    };
+
+    fetchReviewsList();
+  }, []);
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div>
       <div>
@@ -90,7 +129,26 @@ export const RatingReviewsTable = () => {
 
                   <tbody>
                     {/* Content */}
-                    <tr className="border-b-2">
+                    {reviewsListData.length > 0 ? (
+                      reviewsListData.map((review) => (
+                        <tr key={review.review_id} className="border-b-2">
+                          <td className="text-start pl-8 ml-2 py-5">{review.review_id}</td>
+                          <td className="text-start pl-8 py-5">{review.created_at}</td>
+                          <td className="text-start pl-8 py-5">{review.order_id}</td>
+                          <td className="text-start pl-8 py-5">{review.customer_name}</td>
+                          <td className="text-start pl-8 py-5">{review.rating}</td>
+                          <td className="text-start pl-8 py-5">{review.comment}</td>
+                        </tr>
+                      ))) : (
+                      <tr>
+                        <td colSpan={6} className="text-center py-5">
+                          No staff data available.
+                        </td>
+                      </tr>)
+                    }
+
+
+                    {/* <tr className="border-b-2">
                       <td className="text-start pl-8 ml-2 py-5">1</td>
                       <td className="text-start pl-8 py-5">11 August 2024</td>
                       <td className="text-start pl-8 py-5">MB94873</td>
@@ -98,7 +156,7 @@ export const RatingReviewsTable = () => {
                       <td className="text-start pl-8 py-5">Bridal Glow Facial</td>
                       <td className="text-start pl-8 py-5">4.8</td>
                       <td className="text-start pl-8 py-5">Excellent Service, Well-Trained professionals</td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </div>

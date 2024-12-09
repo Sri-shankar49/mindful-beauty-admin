@@ -7,9 +7,19 @@ import { Link } from 'react-router-dom';
 import { IoEyeOutline } from "react-icons/io5";
 import { MdModeEdit } from "react-icons/md";
 import { MdDeleteForever } from "react-icons/md";
+import { EditBranchPopup } from './EditBranchPopup';
+import { ViewBranchPopup } from './ViewBranchPopup';
+import { DeleteBranchPopup } from './DeleteBranchPopup';
+
+interface BranchPropsCard {
+    branchID?: string;
+    branchName: string;
+    phone: string;
+    location: string;
+}
 
 
-export const BranchCard = () => {
+export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location }) => {
 
     const [moreHover, setMoreHover] = useState(false);
 
@@ -20,8 +30,42 @@ export const BranchCard = () => {
     const handleMouseLeave = () => {
         setMoreHover(false);
     };
+
+    const [showViewBranchPopup, setShowViewBranchPopup] = useState(false);
+    const [showEditBranchPopup, setShowEditBranchPopup] = useState(false);
+    const [showDeleteBranchPopup, setShowDeleteBranchpopup] = useState(false);
+    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+
+
+    const openViewBranchPopup = () => {
+        setShowViewBranchPopup(true);
+    }
+
+    const closeViewBranchPopup = () => {
+        setShowViewBranchPopup(false);
+    }
+
+    const openEditBranchPopup = () => {
+        setShowEditBranchPopup(true);
+    }
+
+    const closeEditBranchPopup = () => {
+        setShowEditBranchPopup(false);
+    }
+
+    const openDeleteBranchPopup = (branchID: number) => {
+        setShowDeleteBranchpopup(true);
+        setSelectedStaffID(branchID);
+        console.log("Delete the selected branch with ID:", branchID);
+    }
+
+    const closeDeleteBranchPopup = () => {
+        setShowDeleteBranchpopup(false);
+    }
+
+
     return (
-        <div className="w-full shadow-lg px-5 py-5">
+        <div key={branchID} className="w-full shadow-lg px-5 py-5">
 
             {/* Branch Name */}
             <div className="flex items-center space-x-2 mb-5">
@@ -29,7 +73,8 @@ export const BranchCard = () => {
                     <img src={userAdmin} alt="" />
                 </div>
 
-                <h5 className="text-lg text-mindfulBlack font-semibold">Ashtamudi Wellness</h5>
+                {/* <h5 className="text-lg text-mindfulBlack font-semibold">Ashtamudi Wellness</h5> */}
+                <h5 className="text-lg text-mindfulBlack font-semibold">{branchName}</h5>
             </div>
 
             {/* Manager Image & Details */}
@@ -41,8 +86,9 @@ export const BranchCard = () => {
 
                 <div>
                     <h5 className="text-sm text-mindfulBlack font-semibold">Paul Williams</h5>
-                    <p>Manager</p>
-                    <p>+91 98847 19615</p>
+                    {/* <p>Manager</p> */}
+                    {/* <p>+91 98847 19615</p> */}
+                    <p>{phone}</p>
                 </div>
             </div>
 
@@ -51,7 +97,8 @@ export const BranchCard = () => {
                 {/* Location */}
                 <div>
                     <p className="text-sm text-mindfulAsh">Location</p>
-                    <p>Kochi</p>
+                    {/* <p>Kochi</p> */}
+                    <p>{location}</p>
                 </div>
 
                 {/* Status */}
@@ -95,35 +142,41 @@ export const BranchCard = () => {
                         <div>
                             {moreHover && (
                                 <div className="absolute top-[-6.5rem] right-5 mt-2 w-28 bg-white rounded-md shadow-lg py-1 z-20">
-                                    <Link to="">
-                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
-                                            <IoEyeOutline className="text-[18px] text-mindfulBlack mr-2" />
-                                            View
-                                        </div>
-                                    </Link>
+                                    {/* <Link to=""> */}
+                                    <div onClick={openViewBranchPopup} className="flex items-center px-4 py-2 text-mindfulBlack cursor-pointer hover:bg-gray-100">
+                                        <IoEyeOutline className="text-[18px] text-mindfulBlack mr-2" />
+                                        View
+                                    </div>
+                                    {/* </Link> */}
 
-                                    <Link to="">
-                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
-                                            <MdModeEdit className="text-[18px] text-mindfulBlack mr-2" />
-                                            Edit
-                                        </div>
-                                    </Link>
+                                    {/* <Link to=""> */}
+                                    <div onClick={openEditBranchPopup} className="flex items-center px-4 py-2 text-mindfulBlack cursor-pointer hover:bg-gray-100">
+                                        <MdModeEdit className="text-[18px] text-mindfulBlack mr-2" />
+                                        Edit
+                                    </div>
+                                    {/* </Link> */}
 
-                                    <Link to="">
-                                        <div className="flex items-center px-4 py-2 text-mindfulBlack hover:bg-gray-100">
-                                            <MdDeleteForever className="text-[18px] text-mindfulBlack mr-2" />
-                                            Delete
-                                        </div>
-                                    </Link>
+                                    {/* <Link to=""> */}
+                                    <div onClick={() => openDeleteBranchPopup(Number(branchID))} className="flex items-center px-4 py-2 text-mindfulBlack cursor-pointer hover:bg-gray-100">
+                                        <MdDeleteForever className="text-[18px] text-mindfulBlack mr-2" />
+                                        Delete
+                                    </div>
+                                    {/* </Link> */}
                                 </div>
                             )}
                         </div>
                     </div>
 
-
                 </div>
 
             </div>
+
+            {showViewBranchPopup && <ViewBranchPopup closePopup={closeViewBranchPopup} />}
+            {showEditBranchPopup && <EditBranchPopup closePopup={closeEditBranchPopup} />}
+            {showDeleteBranchPopup && <DeleteBranchPopup closePopup={closeDeleteBranchPopup} branchID={Number(selectedStaffID)} />}
+
+
+
         </div>
     )
 }

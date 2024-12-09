@@ -1,123 +1,32 @@
 import React, { useState } from 'react'
 import { IoCloseCircle } from 'react-icons/io5'
-// import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
+import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
-// import { SelectField } from '@/common/SelectField';
+import { SelectField } from '@/common/SelectField';
 import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
-import { addBranch } from '@/api/apiConfig';
 
-interface AddBranchPopupProps {
+interface ViewBranchPopupProps {
     closePopup: () => void;
 }
 
-// Zod schema for form validation
-const addBranchSchema = zod.object({
-    branchName: zod.string().min(3, "Branch Name is required"),
-    branchPhoneNumber: zod.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
-    branchAddress: zod.string().min(10, "Branch address is required"),
-    branchLocation: zod.string().min(3, "Branch location is required"),
-});
-
-type addBranchFormData = zod.infer<typeof addBranchSchema>;
-
-export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) => {
-
-    // const [logo, setLogo] = useState<File | null>(ashtamudiLogo); // Initially set to the default logo
-
-    const [logo, setLogo] = useState<{ [key: string]: File | null }>({
-        logo: null,
-    }); // Initially set to the default logo
-
-    // Handle file change
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setLogo((prev) => ({ ...prev, [fileKey]: file }));
-        }
-    };
-
-    const [loading, setLoading] = useState(false); // Start with true as data needs to be fetched
-    const [error, setError] = useState<string | null>(null);
-
-    // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors } } = useForm<addBranchFormData>({
-        resolver: zodResolver(addBranchSchema),
-    });
-
-    const onSubmit = async (data: addBranchFormData) => {
-
-        setLoading(true);
-        setError(null);
-
-        console.log("Add Branch Popup Form Submitted Data :", data);
-
-        try {
-
-            // Prepare form data
-            const formData = new FormData();
-
-            // Append required fields
-            formData.append("branch_name", data.branchName);
-            formData.append("branch_phone_number", data.branchPhoneNumber);
-            formData.append("branch_address", data.branchAddress);
-            formData.append("branch_location", data.branchLocation);
-
-            // if (logo) {
-            //     formData.append("logo", logo);
-            // }
-
-            // Append selected files
-            Object.keys(logo).forEach((key) => {
-                const file = logo[key];
-                if (file) {
-                    formData.append(key, file);
-                }
-            });
+export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) => {
 
 
-            // Debugging: Log the FormData contents
-            console.log("Add branch FormData Contents:");
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
-
-            // Call the taxInfo function
-            const addBranchData = await addBranch(formData);
-
-            console.log("Add branch Submission Success:", addBranchData);
-
-            closePopup();
-        }
-
-        catch (error: any) {
-            setError(error.message || "Something went wrong.");
-        } finally {
-            setLoading(false);
-        }
-    }
-
+    const [logo, setLogo] = useState<string | null>(ashtamudiLogo); // Initially set to the default logo
 
     // Handle file change event
-    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = event.target.files?.[0];
-    //     console.log(file, "file");
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        console.log(file, "file");
 
-    //     if (file) {
-    //         // const previewUrl = URL.createObjectURL(file); // Generate a preview URL for the uploaded file
-    //         // console.log(previewUrl, "previewUrl");
+        if (file) {
+            const previewUrl = URL.createObjectURL(file); // Generate a preview URL for the uploaded file
+            console.log(previewUrl, "previewUrl");
 
-    //         // setLogo(previewUrl); // Update the logo state with the preview URL
-    //         setLogo(file); // Update the logo state with the preview URL
-    //     }
-    // };
-
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+            setLogo(previewUrl); // Update the logo state with the preview URL
+        }
+    };
 
 
     return (
@@ -136,15 +45,14 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                 <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                             </div>
 
-                            <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
-                                <div className="grid grid-cols-2 items-center">
-                                    <div>
-                                        {/* <div className="w-fit mx-auto">
+                            <div className="grid grid-cols-2 items-center">
+                                <div>
+                                    {/* <div className="w-fit mx-auto">
                                         <img src={ashtamudiLogo} alt="ashtamudi logo" />
                                     </div> */}
 
-                                        {/* File Upload Area */}
-                                        {/* <div>
+                                    {/* File Upload Area */}
+                                    {/* <div>
                                         <div className="">
                                             <label
                                                 htmlFor="upload-photo"
@@ -175,57 +83,56 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                         </div>
                                     </div> */}
 
-                                        <div>
-                                            {/* Logo Display Area */}
-                                            <div className="w-fit mx-auto pb-5">
-                                                <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
-                                            </div>
+                                    <div>
+                                        {/* Logo Display Area */}
+                                        <div className="w-fit mx-auto pb-5">
+                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
+                                        </div>
 
-                                            {/* File Upload Area */}
-                                            <div>
-                                                <div className="">
-                                                    <label
-                                                        htmlFor="upload-photo"
-                                                        // className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-5 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                                        className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2 cursor-pointer"
-                                                    >
-                                                        {/* Upload Button */}
-                                                        {/* <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
+                                        {/* File Upload Area */}
+                                        <div>
+                                            <div className="">
+                                                <label
+                                                    htmlFor="upload-photo"
+                                                    // className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-5 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2 cursor-pointer"
+                                                >
+                                                    {/* Upload Button */}
+                                                    {/* <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
                                                         <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
                                                         <button className="text-sm text-mindfulWhite uppercase">Upload Logo</button>
                                                     </div> */}
-                                                        <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                        Upload Logo
-                                                    </label>
-                                                    <input
-                                                        id="upload-photo"
-                                                        type="file"
-                                                        accept="image/*"
-                                                        // onChange={handleFileChange}
-                                                        onChange={(e) => handleFileChange(e, "logo")}
-                                                        className="hidden"
-                                                    />
-                                                </div>
+                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                    Upload Logo
+                                                </label>
+                                                <input
+                                                    id="upload-photo"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileChange}
+                                                    className="hidden"
+                                                />
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
 
 
-                                    <div>
-                                        <div className="relative mb-16">
-                                            <h2 className="text-2xl text-mindfulBlack font-semibold">
-                                                Add Branch
-                                            </h2>
+                                <div>
+                                    <div className="relative mb-16">
+                                        <h2 className="text-2xl text-mindfulBlack font-semibold">
+                                            View Branch
+                                        </h2>
 
-                                            <div
-                                                className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5"
-                                            >
-                                            </div>
+                                        <div
+                                            className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5"
+                                        >
                                         </div>
+                                    </div>
 
-                                        {/* Add Branch Form */}
-                                        {/* <form action="" method="post"> */}
+                                    {/* Add Branch Form */}
+                                    <form action="" method="post">
                                         <div className="space-y-5">
                                             {/* Branch Name */}
                                             <div>
@@ -237,14 +144,9 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
 
                                                 <InputField
                                                     label=""
-                                                    // name="branchName"
+                                                    name="branchName"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register("branchName")}
                                                 />
-
-                                                {errors.branchName && (
-                                                    <p className="text-red-500 text-sm">{errors.branchName.message}</p>
-                                                )}
                                             </div>
 
                                             {/* Branch Phone Number */}
@@ -257,18 +159,13 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
 
                                                 <InputField
                                                     label=""
-                                                    // name="branchPhoneNumber"
+                                                    name="branchPhoneNumber"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register("branchPhoneNumber")}
                                                 />
-
-                                                {errors.branchPhoneNumber && (
-                                                    <p className="text-red-500 text-sm">{errors.branchPhoneNumber.message}</p>
-                                                )}
                                             </div>
 
                                             {/* Branch Manager Name */}
-                                            {/* <div>
+                                            <div>
                                                 <label
                                                     htmlFor="branchManagerNumber"
                                                     className="text-lg text-mindfulBlack font-semibold">
@@ -287,7 +184,7 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                                     ]}
                                                 // error="This field is required."
                                                 />
-                                            </div> */}
+                                            </div>
 
                                             {/* Branch Address */}
                                             <div>
@@ -298,18 +195,12 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                                 </label>
 
                                                 <textarea
-                                                    // name="branchAddress"
+                                                    name="branchAddress"
                                                     id="branchAddress"
                                                     rows={4}
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register("branchAddress")}
                                                 >
-
                                                 </textarea>
-
-                                                {errors.branchAddress && (
-                                                    <p className="text-red-500 text-sm">{errors.branchAddress.message}</p>
-                                                )}
                                             </div>
 
                                             {/* Branch Location */}
@@ -322,14 +213,9 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
 
                                                 <InputField
                                                     label=""
-                                                    // name="branchLocation"
+                                                    name="branchLocation"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register("branchLocation")}
                                                 />
-
-                                                {errors.branchLocation && (
-                                                    <p className="text-red-500 text-sm">{errors.branchLocation.message}</p>
-                                                )}
                                             </div>
 
                                             {/* Buttons */}
@@ -346,17 +232,16 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
                                                     {/* Submit Button */}
                                                     <Button
                                                         buttonType="submit"
-                                                        buttonTitle="Submit"
+                                                        buttonTitle="View"
                                                         className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
                                                     />
                                                 </div>
                                             </div>
 
                                         </div>
-                                        {/* </form> */}
-                                    </div>
+                                    </form>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
