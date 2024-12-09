@@ -16,10 +16,11 @@ interface BranchPropsCard {
     branchName: string;
     phone: string;
     location: string;
+    logo: string;
 }
 
 
-export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location }) => {
+export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo }) => {
 
     const [moreHover, setMoreHover] = useState(false);
 
@@ -70,7 +71,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             {/* Branch Name */}
             <div className="flex items-center space-x-2 mb-5">
                 <div>
-                    <img src={userAdmin} alt="" />
+                    <img src={userAdmin || logo} alt="" />
                 </div>
 
                 {/* <h5 className="text-lg text-mindfulBlack font-semibold">Ashtamudi Wellness</h5> */}
