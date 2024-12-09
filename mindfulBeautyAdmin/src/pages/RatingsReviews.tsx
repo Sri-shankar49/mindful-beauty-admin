@@ -3,7 +3,7 @@ import { RatingReviewsTable } from "@/components/RatingsReviews/RatingReviewsTab
 export const RatingsReviews = () => {
   return (
     <div>
-      <RatingReviewsTable />
+      <RatingReviewsTable created_at={""} customer_name={""} rating={""} comment={""} />
     </div>
   )
 }

@@ -132,7 +132,7 @@ function App() {
               {/* Sub-routes */}
               <Route path="RolesManagement" element={<RolesManagement />} />
               <Route path="StaffManagement" element={<StaffManagement id={0} name={''} role_name={''} branch_name={''} status={''} />} />
-              <Route path="BranchManagement" element={<BranchManagement />} />
+              <Route path="BranchManagement" element={<BranchManagement branch_id={''} branch_name={''} phone={''} location={''} logo={''} />} />
             </Route>
 
             <Route path="/ServiceListing" element={<ServiceListing />}>
@@ -141,7 +141,7 @@ function App() {
               <Route index element={<Navigate to="ServiceList" replace />} />
 
               {/* Sub-routes */}
-              <Route path="ServiceList" element={<ServiceList />} />
+              <Route path="ServiceList" element={<ServiceList service_id={0} service_name={''} category={''} subcategory={''} price={''} service_time={''} status={''} sku_value={''} />} />
               <Route path="AddServices" element={<AddServices />} />
             </Route>
 

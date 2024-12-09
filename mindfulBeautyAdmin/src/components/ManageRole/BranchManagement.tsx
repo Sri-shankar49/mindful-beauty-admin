@@ -4,7 +4,6 @@ import { BranchCard } from "./BranchManagement/BranchCard"
 import { TbHomePlus } from "react-icons/tb";
 import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
 import { branchList } from "@/api/apiConfig";
-import { DeleteBranchPopup } from "./BranchManagement/DeleteBranchPopup";
 
 // Define the type for BranchCardProps if it's not imported
 interface BranchCardProps {
@@ -19,9 +18,6 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
 
     // State Declaration for branch popup
     const [showBranchPopup, setShowBranchPopup] = useState(false);
-    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
-    const [showDeleteBranchPopup, setShowDeleteBranchpopup] = useState(false);
-
 
     const [branchListData, setBranchListdata] = useState<BranchCardProps[]>([]);
     const [loading, setLoading] = useState(false);
@@ -33,17 +29,6 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
 
     const closeBranchPopup = () => {
         setShowBranchPopup(false);
-    }
-
-
-    const openDeleteBranchPopup = (staffID: number) => {
-        setShowDeleteBranchpopup(true);
-        setSelectedStaffID(staffID);
-        console.log("Delete the selected staff with ID:", staffID);
-    }
-
-    const closeDeleteBranchPopup = () => {
-        setShowDeleteBranchpopup(false);
     }
 
 
@@ -65,6 +50,9 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
 
         fetchBranchListData();
     }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -112,7 +100,6 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
             </div>
 
             {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} />}
-            {/* {showDeleteBranchPopup && <DeleteBranchPopup closePopup={closeDeleteBranchPopup} branchID={Number(selectedStaffID)} />} */}
         </div>
     )
 }

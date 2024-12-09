@@ -3,7 +3,7 @@ import userAdmin from "../../../assets/icons/userAdmin.svg"
 import managerImg from "../../../assets/images/managerImg.png"
 import imgRounded from "../../../assets/images/imgRounded.png"
 import { MdMoreVert } from "react-icons/md";
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { IoEyeOutline } from "react-icons/io5";
 import { MdModeEdit } from "react-icons/md";
 import { MdDeleteForever } from "react-icons/md";

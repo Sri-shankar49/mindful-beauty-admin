@@ -14,13 +14,16 @@ interface AddStaffPopupProps {
     closePopup: () => void;
 }
 
-// interface StaffManagementProps {
-//     id?: number;
-//     name: string;
-//     role_name: string;
-//     branch_name: string;
-//     status: string;
-// }
+interface StaffBranchListDataProps {
+    branch_id?: number;
+    branch_name: string;
+}
+
+interface StaffRoleListDataProps {
+    role_id?: number;
+    role_name: string;
+    status: string;
+}
 
 // Zod schema for form validation
 const addStaffSchema = zod.object({
@@ -35,8 +38,8 @@ type addStaffFormData = zod.infer<typeof addStaffSchema>;
 
 export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
-    const [staffBranchListData, setStaffBranchListData] = useState<[]>([]);
-    const [staffRoleListData, setStaffRoleListData] = useState<[]>([]);
+    const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
+    const [staffRoleListData, setStaffRoleListData] = useState<StaffRoleListDataProps[]>([]);
 
     const [loading, setLoading] = useState(false); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
@@ -224,8 +227,8 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                                     options={
                                                         staffRoleListData.length
                                                             ? staffRoleListData.map((role) => ({
-                                                                key: role.role_id,
-                                                                value: role.role_id,
+                                                                key: role.role_id,  // key is used internally for React
+                                                                value: role.role_id ? String(role.role_id) : "", // Convert role_id to string
                                                                 label: role.role_name,
                                                             }))
                                                             : [{ value: "", label: "No roles available" }]
@@ -262,7 +265,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                                         staffBranchListData.length
                                                             ? staffBranchListData.map((branch) => ({
                                                                 key: branch.branch_id,
-                                                                value: branch.branch_id,
+                                                                value: branch.branch_id ? String(branch.branch_id) : "",
                                                                 label: branch.branch_name,
                                                             }))
                                                             : [{ value: "", label: "No branch available" }]
