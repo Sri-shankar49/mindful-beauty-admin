@@ -117,7 +117,7 @@ export const DashBoardData = () => {
             }
         }
         loadBookingList();
-    }, []);
+    }, [dashboardBookingListData]);
 
 
     const handleActionSubmit = (appointmentID: number, actionID: number) => {

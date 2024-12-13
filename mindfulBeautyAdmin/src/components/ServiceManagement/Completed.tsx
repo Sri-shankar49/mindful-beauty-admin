@@ -139,7 +139,7 @@ export const Completed = () => {
 
     fetchCompletedListData();
 
-  }, []);
+  }, [completedListData]);
 
 
   if (loading) return <div>Loading...</div>;
@@ -175,8 +175,9 @@ export const Completed = () => {
             {/* Content */}
             {completedListData.length > 0 ? (
               completedListData.map((completed, index) => (
-                <tr className="border-b-2">
-                  <td className="text-start px-2 py-5">{index + 1}</td>
+                <tr key={completed.id} className="border-b-2">
+                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                  <td className="text-start px-2 py-5">{completed.id}</td>
                   <td className="text-start px-2 py-5">{completed.date}</td>
                   <td className="text-start px-2 py-5">{completed.time}</td>
                   <td className="text-start px-2 py-5">{completed.location}</td>
@@ -253,7 +254,7 @@ export const Completed = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-5">
+                <td colSpan={11} className="text-center py-5">
                   No Completed Booking data available.
                 </td>
               </tr>

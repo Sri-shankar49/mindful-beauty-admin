@@ -849,7 +849,37 @@ export const completedList = async (providerID: number, status: number) => {
   }
   catch (error: any) {
     console.error("Error fetching completed booking list:", error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to fetch schedule completed booking list. Please try again later.");
+    throw new Error(error.response?.data?.message || "Unable to fetch completed booking list. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing Page -- --> Services List
+// GET Method from the API
+export const cancelledList = async (providerID: number, status: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/appointments/`, {
+      params: {
+        provider_id: providerID,
+        status: status,
+      }
+    });
+
+    console.log("Cancelled Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch cancelled booking list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching cancelled booking list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch cancelled booking list. Please try again later.");
   }
 }
 

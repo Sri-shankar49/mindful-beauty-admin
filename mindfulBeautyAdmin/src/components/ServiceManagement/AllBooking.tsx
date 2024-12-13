@@ -124,7 +124,7 @@ export const AllBooking = () => {
 
     fetchBookingListData();
 
-  }, []);
+  }, [bookingListData]);
 
 
   if (loading) return <div>Loading...</div>;
@@ -163,13 +163,12 @@ export const AllBooking = () => {
             {bookingListData.length > 0 ? (
               bookingListData.map((bookingData, index) => (
                 <tr key={bookingData.id} className="border-b-2">
-                  <td className="text-start px-2 py-5">{index + 1}</td>
-                  {/* <td className="text-start px-2 py-5">{bookingData.id}</td> */}
+                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                  <td className="text-start px-2 py-5">{bookingData.id}</td>
                   <td className="text-start px-2 py-5">{bookingData.date}</td>
                   <td className="text-start px-2 py-5">{bookingData.time}</td>
                   <td className="text-start px-2 py-5">{bookingData.location || null}</td>
                   <td className="text-start px-2 py-5">{bookingData.name}</td>
-                  <td className="text-start px-2 py-5">{bookingData.phone}</td>
                   <td className="text-start px-2 py-5">{bookingData.phone}</td>
                  
                   {/* <td className="text-start px-2 py-5">{bookingData.services}</td> */}

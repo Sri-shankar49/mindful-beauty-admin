@@ -124,7 +124,7 @@ export const Inprogress = () => {
 
     fetchInprogressListData();
 
-  }, []);
+  }, [inprogressListData]);
 
 
   if (loading) return <div>Loading...</div>;
@@ -160,8 +160,9 @@ export const Inprogress = () => {
             {/* Content */}
             {inprogressListData.length > 0 ? (
               inprogressListData.map((inprogress, index) => (
-                <tr className="border-b-2">
-                  <td className="text-start px-2 py-5">{index + 1}</td>
+                <tr key={inprogress.id} className="border-b-2">
+                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                  <td className="text-start px-2 py-5">{inprogress.id}</td>
                   <td className="text-start px-2 py-5">{inprogress.date}</td>
                   <td className="text-start px-2 py-5">{inprogress.time}</td>
                   <td className="text-start px-2 py-5">{inprogress.location}</td>
@@ -240,8 +241,8 @@ export const Inprogress = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-5">
-                  No Booking data available.
+                <td colSpan={11} className="text-center py-5">
+                  No Inprogress Booking data available.
                 </td>
               </tr>
             )}

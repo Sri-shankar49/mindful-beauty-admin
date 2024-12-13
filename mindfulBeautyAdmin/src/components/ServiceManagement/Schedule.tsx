@@ -115,7 +115,7 @@ export const Schedule = () => {
 
     fetchScheduleListData();
 
-  }, []);
+  }, [scheduleListData]);
 
 
   if (loading) return <div>Loading...</div>;
@@ -161,8 +161,9 @@ export const Schedule = () => {
             {/* Content */}
             {scheduleListData.length > 0 ? (
               scheduleListData.map((schedule, index) => (
-                <tr className="border-b-2">
-                  <td className="text-start px-2 py-5">{index + 1}</td>
+                <tr key={schedule.id} className="border-b-2">
+                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                  <td className="text-start px-2 py-5">{schedule.id}</td>
                   <td className="text-start px-2 py-5">{schedule.date}</td>
                   <td className="text-start px-2 py-5">{schedule.time}</td>
                   <td className="text-start px-2 py-5">{schedule.location}</td>
@@ -239,8 +240,8 @@ export const Schedule = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-5">
-                  No Booking data available.
+                <td colSpan={11} className="text-center py-5">
+                  No Schedule Booking data available.
                 </td>
               </tr>
             )}
