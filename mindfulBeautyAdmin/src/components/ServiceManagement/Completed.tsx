@@ -260,7 +260,7 @@ export const Completed = () => {
               </tr>
             )}
 
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
               <td className="text-start px-2 py-5">
@@ -332,19 +332,19 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">
                 <button
-                // onClick={openEditService}
+                onClick={openEditService}
                 >
                   <img src={editButton} alt="editButton" />
                 </button>
                 <div className="flex items-center space-x-2">
-                  {/* Eye Button */}
+                  Eye Button
                   <div
                     onClick={openInvoicePopup}
                     className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                     <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                   </div>
 
-                  {/* Download Button */}
+                  Download Button
                   <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
                     <FiDownload className="text-[18px] text-mindfulGreen" />
                   </div>
@@ -352,7 +352,7 @@ export const Completed = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
             <tr className="border-b-2">
