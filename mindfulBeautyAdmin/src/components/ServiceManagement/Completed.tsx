@@ -90,9 +90,9 @@ export const Completed = () => {
   // State Declaration for Payment Details Popup
   const [showPaymentDetailsPopup, setShowPaymentDetailsPopup] = useState(false);
 
-  const openPaymentDetailsPopup = () => {
-    setShowPaymentDetailsPopup(!showPaymentDetailsPopup)
-  }
+  // const openPaymentDetailsPopup = () => {
+  //   setShowPaymentDetailsPopup(!showPaymentDetailsPopup)
+  // }
 
   const closePaymentDetailsPopup = () => {
     setShowPaymentDetailsPopup(false)
