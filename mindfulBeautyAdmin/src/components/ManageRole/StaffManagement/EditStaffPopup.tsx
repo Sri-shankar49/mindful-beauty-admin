@@ -98,7 +98,8 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
 
         try {
             const formData = new FormData();
-            formData.append('staff_id', editStaffData.staff || '');
+            // formData.append('staff_id', editStaffData.staff || '');
+            formData.append('staff_id', editStaffData.staff?.toString() || '');
             formData.append('branch_name', data.name);
             formData.append('phone', data.branch);
             // formData.append('branchManager', data.branchManager);

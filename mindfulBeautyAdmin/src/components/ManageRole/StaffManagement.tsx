@@ -23,8 +23,9 @@ interface StaffManagementProps {
 
 export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
+
     const defaultEditStaffData = {
-        staff: undefined, // or any default value
+        staff: undefined,
         name: '',
         role_id: undefined,
         role_name: '',
