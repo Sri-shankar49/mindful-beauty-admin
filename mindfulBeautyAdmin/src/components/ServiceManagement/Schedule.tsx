@@ -414,7 +414,7 @@ export const Schedule = () => {
             </tr>
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
 
@@ -432,7 +432,7 @@ export const Schedule = () => {
 
               <td className="text-start px-2 py-5">250</td>
 
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div>
                   <Button
                     buttonType="button"
@@ -440,7 +440,7 @@ export const Schedule = () => {
                     className="bg-[#e6f2ff] text-md text-mindfulSecondaryBlue font-semibold rounded-sm px-3 py-1"
                   />
                 </div>
-              </td> */}
+              </td>
 
               <td className="text-start px-2 py-5">
                 <div>
@@ -492,7 +492,7 @@ export const Schedule = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

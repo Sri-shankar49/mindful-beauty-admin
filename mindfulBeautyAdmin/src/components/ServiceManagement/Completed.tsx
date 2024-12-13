@@ -263,7 +263,7 @@ export const Completed = () => {
             <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-3">
                   <div>
                     <img src={rectangleBlack} alt="rectangle black" />
@@ -271,7 +271,7 @@ export const Completed = () => {
 
                   <p className="text-md text-mindfulBlack">Full Face Threading</p>
                 </div>
-              </td> */}
+              </td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
               <td className="text-start px-2 py-5">Chottanikkara</td>
               <td className="text-start px-2 py-5">Ramya</td>
@@ -286,7 +286,7 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">250</td>
 
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div>
                   <Button
                     buttonType="button"
@@ -294,7 +294,7 @@ export const Completed = () => {
                     className="bg-[#e5ffec] text-md text-mindfulGreen font-semibold rounded-sm px-3 py-1"
                   />
                 </div>
-              </td> */}
+              </td>
 
               <td className="text-start px-2 py-5">
                 <div>
@@ -331,11 +331,11 @@ export const Completed = () => {
               </td>
 
               <td className="text-start px-2 py-5">
-                {/* <button
+                <button
                 // onClick={openEditService}
                 >
                   <img src={editButton} alt="editButton" />
-                </button> */}
+                </button>
                 <div className="flex items-center space-x-2">
                   {/* Eye Button */}
                   <div

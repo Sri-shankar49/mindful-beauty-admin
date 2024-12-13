@@ -287,7 +287,7 @@ export const AllBooking = () => {
             )}
 
 
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
@@ -364,10 +364,10 @@ export const AllBooking = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
@@ -444,10 +444,10 @@ export const AllBooking = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
 
@@ -525,7 +525,7 @@ export const AllBooking = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>
