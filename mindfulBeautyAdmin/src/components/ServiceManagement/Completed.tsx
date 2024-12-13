@@ -139,7 +139,7 @@ export const Completed = () => {
 
     fetchCompletedListData();
 
-  }, [completedListData]);
+  }, []);
 
 
   if (loading) return <div>Loading...</div>;

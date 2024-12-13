@@ -117,16 +117,17 @@ export const DashBoardData = () => {
             }
         }
         loadBookingList();
-    }, [dashboardBookingListData]);
+    }, []);
 
 
-    const handleActionSubmit = (appointmentID: number, actionID: number) => {
+    const handleActionSubmit = async (appointmentID: number, actionID: number) => {
         setLoading(true);
         setError(null);
 
         try {
-            const data = bookingAction(appointmentID, actionID);
-            if (status === "success") {
+            const data = await bookingAction(appointmentID, actionID);
+            if (data.status === "success") {
+                alert("Appointment accepted successfully")
                 navigate(0);
             }
             console.log("Booking Action data log:", data);
@@ -137,6 +138,29 @@ export const DashBoardData = () => {
             setLoading(false); // Ensure loading is false after fetching
         }
     }
+
+    // const handleActionSubmit = async (appointmentID: number, actionID: number) => {
+    //     setLoading(true);
+    //     setError(null);
+
+    //     try {
+    //         const data = await bookingAction(appointmentID, actionID); // Await the API call
+    //         console.log("Booking Action data log:", data);
+
+    //         if (data.status === "success") {
+    //             console.log("Booking action succeeded:", data.message);
+    //             navigate(0); // Reload the page or trigger desired behavior
+    //         } else {
+    //             console.error("Booking action failed:", data.message || "Unknown error.");
+    //             setError(data.message || "Action failed. Please try again.");
+    //         }
+    //     } catch (error: any) {
+    //         setError(error.message || "An error occurred while performing the action.");
+    //         console.error("Error in handleActionSubmit:", error.message);
+    //     } finally {
+    //         setLoading(false); // Ensure loading is false after the process
+    //     }
+    // };
 
 
     if (loading) return <div>Loading...</div>;

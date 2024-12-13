@@ -124,7 +124,7 @@ export const AllBooking = () => {
 
     fetchBookingListData();
 
-  }, [bookingListData]);
+  }, []);
 
 
   if (loading) return <div>Loading...</div>;

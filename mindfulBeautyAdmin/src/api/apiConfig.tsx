@@ -286,11 +286,11 @@ export const dashBoardBookingList = async (providerID: number) => {
 // Dashboard Page -- --> Bookings
 // POST Method from the API
 export const bookingAction = async (appointmentID: number, actionID: number) => {
-
+  
   try {
     const response = await apiAxios.post(`/api/provider-booking-action/`, {
       appointment_id: appointmentID,
-      action_id: actionID
+      action_id: actionID,
     });
 
     console.log("Booking action POST Method response", response.data);
@@ -299,14 +299,12 @@ export const bookingAction = async (appointmentID: number, actionID: number) => 
       throw new Error("Unexpected response from the server.");
     }
 
-    return response.data;
-
-  }
-  catch (error: any) {
+    return response.data; // Ensure the entire response data is returned
+  } catch (error: any) {
     console.error("Error in booking Action:", error.message || error);
     throw new Error(error.response?.data?.message || "Unable to process booking action. Please try again later.");
   }
-}
+};
 
 
 

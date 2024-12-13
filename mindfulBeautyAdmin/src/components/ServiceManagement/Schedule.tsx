@@ -115,7 +115,7 @@ export const Schedule = () => {
 
     fetchScheduleListData();
 
-  }, [scheduleListData]);
+  }, []);
 
 
   if (loading) return <div>Loading...</div>;

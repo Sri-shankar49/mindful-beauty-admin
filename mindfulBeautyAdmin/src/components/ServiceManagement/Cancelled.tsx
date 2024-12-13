@@ -123,7 +123,7 @@ export const Cancelled = () => {
 
     fetchCancelledListData();
 
-  }, [cancelledListData]);
+  }, []);
 
 
   if (loading) return <div>Loading...</div>;

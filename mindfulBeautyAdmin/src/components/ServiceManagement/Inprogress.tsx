@@ -124,7 +124,7 @@ export const Inprogress = () => {
 
     fetchInprogressListData();
 
-  }, [inprogressListData]);
+  }, []);
 
 
   if (loading) return <div>Loading...</div>;
