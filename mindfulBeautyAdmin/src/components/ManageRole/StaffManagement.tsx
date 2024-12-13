@@ -13,7 +13,9 @@ import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup'
 interface StaffManagementProps {
     staff?: number;
     name: string;
+    role_id?: string;
     role_name: string;
+    branch_id?: string;
     branch_name: string;
     status: string;
 }
@@ -39,8 +41,16 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         setShowAddStaffpopup(false);
     }
 
-    const openEditStaffPopup = () => {
-        setShowEditStaffpopup(true);
+    const openEditStaffPopup = (staffID: number) => {
+        // setShowEditStaffpopup(true);
+        const selectedStaff = staffListData.find((staff) => staff.staff === staffID);
+        console.log("Finding the selected object in an array", selectedStaff);
+
+        if (selectedStaff) {
+            setSelectedStaffID(staffID);
+            setShowEditStaffpopup(true);
+        }
+        console.log("Edit the selected staff with ID:", staffID);
     }
 
     const closeEditStaffPopup = () => {
@@ -146,7 +156,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                             <button>
                                                 <img src={resetPasswordButton} alt="Reset Password" />
                                             </button>
-                                            <button onClick={openEditStaffPopup}>
+                                            <button onClick={() => openEditStaffPopup(Number(staff.staff))}>
                                                 <img src={editButton} alt="Edit" />
                                             </button>
                                             <button onClick={() => openDeleteStaffPopup(Number(staff.staff))}>
@@ -208,7 +218,13 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
             </div>
 
             {showAddStaffPopup && <AddStaffPopup closePopup={closeAddStaffPopup} />}
-            {showEditStaffPopup && <EditStaffPopup closePopup={closeEditStaffPopup} />}
+            {/* {showEditStaffPopup && <EditStaffPopup closePopup={closeEditStaffPopup} editStaffData={staffListData} />} */}
+            {showEditStaffPopup && selectedStaffID && (
+                <EditStaffPopup
+                    closePopup={closeEditStaffPopup}
+                    editStaffData={staffListData.find((staff) => staff.staff === selectedStaffID) || {}}
+                />
+            )}
             {showDeleteStaffPopup && <DeleteStaffPopup closePopup={closeDeleteStaffPopup} staffID={Number(selectedStaffID)} />}
         </div >
     )

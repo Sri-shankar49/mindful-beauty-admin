@@ -2,24 +2,63 @@ import React, { useState } from 'react'
 import { IoCloseCircle } from 'react-icons/io5'
 import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
-import { SelectField } from '@/common/SelectField';
+// import { SelectField } from '@/common/SelectField';
 import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as zod from "zod";
+import { editBranch } from '@/api/apiConfig';
 
 interface EditBranchPopupProps {
     closePopup: () => void;
+    branchData: {
+        branchID?: string;
+        branchName: string;
+        phone: string;
+        location?: string;
+        logo: string;
+    };
 }
 
-export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) => {
+// Zod schema definition
+const editBranchSchema = zod.object({
+    branchName: zod.string().min(1, 'Branch Name is required'),
+    branchPhoneNumber: zod
+        .string()
+        .regex(/^\d+$/, 'Phone number must contain only digits')
+        .min(10, 'Phone number must be at least 10 digits'),
+    // branchManager: zod.string().nonempty('Select a Branch Manager'),
+    branchAddress: zod.string().min(5, 'Address must be at least 5 characters'),
+    branchLocation: zod.string().min(1, 'Location is required'),
+});
+
+type EditBranchFormData = zod.infer<typeof editBranchSchema>;
+
+export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, branchData }) => {
 
 
-    const [logo, setLogo] = useState<string | null>(ashtamudiLogo); // Initially set to the default logo
+    const [logo, setLogo] = useState<string | null>(branchData.logo || ashtamudiLogo); // Initially set to the default logo
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Initialize useForm with zod schema
+    const { register, handleSubmit, formState: { errors }, } = useForm<EditBranchFormData>({
+        resolver: zodResolver(editBranchSchema),
+        defaultValues: {
+            branchName: branchData.branchName,
+            branchPhoneNumber: branchData.phone,
+            // branchManager: '',
+            // branchAddress: '',
+            branchLocation: branchData.location,
+        },
+    });
 
     // Handle file change event
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         console.log(file, "file");
-        
+
         if (file) {
             const previewUrl = URL.createObjectURL(file); // Generate a preview URL for the uploaded file
             console.log(previewUrl, "previewUrl");
@@ -27,6 +66,41 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
             setLogo(previewUrl); // Update the logo state with the preview URL
         }
     };
+
+    // Form submission handler
+    const onSubmit = async (data: EditBranchFormData) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('branch_id', branchData.branchID || '');
+            formData.append('branch_name', data.branchName);
+            formData.append('phone', data.branchPhoneNumber);
+            // formData.append('branchManager', data.branchManager);
+            // formData.append('branchAddress', data.branchAddress);
+            formData.append('location', data.branchLocation);
+
+            // if (file) {
+            //     formData.append('logo', file); // Append file if uploaded
+            // }
+
+            await editBranch(formData); // Assuming editBranch can handle FormData
+            console.log("Branch edited successfully");
+
+            closePopup();
+
+        } catch (error: any) {
+            console.error("Error editing branch:", error.message);
+            setError(error.message || "Failed to update the branch. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    if (loading) return <div>Loading...</div>
+    if (error) return <div>{error}</div>
 
 
     return (
@@ -132,7 +206,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
                                     </div>
 
                                     {/* Add Branch Form */}
-                                    <form action="" method="post">
+                                    <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
                                         <div className="space-y-5">
                                             {/* Branch Name */}
                                             <div>
@@ -144,9 +218,14 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
 
                                                 <InputField
                                                     label=""
-                                                    name="branchName"
+                                                    // name="branchName"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    {...register('branchName')}
                                                 />
+
+                                                {errors.branchName && (
+                                                    <p className="text-sm text-red-600">{errors.branchName.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Branch Phone Number */}
@@ -159,31 +238,14 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
 
                                                 <InputField
                                                     label=""
-                                                    name="branchPhoneNumber"
+                                                    // name="branchPhoneNumber"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    {...register('branchPhoneNumber')}
                                                 />
-                                            </div>
 
-                                            {/* Branch Manager Name */}
-                                            <div>
-                                                <label
-                                                    htmlFor="branchManagerNumber"
-                                                    className="text-lg text-mindfulBlack font-semibold">
-                                                    Branch Manager Number
-                                                </label>
-
-                                                <SelectField
-                                                    label=""
-                                                    name="branch"
-                                                    // required
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    options={[
-                                                        { value: "branch1", label: "Branch 1" },
-                                                        { value: "branch2", label: "Branch 2" },
-                                                        { value: "branch3", label: "Branch 3" },
-                                                    ]}
-                                                // error="This field is required."
-                                                />
+                                                {errors.branchPhoneNumber && (
+                                                    <p className="text-sm text-red-600">{errors.branchPhoneNumber.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Branch Address */}
@@ -195,12 +257,17 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
                                                 </label>
 
                                                 <textarea
-                                                    name="branchAddress"
+                                                    // name="branchAddress"
                                                     id="branchAddress"
                                                     rows={4}
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    {...register('branchAddress')}
                                                 >
                                                 </textarea>
+
+                                                {errors.branchAddress && (
+                                                    <p className="text-sm text-red-600">{errors.branchAddress.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Branch Location */}
@@ -213,9 +280,14 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup }) 
 
                                                 <InputField
                                                     label=""
-                                                    name="branchLocation"
+                                                    // name="branchLocation"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    {...register('branchLocation')}
                                                 />
+
+                                                {errors.branchLocation && (
+                                                    <p className="text-sm text-red-600">{errors.branchLocation.message}</p>
+                                                )}
                                             </div>
 
                                             {/* Buttons */}

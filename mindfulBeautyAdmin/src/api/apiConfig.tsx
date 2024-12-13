@@ -250,17 +250,78 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 
 
+
+
+
+// Dashboard Page -- --> Bookings
+// GET Method from the API
+export const dashBoardBookingList = async (providerID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/api/bookings/`, {
+      params: {
+        provider_id: providerID,
+      }
+    });
+
+    console.log("Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch booking list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching staff list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch booking list. Please try again later.");
+  }
+}
+
+
+
+
+
+// Dashboard Page -- --> Bookings
+// POST Method from the API
+export const bookingAction = async (appointmentID: number, actionID: number) => {
+
+  try {
+    const response = await apiAxios.post(`/api/provider-booking-action/`, {
+      appointment_id: appointmentID,
+      action_id: actionID
+    });
+
+    console.log("Booking action POST Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Unexpected response from the server.");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error in booking Action:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to process booking action. Please try again later.");
+  }
+}
+
+
+
+
+
 // Manage Role Page -- --> Staff Management
 // GET Method from the API
 export const staffList = async () => {
-
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
   try {
-    const response = await apiAxios.get(`/provider-api/staff-list/1`);
+    const response = await apiAxios.get(`/provider-api/staff-list/2/`);
 
     console.log("Staff list GET Method response", response.data);
 
@@ -279,6 +340,36 @@ export const staffList = async () => {
 
 
 
+
+// Manage Role Page -- --> Staff Management
+// GET Method from the API
+export const fetchSelectedStaff = async () => {
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  try {
+    const response = await apiAxios.get(`/provider-api/staff-list/2/`);
+
+    console.log("Selected Staff GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch selected staff");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching selected staff:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch selected staff. Please try again later.");
+  }
+}
+
+
+
+
 // Manage Role Page -- --> Add Staff Popup Branch Select Option
 // GET Method from the API
 export const staffBranchList = async () => {
@@ -289,7 +380,7 @@ export const staffBranchList = async () => {
 
   try {
     // const response = await apiAxios.get(`/provider-api/staff_branches/${sessionLoginProviderID}`);
-    const response = await apiAxios.get(`/provider-api/staff-list/1`);
+    const response = await apiAxios.get(`/provider-api/staff-list/2`);
 
     console.log("Staff branch list GET Method response", response.data);
 
@@ -305,6 +396,68 @@ export const staffBranchList = async () => {
     throw new Error(error.response?.data?.message || "Unable to fetch staff branch list. Please try again later.");
   }
 }
+
+
+
+
+// Manage Role Page -- --> Branch Management
+// GET Method from the API
+export const fetchSelectedBranch = async (branchID: number) => {
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  try {
+    const response = await apiAxios.get(`/provider-api/branch/`, {
+      branch_id: branchID,
+    });
+
+    console.log("Selected Branch GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch selected branch");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching selected branch:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch selected branch. Please try again later.");
+  }
+}
+
+
+
+// Manage Role Page -- --> Branch Management
+// PUT Method from the API
+export const editBranch = async (formData: FormData): Promise<unknown> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/branch/`, formData, {
+
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
+    });
+
+    console.log("Edit Selected Branch PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected branch");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error editing selected branch:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected branch. Please try again later.");
+  }
+}
+
 
 
 
@@ -370,6 +523,38 @@ export const addStaff = async (formData: FormData): Promise<unknown> => {
     throw new Error(error.response?.data?.message || "Unable to add staff. Please try again later.");
   }
 }
+
+
+
+
+// Manage Role Page -- --> Branch Management
+// PUT Method from the API
+export const editStaff = async (formData: FormData): Promise<unknown> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/staff/`, formData, {
+
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
+    });
+
+    console.log("Edit Selected Staff PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected staff");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error editing selected staff:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected staff. Please try again later.");
+  }
+}
+
 
 
 
@@ -546,6 +731,128 @@ export const deleteService = async (serviceID: number) => {
   }
 
 }
+
+
+
+
+
+// Service Management Page -- --> All Booking
+// GET Method from the API
+export const bookingsList = async (providerID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/appointments/`, {
+      params: {
+        provider_id: providerID,
+      }
+    });
+
+    console.log("Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch booking list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching booking list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch booking list. Please try again later.");
+  }
+}
+
+
+
+
+
+// Service Listing Page -- --> Services List
+// GET Method from the API
+export const scheduleList = async (providerID: number, status: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/appointments/`, {
+      params: {
+        provider_id: providerID,
+        status: status,
+      }
+    });
+
+    console.log("Schedule Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch schedule booking list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching schedule booking list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch schedule booking list. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing Page -- --> Services List
+// GET Method from the API
+export const inprogressList = async (providerID: number, status: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/appointments/`, {
+      params: {
+        provider_id: providerID,
+        status: status,
+      }
+    });
+
+    console.log("Inprogress Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch schedule inprogress list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching inprogress booking list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch schedule inprogress list. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing Page -- --> Services List
+// GET Method from the API
+export const completedList = async (providerID: number, status: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/appointments/`, {
+      params: {
+        provider_id: providerID,
+        status: status,
+      }
+    });
+
+    console.log("Completed Booking list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch completed booking list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching completed booking list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch schedule completed booking list. Please try again later.");
+  }
+}
+
 
 
 

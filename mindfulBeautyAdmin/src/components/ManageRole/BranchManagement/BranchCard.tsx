@@ -35,7 +35,8 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
     const [showViewBranchPopup, setShowViewBranchPopup] = useState(false);
     const [showEditBranchPopup, setShowEditBranchPopup] = useState(false);
     const [showDeleteBranchPopup, setShowDeleteBranchpopup] = useState(false);
-    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+    const [selectedBranch, setSelectedBranch] = useState<BranchPropsCard | null>(null);
+    const [selectedBranchID, setSelectedBranchID] = useState<number | null>(null);
 
 
     const openViewBranchPopup = () => {
@@ -48,6 +49,14 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
     const openEditBranchPopup = () => {
         setShowEditBranchPopup(true);
+        setSelectedBranch({ branchID, branchName, phone, location, logo }); // Pass branch data
+        console.log("Finding the selected branch object in an array", selectedBranch);
+
+        // if (selectedBranch) {
+        //     setSelectedBranchID(branchID);
+        //     setShowEditBranchPopup(true);
+        // }
+        console.log("Edit the selected staff with ID:", branchID);
     }
 
     const closeEditBranchPopup = () => {
@@ -56,7 +65,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
     const openDeleteBranchPopup = (branchID: number) => {
         setShowDeleteBranchpopup(true);
-        setSelectedStaffID(branchID);
+        setSelectedBranchID(branchID);
         console.log("Delete the selected branch with ID:", branchID);
     }
 
@@ -173,8 +182,16 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             </div>
 
             {showViewBranchPopup && <ViewBranchPopup closePopup={closeViewBranchPopup} />}
-            {showEditBranchPopup && <EditBranchPopup closePopup={closeEditBranchPopup} />}
-            {showDeleteBranchPopup && <DeleteBranchPopup closePopup={closeDeleteBranchPopup} branchID={Number(selectedStaffID)} />}
+            {/* {showEditBranchPopup && <EditBranchPopup closePopup={closeEditBranchPopup} />}
+             */}
+            {/* Show Edit Popup */}
+            {showEditBranchPopup && selectedBranch && (
+                <EditBranchPopup
+                    closePopup={closeEditBranchPopup}
+                    branchData={selectedBranch}
+                />
+            )}
+            {showDeleteBranchPopup && <DeleteBranchPopup closePopup={closeDeleteBranchPopup} branchID={Number(selectedBranchID)} />}
 
 
 

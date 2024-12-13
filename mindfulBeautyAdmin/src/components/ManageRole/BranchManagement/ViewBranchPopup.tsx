@@ -219,9 +219,9 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                             </div>
 
                                             {/* Buttons */}
-                                            <div>
+                                            {/* <div>
                                                 <div className="flex items-center justify-center space-x-5">
-                                                    {/* Cancel Button */}
+                                                    Cancel Button
                                                     <Button
                                                         onClick={closePopup}
                                                         buttonType="button"
@@ -229,14 +229,14 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                         className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
                                                     />
 
-                                                    {/* Submit Button */}
+                                                    Submit Button
                                                     <Button
                                                         buttonType="submit"
                                                         buttonTitle="View"
                                                         className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
                                                     />
                                                 </div>
-                                            </div>
+                                            </div> */}
 
                                         </div>
                                     </form>

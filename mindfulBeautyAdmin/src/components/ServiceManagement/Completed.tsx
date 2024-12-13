@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
 import Select, { SingleValue } from 'react-select';
@@ -10,12 +10,32 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
+import { completedList } from "@/api/apiConfig";
 
 // Define the type for each option
 interface StylistOption {
   value: number;
   text: string;
   icon: string; // URL or path to the image
+}
+
+interface Service {
+  name: string;
+  price: number;
+}
+
+
+interface CompletedListProps {
+  id?: string;
+  date: string;
+  time: string;
+  location: string;
+  name: string;
+  phone: string;
+  services: Service[];
+  amount: string;
+  status: string;
+  modify_status: string;
 }
 
 export const Completed = () => {
@@ -89,6 +109,42 @@ export const Completed = () => {
     setShowInvoicePopup(false)
   }
 
+
+  const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+
+    const fetchCompletedListData = async () => {
+      setLoading(true);
+      setError(null);
+
+      // Login Provider ID
+      const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+      console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+      try {
+        // const data = await bookingsList(Number(sessionLoginProviderID));
+        const data = await completedList(1, 3);
+        setCompletedListData(data.results);
+        console.log("Fetched Completed List data log:", data);
+      }
+      catch (error: any) {
+        setError(error.message || 'Failed to fetch completed list');
+      } finally {
+        setLoading(false); // Ensure loading is false after fetching
+      }
+    }
+
+    fetchCompletedListData();
+
+  }, []);
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div>
 
@@ -117,6 +173,92 @@ export const Completed = () => {
 
           <tbody>
             {/* Content */}
+            {completedListData.length > 0 ? (
+              completedListData.map((completed, index) => (
+                <tr className="border-b-2">
+                  <td className="text-start px-2 py-5">{index + 1}</td>
+                  <td className="text-start px-2 py-5">{completed.date}</td>
+                  <td className="text-start px-2 py-5">{completed.time}</td>
+                  <td className="text-start px-2 py-5">{completed.location}</td>
+                  <td className="text-start px-2 py-5">{completed.name}</td>
+                  <td className="text-start px-2 py-5">{completed.phone}</td>
+
+                  <td className="text-start px-2 py-5">
+                    <ul>
+                      {completed.services.map((service, index) => (
+                        <li key={index}>{service.name}</li>
+                      ))}
+                    </ul>
+                  </td>
+
+                  {/* <td className="text-start px-2 py-5">
+                    <ul>
+                      <li>Eyesbrows Threading</li>
+                      <li>Forehead Threading</li>
+                    </ul>
+                  </td> */}
+
+                  <td className="text-start px-2 py-5">{completed.amount}</td>
+
+                  <td className="text-start px-2 py-5">
+                    <div>
+                      <Select
+                        placeholder="Select Option"
+                        value={selectedStylistOption}
+                        options={stylistData}
+                        onChange={handleStylistOption}
+                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                        formatOptionLabel={(option) => (
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                            <span style={{ marginLeft: 5 }}>{option.text}</span>
+                          </div>
+                        )}
+                        getOptionValue={(option) => option.value.toString()}
+                      />
+                    </div>
+                  </td>
+
+                  <td>
+                    <SelectField
+                      label={''}
+                      name="status"
+                      id="status"
+                      options={[
+                        { value: "scheduled", label: "Scheduled" },
+                        { value: "inprogress", label: "Inprogress" },
+                        { value: "completed", label: "Completed" },
+                      ]}
+                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                    />
+                  </td>
+
+                  <td className="text-start px-2 py-5">
+                    <div className="flex items-center space-x-2">
+                      {/* Eye Button */}
+                      <div
+                        onClick={openInvoicePopup}
+                        className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
+                        <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
+                      </div>
+
+                      {/* Download Button */}
+                      <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
+                        <FiDownload className="text-[18px] text-mindfulGreen" />
+                      </div>
+                    </div>
+                  </td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center py-5">
+                  No Completed Booking data available.
+                </td>
+              </tr>
+            )}
+
             <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
@@ -382,7 +524,7 @@ export const Completed = () => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div >
 
       {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
       {showPaymentDetailsPopup && <PaymentDetailsPopup closePopup={closePaymentDetailsPopup} />}
@@ -394,6 +536,6 @@ export const Completed = () => {
         <Pagination />
       </div>
 
-    </div>
+    </div >
   )
 }
