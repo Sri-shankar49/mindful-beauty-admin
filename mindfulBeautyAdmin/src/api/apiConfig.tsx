@@ -286,7 +286,7 @@ export const dashBoardBookingList = async (providerID: number) => {
 // Dashboard Page -- --> Bookings
 // POST Method from the API
 export const bookingAction = async (appointmentID: number, actionID: number) => {
-  
+
   try {
     const response = await apiAxios.post(`/api/provider-booking-action/`, {
       appointment_id: appointmentID,
@@ -400,7 +400,9 @@ export const staffBranchList = async () => {
 
 // Manage Role Page -- --> Branch Management
 // GET Method from the API
-export const fetchSelectedBranch = async (branchID: number) => {
+export const fetchSelectedBranch = async (
+  // branchID: number
+) => {
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -408,7 +410,7 @@ export const fetchSelectedBranch = async (branchID: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/branch/`, {
-      branch_id: branchID,
+      // branch_id: branchID,
     });
 
     console.log("Selected Branch GET Method response", response.data);

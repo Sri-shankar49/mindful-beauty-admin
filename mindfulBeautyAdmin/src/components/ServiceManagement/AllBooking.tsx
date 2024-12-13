@@ -161,7 +161,7 @@ export const AllBooking = () => {
           <tbody>
             {/* Content */}
             {bookingListData.length > 0 ? (
-              bookingListData.map((bookingData, index) => (
+              bookingListData.map((bookingData) => (
                 <tr key={bookingData.id} className="border-b-2">
                   {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
                   <td className="text-start px-2 py-5">{bookingData.id}</td>

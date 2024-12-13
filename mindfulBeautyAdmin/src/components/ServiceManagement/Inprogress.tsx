@@ -159,7 +159,7 @@ export const Inprogress = () => {
           <tbody>
             {/* Content */}
             {inprogressListData.length > 0 ? (
-              inprogressListData.map((inprogress, index) => (
+              inprogressListData.map((inprogress) => (
                 <tr key={inprogress.id} className="border-b-2">
                   {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
                   <td className="text-start px-2 py-5">{inprogress.id}</td>

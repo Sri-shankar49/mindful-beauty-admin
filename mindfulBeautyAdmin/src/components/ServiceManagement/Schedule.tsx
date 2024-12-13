@@ -160,7 +160,7 @@ export const Schedule = () => {
           <tbody>
             {/* Content */}
             {scheduleListData.length > 0 ? (
-              scheduleListData.map((schedule, index) => (
+              scheduleListData.map((schedule) => (
                 <tr key={schedule.id} className="border-b-2">
                   {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
                   <td className="text-start px-2 py-5">{schedule.id}</td>

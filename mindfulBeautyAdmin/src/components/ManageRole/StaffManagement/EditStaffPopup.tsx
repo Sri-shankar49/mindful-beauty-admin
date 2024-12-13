@@ -13,7 +13,7 @@ import { editStaff, staffBranchList, staffRoleList } from '@/api/apiConfig';
 
 interface EditStaffPopupProps {
     editStaffData: {
-        staff?: string;
+        staff?: string | number; // Allow both string and number
         name: string;
         role_id?: string;
         role_name: string;

@@ -174,7 +174,7 @@ export const Completed = () => {
           <tbody>
             {/* Content */}
             {completedListData.length > 0 ? (
-              completedListData.map((completed, index) => (
+              completedListData.map((completed) => (
                 <tr key={completed.id} className="border-b-2">
                   {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
                   <td className="text-start px-2 py-5">{completed.id}</td>

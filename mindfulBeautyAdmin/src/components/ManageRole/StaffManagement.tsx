@@ -23,6 +23,16 @@ interface StaffManagementProps {
 
 export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
+    const defaultEditStaffData = {
+        staff: undefined, // or any default value
+        name: '',
+        role_id: undefined,
+        role_name: '',
+        branch_id: undefined,
+        branch_name: '',
+        status: '',
+    };
+
     const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
     const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
@@ -222,7 +232,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
             {showEditStaffPopup && selectedStaffID && (
                 <EditStaffPopup
                     closePopup={closeEditStaffPopup}
-                    editStaffData={staffListData.find((staff) => staff.staff === selectedStaffID) || {}}
+                    editStaffData={staffListData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
                 />
             )}
             {showDeleteStaffPopup && <DeleteStaffPopup closePopup={closeDeleteStaffPopup} staffID={Number(selectedStaffID)} />}
