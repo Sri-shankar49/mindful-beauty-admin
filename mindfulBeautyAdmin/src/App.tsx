@@ -114,10 +114,11 @@ function App() {
 
 
           {/* Login Layout Routes */}
-          
+
           {/* Protected Routes */}
 
           <Route path="/" element={<ProtectedRoute><LoginLayout /></ProtectedRoute>}>
+            {/* <Route path="/" element={<LoginLayout />}> */}
             <Route path="/Dashboard" element={<Dashboard />} >
 
               {/* Redirect to DashBoardData when /Dashboard is accessed */}
