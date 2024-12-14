@@ -19,6 +19,11 @@ interface StylistOption {
     icon: string; // URL or path to the image
 }
 
+interface Service {
+    name: string;
+    price: number;
+  }
+
 interface DashBoardDataProps {
     appointment_id?: string;
     appointment_date: string;
@@ -26,7 +31,7 @@ interface DashBoardDataProps {
     branch?: string;
     user_name: string;
     user_phone: string;
-    service_names: string;
+    service_names: Service[];
     branch_city: string;
 }
 
@@ -68,7 +73,7 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [isAccepted, setIsAccepted] = useState(false);
 
     // handle onChange event of the dropdown
     const handleStylistOption = (option: SingleValue<StylistOption>) => {
@@ -127,8 +132,9 @@ export const DashBoardData = () => {
         try {
             const data = await bookingAction(appointmentID, actionID);
             if (data.status === "success") {
-                alert("Appointment accepted successfully")
-                navigate(0);
+                // alert("Appointment accepted successfully");
+                setIsAccepted(true);
+                // navigate(0);
             }
             console.log("Booking Action data log:", data);
 
@@ -279,7 +285,15 @@ export const DashBoardData = () => {
                                             <td className="text-start px-2 py-5">{dashboardData.branch_city}</td>
                                             <td className="text-start px-2 py-5">{dashboardData.user_name}</td>
                                             <td className="text-start px-2 py-5">{dashboardData.user_phone}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.service_names}</td>
+                                            {/* <td className="text-start px-2 py-5">{dashboardData.service_names}</td> */}
+
+                                            <td className="text-start px-2 py-5">
+                                                <ul>
+                                                    {dashboardData.service_names.map((service, index) => (
+                                                        <li key={index}>{service.name}</li>
+                                                    ))}
+                                                </ul>
+                                            </td>
                                             {/* <td className="text-start px-2 py-5">
                                                 <ul>
                                                     <li>Eyesbrows Threading</li>
@@ -311,12 +325,41 @@ export const DashBoardData = () => {
                                                 <div className="space-y-3">
 
                                                     <div>
+
                                                         <Button
+                                                            onClick={() =>
+                                                                !isAccepted &&
+                                                                handleActionSubmit(
+                                                                    Number(dashboardData.appointment_id),
+                                                                    1,
+                                                                    // setIsAccepted,
+                                                                    // setLoading,
+                                                                    // setError,
+                                                                    // navigate
+                                                                )
+                                                            }
+                                                            buttonType="button"
+                                                            buttonTitle={
+                                                                isAccepted
+                                                                    ? "Accepted" // Display "Accepted" if the action was successful
+                                                                    : loading
+                                                                        ? "Accepting..." // Show loading text while the request is being processed
+                                                                        : "Accept" // Default text
+                                                            }
+                                                            className={`w-24 text-md ${isAccepted ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"
+                                                                } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
+                                                                } rounded-[5px] px-3 py-1`}
+                                                            disabled={loading || isAccepted} // Disable button if loading or already accepted
+                                                        />
+
+                                                        {/* <Button
                                                             onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
                                                             buttonType="button"
-                                                            buttonTitle="Accept"
+                                                            buttonTitle={loading ? "Accepting..." : "Accept"}
                                                             className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                        />
+                                                        /> */}
+
+
                                                     </div>
 
                                                     <div>
@@ -324,7 +367,7 @@ export const DashBoardData = () => {
                                                             onClick={openDenialPopup}
                                                             buttonType="button"
                                                             buttonTitle="Deny"
-                                                            className="w-20 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
+                                                            className="w-24 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
                                                         />
                                                     </div>
 
@@ -333,7 +376,7 @@ export const DashBoardData = () => {
                                                             onClick={openDenialPopup}
                                                             buttonType="button"
                                                             buttonTitle="Decline"
-                                                            className="w-20 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
+                                                            className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
                                                         />
                                                     </div>
                                                 </div>
@@ -343,13 +386,15 @@ export const DashBoardData = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="text-center py-5">
+                                        <td colSpan={9} className="text-center py-5">
                                             No Bookings found.
                                         </td>
                                     </tr>
                                 )}
 
-                                <tr className="border-b-2 pb-2">
+
+
+                                {/* <tr className="border-b-2 pb-2">
                                     <td className="px-2 py-5">BK023</td>
                                     <td className="text-start px-2 py-5">18-08-2024</td>
                                     <td className="text-start px-2 py-5">10.00</td>
@@ -364,36 +409,36 @@ export const DashBoardData = () => {
                                     </td>
 
                                     <td className="text-start px-2 py-5">
-                                        {/* Branch Select Field */}
+                                        Branch Select Field
                                         <div>
-                                            {/* <SelectField
-                            onChange={openStylistPopup}
-                            label=""
-                            name="branch"
-                            // required
-                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                            options={[
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                            ]}
-                          // error="This field is required."
-                          /> */}
+                                            <SelectField
+                                                onChange={openStylistPopup}
+                                                label=""
+                                                name="branch"
+                                                // required
+                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                options={[
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                ]}
+                                            // error="This field is required."
+                                            />
 
-                                            {/* <Select
-                            placeholder="Select Option"
-                            value={selectedStylistOption}
-                            options={stylistData}
-                            onChange={handleStylistOption}
-                            getOptionLabel={(option) => (
-                              <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                <span style={{ marginLeft: 5 }}>{option.text}</span>
-                              </div>
-                            )}
-                            getOptionValue={(option) => option.value.toString()}
-                          /> */}
+                                            <Select
+                                                placeholder="Select Option"
+                                                value={selectedStylistOption}
+                                                options={stylistData}
+                                                onChange={handleStylistOption}
+                                                getOptionLabel={(option) => (
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
+                                                    </div>
+                                                )}
+                                                getOptionValue={(option) => option.value.toString()}
+                                            />
 
                                             <Select
                                                 placeholder="Select Option"
@@ -410,11 +455,11 @@ export const DashBoardData = () => {
                                                 getOptionValue={(option) => option.value.toString()}
                                             />
 
-                                            {/* {selectedStylistOption && (
-                            <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                              <b>Selected Option:</b> {selectedStylistOption.text}
-                            </div>
-                          )} */}
+                                            {selectedStylistOption && (
+                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
+                                                    <b>Selected Option:</b> {selectedStylistOption.text}
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
 
@@ -450,11 +495,11 @@ export const DashBoardData = () => {
                                     </td>
 
 
-                                </tr>
+                                </tr> */}
 
 
                                 {/* Content & Checkbox */}
-                                <tr className="border-b-2 pb-2">
+                                {/* <tr className="border-b-2 pb-2">
                                     <td className="px-2 py-5">BK023</td>
                                     <td className="text-start px-2 py-5">18-08-2024</td>
                                     <td className="text-start px-2 py-5">10.00</td>
@@ -469,36 +514,36 @@ export const DashBoardData = () => {
                                     </td>
 
                                     <td className="text-start px-2 py-5">
-                                        {/* Branch Select Field */}
+                                        Branch Select Field
                                         <div>
-                                            {/* <SelectField
-                            onChange={openStylistPopup}
-                            label=""
-                            name="branch"
-                            // required
-                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                            options={[
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                              { value: "swetha", label: "Swetha" },
-                            ]}
-                          // error="This field is required."
-                          /> */}
+                                            <SelectField
+                                                onChange={openStylistPopup}
+                                                label=""
+                                                name="branch"
+                                                // required
+                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                options={[
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                    { value: "swetha", label: "Swetha" },
+                                                ]}
+                                            // error="This field is required."
+                                            />
 
-                                            {/* <Select
-                            placeholder="Select Option"
-                            value={selectedStylistOption}
-                            options={stylistData}
-                            onChange={handleStylistOption}
-                            getOptionLabel={(option) => (
-                              <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                <span style={{ marginLeft: 5 }}>{option.text}</span>
-                              </div>
-                            )}
-                            getOptionValue={(option) => option.value.toString()}
-                          /> */}
+                                            <Select
+                                                placeholder="Select Option"
+                                                value={selectedStylistOption}
+                                                options={stylistData}
+                                                onChange={handleStylistOption}
+                                                getOptionLabel={(option) => (
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
+                                                    </div>
+                                                )}
+                                                getOptionValue={(option) => option.value.toString()}
+                                            />
 
                                             <Select
                                                 placeholder="Select Option"
@@ -515,11 +560,11 @@ export const DashBoardData = () => {
                                                 getOptionValue={(option) => option.value.toString()}
                                             />
 
-                                            {/* {selectedStylistOption && (
-                            <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                              <b>Selected Option:</b> {selectedStylistOption.text}
-                            </div>
-                          )} */}
+                                            {selectedStylistOption && (
+                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
+                                                    <b>Selected Option:</b> {selectedStylistOption.text}
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
 
@@ -555,7 +600,7 @@ export const DashBoardData = () => {
                                     </td>
 
 
-                                </tr>
+                                </tr> */}
 
                             </tbody>
                         </table>

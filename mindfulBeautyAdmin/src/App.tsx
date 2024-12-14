@@ -3,6 +3,7 @@
 // import viteLogo from '/vite.svg'
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from './components/ProtectedRoute'; // Import the ProtectedRoute
 import { SignIn } from './pages/SignIn';
 import ScrollToTop from './common/ScrollToTop';
 import { LoginLayout } from './layout/LoginLayout';
@@ -76,6 +77,7 @@ function App() {
         <ScrollToTop />
 
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<SignIn />} />
           <Route path="/GeneralInfoForm" element={
             <GeneralInfoForm
@@ -112,7 +114,10 @@ function App() {
 
 
           {/* Login Layout Routes */}
-          <Route path="/" element={<LoginLayout />}>
+          
+          {/* Protected Routes */}
+
+          <Route path="/" element={<ProtectedRoute><LoginLayout /></ProtectedRoute>}>
             <Route path="/Dashboard" element={<Dashboard />} >
 
               {/* Redirect to DashBoardData when /Dashboard is accessed */}

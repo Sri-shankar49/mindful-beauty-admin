@@ -245,10 +245,12 @@ export const Schedule = () => {
                 </td>
               </tr>
             )}
-            <tr className="border-b-2">
+
+
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-3">
                   <div>
                     <img src={rectangleBlack} alt="rectangle black" />
@@ -256,7 +258,7 @@ export const Schedule = () => {
 
                   <p className="text-md text-mindfulBlack">Full Face Threading</p>
                 </div>
-              </td> */}
+              </td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
               <td className="text-start px-2 py-5">Chottanikkara</td>
               <td className="text-start px-2 py-5">Ramya</td>
@@ -322,13 +324,13 @@ export const Schedule = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-3">
                   <div>
                     <img src={rectangleBlack} alt="rectangle black" />
@@ -336,7 +338,7 @@ export const Schedule = () => {
 
                   <p className="text-md text-mindfulBlack">Full Face Threading</p>
                 </div>
-              </td> */}
+              </td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
               <td className="text-start px-2 py-5">Chottanikkara</td>
               <td className="text-start px-2 py-5">Ramya</td>
@@ -351,7 +353,7 @@ export const Schedule = () => {
 
               <td className="text-start px-2 py-5">250</td>
 
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div>
                   <Button
                     buttonType="button"
@@ -359,7 +361,7 @@ export const Schedule = () => {
                     className="bg-[#fff8e5] text-md text-mindfulYellow font-semibold rounded-sm px-3 py-1"
                   />
                 </div>
-              </td> */}
+              </td>
 
               <td className="text-start px-2 py-5">
                 <div>
@@ -411,7 +413,7 @@ export const Schedule = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
             {/* <tr className="border-b-2">

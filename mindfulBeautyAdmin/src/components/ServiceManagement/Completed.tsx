@@ -355,10 +355,10 @@ export const Completed = () => {
             </tr> */}
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-3">
                   <div>
                     <img src={rectangleBlack} alt="rectangle black" />
@@ -366,7 +366,7 @@ export const Completed = () => {
 
                   <p className="text-md text-mindfulBlack">Full Face Threading</p>
                 </div>
-              </td> */}
+              </td>
               <td className="text-start px-2 py-5">10.00 - 11.00</td>
               <td className="text-start px-2 py-5">Chottanikkara</td>
               <td className="text-start px-2 py-5">Ramya</td>
@@ -381,7 +381,7 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">250</td>
 
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div>
                   <Button
                     buttonType="button"
@@ -389,7 +389,7 @@ export const Completed = () => {
                     className="bg-[#fff8e5] text-md text-mindfulYellow font-semibold rounded-sm px-3 py-1"
                   />
                 </div>
-              </td> */}
+              </td>
 
               <td className="text-start px-2 py-5">
                 <div>
@@ -426,14 +426,14 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-2">
-                  {/* Eye Button */}
+                  Eye Button
                   <div
                     onClick={openInvoicePopup}
                     className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                     <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                   </div>
 
-                  {/* Download Button */}
+                  Download Button
                   <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
                     <FiDownload className="text-[18px] text-mindfulGreen" />
                   </div>
@@ -441,10 +441,10 @@ export const Completed = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
 
             {/* Content */}
-            <tr className="border-b-2">
+            {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>
               <td className="text-start px-2 py-5">18 Aug 2024</td>
 
@@ -462,7 +462,7 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">250</td>
 
-              {/* <td className="text-start px-2 py-5">
+              <td className="text-start px-2 py-5">
                 <div>
                   <Button
                     buttonType="button"
@@ -470,7 +470,7 @@ export const Completed = () => {
                     className="bg-[#e6f2ff] text-md text-mindfulSecondaryBlue font-semibold rounded-sm px-3 py-1"
                   />
                 </div>
-              </td> */}
+              </td>
 
               <td className="text-start px-2 py-5">
                 <div>
@@ -507,14 +507,14 @@ export const Completed = () => {
 
               <td className="text-start px-2 py-5">
                 <div className="flex items-center space-x-2">
-                  {/* Eye Button */}
+                  Eye Button
                   <div
                     onClick={openInvoicePopup}
                     className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                     <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                   </div>
 
-                  {/* Download Button */}
+                  Download Button
                   <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
                     <FiDownload className="text-[18px] text-mindfulGreen" />
                   </div>
@@ -522,7 +522,8 @@ export const Completed = () => {
               </td>
 
 
-            </tr>
+            </tr> */}
+            
           </tbody>
         </table>
       </div >

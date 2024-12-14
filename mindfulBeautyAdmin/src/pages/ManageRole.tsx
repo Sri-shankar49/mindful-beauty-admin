@@ -5,7 +5,7 @@ import "../components/ManageRole/ManageRole.css";
 
 export const ManageRole = () => {
   return (
-    <div className="bg-mindfulLightPink h-dvh px-5 py-5" >
+    <div className="bg-mindfulLightPink h-dvh px-5 py-5 relative z-[-1]" >
 
       <div className="bg-mindfulWhite px-5 py-5">
 
@@ -46,7 +46,7 @@ export const ManageRole = () => {
             </ul>
 
             <div>
-              <div className="relative z-[-1]">
+              <div className="relative">
                 {/* <input
                   type="text"
                   name=""
