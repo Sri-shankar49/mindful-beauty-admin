@@ -9,7 +9,7 @@ import { StylistPopup } from "@/components/Dashboard/DashBoardData/StylistPopup"
 import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { bookingAction, dashBoardBookingList } from "@/api/apiConfig"
-import { useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom"
 
 
 // Define the type for each option
