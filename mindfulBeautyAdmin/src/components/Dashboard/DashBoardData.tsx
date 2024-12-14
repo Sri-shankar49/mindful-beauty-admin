@@ -73,7 +73,7 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    // const [isAccepted, setIsAccepted] = useState(false);
+    const [isAccepted, setIsAccepted] = useState(false);
 
     // handle onChange event of the dropdown
     const handleStylistOption = (option: SingleValue<StylistOption>) => {
@@ -133,7 +133,7 @@ export const DashBoardData = () => {
             const data = await bookingAction(appointmentID, actionID);
             if (data.status === "success") {
                 // alert("Appointment accepted successfully");
-                // setIsAccepted(true);
+                setIsAccepted(true);
                 // navigate(0);
             }
             console.log("Booking Action data log:", data);
@@ -355,7 +355,7 @@ export const DashBoardData = () => {
                                                         <Button
                                                             onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
                                                             buttonType="button"
-                                                            buttonTitle={loading ? "Accepting..." : "Accept"}
+                                                            buttonTitle={isAccepted ? "Accepted" : "Accept"}
                                                             className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
                                                         />
 
