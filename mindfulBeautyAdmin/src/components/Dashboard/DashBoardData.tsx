@@ -20,12 +20,13 @@ interface StylistOption {
 }
 
 interface Service {
-    name: string;
+    service_name: string;
     price: number;
 }
 
 interface DashBoardDataProps {
-    appointment_id?: string;
+    // appointment_id?: string | number;
+    appointment_id?: any;
     appointment_date: string;
     appointment_time: string;
     branch?: string;
@@ -73,7 +74,8 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [isAccepted, setIsAccepted] = useState(false);
+    // const [isAccepted, setIsAccepted] = useState(false);
+    const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
 
     // handle onChange event of the dropdown
     const handleStylistOption = (option: SingleValue<StylistOption>) => {
@@ -133,7 +135,11 @@ export const DashBoardData = () => {
             const data = await bookingAction(appointmentID, actionID);
             if (data.status === "success") {
                 // alert("Appointment accepted successfully");
-                setIsAccepted(true);
+                // setIsAccepted(true);
+                setAcceptedAppointments((prevState) => ({
+                    ...prevState,
+                    [appointmentID]: true, // Mark this appointment as accepted
+                }));
                 // navigate(0);
             }
             console.log("Booking Action data log:", data);
@@ -290,7 +296,7 @@ export const DashBoardData = () => {
                                             <td className="text-start px-2 py-5">
                                                 <ul>
                                                     {dashboardData.service_names.map((service, index) => (
-                                                        <li key={index}>{service.name}</li>
+                                                        <li key={index}>{service.service_name}</li>
                                                     ))}
                                                 </ul>
                                             </td>
@@ -352,11 +358,22 @@ export const DashBoardData = () => {
                                                             disabled={loading || isAccepted} // Disable button if loading or already accepted
                                                         /> */}
 
-                                                        <Button
+                                                        {/* <Button
                                                             onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
                                                             buttonType="button"
                                                             buttonTitle={isAccepted ? "Accepted" : "Accept"}
-                                                            className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
+                                                            className="w-24 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
+                                                        /> */}
+
+                                                        <Button
+                                                            onClick={() =>
+                                                                !acceptedAppointments[dashboardData.appointment_id] &&
+                                                                handleActionSubmit(dashboardData.appointment_id, 1)
+                                                            }
+                                                            buttonType="button"
+                                                            buttonTitle={acceptedAppointments[dashboardData.appointment_id] ? "Accepted" : loading ? "Accepting..." : "Accept"}
+                                                            className={`w-24 text-md ${acceptedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"} font-semibold border-[1px] ${acceptedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulGreen"} rounded-[5px] px-3 py-1`}
+                                                            disabled={loading || acceptedAppointments[dashboardData.appointment_id]} // Disable if loading or already accepted
                                                         />
 
 
