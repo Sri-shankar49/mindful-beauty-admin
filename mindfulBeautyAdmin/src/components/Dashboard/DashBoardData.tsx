@@ -22,7 +22,7 @@ interface StylistOption {
 interface Service {
     name: string;
     price: number;
-  }
+}
 
 interface DashBoardDataProps {
     appointment_id?: string;
@@ -326,7 +326,7 @@ export const DashBoardData = () => {
 
                                                     <div>
 
-                                                        <Button
+                                                        {/* <Button
                                                             onClick={() =>
                                                                 !isAccepted &&
                                                                 handleActionSubmit(
@@ -350,14 +350,14 @@ export const DashBoardData = () => {
                                                                 } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
                                                                 } rounded-[5px] px-3 py-1`}
                                                             disabled={loading || isAccepted} // Disable button if loading or already accepted
-                                                        />
+                                                        /> */}
 
-                                                        {/* <Button
+                                                        <Button
                                                             onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
                                                             buttonType="button"
                                                             buttonTitle={loading ? "Accepting..." : "Accept"}
                                                             className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                        /> */}
+                                                        />
 
 
                                                     </div>
