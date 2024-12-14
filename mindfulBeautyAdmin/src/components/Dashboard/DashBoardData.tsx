@@ -38,7 +38,7 @@ interface DashBoardDataProps {
 
 export const DashBoardData = () => {
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const stylistData: StylistOption[] = [
         {
