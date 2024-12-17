@@ -221,7 +221,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 </label>
                                                 <InputField
                                                     label={''}
-                                                    type="email"
+                                                    // type="email"
                                                     // name="accountType"
                                                     id="accountType"
                                                     placeholder=""
