@@ -42,6 +42,7 @@ import { TaxInfoForm } from './pages/TaxInfoForm';
 import { GeneralInfoFreelanceForm } from './pages/GeneralInfoFreelanceForm';
 import { BankAccInfoFreelanceForm } from './pages/BankAccInfoFreelanceForm';
 import { TaxInfoFreelanceForm } from './pages/TaxInfoFreelanceForm';
+import { Thankyou } from './pages/Thankyou';
 
 
 
@@ -111,6 +112,7 @@ function App() {
           } />
           <Route path="/BankAccInfoFreelanceForm" element={<BankAccInfoFreelanceForm />} />
           <Route path="/TaxInfoFreelanceForm" element={<TaxInfoFreelanceForm />} />
+          <Route path="/Thankyou" element={<Thankyou />} />
 
 
           {/* Login Layout Routes */}

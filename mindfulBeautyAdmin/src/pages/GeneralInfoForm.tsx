@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
@@ -29,6 +29,12 @@ type GeneralInfoFormData = zod.infer<typeof generalInfoSchema>;
 
 export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
+
+
+    // Form data From the Register component
+    const location = useLocation();
+    const registartionFormData = location.state; // Access the passed data
+
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
@@ -39,10 +45,16 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
     console.log("Selected Provider ID from session storage", sessionProviderID);
 
 
-    
+
     // React Hook Form setup with Zod validation
     const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFormData>({
         resolver: zodResolver(generalInfoSchema),
+        defaultValues: {
+            ownersName: registartionFormData.name || '',
+            salonName: registartionFormData.name || '',
+            contactNumber: registartionFormData.phone || '',
+            emailAddress: registartionFormData.email || '',
+        },
     });
 
 

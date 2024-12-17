@@ -5,7 +5,7 @@ import "../components/ManageRole/ManageRole.css";
 
 export const ManageRole = () => {
   return (
-    <div className="bg-mindfulLightPink h-dvh px-5 py-5" >
+    <div className="bg-mindfulLightPink px-5 py-5" >
 
       <div className="bg-mindfulWhite px-5 py-5">
 
@@ -49,9 +49,10 @@ export const ManageRole = () => {
               <div className="relative">
                 {/* <input
                   type="text"
-                  name=""
-                  id=""
-                  className=''
+                  name="search"
+                  id="search"
+                  placeholder="Search"
+                  className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
                 /> */}
                 <InputField
                   label={''}

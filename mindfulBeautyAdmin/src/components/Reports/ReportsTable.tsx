@@ -22,7 +22,7 @@ export const ReportsTable = () => {
 
     return (
         <div>
-            <div className="bg-mindfulLightPink h-dvh px-5 py-5" >
+            <div className="bg-mindfulLightPink px-5 py-5" >
 
                 <div className="bg-mindfulWhite px-5 py-5">
 

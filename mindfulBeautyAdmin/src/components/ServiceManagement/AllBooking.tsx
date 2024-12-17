@@ -34,6 +34,7 @@ interface BookingListProps {
   amount: string;
   status: string;
   modify_status: string;
+
 }
 
 export const AllBooking = () => {
@@ -98,6 +99,11 @@ export const AllBooking = () => {
   const [bookingListData, setBookingListData] = useState<BookingListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
 
@@ -110,10 +116,21 @@ export const AllBooking = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await bookingsList(1);
+        // const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
+        const data = await bookingsList(
+          1,
+          currentPage,
+          // {
+          //   page: currentPage,
+          //   limit: itemsPerPage,
+          // }
+        );
         setBookingListData(data.results);
+
+        setTotalItems(data.count);
+
         console.log("Fetched Booking List data log:", data);
+        console.log("Fetched Booking List pagination count data log :", data.count);
       }
       catch (error: any) {
         setError(error.message || 'Failed to fetch booking list');
@@ -124,7 +141,16 @@ export const AllBooking = () => {
 
     fetchBookingListData();
 
-  }, []);
+  }, [currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
 
   if (loading) return <div>Loading...</div>;
@@ -170,7 +196,7 @@ export const AllBooking = () => {
                   <td className="text-start px-2 py-5">{bookingData.location || null}</td>
                   <td className="text-start px-2 py-5">{bookingData.name}</td>
                   <td className="text-start px-2 py-5">{bookingData.phone}</td>
-                 
+
                   {/* <td className="text-start px-2 py-5">{bookingData.services}</td> */}
 
                   <td className="text-start px-2 py-5">
@@ -536,7 +562,13 @@ export const AllBooking = () => {
 
       {/* Pagination */}
       <div>
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
     </div>
   )

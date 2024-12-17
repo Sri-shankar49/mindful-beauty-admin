@@ -98,6 +98,12 @@ export const Inprogress = () => {
   const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
 
@@ -111,9 +117,13 @@ export const Inprogress = () => {
 
       try {
         // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await inprogressList(1, 2);
+        const data = await inprogressList(1, 2, currentPage);
         setInprogressListData(data.results);
+
+        setTotalItems(data.count);
         console.log("Fetched Inprogress List data log:", data);
+        console.log("Fetched Inprogress List pagination count data log :", data.count);
+
       }
       catch (error: any) {
         setError(error.message || 'Failed to fetch inprogress list');
@@ -124,8 +134,17 @@ export const Inprogress = () => {
 
     fetchInprogressListData();
 
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -515,7 +534,13 @@ export const Inprogress = () => {
 
       {/* Pagination */}
       <div>
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
     </div >
   )

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from 'react-router-dom';
 import salonChair from "../assets/icons/salonChair.svg";
 import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
@@ -9,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { generalInfoFreelance } from "@/api/apiConfig";
+
 
 // Define Zod schema for validation
 const generalInfoFreelanceSchema = zod.object({
@@ -32,6 +34,10 @@ type GeneralInfoFreelanceFormData = zod.infer<typeof generalInfoFreelanceSchema>
 
 export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = () => {
 
+    // Form data From the Register component
+    const location = useLocation();
+    const registartionFormData = location.state; // Access the passed data
+
     const [willingToWork, setWillingToWork] = useState<number>(1);
 
     const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certificationsFile: null });
@@ -53,7 +59,14 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
     // React Hook Form setup with Zod validation
     const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFreelanceFormData>({
         resolver: zodResolver(generalInfoFreelanceSchema),
+        defaultValues: {
+            fullName: registartionFormData.name || '',
+            emailAddress: registartionFormData.email || '',
+            contactNumber: registartionFormData.phone || '',
+        },
     });
+
+
 
 
     const onSubmit = async (data: GeneralInfoFreelanceFormData) => {

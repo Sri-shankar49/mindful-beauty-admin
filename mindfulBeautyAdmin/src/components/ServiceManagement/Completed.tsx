@@ -113,6 +113,12 @@ export const Completed = () => {
   const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
 
@@ -126,9 +132,13 @@ export const Completed = () => {
 
       try {
         // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await completedList(1, 3);
+        const data = await completedList(1, 3, currentPage);
         setCompletedListData(data.results);
+
+        setTotalItems(data.count);
         console.log("Fetched Completed List data log:", data);
+        console.log("Fetched Completed List pagination count data log :", data.count);
+
       }
       catch (error: any) {
         setError(error.message || 'Failed to fetch completed list');
@@ -139,7 +149,17 @@ export const Completed = () => {
 
     fetchCompletedListData();
 
-  }, []);
+  }, [currentPage, itemsPerPage]);
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
 
   if (loading) return <div>Loading...</div>;
@@ -523,7 +543,7 @@ export const Completed = () => {
 
 
             </tr> */}
-            
+
           </tbody>
         </table>
       </div >
@@ -535,7 +555,12 @@ export const Completed = () => {
 
       {/* Pagination */}
       <div>
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange} />
       </div>
 
     </div >

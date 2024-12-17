@@ -38,6 +38,12 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
     const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+    const [totalItems, setTotalItems] = useState(0);
+
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
 
     const [showAddStaffPopup, setShowAddStaffpopup] = useState(false);
@@ -85,7 +91,11 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
             try {
                 const data = await staffList();
                 setStaffListData(data.results.data || []); // Fallback to an empty array if data is null
+
+                setTotalItems(data.count);
+
                 console.log("Staff list data log:", data);
+                console.log("Staff list pagination count data log:", data.count);
             } catch (error: any) {
                 setError(error.message || 'Failed to fetch staff list');
             } finally {
@@ -94,7 +104,17 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         };
 
         fetchStaffList();
-    }, []);
+    }, [currentPage, itemsPerPage]);
+
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleItemsPerPageChange = (items: number) => {
+        setItemsPerPage(items);
+        setCurrentPage(1); // Reset to the first page when items per page changes
+    };
 
 
     if (loading) return <div>Loading...</div>;
@@ -225,7 +245,13 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
             {/* Pagination */}
             <div>
-                <Pagination />
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
             </div>
 
             {showAddStaffPopup && <AddStaffPopup closePopup={closeAddStaffPopup} />}

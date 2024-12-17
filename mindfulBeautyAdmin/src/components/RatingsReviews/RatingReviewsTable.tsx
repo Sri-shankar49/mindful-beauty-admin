@@ -21,15 +21,25 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
   const [reviewsListData, setReviewsListData] = useState<RatingReviewsTableProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
 
     const fetchReviewsList = async () => {
       setLoading(true); // Set loading to true before fetching
       try {
-        const data = await reviewsList();
+        const data = await reviewsList(currentPage);
+
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
+        setTotalItems(data.count);
+
         console.log("Reviews list data log:", data);
+        console.log("Fetched Booking List pagination count data log :", data.count);
+
       } catch (error: any) {
         setError(error.message || 'Failed to fetch staff list');
       } finally {
@@ -38,7 +48,16 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
     };
 
     fetchReviewsList();
-  }, []);
+  }, [currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
 
   if (loading) return <div>Loading...</div>;
@@ -47,7 +66,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
   return (
     <div>
       <div>
-        <div className="bg-mindfulLightPink h-dvh px-5 py-5">
+        <div className="bg-mindfulLightPink px-5 py-5">
 
           <div className="bg-mindfulWhite px-5 py-5">
 
@@ -142,7 +161,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
                       ))) : (
                       <tr>
                         <td colSpan={6} className="text-center py-5">
-                          No staff data available.
+                          No ratings & reviews data available.
                         </td>
                       </tr>)
                     }
@@ -162,14 +181,19 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
               </div>
             </div>
 
+            {/* Pagination */}
+            <div>
+              <Pagination
+                currentPage={currentPage}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+
           </div>
         </div>
-      </div>
-
-
-      {/* Pagination */}
-      <div>
-        <Pagination />
       </div>
     </div>
   )

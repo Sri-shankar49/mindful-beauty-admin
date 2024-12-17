@@ -61,11 +61,12 @@ export const Register: React.FC<RegisterFormData> = () => {
       );
       console.log(registrationData.data, "Registration Data");
 
-      // Navigate based on activeUser
-      handleRegistrationUser();
+      // Navigate based on activeUser  &&  // Pass the form data to the next component
+      handleRegistrationUser(data);
 
       // Store provider ID in sessionStorage
       sessionStorage.setItem("providerID", registrationData.data.provider_id);
+      sessionStorage.setItem("phoneNumber", registrationData.data.phone);
     }
 
     catch (error: any) {
@@ -76,21 +77,24 @@ export const Register: React.FC<RegisterFormData> = () => {
   }
 
 
-  const handleRegistrationUser = () => {
+  const handleRegistrationUser = (data: RegisterFormData) => {
     console.log(activeUser);
 
-    if (activeUser === 1) {
-      console.log("salon");
-      navigate("/GeneralInfoForm");
-    }
-    else if (activeUser === 2) {
-      console.log("freelancer");
-      navigate("/GeneralInfoFreelanceForm");
-    }
+    // if (activeUser === 1) {
+    //   console.log("salon");
+    //   navigate("/GeneralInfoForm");
+    // }
+    // else if (activeUser === 2) {
+    //   console.log("freelancer");
+    //   navigate("/GeneralInfoFreelanceForm");
+    // }
+
+    const path = activeUser === 1 ? "/GeneralInfoForm" : "/GeneralInfoFreelanceForm";
+    navigate(path, { state: data }); // Pass form data via state
   }
 
   // if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -204,7 +208,11 @@ export const Register: React.FC<RegisterFormData> = () => {
                 required
                 {...register("phone")}
               />
+
               {errors.phone && <p className="text-white text-sm">{errors.phone.message}</p>}
+
+              {/* Error from API response  */}
+              {error && <p className="text-sm text-mindfulWhite">{error}</p>}
 
             </div>
 

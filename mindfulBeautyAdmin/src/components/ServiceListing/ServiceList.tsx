@@ -33,6 +33,11 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+    const [totalItems, setTotalItems] = useState(0);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
 
     const openEditService = () => {
@@ -67,10 +72,17 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
             try {
                 setLoading(true);
                 // const data: BranchCardProps[] = await branchList();
-                // const data = await servicesList(Number(sessionLoginProviderID));
-                const data = await servicesList(Number(1));
+
+                const data = await servicesList(Number(sessionLoginProviderID), currentPage);
+
+                // const data = await servicesList(Number(1));
+
                 setServiceListData(data.results || []);
+                setTotalItems(data.count);
+
                 console.log("Fetched Service List data log:", data);
+                console.log("Fetched Booking List pagination count data log :", data.count);
+
             } catch (error: any) {
                 setError(error.message || "Failed to fetch service list data.");
             } finally {
@@ -79,7 +91,17 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         };
 
         fetchServiceListData();
-    }, []);
+    }, [currentPage, itemsPerPage]);
+
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleItemsPerPageChange = (items: number) => {
+        setItemsPerPage(items);
+        setCurrentPage(1); // Reset to the first page when items per page changes
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -87,7 +109,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     return (
         <div>
             <div>
-                <div className="bg-mindfulLightPink h-dvh px-5 py-5">
+                <div className="bg-mindfulLightPink px-5 py-5">
 
                     <div className="bg-mindfulWhite px-5 py-5">
 
@@ -301,7 +323,13 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
                         {/* Pagination */}
                         <div>
-                            <Pagination />
+                            <Pagination
+                                currentPage={currentPage}
+                                totalItems={totalItems}
+                                itemsPerPage={itemsPerPage}
+                                onPageChange={handlePageChange}
+                                onItemsPerPageChange={handleItemsPerPageChange}
+                            />
                         </div>
                     </div>
 

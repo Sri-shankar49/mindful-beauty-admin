@@ -97,6 +97,12 @@ export const Cancelled = () => {
   const [cancelledListData, setCancelledListData] = useState<CancelledListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
 
@@ -110,9 +116,14 @@ export const Cancelled = () => {
 
       try {
         // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await cancelledList(1, 4);
+        const data = await cancelledList(1, 4, currentPage);
         setCancelledListData(data.results);
-        console.log("Fetched Completed List data log:", data);
+
+        setTotalItems(data.count);
+
+        console.log("Fetched Cancelled List data log:", data);
+        console.log("Fetched Cancelled List pagination count data log :", data.count);
+
       }
       catch (error: any) {
         setError(error.message || 'Failed to fetch completed list');
@@ -123,7 +134,17 @@ export const Cancelled = () => {
 
     fetchCancelledListData();
 
-  }, []);
+  }, [currentPage, itemsPerPage]);
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to the first page when items per page changes
+  };
 
 
   if (loading) return <div>Loading...</div>;
@@ -426,7 +447,13 @@ export const Cancelled = () => {
 
       {/* Pagination */}
       <div>
-        <Pagination />
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
     </div >
   )

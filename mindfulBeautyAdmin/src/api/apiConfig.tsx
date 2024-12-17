@@ -71,7 +71,7 @@ export const loginRegister = async (userName: string, userEmail: string, userPho
   }
   catch (error: any) {
     console.error("Error registering:", error.message || error);
-    throw new Error("Unable to register. Please try again later.");
+    throw new Error(error.response?.data?.message || "Unable to register. Please try again later.");
   }
 }
 
@@ -310,6 +310,30 @@ export const bookingAction = async (appointmentID: number, actionID: number) => 
 
 
 
+// Manage Role Page -- --> Role Management
+// GET Method from the API
+export const roleList = async () => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/provider_roles/`);
+
+    console.log("Role list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch role list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching role list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch role list. Please try again later.");
+  }
+}
+
+
+
 // Manage Role Page -- --> Staff Management
 // GET Method from the API
 export const staffList = async () => {
@@ -319,7 +343,8 @@ export const staffList = async () => {
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
   try {
-    const response = await apiAxios.get(`/provider-api/staff-list/2/`);
+    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`);
+    // const response = await apiAxios.get(`/provider-api/staff-list/2/`);
 
     console.log("Staff list GET Method response", response.data);
 
@@ -348,7 +373,8 @@ export const fetchSelectedStaff = async () => {
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
   try {
-    const response = await apiAxios.get(`/provider-api/staff-list/2/`);
+    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`);
+    // const response = await apiAxios.get(`/provider-api/staff-list/2/`);
 
     console.log("Selected Staff GET Method response", response.data);
 
@@ -378,7 +404,8 @@ export const staffBranchList = async () => {
 
   try {
     // const response = await apiAxios.get(`/provider-api/staff_branches/${sessionLoginProviderID}`);
-    const response = await apiAxios.get(`/provider-api/staff-list/2`);
+    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`);
+    // const response = await apiAxios.get(`/provider-api/staff-list/2`);
 
     console.log("Staff branch list GET Method response", response.data);
 
@@ -677,12 +704,13 @@ export const deleteBranch = async (branchID: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const servicesList = async (providerID: number) => {
+export const servicesList = async (providerID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/provider-services/`, {
       params: {
         provider_id: providerID,
+        page: pageNumber
       }
     });
 
@@ -738,12 +766,13 @@ export const deleteService = async (serviceID: number) => {
 
 // Service Management Page -- --> All Booking
 // GET Method from the API
-export const bookingsList = async (providerID: number) => {
+export const bookingsList = async (providerID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
+        page: pageNumber,
       }
     });
 
@@ -768,13 +797,14 @@ export const bookingsList = async (providerID: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const scheduleList = async (providerID: number, status: number) => {
+export const scheduleList = async (providerID: number, status: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        page: pageNumber,
       }
     });
 
@@ -798,13 +828,15 @@ export const scheduleList = async (providerID: number, status: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const inprogressList = async (providerID: number, status: number) => {
+export const inprogressList = async (providerID: number, status: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        page: pageNumber,
+
       }
     });
 
@@ -828,13 +860,14 @@ export const inprogressList = async (providerID: number, status: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const completedList = async (providerID: number, status: number) => {
+export const completedList = async (providerID: number, status: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        page: pageNumber,
       }
     });
 
@@ -858,13 +891,14 @@ export const completedList = async (providerID: number, status: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const cancelledList = async (providerID: number, status: number) => {
+export const cancelledList = async (providerID: number, status: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        page: pageNumber,
       }
     });
 
@@ -889,10 +923,14 @@ export const cancelledList = async (providerID: number, status: number) => {
 
 // Ratings & Reviews Page -- --> Branch Management
 // GET Method from the API
-export const reviewsList = async () => {
+export const reviewsList = async (pageNumber: number) => {
 
   try {
-    const response = await apiAxios.get(`/provider-api/reviews/`);
+    const response = await apiAxios.get(`/provider-api/reviews/`, {
+      params: {
+        page: pageNumber,
+      },
+    });
 
     console.log("Reviews list GET Method response", response.data);
 

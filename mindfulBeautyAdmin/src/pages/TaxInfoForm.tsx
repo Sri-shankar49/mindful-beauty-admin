@@ -180,7 +180,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
             console.log("Tax Info Submission Success:", taxInfoData);
 
             // Navigate to the next step
-            navigate("/Dashboard/ProfileProgress");
+            // navigate("/Dashboard/ProfileProgress");
+            navigate("/Thankyou");
         }
 
         catch (error: any) {
