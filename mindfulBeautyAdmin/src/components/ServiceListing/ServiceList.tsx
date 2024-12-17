@@ -75,7 +75,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
                 const data = await servicesList(Number(sessionLoginProviderID), currentPage);
 
-                // const data = await servicesList(Number(1));
+                // const data = await servicesList(Number(1), currentPage);
 
                 setServiceListData(data.results || []);
                 setTotalItems(data.count);

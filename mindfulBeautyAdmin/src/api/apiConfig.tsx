@@ -72,6 +72,7 @@ export const loginRegister = async (userName: string, userEmail: string, userPho
   catch (error: any) {
     console.error("Error registering:", error.message || error);
     throw new Error(error.response?.data?.message || "Unable to register. Please try again later.");
+    // throw new Error(error.response?.data?.errors?.phone || "Unable to register. Please try again later.");
   }
 }
 
