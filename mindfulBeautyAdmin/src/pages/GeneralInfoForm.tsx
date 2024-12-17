@@ -424,7 +424,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                 <Button
                                                     onClick={() => {
                                                         // Reset form logic
-                                                        location.reload();
+                                                        // location.reload();
+                                                        window.location.reload();
                                                     }}
                                                     buttonType="button"
                                                     buttonTitle="Reset"

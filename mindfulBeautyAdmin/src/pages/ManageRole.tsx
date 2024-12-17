@@ -46,7 +46,7 @@ export const ManageRole = () => {
             </ul>
 
             <div>
-              <div className="relative">
+              <div className="">
                 {/* <input
                   type="text"
                   name="search"
@@ -59,7 +59,8 @@ export const ManageRole = () => {
                   placeholder="Search"
                   className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
                 />
-                <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" />
+                {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" /> */}
+                {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-[9.5rem] right-12 cursor-pointer z-[-1]" /> */}
               </div>
             </div>
           </div>

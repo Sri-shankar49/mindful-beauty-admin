@@ -544,7 +544,9 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Cancel Button */}
                                                 <Button
-                                                    onClick={() => location.reload()}
+                                                    // Reset form logic
+                                                    // onClick={() => location.reload()}
+                                                    onClick={() => window.location.reload()}
                                                     buttonType="button"
                                                     buttonTitle="Reset"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"

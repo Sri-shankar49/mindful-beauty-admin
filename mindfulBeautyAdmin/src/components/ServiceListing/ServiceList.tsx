@@ -160,13 +160,13 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                     </Link>
 
                                     {/* Search Field */}
-                                    <div className="flex items-center relative">
+                                    <div className="flex items-center ">
                                         <InputField
                                             label={''}
                                             placeholder="Search"
                                             className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
                                         />
-                                        <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" />
+                                        {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" /> */}
                                     </div>
 
                                 </div>
