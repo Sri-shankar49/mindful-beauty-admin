@@ -12,7 +12,7 @@ import { InvoicePopup } from '../ServiceManagement/Completed/InvoicePopup';
 import { Button } from '@/common/Button';
 import { InputField } from '@/common/InputField';
 import { BiCalendar } from "react-icons/bi";
-import { Pagination } from '@/common/Pagination';
+// import { Pagination } from '@/common/Pagination';
 
 export const SalesTransactionsTable = () => {
 
@@ -249,7 +249,7 @@ export const SalesTransactionsTable = () => {
 
                     {/* Pagination */}
                     <div>
-                        <Pagination
+                        {/* <Pagination
                             currentPage={0}
                             totalItems={0}
                             itemsPerPage={0}
@@ -259,7 +259,7 @@ export const SalesTransactionsTable = () => {
                             onItemsPerPageChange={function (items: number): void {
                                 throw new Error('Function not implemented.');
                             }}
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>

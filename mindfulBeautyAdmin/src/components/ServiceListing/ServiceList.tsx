@@ -7,7 +7,7 @@ import { Button } from "@/common/Button";
 import { Pagination } from "@/common/Pagination";
 import { Link, NavLink } from "react-router-dom";
 import { SelectField } from "@/common/SelectField";
-import { MdFormatListBulletedAdd, MdSearch } from "react-icons/md";
+import { MdFormatListBulletedAdd } from "react-icons/md";
 import { InputField } from "@/common/InputField";
 import { servicesList } from "@/api/apiConfig";
 import { DeleteServicesPopup } from "./DeleteServicesPopup";
