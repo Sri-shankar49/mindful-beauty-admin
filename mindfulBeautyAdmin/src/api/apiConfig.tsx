@@ -405,7 +405,7 @@ export const staffBranchList = async () => {
 
   try {
     // const response = await apiAxios.get(`/provider-api/staff_branches/${sessionLoginProviderID}`);
-    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`);
+    const response = await apiAxios.get(`/provider-api/staff-branches/${sessionLoginProviderID}/`);
     // const response = await apiAxios.get(`/provider-api/staff-list/2`);
 
     console.log("Staff branch list GET Method response", response.data);

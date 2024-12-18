@@ -125,7 +125,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         <div>
             <div className="flex items-center justify-between">
                 <div>
-                    <h5 className="text-3xl font-semibold py-5">All Users (15)</h5>
+                    <h5 className="text-3xl font-semibold py-5">All Users ({totalItems})</h5>
                 </div>
 
                 {/* Add New Staff */}

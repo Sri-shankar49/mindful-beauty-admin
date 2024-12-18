@@ -117,7 +117,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <NavLink to="ServiceList">
-                                        <h5 className="text-3xl font-semibold">Services List (85)</h5>
+                                        {/* <h5 className="text-3xl font-semibold">Services List (85)</h5> */}
+                                        <h5 className="text-3xl font-semibold">Services List ({totalItems})</h5>
                                     </NavLink>
                                 </div>
 
@@ -234,7 +235,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={6} className="text-center py-5">
+                                            <td colSpan={8} className="text-center py-5">
                                                 No service data available.
                                             </td>
                                         </tr>

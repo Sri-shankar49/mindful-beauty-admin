@@ -75,7 +75,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                 setStaffRoleListData(rolesData.data || []); // Fallback to an empty array if data is null
                 console.log("Staff role list data log for select field:", rolesData);
 
-                setStaffBranchListData(branchesData.results.data || []); // Fallback to an empty array if data is null
+                setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
                 console.log("Staff branch list data log for select field:", branchesData);
 
 

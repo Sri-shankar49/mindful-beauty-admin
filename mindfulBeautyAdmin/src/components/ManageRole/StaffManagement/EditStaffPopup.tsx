@@ -75,11 +75,11 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                 const branchesData = await staffBranchList();
 
                 // const data = await staffBranchList();
-                setStaffRoleListData(rolesData.results || []); // Fallback to an empty array if data is null
+                setStaffRoleListData(rolesData.data || []); // Fallback to an empty array if data is null
                 console.log("Staff role list data log for select field:", rolesData);
 
                 setStaffBranchListData(branchesData.results.data || []); // Fallback to an empty array if data is null
-                console.log("Staff branch list data log for select field:", branchesData);
+                console.log("Staff branch list data log for select field:", branchesData.results.data);
 
 
             } catch (error: any) {
