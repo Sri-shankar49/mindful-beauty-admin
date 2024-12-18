@@ -131,8 +131,8 @@ export const Completed = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await completedList(1, 3, currentPage);
+        const data = await completedList(Number(sessionLoginProviderID), 3, currentPage);
+        // const data = await completedList(1, 3, currentPage);
         setCompletedListData(data.results);
 
         setTotalItems(data.count);

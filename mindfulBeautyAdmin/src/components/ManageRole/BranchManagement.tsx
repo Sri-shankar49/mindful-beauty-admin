@@ -39,8 +39,8 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                 setLoading(true);
                 // const data: BranchCardProps[] = await branchList();
                 const data = await branchList();
-                setBranchListdata(data.results.data || []);
-                console.log("Fetched Branch List data log:", data.results);
+                setBranchListdata(data.data || []);
+                console.log("Fetched Branch List data log:", data.data);
             } catch (error: any) {
                 setError(error.message || "Failed to fetch branch list data.");
             } finally {

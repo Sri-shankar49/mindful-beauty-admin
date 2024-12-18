@@ -21,7 +21,7 @@ export const RolesManagement = () => {
             try {
                 const loadRolesData = await roleList();
 
-                setRoleListData(loadRolesData.results);
+                setRoleListData(loadRolesData.data);
                 console.log("Role list data log:", loadRolesData);
 
             } catch (error: any) {

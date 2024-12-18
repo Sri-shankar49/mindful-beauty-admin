@@ -116,15 +116,15 @@ export const AllBooking = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
-        const data = await bookingsList(
-          1,
-          currentPage,
-          // {
-          //   page: currentPage,
-          //   limit: itemsPerPage,
-          // }
-        );
+        const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
+        // const data = await bookingsList(
+        //   1,
+        //   currentPage,
+        //   // {
+        //   //   page: currentPage,
+        //   //   limit: itemsPerPage,
+        //   // }
+        // );
         setBookingListData(data.results);
 
         setTotalItems(data.count);

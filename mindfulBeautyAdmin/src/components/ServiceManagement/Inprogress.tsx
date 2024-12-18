@@ -116,8 +116,8 @@ export const Inprogress = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await inprogressList(1, 2, currentPage);
+        const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
+        // const data = await inprogressList(1, 2, currentPage);
         setInprogressListData(data.results);
 
         setTotalItems(data.count);

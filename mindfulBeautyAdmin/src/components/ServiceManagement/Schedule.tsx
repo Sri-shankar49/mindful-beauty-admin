@@ -107,8 +107,8 @@ export const Schedule = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await scheduleList(1, 1, currentPage);
+        const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
+        // const data = await scheduleList(1, 1, currentPage);
         setScheduleListData(data.results);
 
         setTotalItems(data.count);

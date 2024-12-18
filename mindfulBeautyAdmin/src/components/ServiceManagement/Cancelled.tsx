@@ -115,8 +115,8 @@ export const Cancelled = () => {
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        // const data = await bookingsList(Number(sessionLoginProviderID));
-        const data = await cancelledList(1, 4, currentPage);
+        const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
+        // const data = await cancelledList(1, 4, currentPage);
         setCancelledListData(data.results);
 
         setTotalItems(data.count);
