@@ -764,6 +764,181 @@ export const deleteService = async (serviceID: number) => {
 
 
 
+// Service Listing Page -> Category List
+export const categories = async () => {
+  try {
+    const response = await apiAxios.get('/provider-api/categories/');
+    console.log("Category List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Category list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching Category list:", error.message || error);
+    throw new Error("Unable to fetch Category list. Please try again later.");
+  }
+};
+
+
+
+
+// Service Listing Page -> Sub Category List
+export const subCategories = async (categoryID: string) => {
+
+  try {
+    const response = await apiAxios.get('/provider-api/subcategories/', {
+      params: {
+        category_id: categoryID, // Replace with the actual category ID
+      },
+    });
+    console.log("Sub category List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Sub category list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching Sub Category list:", error.message || error);
+    throw new Error("Unable to fetch Sub Category list. Please try again later.");
+  }
+};
+
+
+
+
+// Service Listing Page -> Checkbox Services list
+export const addServicesCheckbox = async (categoryID: string, subCategoryID: string) => {
+
+  try {
+    const response = await apiAxios.get('/provider-api/provider_services/', {
+      params: {
+        category_id: categoryID, // Replace with the actual category ID
+        subcategory_id: subCategoryID, // Replace with the actual category ID
+      },
+    });
+    console.log("Checkbox List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Checkbox list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching Checkbox list:", error.message || error);
+    throw new Error("Unable to fetch Checkbox list. Please try again later.");
+  }
+};
+
+
+
+
+export const addServices = async (formData: FormData): Promise<unknown> => {
+  try {
+
+    // Debugging: Log the FormData contents
+    console.log("Sending the following add services FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+
+    const response = await apiAxios.post(`/provider-api/add-services/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+    });
+
+    console.log("Services list added POST Method response:", response.data);
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 201) {
+      throw new Error("Failed to add services. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+
+  }
+  catch (error: any) {
+    console.error("Error adding services:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add services. Please try again later.");
+  }
+}
+
+
+
+
+
+// Service Listing Page -> Active Services List
+export const activeServices = async (providerID: number, branchID: number) => {
+
+  try {
+    const response = await apiAxios.get('/provider-api/active-services/', {
+      params: {
+        provider_id: providerID, // Replace with the actual category ID
+        branch_id: branchID, // Replace with the actual branch ID
+      },
+    });
+    console.log("Active Services List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Active Services list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching active services list:", error.message || error);
+    throw new Error("Unable to fetch active services list. Please try again later.");
+  }
+};
+
+
+
+
+
+
+// Service Listing -- --> AddServices
+// PUT Method from the API
+export const updateActiveServices = async (formData: FormData): Promise<unknown> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/update-active-services/`, formData, {
+
+      headers: {
+        // "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+        "Content-Type": "application/json",
+      },
+
+    });
+
+    console.log("Update Active Services PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit update Active Services");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error updating active services:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to updating active services. Please try again later.");
+  }
+}
+
+
+
+
 
 // Service Management Page -- --> All Booking
 // GET Method from the API
