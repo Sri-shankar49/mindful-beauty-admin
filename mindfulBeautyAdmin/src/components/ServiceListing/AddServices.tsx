@@ -362,6 +362,10 @@ export const AddServices: React.FC = () => {
 
             if (response?.status === "success") {
                 // alert("Services updated successfully!");
+
+                // Clear all selected fields
+                setSelectedBranch("");
+
                 setUpdateButtonState({ text: "Updated Services Successfully!", success: true });
 
                 // Revert back to default state after 3 seconds
