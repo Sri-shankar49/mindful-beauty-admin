@@ -284,14 +284,14 @@ export const AddServices: React.FC = () => {
 
 
     // Function call for handling the input field change for price & timing in the active services data
-    const handleInputChange = (serviceId: string, field: string, value: string) => {
+    const handleInputChange = (serviceProviderID: string, field: string, value: string) => {
         setActiveServicesData((prevData) =>
             prevData.map((category) => ({
                 ...category,
                 subcategories: category.subcategories.map((subcategory) => ({
                     ...subcategory,
                     services: subcategory.services.map((service) =>
-                        service.service_id === serviceId ? { ...service, [field]: value } : service
+                        service.service_id === serviceProviderID ? { ...service, [field]: value } : service
                     ),
                 })),
             }))
@@ -300,7 +300,7 @@ export const AddServices: React.FC = () => {
 
 
     // Function call for deleting the service data from the active service data
-    const handleDeleteServiceData = (categoryId: any, subcategoryId: any, serviceId: any) => {
+    const handleDeleteServiceData = (categoryId: any, subcategoryId: any, serviceProviderID: any) => {
         // Make a deep copy of the data (assuming it's stored in a state like `activeServicesData`)
         const updatedData = servicesData.map((category) => {
             if (category.category_id === categoryId) {
@@ -311,7 +311,7 @@ export const AddServices: React.FC = () => {
                             return {
                                 ...subcategory,
                                 services: subcategory.services.map((service) => {
-                                    if (service.provider_service_id === serviceId) {
+                                    if (service.provider_service_id === serviceProviderID) {
                                         return { ...service, is_deleted: true }; // Set `is_deleted` to true
                                     }
                                     return service;
@@ -329,7 +329,7 @@ export const AddServices: React.FC = () => {
         setServicesData(updatedData);
     };
 
-    console.log("Updated Data:", servicesData);
+    console.log("Updated Services Copy Data:", servicesData);
 
     // Function call for handling the active services change to the update button
     const onSubmitActiveServices = async () => {
@@ -773,10 +773,10 @@ export const AddServices: React.FC = () => {
                                                                                             label=""
                                                                                             placeholder={service.price?.toString() || "N/A"}
                                                                                             className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.price || ""}
+                                                                                            value={service.price}
                                                                                             onChange={(e) =>
                                                                                                 handleInputChange(
-                                                                                                    service.provider_service_id,
+                                                                                                    service.service_id,
                                                                                                     "price",
                                                                                                     e.target.value
                                                                                                 )
@@ -788,10 +788,10 @@ export const AddServices: React.FC = () => {
                                                                                             label=""
                                                                                             placeholder={service.service_time || "N/A"}
                                                                                             className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.service_time || ""}
+                                                                                            value={service.service_time}
                                                                                             onChange={(e) =>
                                                                                                 handleInputChange(
-                                                                                                    service.provider_service_id,
+                                                                                                    service.service_id,
                                                                                                     "service_time",
                                                                                                     e.target.value
                                                                                                 )
