@@ -284,14 +284,14 @@ export const AddServices: React.FC = () => {
 
 
     // Function call for handling the input field change for price & timing in the active services data
-    const handleInputChange = (serviceProviderID: string, field: string, value: string) => {
+    const handleInputChange = (serviceProviderID: number, field: string, value: string) => {
         setActiveServicesData((prevData) =>
             prevData.map((category) => ({
                 ...category,
                 subcategories: category.subcategories.map((subcategory) => ({
                     ...subcategory,
                     services: subcategory.services.map((service) =>
-                        service.service_id === serviceProviderID ? { ...service, [field]: value } : service
+                        service.provider_service_id === serviceProviderID ? { ...service, [field]: value } : service
                     ),
                 })),
             }))
@@ -776,7 +776,7 @@ export const AddServices: React.FC = () => {
                                                                                             value={service.price}
                                                                                             onChange={(e) =>
                                                                                                 handleInputChange(
-                                                                                                    service.service_id,
+                                                                                                    service.provider_service_id,
                                                                                                     "price",
                                                                                                     e.target.value
                                                                                                 )
@@ -791,7 +791,7 @@ export const AddServices: React.FC = () => {
                                                                                             value={service.service_time}
                                                                                             onChange={(e) =>
                                                                                                 handleInputChange(
-                                                                                                    service.service_id,
+                                                                                                    service.provider_service_id,
                                                                                                     "service_time",
                                                                                                     e.target.value
                                                                                                 )
