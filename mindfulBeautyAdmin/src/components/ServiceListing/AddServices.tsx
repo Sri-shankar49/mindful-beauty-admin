@@ -7,21 +7,7 @@ import { IoCloseCircle } from 'react-icons/io5'
 import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
 import { activeServices, addServices, addServicesCheckbox, categories, staffBranchList, subCategories, updateActiveServices } from '@/api/apiConfig';
 import "./ServiceListing.css";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
-
-// Zod schema for form validation
-const addServicesSchema = zod.object({
-    // city: zod.string().min(3, "Name is required"),
-    // branch: zod.string().min(1, "Branch is required"),
-    // category: zod.string().min(1, "Category is required"),
-    // subCategory: zod.string().min(1, "Sub Category is required"),
-    // checkbox: zod.array(zod.string()).min(1, "At least one service must be selected"),
-});
-
-type addServicesFormData = zod.infer<typeof addServicesSchema>;
-
+import { ShimmerTable } from "shimmer-effects-react";
 
 interface categoriesDataProps {
     category_id?: string;
@@ -59,6 +45,8 @@ interface Services {
     sku_value: string;
     price: string;
     service_time: string;
+    is_deleted: boolean;
+    provider_service_id: number;
 }
 
 interface ActiveServicesListDataProps {
@@ -84,7 +72,7 @@ export const AddServices: React.FC = () => {
 
     const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
     const [subCategoriesData, setSubCategoriesData] = useState<SubCategoriesDataProps[]>([]);
-    const [checkboxData, setcheckboxData] = useState<checkboxDataProps[]>([]);
+    const [checkboxData, setCheckboxData] = useState<checkboxDataProps[]>([]);
     const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [activeServicesData, setActiveServicesData] = useState<ActiveServicesListDataProps[]>([]);
 
@@ -96,16 +84,17 @@ export const AddServices: React.FC = () => {
     // State to store selected checkbox IDs
     const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState<number[]>([]);
 
+    const [buttonState, setButtonState] = useState({ text: "Add Service", success: false });
+    const [updateButtonState, setUpdateButtonState] = useState({ text: "Update", success: false });
+
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [servicesData, setServicesData] = useState<ActiveServicesListDataProps[]>([]);
+
 
     // Registration Provider ID
     const sessionProviderID = sessionStorage.getItem("loginProviderID");
     console.log("Selected Provider ID from session storage", sessionProviderID);
-
-    const { register, handleSubmit, formState: { errors } } = useForm<addServicesFormData>({
-        resolver: zodResolver(addServicesSchema),
-    });
 
 
     useEffect(() => {
@@ -146,6 +135,12 @@ export const AddServices: React.FC = () => {
         }
         loadCategorySelect();
     }, []);
+
+    // Getting the copy of active services data & changing the state activeServicesData to set true or false
+    useEffect(() => {
+        // Initialize `servicesData` with a deep copy of `activeServicesData`
+        setServicesData(JSON.parse(JSON.stringify(activeServicesData)));
+    }, [activeServicesData]); // Only re-run when `activeServicesData` changes
 
 
     // Function to handle category change and fetch subcategories
@@ -189,6 +184,7 @@ export const AddServices: React.FC = () => {
         }
     };
 
+
     // Function to handle sub category change and fetch handle Check box List
     const handleCheckboxList = async (event: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -198,7 +194,7 @@ export const AddServices: React.FC = () => {
         try {
             setLoading(true);
             const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId); // Pass categoryId to API
-            setcheckboxData(loadCheckboxData.data); // Update subcategories
+            setCheckboxData(loadCheckboxData.data); // Update subcategories
             console.log("Checkbox list data log:", loadCheckboxData);
 
         } catch (error: any) {
@@ -208,6 +204,7 @@ export const AddServices: React.FC = () => {
         }
     }
 
+    // Function to get the check box service ID's
     const handleCheckboxClick = (service_id: number) => {
 
         setSelectedCheckboxIDs((prevSelected) => {
@@ -229,16 +226,16 @@ export const AddServices: React.FC = () => {
 
     }
 
-    // const joinedServiceIDs = `"${selectedCheckboxIDs.join(" ,")}"`;
-    // console.log("Joined service IDs:", joinedServiceIDs);
+    // Converting the checkbox ID's to string
+    const checkboxIDsString = selectedCheckboxIDs.join(","); // Converts array to string
+    console.log("Changed to string value", checkboxIDsString);
 
 
-    const onSubmitAddServices = async (data: addServicesFormData) => {
-        setLoading(true);
-        setError(null);
+    // Function call for Add services button based on category & sub category
+    const onSubmitAddServices = async () => {
+        setLoading(true); // Start loading state
+        setError(null);   // Clear any previous errors
 
-        // Add logic to handle form submission
-        console.log("Submitted data:", data);
 
         try {
             const formData = new FormData();
@@ -248,20 +245,36 @@ export const AddServices: React.FC = () => {
             formData.append("category_id", selectedCategory);
             formData.append("subcategory_id", selectedSubCategory);
             // formData.append("subcategory_id", data.subCategory);
-            formData.append("service_ids", selectedCheckboxIDs || "");
+            formData.append("service_ids", checkboxIDsString);
 
             // Call the taxInfo function
             const addServicesData = await addServices(formData);
 
-            console.log("Add Staff Details Submission Success:", addServicesData);
+            console.log("Add Service Details Submission Success:", addServicesData);
 
-            if (data.status === "success") {
-                // Set the success message
+            if (addServicesData?.status === "success") {
+                // Update button UI to success state
+                setButtonState({ text: "Service Added Successfully!", success: true });
 
+                // Clear all selected fields
+                // setSelectedBranch("");
+                // setSelectedCategory("");
+                // setSelectedSubCategory("");
+                // setSelectedCheckboxIDs([]);
+                // setCheckboxData([]); // If you need to clear the services list
+
+                // Revert back to default state after 3 seconds
+                setTimeout(() => {
+                    setButtonState({ text: "Add Service", success: false });
+                }, 3000);
+            } else {
+                throw new Error("Failed to add service.");
             }
         }
         catch (error: any) {
             setError(error.message || "Something went wrong.");
+            setButtonState({ text: "Add Service", success: false });
+
         } finally {
             setLoading(false);
         }
@@ -269,61 +282,8 @@ export const AddServices: React.FC = () => {
     }
 
 
-    // const handleDeleteServiceData = (service_id: number) => {
-    //     console.log("Delete service ID:", service_id);
 
-    // }
-
-    // Function to handle deletion of a service
-    const handleDeleteServiceData = (categoryId: string, subcategoryId: string, serviceId: string) => {
-
-        console.log("Delete service ID:", serviceId);
-
-        setActiveServicesData((prevData) =>
-            prevData.map((category) =>
-                category.category === categoryId
-                    ? {
-                        ...category,
-                        subcategories: category.subcategories.map((subcategory) =>
-                            subcategory.subcategory_id === subcategoryId
-                                ? {
-                                    ...subcategory,
-                                    services: subcategory.services.filter(
-                                        (service) => service.service_id !== serviceId
-                                    ),
-                                }
-                                : subcategory
-                        ),
-                    }
-                    : category
-            )
-        );
-    }
-
-
-    // const onSubmitActiveServices = async (data) => {
-    //     setLoading(true);
-    //     setError(null);
-
-    //     // Add logic to handle form submission
-    //     console.log("Submitted data:", data);
-
-    //     try {
-    //         const formData = new FormData();
-
-    //         // Call the taxInfo function
-    //         const updateServicesData = await updateActiveServices(formData);
-
-    //         console.log("Update Services Data Details Submission Success:", updateServicesData);
-    //     }
-    //     catch (error: any) {
-    //         setError(error.message || "Something went wrong.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-
-    // }
-
+    // Function call for handling the input field change for price & timing in the active services data
     const handleInputChange = (serviceId: string, field: string, value: string) => {
         setActiveServicesData((prevData) =>
             prevData.map((category) => ({
@@ -338,18 +298,53 @@ export const AddServices: React.FC = () => {
         );
     };
 
+
+    // Function call for deleting the service data from the active service data
+    const handleDeleteServiceData = (categoryId: any, subcategoryId: any, serviceId: any) => {
+        // Make a deep copy of the data (assuming it's stored in a state like `activeServicesData`)
+        const updatedData = servicesData.map((category) => {
+            if (category.category_id === categoryId) {
+                return {
+                    ...category,
+                    subcategories: category.subcategories.map((subcategory) => {
+                        if (subcategory.subcategory_id === subcategoryId) {
+                            return {
+                                ...subcategory,
+                                services: subcategory.services.map((service) => {
+                                    if (service.provider_service_id === serviceId) {
+                                        return { ...service, is_deleted: true }; // Set `is_deleted` to true
+                                    }
+                                    return service;
+                                }),
+                            };
+                        }
+                        return subcategory;
+                    }),
+                };
+            }
+            return category;
+        });
+
+        // Update the state with the modified data
+        setServicesData(updatedData);
+    };
+
+    console.log("Updated Data:", servicesData);
+
+    // Function call for handling the active services change to the update button
     const onSubmitActiveServices = async () => {
         setLoading(true);
         setError(null);
 
         try {
             // Prepare the updated services data
-            const updatedServices = activeServicesData.flatMap((category) =>
+            const updatedServices = servicesData.flatMap((category) =>
                 category.subcategories.flatMap((subcategory) =>
                     subcategory.services.map((service) => ({
                         id: service.service_id,
                         price: service.price,
                         duration: service.service_time,
+                        deleted: service.is_deleted
                     }))
                 )
             );
@@ -358,13 +353,30 @@ export const AddServices: React.FC = () => {
             const formData = new FormData();
             formData.append("services", JSON.stringify(updatedServices));
 
+            setLoading(true);
+            setUpdateButtonState((prev) => ({ ...prev, text: "Updating..." }));
+
             // Call the API
             const response = await updateActiveServices(formData);
             console.log("Update Services Data Submission Success:", response);
 
-            alert("Services updated successfully!");
+            if (response?.status === "success") {
+                // alert("Services updated successfully!");
+                setUpdateButtonState({ text: "Updated Services Successfully!", success: true })
+
+                // Revert back to default state after 3 seconds
+                setTimeout(() => {
+                    setUpdateButtonState({ text: "Update", success: false });
+                }, 3000);
+
+            } else {
+                throw new Error("Failed to update service.");
+            }
+
         } catch (error: any) {
             setError(error.message || "Something went wrong.");
+            setButtonState({ text: "Update Failed.", success: false });
+
         } finally {
             setLoading(false);
         }
@@ -372,12 +384,29 @@ export const AddServices: React.FC = () => {
 
 
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>Error : {error}</div>;
+
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={12}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
+
 
 
     return (
         <div>
+
             <div className="bg-mindfulLightPink px-5 py-5" >
 
                 <div className="bg-mindfulWhite px-5 py-5">
@@ -391,7 +420,7 @@ export const AddServices: React.FC = () => {
 
                             {/* Whole Grid Column One */}
                             <div className="">
-                                <form onSubmit={handleSubmit(onSubmitAddServices)} action="" method="post">
+                                <form onSubmit={onSubmitAddServices}>
 
                                     <div className="bg-mindfulLightgrey rounded-sm px-5 py-5">
                                         <div className="grid grid-cols-2 gap-5">
@@ -418,11 +447,10 @@ export const AddServices: React.FC = () => {
                                                             { value: "thrissur", label: "Thrissur" },
                                                         ]}
                                                         className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    // {...register("city")}
                                                     />
 
-                                                    {/* {errors.city && (
-                                                        <p className="text-sm text-red-500">{errors.city.message}</p>
+                                                    {/* {error.city && (
+                                                        <p className="text-sm text-red-500">{error.city}</p>
                                                     )} */}
                                                 </div>
 
@@ -441,10 +469,9 @@ export const AddServices: React.FC = () => {
                                                         className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                         value={selectedCategory}
                                                         onChange={handleCategoryChange} // Call on change
-                                                    // {...register("category")}
 
                                                     >
-                                                        <option value="" selected disabled>
+                                                        <option value="" disabled>
                                                             Select Category
                                                         </option>
 
@@ -455,8 +482,8 @@ export const AddServices: React.FC = () => {
                                                         ))}
                                                     </select>
 
-                                                    {/* {errors.category && (
-                                                        <p className="text-sm text-red-500">{errors.category.message}</p>
+                                                    {/* {error.category && (
+                                                        <p className="text-sm text-red-500">{error.category}</p>
                                                     )} */}
                                                 </div>
                                             </div>
@@ -472,7 +499,7 @@ export const AddServices: React.FC = () => {
                                                     >
                                                         Branch
                                                     </label>
-                                                    {/* <SelectField
+                                                    <SelectField
                                                         label=""
                                                         name="branch"
                                                         // required
@@ -487,10 +514,12 @@ export const AddServices: React.FC = () => {
                                                                 }))
                                                                 : [{ value: "", label: "No branch available" }]
                                                         }
+                                                        value={selectedBranch}
+                                                        onChange={handleBranchChange} // Call on change
                                                     // error="This field is required."
-                                                    /> */}
+                                                    />
 
-                                                    <select
+                                                    {/* <select
                                                         // name=""
                                                         id=""
                                                         className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
@@ -498,7 +527,7 @@ export const AddServices: React.FC = () => {
                                                         onChange={handleBranchChange} // Call on change
 
                                                     >
-                                                        <option value="" selected disabled>
+                                                        <option value="" disabled>
                                                             Select Branch
                                                         </option>
 
@@ -507,10 +536,10 @@ export const AddServices: React.FC = () => {
                                                                 {branch.branch_name}
                                                             </option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
 
-                                                    {/* {errors.branch && (
-                                                        <p className="text-sm text-red-500">{errors.branch.message}</p>
+                                                    {/* {error.branch && (
+                                                        <p className="text-sm text-red-500">{error.branch}</p>
                                                     )} */}
                                                 </div>
 
@@ -529,9 +558,8 @@ export const AddServices: React.FC = () => {
                                                         className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                         value={selectedSubCategory}
                                                         onChange={handleCheckboxList} // Call on change
-                                                    // {...register("subCategory")}
                                                     >
-                                                        <option value="" selected disabled>
+                                                        <option value="" disabled>
                                                             Select Sub Category
                                                         </option>
 
@@ -542,8 +570,8 @@ export const AddServices: React.FC = () => {
                                                         ))}
                                                     </select>
 
-                                                    {/* {errors.subCategory && (
-                                                        <p className="text-sm text-red-500">{errors.subCategory.message}</p>
+                                                    {/* {error.subCategory && (
+                                                        <p className="text-sm text-red-500">{error.subCategory}</p>
                                                     )} */}
                                                 </div>
                                             </div>
@@ -575,7 +603,6 @@ export const AddServices: React.FC = () => {
                                                                     value={service.service_id}
                                                                     // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
                                                                     onChange={() => handleCheckboxClick(Number(service.service_id))}
-                                                                // {...register("checkbox")}
 
                                                                 />
                                                                 <span className="checkmark"></span>{service.service_name}
@@ -587,8 +614,8 @@ export const AddServices: React.FC = () => {
                                                     <div>No services available</div>
                                                 )}
 
-                                                {/* {errors.checkbox && (
-                                                    <p className="text-sm text-red-500">{errors.checkbox.message}</p>
+                                                {/* {error.checkbox && (
+                                                    <p className="text-sm text-red-500">{error.checkbox}</p>
                                                 )} */}
 
                                             </div>
@@ -599,13 +626,34 @@ export const AddServices: React.FC = () => {
 
                                     {/* Add Service Button */}
                                     <div className="text-center mt-20">
-                                        <button className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2">Add Service</button>
+                                        {/* <button
+                                            className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
+                                        >
+                                           Add Service
+                                        </button> */}
+                                        <button
+                                            type='submit'
+                                            className={`text-lg text-mindfulWhite rounded-sm px-8 py-2 
+                                                ${buttonState.success ? "bg-green-500" : "bg-main"}`}
+                                            disabled={loading}
+                                        >
+                                            {loading ? "Adding..." : buttonState.text}
+                                        </button>
+
+                                        {/* Error response from the API */}
+                                        {error && <p className="text-sm text-red-600">{error}</p>}
                                     </div>
                                 </form>
                             </div>
 
+
+
+
+
+
                             {/* Whole Grid Column Two */}
-                            <div className="border-l-2 pl-5 h-screen overflow-y-auto">
+                            {/* h-screen overflow-y-auto */}
+                            <div className="border-l-2 pl-5">
 
                                 <div className="border-b-2">
                                     <div className="flex items-center justify-between">
@@ -661,7 +709,7 @@ export const AddServices: React.FC = () => {
                                                     onChange={handleBranchChange} // Call on change
 
                                                 >
-                                                    <option value="" selected disabled>
+                                                    <option value="" disabled>
                                                         Select Branch
                                                     </option>
 
@@ -679,8 +727,8 @@ export const AddServices: React.FC = () => {
 
                                 {/* Content */}
                                 <>
-                                    {activeServicesData.length > 0 ? (
-                                        activeServicesData.map((activeData) => (
+                                    {servicesData.length > 0 ? (
+                                        servicesData.map((activeData) => (
                                             <div key={activeData.category_id}>
                                                 {/* Category Heading */}
                                                 <div className="border-b-[1px] py-3">
@@ -710,74 +758,66 @@ export const AddServices: React.FC = () => {
                                                                     </thead>
 
                                                                     <tbody>
-                                                                        {subcategory.services.map((service: any) => (
-                                                                            <tr key={service.service_id} className="border-b-2 border-dashed">
-                                                                                <td className="px-2 py-5">{service.sku_value || "N/A"}</td>
-                                                                                <td className="px-2 py-5">{service.service_name || "N/A"}</td>
-                                                                                <td className="px-2 py-5">
-                                                                                    <div>
+                                                                        {subcategory.services
+                                                                            .filter((service: any) => !service.is_deleted) // Exclude services where `is_deleted` is true
+                                                                            .map((service: any) => (
+                                                                                <tr key={service.provider_service_id} className="border-b-2 border-dashed">
+                                                                                    <td className="px-2 py-5">{service.sku_value || "N/A"}</td>
+                                                                                    <td className="px-2 py-5">{service.service_name || "N/A"}</td>
+                                                                                    <td className="px-2 py-5">
                                                                                         <InputField
-                                                                                            label={''}
-                                                                                            placeholder={service.price || "N/A"}
+                                                                                            label=""
+                                                                                            placeholder={service.price?.toString() || "N/A"}
                                                                                             className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.price || "N/A"}
+                                                                                            value={service.price || ""}
                                                                                             onChange={(e) =>
-                                                                                                handleInputChange(service.service_id, "price", e.target.value)  // Update price
+                                                                                                handleInputChange(
+                                                                                                    service.provider_service_id,
+                                                                                                    "price",
+                                                                                                    e.target.value
+                                                                                                )
                                                                                             }
                                                                                         />
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td className="px-2 py-5">
-                                                                                    <div>
-                                                                                        {/* <SelectField
-                                                                                            label={''}
-                                                                                            options={[
-                                                                                                { value: "15mins", label: "15 mins" },
-                                                                                                { value: "30mins", label: "30 mins" },
-                                                                                                { value: "45mins", label: "45 mins" },
-                                                                                                { value: "60mins", label: "60 mins" },
-                                                                                            ]}
-                                                                                            // options={
-                                                                                            //     [{ value: "", label: "No roles available" }]
-                                                                                            // }
-                                                                                            className="w-28 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            onChange={(e) =>
-                                                                                                handleInputChange(service.service_id, "service_time", e.target.value)
-                                                                                            }
-                                                                                        /> */}
+                                                                                    </td>
+                                                                                    <td className="px-2 py-5">
                                                                                         <InputField
-                                                                                            label={''}
+                                                                                            label=""
                                                                                             placeholder={service.service_time || "N/A"}
                                                                                             className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.service_time || "N/A"}
+                                                                                            value={service.service_time || ""}
                                                                                             onChange={(e) =>
-                                                                                                handleInputChange(service.service_id, "service_time", e.target.value) // Update service time
+                                                                                                handleInputChange(
+                                                                                                    service.provider_service_id,
+                                                                                                    "service_time",
+                                                                                                    e.target.value
+                                                                                                )
                                                                                             }
                                                                                         />
-                                                                                    </div>
-                                                                                </td>
-
-                                                                                <td className="px-2 py-5">
-                                                                                    <div
-                                                                                        onClick={() => handleDeleteServiceData(
-                                                                                            activeData.category_id,
-                                                                                            subcategory.subcategory_id!,
-                                                                                            service.service_id!
-                                                                                        )}
-                                                                                        className="w-fit mx-auto cursor-pointer"
-                                                                                    >
-                                                                                        <IoCloseCircle className="text-[28px] text-mindfulRed" />
-                                                                                    </div>
-                                                                                </td>
-
-                                                                            </tr>
-                                                                        ))}
+                                                                                    </td>
+                                                                                    <td className="px-2 py-5 text-center">
+                                                                                        <div
+                                                                                            className="w-fit mx-auto cursor-pointer"
+                                                                                            onClick={() =>
+                                                                                                handleDeleteServiceData(
+                                                                                                    activeData.category_id,
+                                                                                                    subcategory.subcategory_id,
+                                                                                                    service.provider_service_id
+                                                                                                )
+                                                                                            }
+                                                                                        >
+                                                                                            <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            ))}
                                                                     </tbody>
                                                                 </table>
                                                             </div>
                                                         ) : (
                                                             <div className="py-3 text-sm text-mindfulgrey">No services available</div>
                                                         )}
+
+
                                                     </div>
                                                 ))}
 
@@ -792,15 +832,27 @@ export const AddServices: React.FC = () => {
 
                                 {/* Update Button */}
                                 <div className="my-5" >
-                                    <Button
+                                    {/* <Button
                                         onClick={onSubmitActiveServices}
                                         buttonTitle={'Update'}
                                         className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
-                                    />
+                                    /> */}
+                                    <button
+                                        onClick={onSubmitActiveServices}
+                                        className={`text-lg text-mindfulWhite rounded-sm px-8 py-2
+                                             ${updateButtonState.success ? "bg-green-500" : "bg-main"}`}
+                                        disabled={loading}
+                                    >
+                                        {loading ? "Updating..." : updateButtonState.text}
+                                    </button>
                                 </div>
 
 
                             </div>
+
+
+
+
 
                         </div>
                     </div>

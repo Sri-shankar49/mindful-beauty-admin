@@ -841,7 +841,7 @@ export const addServicesCheckbox = async (categoryID: string, subCategoryID: str
 
 
 
-export const addServices = async (formData: FormData): Promise<unknown> => {
+export const addServices = async (formData: FormData): Promise<any> => {
   try {
 
     // Debugging: Log the FormData contents
@@ -909,7 +909,7 @@ export const activeServices = async (providerID: number, branchID: number) => {
 
 // Service Listing -- --> AddServices
 // PUT Method from the API
-export const updateActiveServices = async (formData: FormData): Promise<unknown> => {
+export const updateActiveServices = async (formData: FormData): Promise<any> => {
 
   try {
     const response = await apiAxios.put(`/provider-api/update-active-services/`, formData, {

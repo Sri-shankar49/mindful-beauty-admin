@@ -29,6 +29,7 @@
     "react-router-dom": "^6.27.0",
     "react-select": "^5.8.3",
     "redux-persist": "^6.0.0",
+    "shimmer-effects-react": "^1.0.4",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
