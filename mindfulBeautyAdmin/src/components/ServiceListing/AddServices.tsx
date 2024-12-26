@@ -134,7 +134,7 @@ export const AddServices: React.FC = () => {
             }
         }
         loadCategorySelect();
-    }, []);
+    }, [activeServicesData, sessionProviderID]);
 
     // Getting the copy of active services data & changing the state activeServicesData to set true or false
     useEffect(() => {
@@ -344,7 +344,7 @@ export const AddServices: React.FC = () => {
                         id: service.service_id,
                         price: service.price,
                         duration: service.service_time,
-                        deleted: service.is_deleted
+                        is_deleted: service.is_deleted
                     }))
                 )
             );
