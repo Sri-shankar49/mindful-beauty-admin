@@ -257,11 +257,11 @@ export const AddServices: React.FC = () => {
                 setButtonState({ text: "Service Added Successfully!", success: true });
 
                 // Clear all selected fields
-                // setSelectedBranch("");
-                // setSelectedCategory("");
-                // setSelectedSubCategory("");
-                // setSelectedCheckboxIDs([]);
-                // setCheckboxData([]); // If you need to clear the services list
+                setSelectedBranch("");
+                setSelectedCategory("");
+                setSelectedSubCategory("");
+                setSelectedCheckboxIDs([]);
+                setCheckboxData([]); // If you need to clear the services list
 
                 // Revert back to default state after 3 seconds
                 setTimeout(() => {
@@ -362,7 +362,7 @@ export const AddServices: React.FC = () => {
 
             if (response?.status === "success") {
                 // alert("Services updated successfully!");
-                setUpdateButtonState({ text: "Updated Services Successfully!", success: true })
+                setUpdateButtonState({ text: "Updated Services Successfully!", success: true });
 
                 // Revert back to default state after 3 seconds
                 setTimeout(() => {
@@ -391,7 +391,7 @@ export const AddServices: React.FC = () => {
         <div>
             <ShimmerTable
                 mode="light"
-                row={12}
+                row={13}
                 col={4}
                 border={1}
                 borderColor={"#cbd5e1"}
