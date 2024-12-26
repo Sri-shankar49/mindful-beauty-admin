@@ -134,7 +134,7 @@ export const AddServices: React.FC = () => {
             }
         }
         loadCategorySelect();
-    }, [activeServicesData, sessionProviderID]);
+    }, []);
 
     // Getting the copy of active services data & changing the state activeServicesData to set true or false
     useEffect(() => {
