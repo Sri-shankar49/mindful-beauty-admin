@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import { SelectField } from "@/common/SelectField"
 import { Button } from "@/common/Button"
@@ -9,6 +10,7 @@ import { StylistPopup } from "@/components/Dashboard/DashBoardData/StylistPopup"
 import Select, { SingleValue } from 'react-select';
 import stylist from "../../assets/images/stylist.png"
 import { bookingAction, dashBoardBookingList } from "@/api/apiConfig"
+import React from "react"
 // import { useNavigate } from "react-router-dom"
 
 
@@ -76,6 +78,8 @@ export const DashBoardData = () => {
     const [error, setError] = useState<string | null>(null);
     // const [isAccepted, setIsAccepted] = useState(false);
     const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
+    const [declinedAppointments, setDeclinedAppointments] = React.useState<Record<number, boolean>>({});
+
 
     // handle onChange event of the dropdown
     const handleStylistOption = (option: SingleValue<StylistOption>) => {
@@ -133,13 +137,22 @@ export const DashBoardData = () => {
 
         try {
             const data = await bookingAction(appointmentID, actionID);
+            console.log("actionID", actionID)
+            console.log("appointmentID", appointmentID)
             if (data.status === "success") {
                 // alert("Appointment accepted successfully");
                 // setIsAccepted(true);
-                setAcceptedAppointments((prevState) => ({
-                    ...prevState,
-                    [appointmentID]: true, // Mark this appointment as accepted
-                }));
+                if (actionID === 1) {
+                    setAcceptedAppointments((prevState) => ({
+                        ...prevState,
+                        [appointmentID]: true, // Mark this appointment as accepted
+                    }));
+                } else if (actionID === 2) {
+                    setDeclinedAppointments((prevState) => ({
+                        ...prevState,
+                        [appointmentID]: true, // Mark this appointment as declined
+                    }));
+                }
                 // navigate(0);
             }
             console.log("Booking Action data log:", data);
@@ -173,7 +186,6 @@ export const DashBoardData = () => {
     //         setLoading(false); // Ensure loading is false after the process
     //     }
     // };
-
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -300,12 +312,7 @@ export const DashBoardData = () => {
                                                     ))}
                                                 </ul>
                                             </td>
-                                            {/* <td className="text-start px-2 py-5">
-                                                <ul>
-                                                    <li>Eyesbrows Threading</li>
-                                                    <li>Forehead Threading</li>
-                                                </ul>
-                                            </td> */}
+
 
                                             <td className="text-start px-2 py-5">
                                                 {/* Branch Select Field */}
@@ -331,40 +338,6 @@ export const DashBoardData = () => {
                                                 <div className="space-y-3">
 
                                                     <div>
-
-                                                        {/* <Button
-                                                            onClick={() =>
-                                                                !isAccepted &&
-                                                                handleActionSubmit(
-                                                                    Number(dashboardData.appointment_id),
-                                                                    1,
-                                                                    // setIsAccepted,
-                                                                    // setLoading,
-                                                                    // setError,
-                                                                    // navigate
-                                                                )
-                                                            }
-                                                            buttonType="button"
-                                                            buttonTitle={
-                                                                isAccepted
-                                                                    ? "Accepted" // Display "Accepted" if the action was successful
-                                                                    : loading
-                                                                        ? "Accepting..." // Show loading text while the request is being processed
-                                                                        : "Accept" // Default text
-                                                            }
-                                                            className={`w-24 text-md ${isAccepted ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"
-                                                                } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
-                                                                } rounded-[5px] px-3 py-1`}
-                                                            disabled={loading || isAccepted} // Disable button if loading or already accepted
-                                                        /> */}
-
-                                                        {/* <Button
-                                                            onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
-                                                            buttonType="button"
-                                                            buttonTitle={isAccepted ? "Accepted" : "Accept"}
-                                                            className="w-24 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                        /> */}
-
                                                         <Button
                                                             onClick={() =>
                                                                 !acceptedAppointments[dashboardData.appointment_id] &&
@@ -375,8 +348,6 @@ export const DashBoardData = () => {
                                                             className={`w-24 text-md ${acceptedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"} font-semibold border-[1px] ${acceptedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulGreen"} rounded-[5px] px-3 py-1`}
                                                             disabled={loading || acceptedAppointments[dashboardData.appointment_id]} // Disable if loading or already accepted
                                                         />
-
-
                                                     </div>
 
                                                     <div>
@@ -390,6 +361,14 @@ export const DashBoardData = () => {
 
                                                     <div>
                                                         <Button
+                                                            //    onClick={() => {
+                                                            //     openDenialPopup();
+                                                            //     handleActionSubmit(dashboardData.appointment_id, 2);
+                                                            // }}
+                                                            // disabled={
+                                                            //     declinedAppointments[dashboardData.appointment_id] ||
+                                                            //     acceptedAppointments[dashboardData.appointment_id]
+                                                            // }
                                                             onClick={openDenialPopup}
                                                             buttonType="button"
                                                             buttonTitle="Decline"
@@ -408,216 +387,6 @@ export const DashBoardData = () => {
                                         </td>
                                     </tr>
                                 )}
-
-
-
-                                {/* <tr className="border-b-2 pb-2">
-                                    <td className="px-2 py-5">BK023</td>
-                                    <td className="text-start px-2 py-5">18-08-2024</td>
-                                    <td className="text-start px-2 py-5">10.00</td>
-                                    <td className="text-start px-2 py-5">Shenoys</td>
-                                    <td className="text-start px-2 py-5">Ramya</td>
-                                    <td className="text-start px-2 py-5">1234567890</td>
-                                    <td className="text-start px-2 py-5">
-                                        <ul>
-                                            <li>Eyesbrows Threading</li>
-                                            <li>Forehead Threading</li>
-                                        </ul>
-                                    </td>
-
-                                    <td className="text-start px-2 py-5">
-                                        Branch Select Field
-                                        <div>
-                                            <SelectField
-                                                onChange={openStylistPopup}
-                                                label=""
-                                                name="branch"
-                                                // required
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                options={[
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                ]}
-                                            // error="This field is required."
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                formatOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            {selectedStylistOption && (
-                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                                                    <b>Selected Option:</b> {selectedStylistOption.text}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td className="text-center px-2 py-5">
-                                        <div className="space-y-3">
-
-                                            <div>
-                                                <Button
-                                                    buttonType="button"
-                                                    buttonTitle="Accept"
-                                                    className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Deny"
-                                                    className="w-20 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Decline"
-                                                    className="w-20 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-                                        </div>
-                                    </td>
-
-
-                                </tr> */}
-
-
-                                {/* Content & Checkbox */}
-                                {/* <tr className="border-b-2 pb-2">
-                                    <td className="px-2 py-5">BK023</td>
-                                    <td className="text-start px-2 py-5">18-08-2024</td>
-                                    <td className="text-start px-2 py-5">10.00</td>
-                                    <td className="text-start px-2 py-5">Shenoys</td>
-                                    <td className="text-start px-2 py-5">Ramya</td>
-                                    <td className="text-start px-2 py-5">1234567890</td>
-                                    <td className="text-start px-2 py-5">
-                                        <ul>
-                                            <li>Eyesbrows Threading</li>
-                                            <li>Forehead Threading</li>
-                                        </ul>
-                                    </td>
-
-                                    <td className="text-start px-2 py-5">
-                                        Branch Select Field
-                                        <div>
-                                            <SelectField
-                                                onChange={openStylistPopup}
-                                                label=""
-                                                name="branch"
-                                                // required
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                options={[
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                ]}
-                                            // error="This field is required."
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                formatOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            {selectedStylistOption && (
-                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                                                    <b>Selected Option:</b> {selectedStylistOption.text}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td className="text-center px-2 py-5">
-                                        <div className="space-y-3">
-
-                                            <div>
-                                                <Button
-                                                    buttonType="button"
-                                                    buttonTitle="Accept"
-                                                    className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Deny"
-                                                    className="w-20 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Decline"
-                                                    className="w-20 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-                                        </div>
-                                    </td>
-
-
-                                </tr> */}
 
                             </tbody>
                         </table>

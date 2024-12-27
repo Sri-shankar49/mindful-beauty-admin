@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@/common/Button'
+// import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField';
 import { SelectField } from '@/common/SelectField'
-import { PiCopySimpleLight } from "react-icons/pi";
+// import { PiCopySimpleLight } from "react-icons/pi";
 import { IoCloseCircle } from 'react-icons/io5'
-import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
+// import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
 import { activeServices, addServices, addServicesCheckbox, categories, staffBranchList, subCategories, updateActiveServices } from '@/api/apiConfig';
 import "./ServiceListing.css";
 import { ShimmerTable } from "shimmer-effects-react";
@@ -60,15 +60,15 @@ interface ActiveServicesListDataProps {
 
 export const AddServices: React.FC = () => {
 
-    const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
+    // const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
 
-    const openCopyServicesPopup = () => {
-        setShowCopyServicesPopup(true);
-    }
+    // const openCopyServicesPopup = () => {
+    //     setShowCopyServicesPopup(true);
+    // }
 
-    const closeCopyServicesPopup = () => {
-        setShowCopyServicesPopup(false);
-    }
+    // const closeCopyServicesPopup = () => {
+    //     setShowCopyServicesPopup(false);
+    // }
 
     const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
     const [subCategoriesData, setSubCategoriesData] = useState<SubCategoriesDataProps[]>([]);
@@ -88,6 +88,8 @@ export const AddServices: React.FC = () => {
     const [updateButtonState, setUpdateButtonState] = useState({ text: "Update", success: false });
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [addServicesloading, setAddServicesLoading] = useState<boolean>(false);
+    const [updateServicesloading, setUpdateServicesLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [servicesData, setServicesData] = useState<ActiveServicesListDataProps[]>([]);
 
@@ -105,19 +107,24 @@ export const AddServices: React.FC = () => {
                 const loadCategoriesData = await categories();
                 const branchesData = await staffBranchList();
                 // const activeServicesListData = await activeServices(Number(sessionProviderID), 1);
-                const activeServicesListData = await activeServices(Number(sessionProviderID), 0);
+                const activeServicesListData = await activeServices(Number(sessionProviderID), Number(selectedBranch));
 
                 setcategoriesData(loadCategoriesData.data);
 
                 setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
 
-                setActiveServicesData(activeServicesListData)
+                if (branchesData.data && branchesData.data.length > 0) {
+                    setSelectedBranch(branchesData.data[0].branch_id); // Set the first branch as default if needed
+                }
+
+                setActiveServicesData(activeServicesListData || []);// Fallback to an empty array if data is null
 
                 console.log("Category list data log:", loadCategoriesData);
 
                 console.log("Staff branch list data log for select field:", branchesData);
 
                 console.log("Active Services list data log:", activeServicesListData);
+
 
 
                 // if (loadCategoriesData.status == "success") {
@@ -134,7 +141,18 @@ export const AddServices: React.FC = () => {
             }
         }
         loadCategorySelect();
+
     }, []);
+
+    const refreshActiveServices = async () => {
+        try {
+            const activeServicesListData = await activeServices(Number(sessionProviderID), Number(selectedBranch));
+            setServicesData(activeServicesListData || []);
+            console.log("Active Services list refreshed:", activeServicesListData);
+        } catch (error: any) {
+            console.error("Error refreshing active services:", error.message);
+        }
+    };
 
     // Getting the copy of active services data & changing the state activeServicesData to set true or false
     useEffect(() => {
@@ -149,14 +167,16 @@ export const AddServices: React.FC = () => {
         setSelectedCategory(selectedCategoryId); // Update state
 
         try {
-            setLoading(true);
+            // setLoading(true);
+            setAddServicesLoading(true);
             const loadSubCategoriesData = await subCategories(selectedCategoryId); // Pass categoryId to API
             setSubCategoriesData(loadSubCategoriesData.data); // Update subcategories
             console.log("Sub Category list data log:", loadSubCategoriesData);
         } catch (error: any) {
             setError(error.message);
         } finally {
-            setLoading(false);
+            // setLoading(false);
+            setAddServicesLoading(false);
         }
     }
 
@@ -165,9 +185,14 @@ export const AddServices: React.FC = () => {
         const selectedBranchId = event.target.value; // Get the selected branch ID
         setSelectedBranch(selectedBranchId); // Update branch selection state
 
+        console.log("Hello Branch ID", selectedBranchId);
+        
+
 
         try {
-            setLoading(true);
+            // setLoading(true);
+            setAddServicesLoading(true);
+
 
             // Fetch active services for the selected branch and category
             // const activeServicesListData = await activeServices(Number(selectedCategory), Number(selectedBranchId));
@@ -180,7 +205,9 @@ export const AddServices: React.FC = () => {
         } catch (error: any) {
             setError(error.message || "Failed to fetch active services for the selected branch");
         } finally {
-            setLoading(false);
+            // setLoading(false);
+            setAddServicesLoading(false);
+
         }
     };
 
@@ -192,7 +219,9 @@ export const AddServices: React.FC = () => {
         setSelectedSubCategory(selectedSubCategoryId); // Update state
 
         try {
-            setLoading(true);
+            // setLoading(true);
+            setAddServicesLoading(true);
+
             const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId); // Pass categoryId to API
             setCheckboxData(loadCheckboxData.data); // Update subcategories
             console.log("Checkbox list data log:", loadCheckboxData);
@@ -200,7 +229,9 @@ export const AddServices: React.FC = () => {
         } catch (error: any) {
             setError(error.message);
         } finally {
-            setLoading(false);
+            // setLoading(false);
+            setAddServicesLoading(false);
+
         }
     }
 
@@ -257,11 +288,14 @@ export const AddServices: React.FC = () => {
                 setButtonState({ text: "Service Added Successfully!", success: true });
 
                 // Clear all selected fields
-                setSelectedBranch("");
-                setSelectedCategory("");
-                setSelectedSubCategory("");
-                setSelectedCheckboxIDs([]);
-                setCheckboxData([]); // If you need to clear the services list
+                // setSelectedBranch("");
+                // setSelectedCategory("");
+                // setSelectedSubCategory("");
+                // setSelectedCheckboxIDs([]);
+                // setCheckboxData([]); // If you need to clear the services list
+
+                // Refresh active services list
+                await refreshActiveServices();
 
                 // Revert back to default state after 3 seconds
                 setTimeout(() => {
@@ -333,7 +367,8 @@ export const AddServices: React.FC = () => {
 
     // Function call for handling the active services change to the update button
     const onSubmitActiveServices = async () => {
-        setLoading(true);
+        // setLoading(true);
+        setUpdateServicesLoading(true);
         setError(null);
 
         try {
@@ -341,7 +376,7 @@ export const AddServices: React.FC = () => {
             const updatedServices = servicesData.flatMap((category) =>
                 category.subcategories.flatMap((subcategory) =>
                     subcategory.services.map((service) => ({
-                        id: service.service_id,
+                        id: service.provider_service_id,
                         price: service.price,
                         duration: service.service_time,
                         is_deleted: service.is_deleted
@@ -353,7 +388,8 @@ export const AddServices: React.FC = () => {
             const formData = new FormData();
             formData.append("services", JSON.stringify(updatedServices));
 
-            setLoading(true);
+            // setLoading(true);
+            setUpdateServicesLoading(true);
             setUpdateButtonState((prev) => ({ ...prev, text: "Updating..." }));
 
             // Call the API
@@ -364,7 +400,7 @@ export const AddServices: React.FC = () => {
                 // alert("Services updated successfully!");
 
                 // Clear all selected fields
-                setSelectedBranch("");
+                // setSelectedBranch("");
 
                 setUpdateButtonState({ text: "Updated Services Successfully!", success: true });
 
@@ -382,7 +418,8 @@ export const AddServices: React.FC = () => {
             setButtonState({ text: "Update Failed.", success: false });
 
         } finally {
-            setLoading(false);
+            // setLoading(false);
+            setUpdateServicesLoading(false);
         }
     };
 
@@ -503,7 +540,7 @@ export const AddServices: React.FC = () => {
                                                     >
                                                         Branch
                                                     </label>
-                                                    <SelectField
+                                                    {/* <SelectField
                                                         label=""
                                                         name="branch"
                                                         // required
@@ -521,9 +558,9 @@ export const AddServices: React.FC = () => {
                                                         value={selectedBranch}
                                                         onChange={handleBranchChange} // Call on change
                                                     // error="This field is required."
-                                                    />
+                                                    /> */}
 
-                                                    {/* <select
+                                                    <select
                                                         // name=""
                                                         id=""
                                                         className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
@@ -540,7 +577,7 @@ export const AddServices: React.FC = () => {
                                                                 {branch.branch_name}
                                                             </option>
                                                         ))}
-                                                    </select> */}
+                                                    </select>
 
                                                     {/* {error.branch && (
                                                         <p className="text-sm text-red-500">{error.branch}</p>
@@ -638,10 +675,12 @@ export const AddServices: React.FC = () => {
                                         <button
                                             type='submit'
                                             className={`text-lg text-mindfulWhite rounded-sm px-8 py-2 
-                                                ${buttonState.success ? "bg-green-500" : "bg-main"}`}
-                                            disabled={loading}
+                                                ${buttonState.success ? "bg-green-500" : "bg-main"}
+                                                ${addServicesloading ? "bg-mindfulgrey" : ""}
+                                                `}
+                                            disabled={addServicesloading}
                                         >
-                                            {loading ? "Adding..." : buttonState.text}
+                                            {addServicesloading ? "Loading..." : buttonState.text}
                                         </button>
 
                                         {/* Error response from the API */}
@@ -657,7 +696,7 @@ export const AddServices: React.FC = () => {
 
                             {/* Whole Grid Column Two */}
                             {/* h-screen overflow-y-auto */}
-                            <div className="border-l-2 pl-5">
+                            <div className="border-l-2 pl-5 h-screen overflow-y-auto">
 
                                 <div className="border-b-2">
                                     <div className="flex items-center justify-between">
@@ -669,7 +708,7 @@ export const AddServices: React.FC = () => {
                                         <div className="flex items-center space-x-5">
 
                                             {/* Copy Services */}
-                                            <div
+                                            {/* <div
                                                 onClick={openCopyServicesPopup}
                                                 className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
                                             >
@@ -682,7 +721,7 @@ export const AddServices: React.FC = () => {
                                                     buttonTitle="Copy Services"
                                                     className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
                                                 />
-                                            </div>
+                                            </div> */}
 
                                             {/* Branch Select Field */}
                                             <div>
@@ -845,9 +884,9 @@ export const AddServices: React.FC = () => {
                                         onClick={onSubmitActiveServices}
                                         className={`text-lg text-mindfulWhite rounded-sm px-8 py-2
                                              ${updateButtonState.success ? "bg-green-500" : "bg-main"}`}
-                                        disabled={loading}
+                                        disabled={updateServicesloading}
                                     >
-                                        {loading ? "Updating..." : updateButtonState.text}
+                                        {updateServicesloading ? "Updating..." : updateButtonState.text}
                                     </button>
                                 </div>
 
@@ -862,7 +901,7 @@ export const AddServices: React.FC = () => {
                     </div>
                 </div>
 
-                {showCopyServicesPopup && <CopyServicesPopup closePopup={closeCopyServicesPopup} />}
+                {/* {showCopyServicesPopup && <CopyServicesPopup closePopup={closeCopyServicesPopup} />} */}
             </div>
         </div >
     )

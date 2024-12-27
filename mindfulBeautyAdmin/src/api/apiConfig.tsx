@@ -1122,3 +1122,114 @@ export const reviewsList = async (pageNumber: number) => {
     throw new Error(error.response?.data?.message || "Unable to fetch reviews list. Please try again later.");
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to call the permissions API
+export const addPermissions = async (role: number, provider: number, dashboard: boolean,
+  manageRole: boolean, service_listing: boolean, service_management: boolean, sales_transactions: boolean,
+  ratings_reviews: boolean, report_details: boolean, all_booking: boolean, schedule: boolean, inprogress: boolean,
+  completed: boolean, cancelled: boolean, roles_management: boolean, staff_management: boolean, branch_management: boolean) => {
+  try {
+    const response = await apiAxios.post(`/provider-api/permissions/`, {
+      role,
+      provider,
+      dashboard,
+      manage_role: manageRole,
+      roles_management,
+      staff_management,
+      branch_management,
+      service_listing,
+      service_management,
+      sales_transactions,
+      ratings_reviews,
+      report_details,
+      all_booking,
+      schedule,
+      inprogress,
+      completed,
+      cancelled,
+
+    });
+
+    console.log("Permissions API response:", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to add permissions");
+    }
+
+    return response.data; // Return the API response for further use
+  } catch (error: any) {
+    console.error("Error adding permissions:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add permissions. Please try again later.");
+  }
+};
+
+// Function to get provider permissions
+export const getProviderPermissions = async (providerId: number) => {
+  try {
+    const response = await apiAxios.get(`/provider-api/provider_permissions/${providerId}/`);
+    console.log("Provider Permissions Response:", response.data);
+
+    if (response.status !== 200 || !response.data) {
+      throw new Error("Failed to retrieve provider permissions");
+    }
+
+    return response.data.data; // Return the permissions data
+  } catch (error: any) {
+    console.error("Error fetching provider permissions:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch permissions. Please try again later.");
+  }
+};
+
+// Fetch Messages
+export const fetchMessages = async () => {
+  try {
+    const response = await apiAxios.get(`/api/messages/`);
+    console.log("Messages API response", response.data);
+
+    // Assuming the API returns an object with a `status`, `message`, and `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Messages API");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching Messages API:", error.response?.data?.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch Messages API. Please try again later.");
+  }
+};
+
+
+export const sendMessage = async (appointmentId: string, messageId: string) => {
+  try {
+    // Send a POST request to the API with the dynamic parameters
+    const response = await apiAxios.post(`/api/messages/`, {
+      appointment_id: appointmentId,
+      message_id: messageId,
+    });
+
+    console.log("Messages API Response:", response.data);
+
+    // Validate response status and data
+    if (response.status !== 200 || !response.data) {
+      throw new Error("Failed to send message");
+    }
+
+    return response.data; // Return the response data for further use
+  } catch (error: any) {
+    console.error("Error sending message:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to send message. Please try again later.");
+  }
+};
