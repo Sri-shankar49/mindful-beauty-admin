@@ -629,7 +629,7 @@ export const AddServices: React.FC = () => {
                                             <h5 className="text-lg font-semibold py-5">Services</h5>
                                         </div>
 
-                                        <div className="grid grid-cols-1">
+                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
 
                                             {/* Grid Column One */}
                                             <div className="space-y-5">
@@ -637,13 +637,18 @@ export const AddServices: React.FC = () => {
                                                 {/* Services List */}
                                                 {checkboxData.length > 0 ? (
                                                     checkboxData.map((service) => (
-                                                        <div key={service.service_id}>
-                                                            <label htmlFor={service.service_id} className="custom-checkbox">
+                                                        <div key={service.service_id}
+                                                            className="p-2 border rounded-md space-y-1 shadow-sm"
+                                                        >
+                                                            <label htmlFor={service.service_id}
+                                                                className="custom-checkbox flex items-center"
+                                                            >
                                                                 <input
                                                                     id={service.service_id}
                                                                     // name="dummy"
                                                                     type="checkbox"
                                                                     value={service.service_id}
+                                                                    className="mr-2"
                                                                     // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
                                                                     onChange={() => handleCheckboxClick(Number(service.service_id))}
 
@@ -654,7 +659,8 @@ export const AddServices: React.FC = () => {
                                                         </div>
                                                     ))
                                                 ) : (
-                                                    <div>No services available</div>
+                                                    <div className="col-span-3 text-center">No services available</div>
+                                                    // Takes the full row if no data
                                                 )}
 
                                                 {/* {error.checkbox && (

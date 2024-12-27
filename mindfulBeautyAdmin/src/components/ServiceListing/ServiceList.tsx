@@ -11,6 +11,7 @@ import { MdFormatListBulletedAdd } from "react-icons/md";
 import { InputField } from "@/common/InputField";
 import { servicesList } from "@/api/apiConfig";
 import { DeleteServicesPopup } from "./DeleteServicesPopup";
+import { ShimmerTable } from "shimmer-effects-react";
 
 interface ServiceListProps {
     service_id: number;
@@ -103,7 +104,22 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         setCurrentPage(1); // Reset to the first page when items per page changes
     };
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
+
     if (error) return <div>{error}</div>;
 
     return (
