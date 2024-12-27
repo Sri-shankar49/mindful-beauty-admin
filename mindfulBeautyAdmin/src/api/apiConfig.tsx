@@ -256,13 +256,12 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 // Dashboard Page -- --> Bookings
 // GET Method from the API
-export const dashBoardBookingList = async (providerID: number, sortOrder: string) => {
+export const dashBoardBookingList = async (providerID: number) => {
 
   try {
     const response = await apiAxios.get(`/api/bookings/`, {
       params: {
         provider_id: providerID,
-        sort_order: sortOrder,
       }
     });
 
@@ -287,13 +286,12 @@ export const dashBoardBookingList = async (providerID: number, sortOrder: string
 
 // Dashboard Page -- --> Bookings
 // POST Method from the API
-export const bookingAction = async (appointmentID: number, actionID: number, stylistID: number) => {
+export const bookingAction = async (appointmentID: number, actionID: number) => {
 
   try {
     const response = await apiAxios.post(`/api/provider-booking-action/`, {
       appointment_id: appointmentID,
       action_id: actionID,
-      stylist_id: stylistID,
     });
 
     console.log("Booking action POST Method response", response.data);
@@ -1217,10 +1215,9 @@ export const fetchMessages = async () => {
 export const sendMessage = async (appointmentId: string, messageId: string) => {
   try {
     // Send a POST request to the API with the dynamic parameters
-    const response = await apiAxios.post(`/api/message/`, {
+    const response = await apiAxios.post(`/api/messages/`, {
       appointment_id: appointmentId,
       message_id: messageId,
-
     });
 
     console.log("Messages API Response:", response.data);
@@ -1234,27 +1231,5 @@ export const sendMessage = async (appointmentId: string, messageId: string) => {
   } catch (error: any) {
     console.error("Error sending message:", error.response?.data?.message || error.message || error);
     throw new Error(error.response?.data?.message || "Unable to send message. Please try again later.");
-  }
-};
-
-
-
-
-
-// Fetch Stylists
-export const fetchStylists = async () => {
-  try {
-    const response = await apiAxios.get(`/api/stylists/`);
-    console.log("Stylists API response", response.data);
-
-    // Check if the response is valid
-    if (!response.data || response.status !== 200) {
-      throw new Error("Failed to fetch Stylists API");
-    }
-
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching Stylists API:", error.response?.data?.message || error);
-    throw new Error(error.response?.data?.message || "Unable to fetch Stylists API. Please try again later.");
   }
 };
