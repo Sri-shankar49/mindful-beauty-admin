@@ -1,27 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fetchMessages, sendMessage } from "@/api/apiConfig";
+import { fetchMessages } from "@/api/apiConfig";
 import { Button } from "@/common/Button";
 import { SelectField } from "@/common/SelectField";
 import React, { useEffect, useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 
 interface DenialPopupProps {
-    appointmentId: string;
     closePopup: () => void;
-
 }
 
-
-
-export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmentId }) => {
+export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
     const [options, setOptions] = useState<{ value: string; label: string }[]>(
         []
     );
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null); // Store selected message_id
-
-
 
     useEffect(() => {
         const loadMessages = async () => {
@@ -42,28 +35,9 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                 setLoading(false);
             }
         };
+
         loadMessages();
     }, []);
-
-
-
-
-    const handleConfirm = async () => {
-        if (selectedMessageId && appointmentId) {
-            try {
-                const messageId = selectedMessageId.split("_")[1];
-                // const text="Staff Not Available"
-                const response = await sendMessage(appointmentId, messageId);
-                console.log("Message sent successfully:", response);
-                closePopup();
-            } catch (error: any) {
-                console.error("Error sending message:", error);
-            }
-        }
-    };
-
-
-
 
     return (
         <div>
@@ -102,7 +76,6 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                             name="reason"
                                             className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                             options={options}
-                                            onChange={(e) => setSelectedMessageId(e.target.value)} // Set selected message_id
                                         />
                                     )}
                                 </div>
@@ -121,8 +94,6 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                         {/* Submit Button */}
                                         <Button
                                             buttonType="submit"
-                                            onClick={handleConfirm} // Trigger sendMessage API call on click
-
                                             buttonTitle="Confirm"
                                             className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
                                         />

@@ -1,17 +1,12 @@
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
-import { StylistOption } from '../DashBoardData';
-//  import stylist from "../../../assets/images/stylist.png"
-
-
+import stylist from "../../../assets/images/stylist.png"
 
 interface StylistPopupProps {
     closePopup: () => void;
-    stylist: StylistOption; // Add stylist data
 }
 
-
-export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylist }) => {
+export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup }) => {
     return (
         <div>
             <div>
@@ -26,12 +21,10 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylist 
 
                                     <div className="flex items-center justify-center space-x-5">
                                         <div>
-                                            {/* <img src={stylist} alt="" /> */}
-                                            <img src={stylist.icon} alt={stylist.text} />
-
+                                            <img src={stylist} alt="" />
                                         </div>
                                         <div className="text-center">
-                                            <h2 className="text-2xl text-mindfulBlack font-semibold">{stylist.text}</h2>
+                                            <h2 className="text-2xl text-mindfulBlack font-semibold">Swetha</h2>
                                         </div>
                                     </div>
                                     {/* <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">
@@ -63,7 +56,6 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylist 
 
                                         {/* Submit Button */}
                                         <Button
-                                            onClick={closePopup}
                                             buttonType="submit"
                                             buttonTitle="Confirm"
                                             className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
