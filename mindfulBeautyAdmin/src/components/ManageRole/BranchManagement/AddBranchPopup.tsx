@@ -18,7 +18,7 @@ interface AddBranchPopupProps {
 const addBranchSchema = zod.object({
     branchName: zod.string().min(3, "Branch Name is required"),
     branchPhoneNumber: zod.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
-    branchAddress: zod.string().min(10, "Branch address is required"),
+    branchAddress: zod.string().min(3, "Branch address is required"),
     branchLocation: zod.string().min(3, "Branch location is required"),
 });
 

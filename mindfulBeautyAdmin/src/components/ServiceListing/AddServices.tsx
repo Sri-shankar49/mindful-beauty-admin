@@ -186,7 +186,7 @@ export const AddServices: React.FC = () => {
         setSelectedBranch(selectedBranchId); // Update branch selection state
 
         console.log("Hello Branch ID", selectedBranchId);
-        
+
 
 
         try {
@@ -432,7 +432,7 @@ export const AddServices: React.FC = () => {
         <div>
             <ShimmerTable
                 mode="light"
-                row={13}
+                row={2}
                 col={4}
                 border={1}
                 borderColor={"#cbd5e1"}
@@ -440,6 +440,8 @@ export const AddServices: React.FC = () => {
                 rowGap={16}
                 colPadding={[15, 5, 15, 5]}
             />
+            {/* <ShimmerTitle mode="light" line={10} gap={8} /> */}
+            {/* <ShimmerSectionHeader center={true} mode="light" /> */}
         </div>
     </div>;
 
