@@ -80,6 +80,9 @@ export const DashBoardData = () => {
     const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
     const [declinedAppointments, setDeclinedAppointments] = React.useState<Record<number, boolean>>({});
 
+    console.log(declinedAppointments, "Declined Appointments");
+    
+
 
     // handle onChange event of the dropdown
     const handleStylistOption = (option: SingleValue<StylistOption>) => {
