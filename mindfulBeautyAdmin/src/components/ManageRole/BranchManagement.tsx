@@ -51,6 +51,17 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
         fetchBranchListData();
     }, []);
 
+    // ... rest of the code remains the same ...
+    const refreshBranchListData = async () => {
+        try {
+            const BranchData = await branchList();
+            setBranchListdata(BranchData.data || []);
+            console.log("Branch list data refreshed:", BranchData.data);
+        } catch (error: any) {
+            console.error("Error refreshing Branch list data:", error.message);
+        }
+    };
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
@@ -58,7 +69,8 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
         <div>
             <div className="flex items-center justify-between">
                 <div>
-                    <h5 className="text-3xl font-semibold py-5">Branches (4)</h5>
+                    {/* <h5 className="text-3xl font-semibold py-5">Branches (4)</h5> */}
+                    <h5 className="text-3xl font-semibold py-5">Branches ({branchListData.length})</h5>
                 </div>
 
                 {/* Add New Branch */}
@@ -99,7 +111,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                 <BranchCard /> */}
             </div>
 
-            {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} />}
+            {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} refreshData={refreshBranchListData}  />}
         </div>
     )
 }

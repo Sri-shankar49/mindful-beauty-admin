@@ -6,34 +6,60 @@ import { EditServicePopup } from "./AddServices/EditServicePopup";
 import { Button } from "@/common/Button";
 import { Pagination } from "@/common/Pagination";
 import { Link, NavLink } from "react-router-dom";
-import { SelectField } from "@/common/SelectField";
+// import { SelectField } from "@/common/SelectField";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { InputField } from "@/common/InputField";
-import { servicesList } from "@/api/apiConfig";
+import { servicesList, staffBranchList } from "@/api/apiConfig";
 import { DeleteServicesPopup } from "./DeleteServicesPopup";
 import { ShimmerTable } from "shimmer-effects-react";
 
+
+
+interface StaffBranchListDataProps {
+    branch_id?: number;
+    branch_name: string;
+}
+
 interface ServiceListProps {
-    service_id: number;
+    service_id?: number;
+    provider_service_id?: number;
     service_name: string;
     category: string;
+    category_id?: number;
     subcategory: string;
-    price: string;
+    subcategory_id?: string;
+    price?: string;
     service_time: string;
     status: string;
     sku_value: string;
+    branch_id?: number;
 }
 
 
 export const ServiceList: React.FC<ServiceListProps> = () => {
 
+    const defaultEditServiceData = {
+        service_id: undefined,
+        provider_service_id: undefined,
+        service_name: '',
+        category: '',
+        price: '',
+        service_time: '',
+        status: '',
+        sku_value: '',
+    };
+
     const [showEditServicePopup, setShowEditServicePopup] = useState(false);
     const [showDeleteServicePopup, setShowDeleteServicePopup] = useState(false);
 
-    const [serviceListData, setServiceListData] = useState<ServiceListProps[]>([])
+    const [serviceListData, setServiceListData] = useState<ServiceListProps[]>([]);
+    const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
+    const [selectedBranch, setSelectedBranch] = useState<string>("");
+
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
+    const [selectedServiceID, setSelectedServiceID] = useState<number | null>(null);
     const [totalItems, setTotalItems] = useState(0);
 
     // Pagination state
@@ -41,18 +67,20 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
 
-    const openEditService = () => {
-        setShowEditServicePopup(!showEditServicePopup)
+    const openEditService = (providerServiceID: number) => {
+        setShowEditServicePopup(!showEditServicePopup);
+        setSelectedServiceID(providerServiceID);
+        console.log("Edit the selected service with ID:", providerServiceID);
     }
 
     const closeEditService = () => {
         setShowEditServicePopup(false)
     }
 
-    const openDeleteServicePopup = (serviceID: number) => {
+    const openDeleteServicePopup = (providerServiceID: number) => {
         setShowDeleteServicePopup(true);
-        setSelectedStaffID(serviceID)
-        console.log("Delete the selected service with ID:", serviceID);
+        setSelectedServiceID(providerServiceID);
+        console.log("Delete the selected service with ID:", providerServiceID);
 
     }
 
@@ -61,20 +89,23 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     }
 
 
+    // Login Provider ID
+    const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+    console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
     useEffect(() => {
         // Fetch data from API
         const fetchServiceListData = async () => {
 
-            // Login Provider ID
-            const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-            console.log("Login Provider ID from session storage", sessionLoginProviderID);
-
             try {
                 setLoading(true);
                 // const data: BranchCardProps[] = await branchList();
 
-                const data = await servicesList(Number(sessionLoginProviderID), currentPage);
+                const data = await servicesList(Number(sessionLoginProviderID), 0, currentPage);
+
+                const branchdata = await staffBranchList();
+                setStaffBranchListData(branchdata.data || []);
+                console.log("Fetched Services List --> Branch List data log:", branchdata.data);
 
                 // const data = await servicesList(Number(1), currentPage);
 
@@ -95,6 +126,40 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     }, [currentPage, itemsPerPage]);
 
 
+    // Function call on changing the branch
+    const handleBranchChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedBranchId = event.target.value; // Get the selected branch ID
+        setSelectedBranch(selectedBranchId); // Update branch selection state
+
+        console.log("Hello Branch ID", selectedBranchId);
+
+
+
+        try {
+            setLoading(true);
+
+
+            // Fetch Services List for the selected branch
+            const servicesListdata = await servicesList(Number(sessionLoginProviderID), Number(selectedBranchId), currentPage);
+
+
+            // Take a deep copy of the service list data and update
+            const updatedServiceList = [...servicesListdata.results]; // Assuming results is an array
+
+            // Update the services data based on the branch
+            setServiceListData(updatedServiceList || []);
+            setTotalItems(servicesListdata.count);
+
+            console.log("Updated Services Data for Branch:", servicesListdata);
+        } catch (error: any) {
+            setError(error.message || "Failed to fetch active services for the selected branch");
+        } finally {
+            setLoading(false);
+
+        }
+    };
+
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
@@ -103,6 +168,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         setItemsPerPage(items);
         setCurrentPage(1); // Reset to the first page when items per page changes
     };
+
 
     // if (loading) return <div>Loading...</div>;
     if (loading) return <div>
@@ -143,7 +209,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
                                     {/* Branch Select Field */}
                                     <div>
-                                        <SelectField
+                                        {/* <SelectField
                                             label=""
                                             name="branch"
                                             // required
@@ -155,7 +221,26 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                                 { value: "thrissur", label: "Thrissur" },
                                             ]}
                                         // error="This field is required."
-                                        />
+                                        /> */}
+
+                                        <select
+                                            // name=""
+                                            id=""
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                            value={selectedBranch}
+                                            onChange={handleBranchChange} // Call on change
+
+                                        >
+                                            <option value="" disabled>
+                                                Select Branch
+                                            </option>
+
+                                            {staffBranchListData.map((branch) => (
+                                                <option key={branch.branch_id} value={branch.branch_id}>
+                                                    {branch.branch_name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
 
                                     {/* Add Service */}
@@ -239,10 +324,10 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                                 </td>
                                                 <td className="px-2 py-5">
                                                     <div className="flex items-center space-x-5">
-                                                        <button onClick={openEditService}>
+                                                        <button onClick={() => openEditService(Number(service.provider_service_id))}>
                                                             <img src={editButton} alt="editButton" />
                                                         </button>
-                                                        <button onClick={() => openDeleteServicePopup(Number(service.service_id))}>
+                                                        <button onClick={() => openDeleteServicePopup(Number(service.provider_service_id))}>
                                                             <img src={deleteButton} alt="deleteButton" />
                                                         </button>
                                                     </div>
@@ -335,8 +420,16 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                             </table>
                         </div>
 
-                        {showEditServicePopup && <EditServicePopup closePopup={closeEditService} />}
-                        {showDeleteServicePopup && <DeleteServicesPopup closePopup={closeDeleteServicePopup} serviceID={Number(selectedStaffID)} />}
+                        {/* // Inside your JSX, where you're conditionally rendering the EditServicePopup: */}
+                        {showEditServicePopup && selectedServiceID && (
+                            <EditServicePopup
+                                closePopup={closeEditService}
+                                // Ensure that the serviceListData is filtered correctly, and defaultEditServiceData is used safely
+                                editServiceData={serviceListData.find((service) => service.provider_service_id === selectedServiceID) || defaultEditServiceData}
+                            />
+                        )}
+
+                        {showDeleteServicePopup && <DeleteServicesPopup closePopup={closeDeleteServicePopup} providerServiceID={Number(selectedServiceID)} />}
 
                         {/* Pagination */}
                         <div>

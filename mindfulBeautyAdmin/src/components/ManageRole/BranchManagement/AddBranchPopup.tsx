@@ -12,6 +12,7 @@ import { addBranch } from '@/api/apiConfig';
 
 interface AddBranchPopupProps {
     closePopup: () => void;
+    refreshData: () => void;
 }
 
 // Zod schema for form validation
@@ -24,7 +25,7 @@ const addBranchSchema = zod.object({
 
 type addBranchFormData = zod.infer<typeof addBranchSchema>;
 
-export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) => {
+export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refreshData }) => {
 
     // const [logo, setLogo] = useState<File | null>(ashtamudiLogo); // Initially set to the default logo
 
@@ -90,7 +91,12 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup }) =>
 
             console.log("Add branch Submission Success:", addBranchData);
 
-            closePopup();
+            // If the submission is successful, reset the form and close the popup
+            // if (addBranchData?.status === "success") {
+                refreshData();
+                closePopup();
+
+            // }
         }
 
         catch (error: any) {

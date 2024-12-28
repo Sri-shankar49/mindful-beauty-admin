@@ -629,19 +629,20 @@ export const AddServices: React.FC = () => {
                                             <h5 className="text-lg font-semibold py-5">Services</h5>
                                         </div>
 
-                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                                        <div className="space-y-5">
 
                                             {/* Grid Column One */}
-                                            <div className="space-y-5">
+                                            {/* <div> */}
+                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
 
                                                 {/* Services List */}
                                                 {checkboxData.length > 0 ? (
                                                     checkboxData.map((service) => (
                                                         <div key={service.service_id}
-                                                            className="p-2 border rounded-md space-y-1 shadow-sm"
+                                                            className=""
                                                         >
                                                             <label htmlFor={service.service_id}
-                                                                className="custom-checkbox flex items-center"
+                                                                className="custom-checkbox"
                                                             >
                                                                 <input
                                                                     id={service.service_id}

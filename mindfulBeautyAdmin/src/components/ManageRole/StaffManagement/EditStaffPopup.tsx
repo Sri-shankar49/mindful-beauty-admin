@@ -152,7 +152,7 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                             </div>
 
                             <div className="">
-                                <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
+                                <form method="post" onSubmit={handleSubmit(onSubmit)}>
                                     <div className="">
 
                                         {/* Add Staff Form */}

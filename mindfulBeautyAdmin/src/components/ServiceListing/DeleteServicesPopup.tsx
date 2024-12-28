@@ -2,13 +2,16 @@ import { deleteService } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
 import { useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 interface DeleteServicesPopupProps {
-    serviceID: number; // Pass the selected branch ID
+    providerServiceID: number; // Pass the selected branch ID
     closePopup: () => void;
 }
 
-export const DeleteServicesPopup: React.FC<DeleteServicesPopupProps> = ({ closePopup, serviceID }) => {
+export const DeleteServicesPopup: React.FC<DeleteServicesPopupProps> = ({ closePopup, providerServiceID }) => {
+
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,11 +21,14 @@ export const DeleteServicesPopup: React.FC<DeleteServicesPopupProps> = ({ closeP
         setError(null);
 
         try {
-            const data = await deleteService((serviceID)); // Call API with staffID
+            const data = await deleteService((providerServiceID)); // Call API with staffID
             console.log("Branch Data deleted successfully:", data);
 
             // Optionally show a success message or trigger a re-fetch
-            closePopup(); // Close popup after deletion
+            if (data?.status === "success") {
+                closePopup(); // Close popup after deletion
+                navigate(0);
+            }
         } catch (error: any) {
             setError(error.message || "Failed to delete branch. Please try again.");
         } finally {

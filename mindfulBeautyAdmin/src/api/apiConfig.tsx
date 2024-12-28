@@ -256,12 +256,13 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 // Dashboard Page -- --> Bookings
 // GET Method from the API
-export const dashBoardBookingList = async (providerID: number) => {
+export const dashBoardBookingList = async (providerID: number, sortOrder: string) => {
 
   try {
     const response = await apiAxios.get(`/api/bookings/`, {
       params: {
         provider_id: providerID,
+        sort_order: sortOrder
       }
     });
 
@@ -283,15 +284,44 @@ export const dashBoardBookingList = async (providerID: number) => {
 
 
 
+// Dashboard Page -- --> Bookings
+// GET Method from the API
+export const beauticiansList = async (providerID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/beauticians/`, {
+      params: {
+        provider_id: providerID,
+      }
+    });
+
+    console.log("Beauticians list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch beauticians list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching beauticians list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch beauticians list. Please try again later.");
+  }
+}
+
+
+
 
 // Dashboard Page -- --> Bookings
 // POST Method from the API
-export const bookingAction = async (appointmentID: number, actionID: number) => {
+export const bookingAction = async (appointmentID: number, stylistID: number, actionID: number) => {
 
   try {
     const response = await apiAxios.post(`/api/provider-booking-action/`, {
       appointment_id: appointmentID,
-      action_id: actionID,
+      stylist_id: stylistID,
+      action_id: actionID
     });
 
     console.log("Booking action POST Method response", response.data);
@@ -619,8 +649,12 @@ export const deleteStaff = async (staffID: number) => {
 // GET Method from the API
 export const branchList = async () => {
 
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
   try {
-    const response = await apiAxios.get(`/provider-api/branches-list/`);
+    const response = await apiAxios.get(`/provider-api/branches-list/${sessionLoginProviderID}`);
 
     console.log("Branch list GET Method response", response.data);
 
@@ -641,7 +675,7 @@ export const branchList = async () => {
 
 // Manage Role Page -- --> Branch Management
 // POST Method from the API
-export const addBranch = async (formData: FormData): Promise<unknown> => {
+export const addBranch = async (formData: FormData): Promise<any> => {
   try {
 
     // Debugging: Log the FormData contents
@@ -705,12 +739,13 @@ export const deleteBranch = async (branchID: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const servicesList = async (providerID: number, pageNumber: number) => {
+export const servicesList = async (providerID: number, branchID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/provider-services/`, {
       params: {
         provider_id: providerID,
+        branch_id: branchID,
         page: pageNumber
       }
     });
@@ -733,14 +768,46 @@ export const servicesList = async (providerID: number, pageNumber: number) => {
 
 
 
+
+// Manage Role Page -- --> Branch Management
+// PUT Method from the API
+export const editServices = async (formData: FormData): Promise<unknown> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/provider-services/edit/`, formData, {
+
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
+    });
+
+    console.log("Edit Selected Service PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected branch");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error editing selected branch:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected branch. Please try again later.");
+  }
+}
+
+
+
+
 // Service Listing Page -- --> Service List
 // DELETE Method from the API
-export const deleteService = async (serviceID: number) => {
+export const deleteService = async (providerServiceID: number) => {
 
   try {
     const response = await apiAxios.delete(`/provider-api/provider-services/delete/`, {
       data: {
-        provider_service_id: serviceID   // Include provider_service_id in the data property
+        provider_service_id: providerServiceID   // Include provider_service_id in the data property
       },
 
     });
@@ -748,7 +815,7 @@ export const deleteService = async (serviceID: number) => {
     console.log("Service list DELETE Method response:", response.data);   // Log the response data for debugging purposes
 
     // Validate HTTP status
-    if (!response.data || response.status !== 204) {
+    if (!response.data || response.status !== 200) {
       throw new Error("Failed to delete service. Invalid server response.");
     }
 
