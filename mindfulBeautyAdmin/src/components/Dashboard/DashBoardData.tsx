@@ -6,18 +6,18 @@ import { BarChart } from "@/components/Dashboard/DashBoardData/BarChart"
 import { RangeChart } from "@/components/Dashboard/DashBoardData/RangeChart"
 // import { DenialPopup } from "@/components/Dashboard/DashBoardData/DenialPopup"
 import { StylistPopup } from "@/components/Dashboard/DashBoardData/StylistPopup"
-import Select from 'react-select';
+import Select, { SingleValue } from 'react-select';
 // import stylist from "../../assets/images/stylist.png"
 import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiConfig"
 // import { useNavigate } from "react-router-dom"
 
 
 // Define the type for each option
-// interface StylistOption {
-//     value: number;
-//     text: string;
-//     icon: string; // URL or path to the image
-// }
+interface StylistOption {
+    value: number;
+    text: string;
+    icon: string; // URL or path to the image
+}
 
 interface Service {
     service_name: string;
@@ -99,17 +99,33 @@ export const DashBoardData = () => {
     //     // Open Stylist Popup
     //     setShowStylistPopup(true);
     // };
-    const handleStylistOption = (selectedOption: { value: number; text: string; icon: string }) => {
-        // setSelectedStylistOption(); // Optional: Save selected option in state
+    // const handleStylistOption = (selectedOption: { value: number; text: string; icon: string }) => {
+    //     // setSelectedStylistOption(); // Optional: Save selected option in state
 
-        // Open Stylist Popup
-        // setShowStylistPopup(true); 
+    //     // Open Stylist Popup
+    //     // setShowStylistPopup(true); 
 
-        // Access the beautician ID
-        const selectedBeauticianId = selectedOption.value;
+    //     // Access the beautician ID
+    //     const selectedBeauticianId = selectedOption.value;
 
-        console.log("Selected Beautician ID:", selectedBeauticianId);
+    //     console.log("Selected Beautician ID:", selectedBeauticianId);
 
+    // };
+
+
+    // Handle change events for the Select component
+    const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+        if (newValue) {
+            // Access the beautician ID
+            const selectedBeauticianId = newValue.value;
+
+            console.log("Selected Beautician ID:", selectedBeauticianId);
+
+            // Perform additional actions, e.g., opening a popup or saving the state
+            // setShowStylistPopup(true); // Example
+        } else {
+            console.log("No option selected.");
+        }
     };
 
 
