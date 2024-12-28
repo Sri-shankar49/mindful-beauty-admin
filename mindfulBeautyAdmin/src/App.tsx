@@ -149,7 +149,7 @@ function App() {
               <Route index element={<Navigate to="ServiceList" replace />} />
 
               {/* Sub-routes */}
-              <Route path="ServiceList" element={<ServiceList service_id={0} service_name={''} category={''} subcategory={''} price={''} service_time={''} status={''} sku_value={''} />} />
+              <Route path="ServiceList" element={<ServiceList service_id={0} service_name={''} category={''} subcategory={''} price={''} service_time={''} status={''} sku_value={''} duration={''} />} />
               <Route path="AddServices" element={<AddServices />} />
             </Route>
 
