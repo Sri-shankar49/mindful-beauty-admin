@@ -39,8 +39,8 @@ interface ServiceListProps {
 export const ServiceList: React.FC<ServiceListProps> = () => {
 
     const defaultEditServiceData = {
-        service_id: undefined,
-        provider_service_id: undefined,
+        service_id: '',
+        provider_service_id: '',
         service_name: '',
         category: '',
         price: '',
@@ -168,6 +168,21 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         setItemsPerPage(items);
         setCurrentPage(1); // Reset to the first page when items per page changes
     };
+
+    // Ensure type compatibility
+    const selectedServiceData = serviceListData.find(
+        (service) => service.provider_service_id === selectedServiceID
+    );
+
+    // Safely transform to the expected type
+    const editServiceData = selectedServiceData
+        ? {
+            provider_service_id: String(selectedServiceData.provider_service_id || ''), // Ensure it's a string
+            price: String(selectedServiceData.price || ''), // Ensure it's a string
+            service_time: String(selectedServiceData.service_time || ''), // Ensure it's a string
+        }
+        : defaultEditServiceData;
+
 
 
     // if (loading) return <div>Loading...</div>;
@@ -425,7 +440,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                             <EditServicePopup
                                 closePopup={closeEditService}
                                 // Ensure that the serviceListData is filtered correctly, and defaultEditServiceData is used safely
-                                editServiceData={serviceListData.find((service) => service.provider_service_id === selectedServiceID) || defaultEditServiceData}
+                                // editServiceData={serviceListData.find((service) => service.provider_service_id === selectedServiceID) || defaultEditServiceData}
+                                editServiceData={editServiceData}
                             />
                         )}
 

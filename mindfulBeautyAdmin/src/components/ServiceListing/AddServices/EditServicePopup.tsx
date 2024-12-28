@@ -9,10 +9,10 @@ import * as zod from "zod";
 // import { SelectField } from '@/common/SelectField';
 
 
-interface StaffBranchListDataProps {
-    branch_id?: number;
-    branch_name: string;
-}
+// interface StaffBranchListDataProps {
+//     branch_id?: number;
+//     branch_name: string;
+// }
 
 interface EditServicePopupProps {
     editServiceData: {
@@ -35,7 +35,7 @@ type EditServiceFormData = zod.infer<typeof editServiceSchema>;
 export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceData, closePopup }) => {
 
     // const [serviceListData, setServiceListData] = useState<ServiceListProps[]>([]);
-    const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
+    // const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -65,7 +65,7 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                 setLoading(true);
 
                 const data = await staffBranchList();
-                setStaffBranchListData(data.data || []);
+                // setStaffBranchListData(data.data || []);
                 console.log("Fetched Services List: ", data.data);
 
                 // setServiceListData(data.results || []);

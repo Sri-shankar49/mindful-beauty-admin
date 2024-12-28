@@ -6,7 +6,7 @@ import { BarChart } from "@/components/Dashboard/DashBoardData/BarChart"
 import { RangeChart } from "@/components/Dashboard/DashBoardData/RangeChart"
 // import { DenialPopup } from "@/components/Dashboard/DashBoardData/DenialPopup"
 import { StylistPopup } from "@/components/Dashboard/DashBoardData/StylistPopup"
-import Select, { SingleValue } from 'react-select';
+import Select from 'react-select';
 // import stylist from "../../assets/images/stylist.png"
 import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiConfig"
 // import { useNavigate } from "react-router-dom"
