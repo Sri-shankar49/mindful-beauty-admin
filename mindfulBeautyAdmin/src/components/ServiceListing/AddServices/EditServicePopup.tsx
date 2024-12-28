@@ -6,6 +6,7 @@ import { editServices, staffBranchList } from '@/api/apiConfig';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
+import { useNavigate } from 'react-router-dom';
 // import { SelectField } from '@/common/SelectField';
 
 
@@ -18,21 +19,24 @@ interface EditServicePopupProps {
     editServiceData: {
         provider_service_id: string;
         price: string;
-        service_time: string;
+        duration: string;
     };
     closePopup: () => void;
+    // handleDeleteRefresh: () => void;
 }
 
 // Zod schema for validation
 const editServiceSchema = zod.object({
     provider_service_id: zod.string().optional(),
     price: zod.string().min(1, "Price is required"),
-    service_time: zod.string().min(1, "Duration is required"),
+    duration: zod.string().min(1, "Duration is required"),
 });
 
 type EditServiceFormData = zod.infer<typeof editServiceSchema>;
 
 export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceData, closePopup }) => {
+
+    const navigate = useNavigate();
 
     // const [serviceListData, setServiceListData] = useState<ServiceListProps[]>([]);
     // const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
@@ -53,7 +57,7 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
         resolver: zodResolver(editServiceSchema),
         defaultValues: {
             price: editServiceData.price,
-            service_time: editServiceData.service_time,
+            duration: editServiceData.duration,
         },
     });
 
@@ -98,13 +102,26 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
             const formData = new FormData();
             formData.append('provider_service_id', String(editServiceData.provider_service_id));
             formData.append('price', data.price);
-            formData.append('service_time', data.service_time);
+            formData.append('duration', data.duration);
 
-            await editServices(formData); // Assuming editServices can handle FormData
-            console.log("Service edited successfully");
+            const response = await editServices(formData); // Assuming editServices can handle FormData
+            console.log(response, "Service edited successfully");
 
-            // Close the popup after successful submission
-            closePopup();
+            // Assuming the response contains a `status` or similar field to indicate success
+            if (response?.status === 'success') {
+                console.log("Service edited successfully");
+
+                // Perform actions on success
+                closePopup(); // Close the popup
+                navigate(0);
+                // Optionally refresh data
+                // handleDeleteRefresh(); // Example: Call a function to reload the service list
+                // Show a success message
+                // alert("Service updated successfully!"); // Replace with a proper notification system
+            } else {
+                console.error("Error editing service: Unexpected response format", response);
+                setError("Failed to update the service. Please try again.");
+            }
         } catch (error: any) {
             console.error("Error editing service:", error.message);
             setError(error.message || "Failed to update the service. Please try again.");
@@ -276,10 +293,10 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                                                 id="time"
                                                 placeholder="time"
                                                 className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                {...register("service_time")}
+                                                {...register("duration")}
                                             />
-                                            {errors.service_time && (
-                                                <p className="text-sm text-red-500">{errors.service_time.message}</p>
+                                            {errors.duration && (
+                                                <p className="text-sm text-red-500">{errors.duration.message}</p>
                                             )}
                                         </div>
                                     </div>

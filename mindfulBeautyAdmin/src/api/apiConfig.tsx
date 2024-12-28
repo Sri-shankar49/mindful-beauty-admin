@@ -771,7 +771,7 @@ export const servicesList = async (providerID: number, branchID: number, pageNum
 
 // Manage Role Page -- --> Branch Management
 // PUT Method from the API
-export const editServices = async (formData: FormData): Promise<unknown> => {
+export const editServices = async (formData: FormData): Promise<any> => {
 
   try {
     const response = await apiAxios.put(`/provider-api/provider-services/edit/`, formData, {

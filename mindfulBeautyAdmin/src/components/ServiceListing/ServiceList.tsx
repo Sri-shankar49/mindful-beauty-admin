@@ -30,6 +30,7 @@ interface ServiceListProps {
     subcategory_id?: string;
     price?: string;
     service_time: string;
+    duration: string;
     status: string;
     sku_value: string;
     branch_id?: number;
@@ -45,6 +46,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         category: '',
         price: '',
         service_time: '',
+        duration: '',
         status: '',
         sku_value: '',
     };
@@ -169,6 +171,15 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         setCurrentPage(1); // Reset to the first page when items per page changes
     };
 
+    // const refreshServiceList = async () => {
+    //     try {
+    //         const updatedServices = await servicesList(Number(sessionLoginProviderID), 0, currentPage); // Fetch the latest service data
+    //         setServiceListData(updatedServices); // Update state with the latest data
+    //     } catch (error: any) {
+    //         console.error("Error refreshing service list:", error.message);
+    //     }
+    // };
+
     // Ensure type compatibility
     const selectedServiceData = serviceListData.find(
         (service) => service.provider_service_id === selectedServiceID
@@ -179,10 +190,9 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         ? {
             provider_service_id: String(selectedServiceData.provider_service_id || ''), // Ensure it's a string
             price: String(selectedServiceData.price || ''), // Ensure it's a string
-            service_time: String(selectedServiceData.service_time || ''), // Ensure it's a string
+            duration: String(selectedServiceData.duration || ''), // Ensure it's a string
         }
         : defaultEditServiceData;
-
 
 
     // if (loading) return <div>Loading...</div>;
@@ -322,7 +332,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                                 <td className="text-start px-2 py-5">{service.category}</td>
                                                 <td className="text-start px-2 py-5">{service.subcategory}</td>
                                                 <td className="text-start px-2 py-5">{service.price}</td>
-                                                <td className="text-start px-2 py-5">{service.service_time}</td>
+                                                <td className="text-start px-2 py-5">{service.duration}</td>
                                                 <td className="text-start px-2 py-5">
                                                     {service.status === "Active" ? (
                                                         <Button
@@ -442,10 +452,15 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                 // Ensure that the serviceListData is filtered correctly, and defaultEditServiceData is used safely
                                 // editServiceData={serviceListData.find((service) => service.provider_service_id === selectedServiceID) || defaultEditServiceData}
                                 editServiceData={editServiceData}
+                                // handleDeleteRefresh={refreshServiceList}
+
                             />
                         )}
 
-                        {showDeleteServicePopup && <DeleteServicesPopup closePopup={closeDeleteServicePopup} providerServiceID={Number(selectedServiceID)} />}
+                        {showDeleteServicePopup && <DeleteServicesPopup
+                            closePopup={closeDeleteServicePopup}
+                            providerServiceID={Number(selectedServiceID)}
+                        />}
 
                         {/* Pagination */}
                         <div>
