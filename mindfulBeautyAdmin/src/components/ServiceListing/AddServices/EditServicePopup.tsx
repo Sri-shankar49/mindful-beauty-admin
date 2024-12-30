@@ -217,7 +217,7 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                                             </label>
                                             <InputField
                                                 label={''}
-                                                type="number"
+                                                // type="number"
                                                 // name="price"
                                                 id="price"
                                                 placeholder="price"

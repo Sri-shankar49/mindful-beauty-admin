@@ -4,11 +4,18 @@ import editButton from "../../assets/icons/editButton.png"
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
 import Select, { SingleValue } from 'react-select';
-import stylist from "../../assets/images/stylist.png"
+// import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
-import { SelectField } from "@/common/SelectField";
+// import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { inprogressList } from "@/api/apiConfig";
+import { beauticiansList, inprogressList, modifyStatus } from "@/api/apiConfig";
+import { ShimmerTable } from "shimmer-effects-react";
+
+
+interface StatusListDataProps {
+  status_id?: number;
+  status_name: string;
+}
 
 // Define the type for each option
 interface StylistOption {
@@ -35,31 +42,41 @@ interface InprogressListProps {
   modify_status: string;
 }
 
+interface BeauticiansDataProps {
+  id?: any;
+  name: string;
+  role: string;
+  years_of_experience?: string;
+  rating: string;
+  profile_image: string;
+  provider: string;
+}
+
 export const Inprogress = () => {
 
 
-  const stylistData: StylistOption[] = [
-    {
-      value: 1,
-      text: 'Swetha',
-      icon: `${stylist}`
-    },
-    {
-      value: 2,
-      text: 'Swetha',
-      icon: `${stylist}`
-    },
-    {
-      value: 3,
-      text: 'Swetha',
-      icon: `${stylist}`
-    },
-    {
-      value: 4,
-      text: 'Swetha',
-      icon: `${stylist}`
-    }
-  ];
+  // const stylistData: StylistOption[] = [
+  //   {
+  //     value: 1,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 2,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 3,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 4,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   }
+  // ];
 
 
   // State declaration for Stylist Popup
@@ -73,15 +90,33 @@ export const Inprogress = () => {
   const closeStylistPopup = () => {
     setShowStylistPopup(false);
   }
-  const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
+  // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
 
 
   // handle onChange event of the dropdown
-  const handleStylistOption = (option: SingleValue<StylistOption>) => {
-    setSelectedStylistOption(option);
+  // const handleStylistOption = (option: SingleValue<StylistOption>) => {
+  //   setSelectedStylistOption(option);
 
-    // Open Stylist Popup
-    setShowStylistPopup(true);
+  //   // Open Stylist Popup
+  //   setShowStylistPopup(true);
+  // };
+
+  const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+    if (newValue) {
+      const selectedBeautician = beauticiansListData.find(
+        (beautician) => beautician.id === newValue.value
+      );
+
+      console.log("Selected Beautician ID:", selectedBeautician);
+
+
+      if (selectedBeautician) {
+        setSelectedStylist(selectedBeautician);
+        setShowStylistPopup(true);
+      }
+    } else {
+      console.log("No option selected.");
+    }
   };
 
   // const [showEditServicePopup, setShowEditServicePopup] = useState(false);
@@ -96,6 +131,9 @@ export const Inprogress = () => {
 
 
   const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
+  const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
+  const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
+  const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
@@ -117,6 +155,15 @@ export const Inprogress = () => {
 
       try {
         const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
+
+        const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+
+        const statusData = await modifyStatus();
+
+        setBeauticiansListData(beauticiansData.data);
+
+
+        setStatusListData(statusData);
         // const data = await inprogressList(1, 2, currentPage);
         setInprogressListData(data.results);
 
@@ -146,7 +193,22 @@ export const Inprogress = () => {
     setCurrentPage(1); // Reset to the first page when items per page changes
   };
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
+  if (loading) return <div>
+    <div>
+      <ShimmerTable
+        mode="light"
+        row={2}
+        col={4}
+        border={1}
+        borderColor={"#cbd5e1"}
+        rounded={0.25}
+        rowGap={16}
+        colPadding={[15, 5, 15, 5]}
+      />
+    </div>
+  </div>;
+
   if (error) return <div>{error}</div>;
 
   return (
@@ -209,10 +271,29 @@ export const Inprogress = () => {
 
                   <td className="text-start px-2 py-5">
                     <div>
-                      <Select
+                      {/* <Select
                         placeholder="Select Option"
                         value={selectedStylistOption}
                         options={stylistData}
+                        onChange={handleStylistOption}
+                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                        formatOptionLabel={(option) => (
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                            <span style={{ marginLeft: 5 }}>{option.text}</span>
+                          </div>
+                        )}
+                        getOptionValue={(option) => option.value.toString()}
+                      /> */}
+                      <Select
+                        placeholder="Select Option"
+                        // value={selectedStylistOption}
+                        // options={stylistData}
+                        options={beauticiansListData.map((beautician) => ({
+                          value: beautician.id,
+                          text: beautician.name,
+                          icon: beautician.profile_image,
+                        }))}
                         onChange={handleStylistOption}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                         formatOptionLabel={(option) => (
@@ -227,7 +308,7 @@ export const Inprogress = () => {
                   </td>
 
                   <td>
-                    <SelectField
+                    {/* <SelectField
                       label={''}
                       name="status"
                       id="status"
@@ -237,7 +318,26 @@ export const Inprogress = () => {
                         { value: "completed", label: "Completed" },
                       ]}
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    />
+                    /> */}
+
+                    <select
+                      // name=""
+                      id=""
+                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                    // value={selectedBranch}
+                    // onChange={handleBranchChange} // Call on change
+
+                    >
+                      <option value="" disabled>
+                        Select Branch
+                      </option>
+
+                      {statusListData.map((status) => (
+                        <option key={status.status_id} value={status.status_id}>
+                          {status.status_name}
+                        </option>
+                      ))}
+                    </select>
                   </td>
 
                   <td className="text-start px-2 py-5">
@@ -529,7 +629,11 @@ export const Inprogress = () => {
       </div >
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
-      {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+      {/* {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />} */}
+
+      {showStylistPopup && selectedStylist && (
+        <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
+      )}
 
 
       {/* Pagination */}

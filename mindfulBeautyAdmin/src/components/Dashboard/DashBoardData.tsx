@@ -11,6 +11,7 @@ import Select, { SingleValue } from 'react-select';
 import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiConfig"
 // import { useNavigate } from "react-router-dom"
 import "./DashBoardData.css";
+import { ShimmerTable } from "shimmer-effects-react"
 
 
 // Define the type for each option
@@ -298,7 +299,21 @@ export const DashBoardData = () => {
     // };
 
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
 
