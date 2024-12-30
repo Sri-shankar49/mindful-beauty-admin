@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { addStaff, staffBranchList, staffRoleList } from '@/api/apiConfig';
+import { useNavigate } from 'react-router-dom';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface AddStaffPopupProps {
     closePopup: () => void;
@@ -30,6 +32,7 @@ const addStaffSchema = zod.object({
     name: zod.string().min(3, "Name is required"),
     role: zod.string().min(1, "Role is required"),
     branch: zod.string().min(1, "Branch is required"),
+    staffPhoneNumber: zod.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
     // photo: zod.any().optional(), // Optional file input
 });
 
@@ -37,6 +40,8 @@ type addStaffFormData = zod.infer<typeof addStaffSchema>;
 
 
 export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
+
+    const navigate = useNavigate();
 
     const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [staffRoleListData, setStaffRoleListData] = useState<StaffRoleListDataProps[]>([]);
@@ -120,6 +125,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
             formData.append("name", data.name);
             formData.append("role", data.role);
             formData.append("branch_id", data.branch);
+            formData.append("phone", data.staffPhoneNumber);
 
             // Append selected files
             Object.keys(selectedPhoto).forEach((key) => {
@@ -140,7 +146,12 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
             console.log("Add Staff Details Submission Success:", addStaffData);
 
-            closePopup(); // Close popup after submission
+            // closePopup(); // Close popup after submission
+            if (addStaffData?.status === "success") {
+                closePopup(); // Close popup after submission
+                navigate(0);
+
+            }
 
         }
 
@@ -153,7 +164,21 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
     };
 
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
 
@@ -187,7 +212,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
                                         {/* Add Staff Form */}
                                         <div className="space-y-5">
 
-                                            {/* City */}
+                                            {/* Name */}
                                             <div className="">
                                                 <label
                                                     htmlFor="name"
@@ -281,6 +306,29 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
                                                 {errors.branch && (
                                                     <p className="text-sm text-red-500">{errors.branch.message}</p>
+                                                )}
+                                            </div>
+
+                                            {/* Phone */}
+                                            <div className="">
+                                                <label
+                                                    htmlFor="phone"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Phone Number
+                                                </label>
+                                                <InputField
+                                                    label={''}
+                                                    type="text"
+                                                    // name="name"
+                                                    id="phone"
+                                                    placeholder="Phone Number"
+                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("staffPhoneNumber")}
+                                                />
+
+                                                {errors.staffPhoneNumber && (
+                                                    <p className="text-sm text-red-500">{errors.staffPhoneNumber.message}</p>
                                                 )}
                                             </div>
 

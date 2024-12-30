@@ -19,6 +19,7 @@ interface StaffManagementProps {
     branch_id?: string;
     branch_name: string;
     status: string;
+    phone: string;
 }
 
 
@@ -33,6 +34,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         branch_id: undefined,
         branch_name: '',
         status: '',
+        phone: '',
     };
 
     const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);

@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { editStaff, staffBranchList, staffRoleList } from '@/api/apiConfig';
 import { useNavigate } from 'react-router-dom';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 
 interface EditStaffPopupProps {
@@ -21,6 +22,8 @@ interface EditStaffPopupProps {
         branch_id?: string;
         branch_name: string;
         status: string;
+        phone: string;
+
     };
 
     closePopup: () => void;
@@ -43,6 +46,8 @@ const editStaffSchema = zod.object({
     name: zod.string().min(1, "Name is required"),
     role: zod.string().min(1, "Role is required"),
     branch: zod.string().min(1, "Branch is required"),
+    staffPhoneNumber: zod.string().regex(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+
 });
 
 type EditStaffFormData = zod.infer<typeof editStaffSchema>;
@@ -62,8 +67,9 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
         resolver: zodResolver(editStaffSchema),
         defaultValues: {
             name: editStaffData.name || '',
-            role: editStaffData.role_id || '',
-            branch: editStaffData.branch_id || '',
+            role: String(editStaffData.role_id) || '',
+            branch: String(editStaffData.branch_id) || '',
+            staffPhoneNumber: String(editStaffData.phone) || '',
         },
     });
 
@@ -81,8 +87,8 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                 setStaffRoleListData(rolesData.data || []); // Fallback to an empty array if data is null
                 console.log("Staff role list data log for select field:", rolesData);
 
-                setStaffBranchListData(branchesData.results.data || []); // Fallback to an empty array if data is null
-                console.log("Staff branch list data log for select field:", branchesData.results.data);
+                setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
+                console.log("Staff branch list data log for select field:", branchesData.data);
 
 
             } catch (error: any) {
@@ -103,11 +109,12 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
             const formData = new FormData();
             // formData.append('staff_id', editStaffData.staff || '');
             formData.append('staff_id', editStaffData.staff?.toString() || '');
-            formData.append('branch_name', data.name);
-            formData.append('phone', data.branch);
+            formData.append('name', data.name);
+            formData.append('branch_id', data.branch);
             // formData.append('branchManager', data.branchManager);
             // formData.append('branchAddress', data.branchAddress);
-            formData.append('location', data.branch);
+            // formData.append('location', data.branch);
+            formData.append('phone', data.staffPhoneNumber);
 
             // if (file) {
             //     formData.append('logo', file); // Append file if uploaded
@@ -133,7 +140,21 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
     };
 
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
     return (
@@ -242,6 +263,31 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                                                     <p className="text-sm text-red-500">{errors.branch.message}</p>
                                                 )}
                                             </div>
+
+
+                                            {/* Phone */}
+                                            <div className="">
+                                                <label
+                                                    htmlFor="phone"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Phone Number
+                                                </label>
+                                                <InputField
+                                                    label={''}
+                                                    type="text"
+                                                    // name="name"
+                                                    id="phone"
+                                                    placeholder="Phone Number"
+                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("staffPhoneNumber")}
+                                                />
+
+                                                {errors.staffPhoneNumber && (
+                                                    <p className="text-sm text-red-500">{errors.staffPhoneNumber.message}</p>
+                                                )}
+                                            </div>
+
 
                                             {/* Upload Photo */}
                                             <div className="flex items-end justify-between">

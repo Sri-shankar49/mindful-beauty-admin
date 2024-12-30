@@ -550,7 +550,7 @@ export const staffRoleList = async () => {
 
 // Manage Role Page -- --> Staff Management
 // POST Method from the API
-export const addStaff = async (formData: FormData): Promise<unknown> => {
+export const addStaff = async (formData: FormData): Promise<any> => {
   try {
 
     // Debugging: Log the FormData contents
@@ -590,7 +590,7 @@ export const addStaff = async (formData: FormData): Promise<unknown> => {
 export const editStaff = async (formData: FormData): Promise<any> => {
 
   try {
-    const response = await apiAxios.put(`/provider-api/staff/`, formData, {
+    const response = await apiAxios.put(`/provider-api/staff-edit-delete/`, formData, {
 
       headers: {
         "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
