@@ -113,11 +113,11 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
             //     formData.append('logo', file); // Append file if uploaded
             // }
 
-            const editStaffData = await editStaff(formData); // Assuming editBranch can handle FormData
-            console.log(editStaffData, "Staff edited successfully");
+            const editingStaff = await editStaff(formData); // Assuming editBranch can handle FormData
+            console.log(editingStaff, "Staff edited successfully");
 
             // closePopup();
-            if (editStaffData.status === "success") {
+            if (editingStaff.status === "success") {
                 closePopup(); // Close popup after deletion
                 navigate(0);
                 // refreshData(); // Refresh data after deletion
