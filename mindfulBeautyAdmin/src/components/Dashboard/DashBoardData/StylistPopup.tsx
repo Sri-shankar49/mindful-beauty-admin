@@ -1,12 +1,21 @@
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
-import stylist from "../../../assets/images/stylist.png"
+// import stylist from "../../../assets/images/stylist.png"
 
 interface StylistPopupProps {
     closePopup: () => void;
+    stylistDetails: {
+        id?: any;
+        name: string;
+        role: string;
+        years_of_experience?: string;
+        rating: string;
+        profile_image: string;
+        provider: string;
+    }
 }
 
-export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup }) => {
+export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylistDetails }) => {
     return (
         <div>
             <div>
@@ -21,10 +30,11 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup }) => {
 
                                     <div className="flex items-center justify-center space-x-5">
                                         <div>
-                                            <img src={stylist} alt="" />
+                                            {/* <img src={stylist} alt="" /> */}
+                                            <img src={stylistDetails.profile_image} alt={stylistDetails.name} />
                                         </div>
                                         <div className="text-center">
-                                            <h2 className="text-2xl text-mindfulBlack font-semibold">Swetha</h2>
+                                            <h2 className="text-2xl text-mindfulBlack font-semibold">{stylistDetails.name}</h2>
                                         </div>
                                     </div>
                                     {/* <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">
@@ -40,7 +50,7 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup }) => {
                                 </div>
 
                                 <div className="text-center">
-                                    <p className="text-lg text-mindfulBlack">Kindly confirm to assign this talk to Swetha</p>
+                                    <p className="text-lg text-mindfulBlack">Kindly confirm to assign this talk to {stylistDetails.name}</p>
                                 </div>
 
                                 {/* Buttons */}
@@ -56,6 +66,7 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup }) => {
 
                                         {/* Submit Button */}
                                         <Button
+                                            onClick={closePopup}
                                             buttonType="submit"
                                             buttonTitle="Confirm"
                                             className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"

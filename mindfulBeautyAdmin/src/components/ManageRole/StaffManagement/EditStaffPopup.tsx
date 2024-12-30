@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { editStaff, staffBranchList, staffRoleList } from '@/api/apiConfig';
+import { useNavigate } from 'react-router-dom';
 
 
 interface EditStaffPopupProps {
@@ -48,6 +49,8 @@ type EditStaffFormData = zod.infer<typeof editStaffSchema>;
 
 
 export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, editStaffData }) => {
+
+    const navigate = useNavigate();
 
     const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [staffRoleListData, setStaffRoleListData] = useState<StaffRoleListDataProps[]>([]);
@@ -110,10 +113,15 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
             //     formData.append('logo', file); // Append file if uploaded
             // }
 
-            await editStaff(formData); // Assuming editBranch can handle FormData
-            console.log("Staff edited successfully");
+            const editStaffData = await editStaff(formData); // Assuming editBranch can handle FormData
+            console.log(editStaffData, "Staff edited successfully");
 
-            closePopup();
+            // closePopup();
+            if (editStaffData.status === "success") {
+                closePopup(); // Close popup after deletion
+                navigate(0);
+                // refreshData(); // Refresh data after deletion
+            }
 
         } catch (error: any) {
             console.error("Error editing staff:", error.message);

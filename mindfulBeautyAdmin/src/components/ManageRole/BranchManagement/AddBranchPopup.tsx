@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { addBranch } from '@/api/apiConfig';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface AddBranchPopupProps {
     closePopup: () => void;
@@ -49,6 +50,11 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
         resolver: zodResolver(addBranchSchema),
     });
 
+
+    // Login Provider ID
+    const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+    console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
     const onSubmit = async (data: addBranchFormData) => {
 
         setLoading(true);
@@ -62,6 +68,7 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
             const formData = new FormData();
 
             // Append required fields
+            formData.append("provider_id", String(sessionLoginProviderID));
             formData.append("branch_name", data.branchName);
             formData.append("branch_phone_number", data.branchPhoneNumber);
             formData.append("branch_address", data.branchAddress);
@@ -92,11 +99,12 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
             console.log("Add branch Submission Success:", addBranchData);
 
             // If the submission is successful, reset the form and close the popup
-            // if (addBranchData?.status === "success") {
-                refreshData();
+            if (addBranchData?.status === "success") {
                 closePopup();
+                refreshData();
 
-            // }
+
+            }
         }
 
         catch (error: any) {
@@ -122,7 +130,21 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
     // };
 
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
 

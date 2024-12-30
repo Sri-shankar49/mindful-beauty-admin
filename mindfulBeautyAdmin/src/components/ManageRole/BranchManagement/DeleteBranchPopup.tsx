@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { deleteBranch } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 interface DeleteBranchPopupProps {
     branchID: number; // Pass the selected branch ID
@@ -9,6 +10,8 @@ interface DeleteBranchPopupProps {
 }
 
 export const DeleteBranchPopup: React.FC<DeleteBranchPopupProps> = ({ closePopup, branchID }) => {
+
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,6 +26,14 @@ export const DeleteBranchPopup: React.FC<DeleteBranchPopupProps> = ({ closePopup
 
             // Optionally show a success message or trigger a re-fetch
             closePopup(); // Close popup after deletion
+
+            // If the submission is successful, reset the form and close the popup
+            if (data?.status === "success") {
+                closePopup();
+                navigate(0);
+
+
+            }
         } catch (error: any) {
             setError(error.message || "Failed to delete branch. Please try again.");
         } finally {

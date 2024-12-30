@@ -9,6 +9,7 @@ import { staffList } from '@/api/apiConfig'
 import { EditStaffPopup } from './StaffManagement/EditStaffPopup'
 import { Pagination } from '@/common/Pagination'
 import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup'
+import { ShimmerTable } from 'shimmer-effects-react'
 
 interface StaffManagementProps {
     staff?: number;
@@ -59,7 +60,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     }
 
     const openEditStaffPopup = (staffID: number) => {
-        // setShowEditStaffpopup(true);
+        setShowEditStaffpopup(true);
         const selectedStaff = staffListData.find((staff) => staff.staff === staffID);
         console.log("Finding the selected object in an array", selectedStaff);
 
@@ -107,6 +108,17 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     }, [currentPage, itemsPerPage]);
 
 
+    // const refreshBranchListData = async () => {
+    //     try {
+    //         const staffData = await staffList();
+    //         setStaffListData(staffData.results.data || []);
+    //         console.log("Branch list data refreshed:", staffData);
+    //     } catch (error: any) {
+    //         console.error("Error refreshing Branch list data:", error.message);
+    //     }
+    // };
+
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
@@ -117,7 +129,21 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     };
 
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
 
@@ -262,7 +288,11 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                     editStaffData={staffListData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
                 />
             )}
-            {showDeleteStaffPopup && <DeleteStaffPopup closePopup={closeDeleteStaffPopup} staffID={Number(selectedStaffID)} />}
+            {showDeleteStaffPopup && <DeleteStaffPopup
+                closePopup={closeDeleteStaffPopup}
+                staffID={Number(selectedStaffID)}
+                // refreshStaffData={refreshBranchListData}
+            />}
         </div >
     )
 }

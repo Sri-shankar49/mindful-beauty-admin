@@ -4,6 +4,7 @@ import { BranchCard } from "./BranchManagement/BranchCard"
 import { TbHomePlus } from "react-icons/tb";
 import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
 import { branchList } from "@/api/apiConfig";
+import { ShimmerTable } from "shimmer-effects-react";
 
 // Define the type for BranchCardProps if it's not imported
 interface BranchCardProps {
@@ -62,7 +63,21 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
     return (
@@ -111,7 +126,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                 <BranchCard /> */}
             </div>
 
-            {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} refreshData={refreshBranchListData}  />}
+            {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} refreshData={refreshBranchListData} />}
         </div>
     )
 }

@@ -104,6 +104,10 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
     }, []);
 
 
+    // Login Provider ID
+    const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+    console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
     const onSubmit = async (data: addStaffFormData) => {
         setLoading(true);
         setError(null);
@@ -112,6 +116,7 @@ export const AddStaffPopup: React.FC<AddStaffPopupProps> = ({ closePopup }) => {
 
         try {
             const formData = new FormData();
+            formData.append("provider_id", String(sessionLoginProviderID));
             formData.append("name", data.name);
             formData.append("role", data.role);
             formData.append("branch_id", data.branch);

@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { editBranch } from '@/api/apiConfig';
+import { ShimmerTable } from 'shimmer-effects-react';
+import { useNavigate } from 'react-router-dom';
 
 interface EditBranchPopupProps {
     closePopup: () => void;
@@ -37,6 +39,7 @@ type EditBranchFormData = zod.infer<typeof editBranchSchema>;
 
 export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, branchData }) => {
 
+    const navigate = useNavigate();
 
     const [logo, setLogo] = useState<string | null>(branchData.logo || ashtamudiLogo); // Initially set to the default logo
     const [loading, setLoading] = useState<boolean>(false);
@@ -85,10 +88,15 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
             //     formData.append('logo', file); // Append file if uploaded
             // }
 
-            await editBranch(formData); // Assuming editBranch can handle FormData
-            console.log("Branch edited successfully");
+            const editBranchData = await editBranch(formData); // Assuming editBranch can handle FormData
+            console.log(editBranchData, "Branch edited successfully");
 
-            closePopup();
+            // closePopup();
+            if (editBranchData.status === "success") {
+                closePopup(); // Close popup after deletion
+                navigate(0);
+                // refreshData(); // Refresh data after deletion
+            }
 
         } catch (error: any) {
             console.error("Error editing branch:", error.message);
@@ -99,7 +107,21 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
     };
 
 
-    if (loading) return <div>Loading...</div>
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>
 
 

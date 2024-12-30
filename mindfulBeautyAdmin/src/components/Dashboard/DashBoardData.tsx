@@ -10,6 +10,7 @@ import Select, { SingleValue } from 'react-select';
 // import stylist from "../../assets/images/stylist.png"
 import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiConfig"
 // import { useNavigate } from "react-router-dom"
+import "./DashBoardData.css";
 
 
 // Define the type for each option
@@ -84,6 +85,7 @@ export const DashBoardData = () => {
 
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
+    const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
     const [sortOrder, setSortOrder] = useState<string>("desc");
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -114,15 +116,33 @@ export const DashBoardData = () => {
 
 
     // Handle change events for the Select component
+    // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+    //     if (newValue) {
+    //         // Access the beautician ID
+    //         const selectedBeauticianId = newValue.value;
+
+    //         console.log("Selected Beautician ID:", selectedBeauticianId);
+
+    //         // Perform additional actions, e.g., opening a popup or saving the state
+    //         // setShowStylistPopup(true); // Example
+    //     } else {
+    //         console.log("No option selected.");
+    //     }
+    // };
+
     const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
         if (newValue) {
-            // Access the beautician ID
-            const selectedBeauticianId = newValue.value;
+            const selectedBeautician = beauticiansListData.find(
+                (beautician) => beautician.id === newValue.value
+            );
 
-            console.log("Selected Beautician ID:", selectedBeauticianId);
+            console.log("Selected Beautician ID:", selectedBeautician);
 
-            // Perform additional actions, e.g., opening a popup or saving the state
-            // setShowStylistPopup(true); // Example
+
+            if (selectedBeautician) {
+                setSelectedStylist(selectedBeautician);
+                setShowStylistPopup(true);
+            }
         } else {
             console.log("No option selected.");
         }
@@ -756,7 +776,10 @@ export const DashBoardData = () => {
             </div>
 
             {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
-            {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />}
+            {/* {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />} */}
+            {showStylistPopup && selectedStylist && (
+                <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
+            )}
 
         </div>
 

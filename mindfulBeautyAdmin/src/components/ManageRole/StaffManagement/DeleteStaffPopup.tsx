@@ -2,14 +2,19 @@ import { deleteStaff } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
 import React, { useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 
 interface DeleteStaffPopupProps {
     staffID: number; // Pass the selected staff ID
     closePopup: () => void;
+    // refreshData: () => void;
 }
 
 export const DeleteStaffPopup: React.FC<DeleteStaffPopupProps> = ({ closePopup, staffID }) => {
+
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +28,13 @@ export const DeleteStaffPopup: React.FC<DeleteStaffPopupProps> = ({ closePopup, 
             console.log("Staff Data deleted successfully:", data);
 
             // Optionally show a success message or trigger a re-fetch
-            closePopup(); // Close popup after deletion
+            // closePopup(); // Close popup after deletion
+            if (data?.status === "success") {
+                closePopup(); // Close popup after deletion
+                navigate(0);
+                // refreshData(); // Refresh data after deletion
+            }
+
         } catch (error: any) {
             setError(error.message || "Failed to delete staff. Please try again.");
         } finally {
@@ -31,7 +42,21 @@ export const DeleteStaffPopup: React.FC<DeleteStaffPopupProps> = ({ closePopup, 
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>{error}</div>;
 
 

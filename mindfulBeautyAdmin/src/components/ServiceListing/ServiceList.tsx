@@ -5,7 +5,7 @@ import rectangleBlack from "../../assets/images/rectangleBlack.png"
 import { EditServicePopup } from "./AddServices/EditServicePopup";
 import { Button } from "@/common/Button";
 import { Pagination } from "@/common/Pagination";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import { SelectField } from "@/common/SelectField";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { InputField } from "@/common/InputField";
@@ -223,10 +223,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                         <div className="pb-5">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <NavLink to="ServiceList">
-                                        {/* <h5 className="text-3xl font-semibold">Services List (85)</h5> */}
-                                        <h5 className="text-3xl font-semibold">Services List ({totalItems})</h5>
-                                    </NavLink>
+                                    {/* <h5 className="text-3xl font-semibold">Services List (85)</h5> */}
+                                    <h5 className="text-3xl font-semibold">Services List ({totalItems})</h5>
                                 </div>
 
                                 {/* Select, Add Service & Search */}
@@ -452,7 +450,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                 // Ensure that the serviceListData is filtered correctly, and defaultEditServiceData is used safely
                                 // editServiceData={serviceListData.find((service) => service.provider_service_id === selectedServiceID) || defaultEditServiceData}
                                 editServiceData={editServiceData}
-                                // handleDeleteRefresh={refreshServiceList}
+                            // handleDeleteRefresh={refreshServiceList}
 
                             />
                         )}

@@ -490,7 +490,7 @@ export const fetchSelectedBranch = async (
 
 // Manage Role Page -- --> Branch Management
 // PUT Method from the API
-export const editBranch = async (formData: FormData): Promise<unknown> => {
+export const editBranch = async (formData: FormData): Promise<any> => {
 
   try {
     const response = await apiAxios.put(`/provider-api/branch/`, formData, {
@@ -587,7 +587,7 @@ export const addStaff = async (formData: FormData): Promise<unknown> => {
 
 // Manage Role Page -- --> Branch Management
 // PUT Method from the API
-export const editStaff = async (formData: FormData): Promise<unknown> => {
+export const editStaff = async (formData: FormData): Promise<any> => {
 
   try {
     const response = await apiAxios.put(`/provider-api/staff/`, formData, {
@@ -629,7 +629,7 @@ export const deleteStaff = async (staffID: number) => {
     console.log("Staff list DELETE Method response:", response.data);   // Log the response data for debugging purposes
 
     // Validate HTTP status
-    if (!response.data || response.status !== 204) {
+    if (!response.data || response.status !== 200) {
       throw new Error("Failed to add staff. Invalid server response.");
     }
 
@@ -722,7 +722,7 @@ export const deleteBranch = async (branchID: number) => {
     console.log("Branch list DELETE Method response:", response.data);   // Log the response data for debugging purposes
 
     // Validate HTTP status
-    if (!response.data || response.status !== 204) {
+    if (!response.data || response.status !== 200) {
       throw new Error("Failed to delete branch. Invalid server response.");
     }
 
@@ -1159,6 +1159,31 @@ export const cancelledList = async (providerID: number, status: number, pageNumb
     throw new Error(error.response?.data?.message || "Unable to fetch cancelled booking list. Please try again later.");
   }
 }
+
+
+
+
+
+
+// Service Management Page -> All Booking
+export const modifyStatus = async () => {
+  try {
+    const response = await apiAxios.get('/provider-api/status/');
+    console.log("Status List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Status list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching Status list:", error.message || error);
+    throw new Error("Unable to fetch Status list. Please try again later.");
+  }
+};
+
 
 
 
