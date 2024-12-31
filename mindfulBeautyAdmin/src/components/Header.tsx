@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa6";
 import { FaUserLarge } from "react-icons/fa6";
@@ -15,7 +15,13 @@ export const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { token, phoneNumber } = useSelector((state: RootState) => state.login);
+    const { token, phoneNumber, permissions } = useSelector((state: RootState) => state.login);
+    console.log("Permission check ==>", permissions, token, phoneNumber)
+
+    // Debugging: Check permissions in the header
+    useEffect(() => {
+        console.log("Permissions in Header:", permissions);
+    }, [permissions]);
 
     const handleLogout = async () => {
         dispatch(logout()); // Logout and clear token
@@ -63,67 +69,81 @@ export const Header = () => {
                             <ul className="flex items-center space-x-10">
 
                                 {/* Dashboard */}
-                                <NavLink
-                                    to="/Dashboard"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Dashboard</li>
-                                </NavLink>
 
-                                {/* Manage Role */}
-                                <NavLink
-                                    to="/ManageRole"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Manage Role</li>
-                                </NavLink>
+                                {permissions?.dashboard == true && (
+                                    <NavLink
+                                        to="/Dashboard"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Dashboard</li>
+                                    </NavLink>
+                                )}
+
+                                {permissions?.manage_role == true && (
+                                    <NavLink
+                                        to="/ManageRole"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Manage Role</li>
+                                    </NavLink>
+                                )}
 
                                 {/* Service Listing */}
-                                <NavLink
-                                    to="/ServiceListing"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Service Listing</li>
-                                </NavLink>
+                                {permissions?.service_listing == true && (
+                                    <NavLink
+                                        to="/ServiceListing"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Service Listing</li>
+                                    </NavLink>
+                                )}
 
                                 {/* Service Management */}
-                                <NavLink
-                                    to="/ServiceManagement"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Service Management</li>
-                                </NavLink>
+                                {permissions?.service_management == true && (
+                                    <NavLink
+                                        to="/ServiceManagement"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Service Management</li>
+                                    </NavLink>
+                                )}
 
                                 {/* Sales & Transactions */}
-                                <NavLink
-                                    to="/SalesTransactions"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Sales & Transactions</li>
-                                </NavLink>
+                                {permissions?.sales_transactions == true && (
+                                    <NavLink
+                                        to="/SalesTransactions"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Sales & Transactions</li>
+                                    </NavLink>
+                                )}
 
                                 {/* Ratings & Reviews */}
-                                <NavLink
-                                    to="/RatingsReviews"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Ratings & Reviews</li>
-                                </NavLink>
+                                {permissions?.ratings_reviews == true && (
+                                    <NavLink
+                                        to="/RatingsReviews"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Ratings & Reviews</li>
+                                    </NavLink>
+                                )}
 
                                 {/* Reports */}
-                                <NavLink
-                                    to="/Reports"
-                                    className="active-nav"
-                                    aria-current="page"
-                                >
-                                    <li className="text-md">Reports</li>
-                                </NavLink>
+                                {permissions?.reports == true && (
+                                    <NavLink
+                                        to="/Reports"
+                                        className="active-nav"
+                                        aria-current="page"
+                                    >
+                                        <li className="text-md">Reports</li>
+                                    </NavLink>
+                                )}
 
                             </ul>
                         </nav>
