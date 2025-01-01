@@ -12,7 +12,7 @@ import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiC
 // import { useNavigate } from "react-router-dom"
 import "./DashBoardData.css";
 import { ShimmerTable } from "shimmer-effects-react"
-import { Link, NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 
 // Define the type for each option
