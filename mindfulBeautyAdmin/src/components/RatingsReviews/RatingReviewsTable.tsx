@@ -5,6 +5,7 @@ import { FaSort } from "react-icons/fa";
 import { Pagination } from '@/common/Pagination';
 import { useEffect, useState } from 'react';
 import { reviewsList } from '@/api/apiConfig';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface RatingReviewsTableProps {
   review_id?: string;
@@ -60,7 +61,21 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
   };
 
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
+  if (loading) return <div>
+    <div>
+      <ShimmerTable
+        mode="light"
+        row={2}
+        col={4}
+        border={1}
+        borderColor={"#cbd5e1"}
+        rounded={0.25}
+        rowGap={16}
+        colPadding={[15, 5, 15, 5]}
+      />
+    </div>
+  </div>;
   if (error) return <div>{error}</div>;
 
   return (

@@ -12,6 +12,7 @@ import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiC
 // import { useNavigate } from "react-router-dom"
 import "./DashBoardData.css";
 import { ShimmerTable } from "shimmer-effects-react"
+import { Link, NavLink } from "react-router-dom"
 
 
 // Define the type for each option
@@ -405,7 +406,9 @@ export const DashBoardData = () => {
                         </div>
 
                         <div>
-                            <p className="text-lg text-main font-semibold underline hover:no-underline">View All Booking</p>
+                            <NavLink to="/ServiceManagement/BookingStatus/AllBooking">
+                                <p className="text-lg text-main font-semibold underline hover:no-underline">View All Booking</p>
+                            </NavLink>
                         </div>
                     </div>
 

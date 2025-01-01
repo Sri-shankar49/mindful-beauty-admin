@@ -262,6 +262,7 @@ import {
 } from "@/api/apiConfig";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { ShimmerTable } from "shimmer-effects-react";
 
 interface RolesManagementProps {
     role_id?: number;
@@ -278,7 +279,7 @@ export const RolesManagement = () => {
     const [permissions, setPermissions] = useState<Record<number, Record<string, boolean>>>({});
 
     const loginProviderID = useSelector((state: RootState) => state.login.loginProviderID);
-    
+
     console.log("loginProviderID roles management", loginProviderID);
 
     useEffect(() => {
@@ -406,7 +407,21 @@ export const RolesManagement = () => {
         });
     };
 
-    if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
