@@ -275,12 +275,10 @@ export const RolesManagement = () => {
     const [error, setError] = useState<string | null>(null);
 
     // State to track checkbox selections for permissions per role
-    const [permissions, setPermissions] = useState<
-        Record<number, Record<string, boolean>>
-    >({});
-    const loginProviderID = useSelector(
-        (state: RootState) => state.login.loginProviderID
-    );
+    const [permissions, setPermissions] = useState<Record<number, Record<string, boolean>>>({});
+
+    const loginProviderID = useSelector((state: RootState) => state.login.loginProviderID);
+    
     console.log("loginProviderID roles management", loginProviderID);
 
     useEffect(() => {

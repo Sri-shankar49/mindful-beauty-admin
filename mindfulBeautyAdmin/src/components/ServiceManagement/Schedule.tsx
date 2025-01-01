@@ -8,7 +8,7 @@ import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Link } from "react-router-dom";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, modifyStatus, scheduleList } from "@/api/apiConfig";
+import { beauticiansList, fetchStatus, modifyStatus, scheduleList } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 
 
@@ -30,7 +30,7 @@ interface Service {
 }
 
 interface ScheduleListProps {
-  id?: string;
+  id: string;
   date: string;
   time: string;
   location: string;
@@ -39,7 +39,11 @@ interface ScheduleListProps {
   services: Service[];
   amount: string;
   status: string;
+  status_id?: string;
   modify_status: string;
+  stylist: string;
+  stylist_id?: string;
+
 }
 
 interface BeauticiansDataProps {
@@ -135,22 +139,24 @@ export const Schedule = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
   useEffect(() => {
 
     const fetchScheduleListData = async () => {
       setLoading(true);
       setError(null);
 
-      // Login Provider ID
-      const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-      console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
 
       try {
         const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
-        const statusData = await modifyStatus();
+        const statusData = await fetchStatus();
 
         setBeauticiansListData(beauticiansData.data);
 
@@ -174,6 +180,71 @@ export const Schedule = () => {
     fetchScheduleListData();
 
   }, [currentPage, itemsPerPage]);
+
+
+  // Function call to get the updated scheduled list
+  const fetchRefreshedScheduleListData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
+      const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+      const statusData = await fetchStatus();
+
+      setBeauticiansListData(beauticiansData.data);
+      setStatusListData(statusData);
+      setScheduleListData(data.results);
+      setTotalItems(data.count);
+
+      console.log("Fetched Refreshed Schedule List data log:", data);
+      console.log("Fetched Refreshed Schedule List pagination count data log :", data.count);
+    } catch (error: any) {
+      setError(error.message || "Failed to fetch schedule list");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRefreshedScheduleListData();
+  }, [currentPage, itemsPerPage]);
+
+
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
+    const newStatusId = e.target.value;
+    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
+
+    // Optional: Update the status in the backend or state
+    // API call or local state update logic here
+    try {
+      setLoading(true);
+
+      const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
+
+      console.log("Modify status data log:", data);
+
+
+      // Refresh the schedule list data after status update
+      await fetchRefreshedScheduleListData();
+
+      // Take a deep copy of the service list data and update
+      // const updatedScheduleList = [...data.results]; // Assuming results is an array
+
+      // Update the schedule list based on the status
+      // setScheduleListData(updatedScheduleList || []);
+      // setTotalItems(data.count);
+
+
+    } catch (error: any) {
+      setError(error.message || "Failed to fetch schedule list for the selected status");
+    }
+    finally {
+      setLoading(false);
+
+    }
+  };
 
 
 
@@ -287,6 +358,7 @@ export const Schedule = () => {
                         )}
                         getOptionValue={(option) => option.value.toString()}
                       /> */}
+                      
                       <Select
                         placeholder="Select Option"
                         // value={selectedStylistOption}
@@ -305,6 +377,15 @@ export const Schedule = () => {
                           </div>
                         )}
                         getOptionValue={(option) => option.value.toString()}
+                        value={
+                          beauticiansListData
+                            .map((beautician) => ({
+                              value: beautician.id,
+                              text: beautician.name,
+                              icon: beautician.profile_image,
+                            }))
+                            .find((option) => option.value === schedule.stylist_id) || null // Set default value
+                        }
                       />
                     </div>
                   </td>
@@ -323,15 +404,18 @@ export const Schedule = () => {
                     /> */}
                     <select
                       // name=""
-                      id=""
+                      // id=""
+                      id={`status-${schedule.id}`} // Unique ID for better handling
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    // value={selectedBranch}
-                    // onChange={handleBranchChange} // Call on change
+                      // value={selectedBranch}
+                      // onChange={handleBranchChange} // Call on change
+                      value={schedule.status_id} // Set default value from the API response
+                      onChange={(e) => handleStatusChange(e, schedule.id)} // Handle status change
 
                     >
-                      <option value="" disabled>
-                        Select Branch
-                      </option>
+                      {/* <option value="" disabled>
+                        Select Status
+                      </option> */}
 
                       {statusListData.map((status) => (
                         <option key={status.status_id} value={status.status_id}>

@@ -9,7 +9,7 @@ import Select, { SingleValue } from 'react-select';
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, bookingsList, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, bookingsList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 
 
@@ -32,7 +32,7 @@ interface Service {
 }
 
 interface BookingListProps {
-  id?: string;
+  id: string;
   date: string;
   time: string;
   location: string;
@@ -41,7 +41,10 @@ interface BookingListProps {
   services: Service[];
   amount: string;
   status: string;
+  status_id?: string;
   modify_status: string;
+  stylist: string;
+  stylist_id?: string;
 
 }
 
@@ -138,6 +141,22 @@ export const AllBooking = () => {
     }
   };
 
+  // Function to get default stylist from API response
+  // const getDefaultStylist = () => {
+  //   const defaultStylist = beauticiansListData.find(
+  //     (beautician) => beautician.id === bookingData.stylist
+  //   );
+
+  //   if (defaultStylist) {
+  //     return {
+  //       value: defaultStylist.id,
+  //       text: defaultStylist.name,
+  //       icon: defaultStylist.profile_image,
+  //     };
+  //   }
+  //   return null;
+  // };
+
   // const [showEditServicePopup, setShowEditServicePopup] = useState(false);
 
   // const openEditService = () => {
@@ -160,6 +179,10 @@ export const AllBooking = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
 
   useEffect(() => {
 
@@ -167,16 +190,12 @@ export const AllBooking = () => {
       setLoading(true);
       setError(null);
 
-      // Login Provider ID
-      const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-      console.log("Login Provider ID from session storage", sessionLoginProviderID);
-
       try {
         const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
-        const statusData = await modifyStatus();
+        const statusData = await fetchStatus();
 
         setBeauticiansListData(beauticiansData.data);
 
@@ -208,6 +227,64 @@ export const AllBooking = () => {
     fetchBookingListData();
 
   }, [currentPage, itemsPerPage]);
+
+
+
+  // Function call to get the updated booking list
+  const fetchRefreshedBookingListData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
+      const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+      const statusData = await fetchStatus();
+
+      setBeauticiansListData(beauticiansData.data);
+      setStatusListData(statusData);
+      setBookingListData(data.results);
+      setTotalItems(data.count);
+
+      console.log("Fetched Refreshed Booking List data log:", data);
+      console.log("Fetched Refreshed Booking List pagination count data log :", data.count);
+    } catch (error: any) {
+      setError(error.message || "Failed to fetch schedule list");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRefreshedBookingListData();
+  }, [currentPage, itemsPerPage]);
+
+
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
+    const newStatusId = e.target.value;
+    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
+
+    // Optional: Update the status in the backend or state
+    // API call or local state update logic here
+    try {
+      setLoading(true);
+
+      const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
+
+      console.log("Modify status data log:", data);
+
+
+      // Refresh the schedule list data after status update
+      await fetchRefreshedBookingListData();
+
+    } catch (error: any) {
+      setError(error.message || "Failed to fetch booking list for the selected status");
+    }
+    finally {
+      setLoading(false);
+
+    }
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -321,16 +398,17 @@ export const AllBooking = () => {
                           buttonTitle={"Schedule"}
                           className="bg-[#fff8e5] text-md text-mindfulYellow font-semibold rounded-sm px-3 py-1"
                         />
-                      </div>) : (
-                      ""
-                      // <div>
-                      //   <Button
-                      //     buttonType="button"
-                      //     buttonTitle={"Unknown"}
-                      //     className="bg-[#f5f5f5] text-md text-gray-500 font-semibold rounded-sm px-3 py-1"
-                      //   />
-                      // </div>
-                    )}
+                      </div>
+                    ) : bookingData.status === "Cancelled" ? (
+                      <div>
+                        <Button
+                          buttonType="button"
+                          buttonTitle={"Cancelled"}
+                          className="bg-[#ffe1e1] text-md text-mindfulRed font-semibold rounded-sm px-3 py-1"
+                        />
+                      </div>
+
+                    ) : "Not Available"}
 
                   </td>
 
@@ -350,6 +428,7 @@ export const AllBooking = () => {
                         )}
                         getOptionValue={(option) => option.value.toString()}
                       /> */}
+
                       <Select
                         placeholder="Select Option"
                         // value={selectedStylistOption}
@@ -368,6 +447,15 @@ export const AllBooking = () => {
                           </div>
                         )}
                         getOptionValue={(option) => option.value.toString()}
+                        value={
+                          beauticiansListData
+                            .map((beautician) => ({
+                              value: beautician.id,
+                              text: beautician.name,
+                              icon: beautician.profile_image,
+                            }))
+                            .find((option) => option.value === bookingData.stylist_id) || null // Set default value
+                        }
                       />
                     </div>
                   </td>
@@ -388,13 +476,15 @@ export const AllBooking = () => {
                       // name=""
                       id=""
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    // value={selectedBranch}
-                    // onChange={handleBranchChange} // Call on change
+                      // value={selectedBranch}
+                      // onChange={handleBranchChange} // Call on change
+                      value={bookingData.status_id} // Set default value from the API response
+                      onChange={(e) => handleStatusChange(e, bookingData.id)} // Handle status change
 
                     >
-                      <option value="" disabled>
-                        Select Branch
-                      </option>
+                      {/* <option value="" disabled>
+                        Select Status
+                      </option> */}
 
                       {statusListData.map((status) => (
                         <option key={status.status_id} value={status.status_id}>

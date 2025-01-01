@@ -10,13 +10,14 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, completedList, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, completedList } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import { SelectField } from "@/common/SelectField";
 
-interface StatusListDataProps {
-  status_id?: number;
-  status_name: string;
-}
+// interface StatusListDataProps {
+//   status_id?: number;
+//   status_name: string;
+// }
 
 
 // Define the type for each option
@@ -33,7 +34,7 @@ interface Service {
 
 
 interface CompletedListProps {
-  id?: string;
+  id: string;
   date: string;
   time: string;
   location: string;
@@ -43,6 +44,8 @@ interface CompletedListProps {
   amount: string;
   status: string;
   modify_status: string;
+  stylist: string;
+  stylist_id?: string;
 }
 
 interface BeauticiansDataProps {
@@ -147,7 +150,7 @@ export const Completed = () => {
 
 
   const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
-  const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
+  // const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -174,11 +177,11 @@ export const Completed = () => {
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
-        const statusData = await modifyStatus();
+        // const statusData = await fetchStatus();
 
         setBeauticiansListData(beauticiansData.data);
 
-        setStatusListData(statusData);
+        // setStatusListData(statusData);
         // const data = await completedList(1, 3, currentPage);
         setCompletedListData(data.results);
 
@@ -317,23 +320,32 @@ export const Completed = () => {
                           </div>
                         )}
                         getOptionValue={(option) => option.value.toString()}
+                        value={
+                          beauticiansListData
+                            .map((beautician) => ({
+                              value: beautician.id,
+                              text: beautician.name,
+                              icon: beautician.profile_image,
+                            }))
+                            .find((option) => option.value === completed.stylist_id) || null // Set default value
+                        }
                       />
                     </div>
                   </td>
 
                   <td>
-                    {/* <SelectField
+                    <SelectField
                       label={''}
                       name="status"
                       id="status"
                       options={[
-                        { value: "scheduled", label: "Scheduled" },
-                        { value: "inprogress", label: "Inprogress" },
-                        { value: "completed", label: "Completed" },
+                        { value: "paid", label: "Paid" },
+                        { value: "partlyPaid", label: "Partly Paid" },
+                        { value: "notPaid", label: "Not Paid" },
                       ]}
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    /> */}
-                    <select
+                    />
+                    {/* <select
                       // name=""
                       id=""
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
@@ -350,7 +362,7 @@ export const Completed = () => {
                           {status.status_name}
                         </option>
                       ))}
-                    </select>
+                    </select> */}
                   </td>
 
                   <td className="text-start px-2 py-5">

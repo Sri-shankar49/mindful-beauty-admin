@@ -79,6 +79,7 @@ export const DashBoardData = () => {
 
 
     // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
+
     // State declaration for Denial Popup
     // const [showDenialPopup, setShowDenialPopup] = useState(false);
     // State declaration for Stylist Popup
