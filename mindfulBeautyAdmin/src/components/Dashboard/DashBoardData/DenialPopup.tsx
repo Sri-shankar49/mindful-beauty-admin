@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from 'react'
 import { fetchDeclineMessages } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
 import { SelectField } from '@/common/SelectField';
-import React, { useEffect, useState } from 'react'
 import { IoCloseCircle } from 'react-icons/io5';
 // import { ShimmerTable } from 'shimmer-effects-react';
 
@@ -41,31 +41,31 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
     }, []);
 
 
-    const handleDeclineChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string, messageID: string) => {
-        const messageID = e.target.value;
-        console.log(`Status changed for booking ID ${appointmentID} to ${messageID}`);
+    // const handleDeclineChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string, messageID: string) => {
+    //     const messageid = e.target.value;
+    //     console.log(`Status changed for booking ID ${appointmentID} to ${messageid}`);
 
-        // Optional: Update the status in the backend or state
-        // API call or local state update logic here
-        try {
-            setLoading(true);
+    //     // Optional: Update the status in the backend or state
+    //     // API call or local state update logic here
+    //     try {
+    //         setLoading(true);
 
-            const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
+    //         const data = await declineMessageAction(Number(appointmentID), Number(messageID));
 
-            console.log("Modify status data log:", data);
+    //         console.log("Modify status data log:", data);
 
 
-            // Refresh the schedule list data after status update
-            await fetchRefreshedBookingListData();
+    //         // Refresh the schedule list data after status update
+    //         await fetchRefreshedBookingListData();
 
-        } catch (error: any) {
-            setError(error.message || "Failed to fetch booking list for the selected status");
-        }
-        finally {
-            setLoading(false);
+    //     } catch (error: any) {
+    //         setError(error.message || "Failed to fetch booking list for the selected status");
+    //     }
+    //     finally {
+    //         setLoading(false);
 
-        }
-    };
+    //     }
+    // };
 
     if (loading) return <div>Loading...</div>;
     // if (loading) return <div>
@@ -127,8 +127,8 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
                                             value: String(decline.message_id), // Replace 'value' with the actual key from your API
                                             label: decline.text, // Replace 'label' with the actual key from your API
                                         }))}
-                                        value={bookingData.status_id} // Set default value from the API response
-                                        onChange={(e) => handleStatusChange(e, decline.id)} // Handle status change
+                                        // value={bookingData.status_id} // Set default value from the API response
+                                        // onChange={(e) => handleStatusChange(e, decline.id)} // Handle status change
                                     // error="This field is required."
                                     />
                                 </div>
