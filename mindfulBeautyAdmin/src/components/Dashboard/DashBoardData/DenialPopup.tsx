@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { fetchDeclineMessages } from '@/api/apiConfig';
+import { declineMessageAction, fetchDeclineMessages } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
-import { SelectField } from '@/common/SelectField';
+// import { SelectField } from '@/common/SelectField';
 import { IoCloseCircle } from 'react-icons/io5';
 // import { ShimmerTable } from 'shimmer-effects-react';
 
 interface DenialPopupProps {
     closePopup: () => void;
+    appointmentID: string;
 }
 
 interface DeclineListDataProps {
@@ -14,9 +15,10 @@ interface DeclineListDataProps {
     text: string;
 }
 
-export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
+export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmentID }) => {
 
     const [declineListData, setDeclineListData] = useState<DeclineListDataProps[]>([]);
+    const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +31,7 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
                 const loadDeclineData = await fetchDeclineMessages();
                 setDeclineListData(loadDeclineData.data);
 
-                console.log("Fetched decline list data log:", loadDeclineData);
+                console.log("Fetched decline list data log:", loadDeclineData.data);
 
             } catch (error: any) {
                 setError(error.message || 'Failed to fetch decline list');
@@ -41,31 +43,33 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
     }, []);
 
 
-    // const handleDeclineChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string, messageID: string) => {
-    //     const messageid = e.target.value;
-    //     console.log(`Status changed for booking ID ${appointmentID} to ${messageid}`);
+    const handleDeclineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const messageID = e.target.value;
+        setSelectedReason(messageID);
+        console.log(`Selected reason: ${messageID}`);
+    };
 
-    //     // Optional: Update the status in the backend or state
-    //     // API call or local state update logic here
-    //     try {
-    //         setLoading(true);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    //         const data = await declineMessageAction(Number(appointmentID), Number(messageID));
+        if (!selectedReason) {
+            setError("Please select a reason for order denial.");
+            return;
+        }
 
-    //         console.log("Modify status data log:", data);
+        try {
+            setLoading(true);
+            const data = await declineMessageAction(Number(appointmentID), Number(selectedReason));
+            console.log("Modify status data log:", data);
 
-
-    //         // Refresh the schedule list data after status update
-    //         await fetchRefreshedBookingListData();
-
-    //     } catch (error: any) {
-    //         setError(error.message || "Failed to fetch booking list for the selected status");
-    //     }
-    //     finally {
-    //         setLoading(false);
-
-    //     }
-    // };
+            // Optionally close the popup or show success message
+            closePopup();
+        } catch (error: any) {
+            setError(error.message || "Failed to decline the appointment.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     // if (loading) return <div>
@@ -110,48 +114,73 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup }) => {
                                     <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                                 </div>
 
-                                {/* Branch Select Field */}
-                                <div>
-                                    <SelectField
-                                        label=""
-                                        name="reason"
-                                        // required
-                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                        // options={[
-                                        //     { value: "staffNotAvailable", label: "Staff Not Available" },
-                                        //     { value: "serviceUnavailableAtSelectedTime", label: "Service Unavailable At Selected Time" },
-                                        //     { value: "appointmentOverbooked", label: "Appointment Overbooked" },
-                                        //     { value: "technicalIssuesWithService", label: "Technical Issues With Service" },
-                                        // ]}
-                                        options={declineListData.map((decline) => ({
-                                            value: String(decline.message_id), // Replace 'value' with the actual key from your API
-                                            label: decline.text, // Replace 'label' with the actual key from your API
-                                        }))}
-                                        // value={bookingData.status_id} // Set default value from the API response
-                                        // onChange={(e) => handleStatusChange(e, decline.id)} // Handle status change
-                                    // error="This field is required."
-                                    />
-                                </div>
+                                <form onSubmit={handleSubmit} method="post">
+                                    <div>
+                                        {/* Branch Select Field */}
+                                        <div>
+                                            {/* <SelectField
+                                                label=""
+                                                name="reason"
+                                                // required
+                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                // options={[
+                                                //     { value: "staffNotAvailable", label: "Staff Not Available" },
+                                                //     { value: "serviceUnavailableAtSelectedTime", label: "Service Unavailable At Selected Time" },
+                                                //     { value: "appointmentOverbooked", label: "Appointment Overbooked" },
+                                                //     { value: "technicalIssuesWithService", label: "Technical Issues With Service" },
+                                                // ]}
+                                                options={declineListData.map((decline) => ({
+                                                    value: String(decline.message_id), // Replace 'value' with the actual key from your API
+                                                    label: decline.text, // Replace 'label' with the actual key from your API
+                                                }))}
+                                                value={"Select any one of the Reason"} // Set default value from the API response
+                                                onChange={handleDeclineChange}
+                                            // error="This field is required."
+                                            /> */}
 
-                                {/* Buttons */}
-                                <div className="pt-5">
-                                    <div className="flex items-center justify-center space-x-5">
-                                        {/* Cancel Button */}
-                                        <Button
-                                            onClick={closePopup}
-                                            buttonType="button"
-                                            buttonTitle="Cancel"
-                                            className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                        />
+                                            <select
+                                                // name=""
+                                                id=""
+                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                // value={selectedBranch}
+                                                // onChange={handleBranchChange} // Call on change
+                                                // value={bookingData.status_id} // Set default value from the API response
+                                                onChange={handleDeclineChange} // Handle status change
 
-                                        {/* Submit Button */}
-                                        <Button
-                                            buttonType="submit"
-                                            buttonTitle="Confirm"
-                                            className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                        />
+                                            >
+                                                <option value="" disabled>
+                                                    Select the reason
+                                                </option>
+
+                                                {declineListData.map((decline) => (
+                                                    <option key={decline.message_id} value={decline.message_id}>
+                                                        {decline.text}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Buttons */}
+                                        <div className="pt-5">
+                                            <div className="flex items-center justify-center space-x-5">
+                                                {/* Cancel Button */}
+                                                <Button
+                                                    onClick={closePopup}
+                                                    buttonType="button"
+                                                    buttonTitle="Cancel"
+                                                    className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                />
+
+                                                {/* Submit Button */}
+                                                <Button
+                                                    buttonType="submit"
+                                                    buttonTitle="Confirm"
+                                                    className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>

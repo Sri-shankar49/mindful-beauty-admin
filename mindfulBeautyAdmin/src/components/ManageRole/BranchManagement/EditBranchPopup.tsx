@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { editBranch } from '@/api/apiConfig';
-import { ShimmerTable } from 'shimmer-effects-react';
 import { useNavigate } from 'react-router-dom';
 
 interface EditBranchPopupProps {
@@ -81,7 +80,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
             formData.append('branch_name', data.branchName);
             formData.append('phone', data.branchPhoneNumber);
             // formData.append('branchManager', data.branchManager);
-            // formData.append('branchAddress', data.branchAddress);
+            formData.append('branch_address', data.branchAddress);
             formData.append('location', data.branchLocation);
 
             // if (file) {
@@ -107,21 +106,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
     };
 
 
-    // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
+    if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>
 
 

@@ -340,7 +340,7 @@ export const fetchDeclineMessages = async () => {
 export const declineMessageAction = async (appointmentID: number, messageID: number) => {
 
   try {
-    const response = await apiAxios.post(`/api/messages/`, {
+    const response = await apiAxios.post(`/api/message/`, {
       appointment_id: appointmentID,
       message_id: messageID,
     });
