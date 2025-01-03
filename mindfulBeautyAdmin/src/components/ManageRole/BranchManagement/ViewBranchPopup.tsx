@@ -2,15 +2,22 @@ import React, { useState } from 'react'
 import { IoCloseCircle } from 'react-icons/io5'
 import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
-import { SelectField } from '@/common/SelectField';
+// import { SelectField } from '@/common/SelectField';W
 // import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";
 
 interface ViewBranchPopupProps {
     closePopup: () => void;
+    branchData: {
+        branchID?: string;
+        branchName: string;
+        phone: string;
+        location?: string;
+        logo: string;
+    };
 }
 
-export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) => {
+export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup, branchData }) => {
 
 
     const [logo, setLogo] = useState<string | null>(ashtamudiLogo); // Initially set to the default logo
@@ -146,6 +153,8 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                     label=""
                                                     name="branchName"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    defaultValue={branchData.branchName}
+                                                    readOnly
                                                 />
                                             </div>
 
@@ -161,11 +170,14 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                     label=""
                                                     name="branchPhoneNumber"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    defaultValue={branchData.phone}
+                                                    readOnly
+
                                                 />
                                             </div>
 
                                             {/* Branch Manager Name */}
-                                            <div>
+                                            {/* <div>
                                                 <label
                                                     htmlFor="branchManagerNumber"
                                                     className="text-lg text-mindfulBlack font-semibold">
@@ -184,7 +196,7 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                     ]}
                                                 // error="This field is required."
                                                 />
-                                            </div>
+                                            </div> */}
 
                                             {/* Branch Address */}
                                             <div>
@@ -199,6 +211,9 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                     id="branchAddress"
                                                     rows={4}
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    defaultValue={branchData.location}
+                                                    readOnly
+
                                                 >
                                                 </textarea>
                                             </div>
@@ -215,6 +230,9 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup }) 
                                                     label=""
                                                     name="branchLocation"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                    defaultValue={branchData.location}
+                                                    readOnly
+
                                                 />
                                             </div>
 

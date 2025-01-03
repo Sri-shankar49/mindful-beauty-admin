@@ -41,6 +41,9 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
     const openViewBranchPopup = () => {
         setShowViewBranchPopup(true);
+
+        setSelectedBranch({ branchID, branchName, phone, location, logo }); // Pass branch data
+        console.log("Finding the selected branch object in an array", selectedBranch);
     }
 
     const closeViewBranchPopup = () => {
@@ -91,11 +94,11 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             <div className="flex items-center space-x-5 mb-5">
                 {/* Manager Image */}
                 <div>
-                    <img src={managerImg} alt="manager image" />
+                    <img src={managerImg || logo} alt="manager image" />
                 </div>
 
                 <div>
-                    <h5 className="text-sm text-mindfulBlack font-semibold">Paul Williams</h5>
+                    {/* <h5 className="text-sm text-mindfulBlack font-semibold">Paul Williams</h5> */}
                     {/* <p>Manager</p> */}
                     {/* <p>+91 98847 19615</p> */}
                     <p>{phone}</p>
@@ -181,7 +184,8 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
             </div>
 
-            {showViewBranchPopup && <ViewBranchPopup closePopup={closeViewBranchPopup} />}
+            {showViewBranchPopup && selectedBranch && <ViewBranchPopup closePopup={closeViewBranchPopup} branchData={selectedBranch} />}
+
             {/* {showEditBranchPopup && <EditBranchPopup closePopup={closeEditBranchPopup} />}
              */}
             {/* Show Edit Popup */}

@@ -498,14 +498,21 @@ export const getProviderPermissions = async (providerId: number) => {
 
 // Manage Role Page -- --> Staff Management
 // GET Method from the API
-export const staffList = async () => {
+export const staffList = async (searchByName: string, pageNumber: number) => {
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
   try {
-    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`);
+    const response = await apiAxios.get(`/provider-api/staff-list/${sessionLoginProviderID}/`, {
+      params: {
+        // Add any additional parameters as needed
+        search: searchByName,
+        page: pageNumber,
+
+      },
+    });
     // const response = await apiAxios.get(`/provider-api/staff-list/2/`);
 
     console.log("Staff list GET Method response", response.data);
@@ -778,14 +785,18 @@ export const deleteStaff = async (staffID: number) => {
 
 // Manage Role Page -- --> Branch Management
 // GET Method from the API
-export const branchList = async () => {
+export const branchList = async (searchByName: string) => {
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
   try {
-    const response = await apiAxios.get(`/provider-api/branches-list/${sessionLoginProviderID}`);
+    const response = await apiAxios.get(`/provider-api/branches-list/${sessionLoginProviderID}`, {
+      params: {
+        search: searchByName,
+      },
+    });
 
     console.log("Branch list GET Method response", response.data);
 

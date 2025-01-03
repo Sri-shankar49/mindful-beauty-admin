@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import resetPasswordButton from "../../assets/icons/resetPasswordButton.png"
-import editButton from "../../assets/icons/editButton.png"
-import deleteButton from "../../assets/icons/deleteButton.png"
-import { Button } from '@/common/Button'
+import React, { useEffect, useState } from 'react';
+import resetPasswordButton from "../../assets/icons/resetPasswordButton.png";
+import editButton from "../../assets/icons/editButton.png";
+import deleteButton from "../../assets/icons/deleteButton.png";
+import { Button } from '@/common/Button';
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { AddStaffPopup } from './StaffManagement/AddStaffPopup';
-import { staffList } from '@/api/apiConfig'
-import { EditStaffPopup } from './StaffManagement/EditStaffPopup'
-import { Pagination } from '@/common/Pagination'
-import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup'
-import { ShimmerTable } from 'shimmer-effects-react'
+// import { staffList } from '@/api/apiConfig';
+import { EditStaffPopup } from './StaffManagement/EditStaffPopup';
+import { Pagination } from '@/common/Pagination';
+import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup';
+import { ShimmerTable } from 'shimmer-effects-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchStaffList } from '@/redux/staffSlice';
 
 interface StaffManagementProps {
     staff?: number;
@@ -37,11 +40,11 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         phone: '',
     };
 
-    const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
-    const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
-    const [error, setError] = useState<string | null>(null);
+    // const [staffListData, setStaffListData] = useState<StaffManagementProps[]>([]);
+    // const [loading, setLoading] = useState(true); // Start with true as data needs to be fetched
+    // const [error, setError] = useState<string | null>(null);
     const [selectedStaffID, setSelectedStaffID] = useState<number | null>(null);
-    const [totalItems, setTotalItems] = useState(0);
+    // const [totalItems, setTotalItems] = useState(0);
 
 
     // Pagination state
@@ -63,7 +66,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
     const openEditStaffPopup = (staffID: number) => {
         setShowEditStaffpopup(true);
-        const selectedStaff = staffListData.find((staff) => staff.staff === staffID);
+        const selectedStaff = staffData.find((staff) => staff.staff === staffID);
         console.log("Finding the selected object in an array", selectedStaff);
 
         if (selectedStaff) {
@@ -87,27 +90,27 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
         setShowDeleteStaffpopup(false);
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const fetchStaffList = async () => {
-            setLoading(true); // Set loading to true before fetching
-            try {
-                const data = await staffList();
-                setStaffListData(data.results.data || []); // Fallback to an empty array if data is null
+    //     const fetchStaffList = async () => {
+    //         setLoading(true); // Set loading to true before fetching
+    //         try {
+    //             const data = await staffList();
+    //             setStaffListData(data.results.data || []); // Fallback to an empty array if data is null
 
-                setTotalItems(data.count);
+    //             setTotalItems(data.count);
 
-                console.log("Staff list data log:", data);
-                console.log("Staff list pagination count data log:", data.count);
-            } catch (error: any) {
-                setError(error.message || 'Failed to fetch staff list');
-            } finally {
-                setLoading(false); // Ensure loading is false after fetching
-            }
-        };
+    //             console.log("Staff list data log:", data);
+    //             console.log("Staff list pagination count data log:", data.count);
+    //         } catch (error: any) {
+    //             setError(error.message || 'Failed to fetch staff list');
+    //         } finally {
+    //             setLoading(false); // Ensure loading is false after fetching
+    //         }
+    //     };
 
-        fetchStaffList();
-    }, [currentPage, itemsPerPage]);
+    //     fetchStaffList();
+    // }, [currentPage, itemsPerPage]);
 
 
     // const refreshBranchListData = async () => {
@@ -119,6 +122,14 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     //         console.error("Error refreshing Branch list data:", error.message);
     //     }
     // };
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { staffData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.staff);
+
+
+    useEffect(() => {
+        dispatch(fetchStaffList({ searchQuery, currentPage }));
+    }, [dispatch, searchQuery, currentPage, itemsPerPage]);
 
 
     const handlePageChange = (page: number) => {
@@ -176,12 +187,12 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                 <table className="w-full">
                     <thead className="bg-mindfulLightgrey">
                         <tr className="">
-                            <th className="text-center px-2 py-2">
+                            {/* <th className="text-center px-2 py-2">
                                 <label className="cl-checkbox">
                                     <input type="checkbox" />
                                     <span></span>
                                 </label>
-                            </th>
+                            </th> */}
                             <th className="w-[25%] text-start px-2 py-3">Name</th>
                             <th className="w-[15%] px-2 py-3">Role</th>
                             <th className="w-[15%] px-2 py-3">Branch</th>
@@ -197,15 +208,15 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                         </tr> */}
 
                         {/* Content & Checkbox */}
-                        {staffListData.length > 0 ? (
-                            staffListData.map((staff) => (
+                        {staffData.length > 0 ? (
+                            staffData.map((staff) => (
                                 <tr key={staff.staff} className="border-b-2">
-                                    <td className="text-center px-2 py-2">
+                                    {/* <td className="text-center px-2 py-2">
                                         <label className="cl-checkbox">
                                             <input type="checkbox" />
                                             <span></span>
                                         </label>
-                                    </td>
+                                    </td> */}
                                     <td className="px-2 py-5">{staff.name}</td>
                                     <td className="text-center px-2 py-5">{staff.role_name}</td>
                                     <td className="text-center px-2 py-5">{staff.branch_name}</td>
@@ -287,13 +298,13 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
             {showEditStaffPopup && selectedStaffID && (
                 <EditStaffPopup
                     closePopup={closeEditStaffPopup}
-                    editStaffData={staffListData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
+                    editStaffData={staffData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
                 />
             )}
             {showDeleteStaffPopup && <DeleteStaffPopup
                 closePopup={closeDeleteStaffPopup}
                 staffID={Number(selectedStaffID)}
-                // refreshStaffData={refreshBranchListData}
+            // refreshStaffData={refreshBranchListData}
             />}
         </div >
     )

@@ -3,9 +3,11 @@ import { Button } from '@/common/Button'
 import { BranchCard } from "./BranchManagement/BranchCard"
 import { TbHomePlus } from "react-icons/tb";
 import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
-import { branchList } from "@/api/apiConfig";
+// import { branchList } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchBranchList } from '@/redux/branchSlice';
 // Define the type for BranchCardProps if it's not imported
 interface BranchCardProps {
     branch_id: string;
@@ -20,9 +22,9 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
     // State Declaration for branch popup
     const [showBranchPopup, setShowBranchPopup] = useState(false);
 
-    const [branchListData, setBranchListdata] = useState<BranchCardProps[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [branchListData, setBranchListdata] = useState<BranchCardProps[]>([]);
+    // const [loading, setLoading] = useState(false);
+    // const [error, setError] = useState<string | null>(null);
 
     const openBranchPopup = () => {
         setShowBranchPopup(true);
@@ -33,34 +35,46 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
     }
 
 
-    useEffect(() => {
-        // Fetch data from API
-        const fetchBranchListData = async () => {
-            try {
-                setLoading(true);
-                // const data: BranchCardProps[] = await branchList();
-                const data = await branchList();
-                setBranchListdata(data.data || []);
-                console.log("Fetched Branch List data log:", data.data);
-            } catch (error: any) {
-                setError(error.message || "Failed to fetch branch list data.");
-            } finally {
-                setLoading(false);
-            }
-        };
+    const dispatch = useDispatch<AppDispatch>();
+    const { branchData, loading, error, searchQuery } = useSelector((state: RootState) => state.branch);
 
-        fetchBranchListData();
-    }, []);
+    useEffect(() => {
+        dispatch(fetchBranchList({ searchQuery }));
+    }, [dispatch, searchQuery]);
+
+    // useEffect(() => {
+    //     // Fetch data from API
+    //     const fetchBranchListData = async () => {
+    //         try {
+    //             setLoading(true);
+    //             // const data: BranchCardProps[] = await branchList();
+    //             const data = await branchList();
+    //             setBranchListdata(data.data || []);
+    //             console.log("Fetched Branch List data log:", data.data);
+    //         } catch (error: any) {
+    //             setError(error.message || "Failed to fetch branch list data.");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchBranchListData();
+    // }, []);
 
     // ... rest of the code remains the same ...
-    const refreshBranchListData = async () => {
-        try {
-            const BranchData = await branchList();
-            setBranchListdata(BranchData.data || []);
-            console.log("Branch list data refreshed:", BranchData.data);
-        } catch (error: any) {
-            console.error("Error refreshing Branch list data:", error.message);
-        }
+    // const refreshBranchListData = async () => {
+    //     try {
+    //         const BranchData = await branchList();
+    //         setBranchListdata(BranchData.data || []);
+    //         console.log("Branch list data refreshed:", BranchData.data);
+    //     } catch (error: any) {
+    //         console.error("Error refreshing Branch list data:", error.message);
+    //     }
+    // };
+
+    // Refresh branch list data
+    const refreshBranchListData = () => {
+        dispatch(fetchBranchList({ searchQuery }));
     };
 
     // if (loading) return <div>Loading...</div>;
@@ -85,7 +99,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
             <div className="flex items-center justify-between">
                 <div>
                     {/* <h5 className="text-3xl font-semibold py-5">Branches (4)</h5> */}
-                    <h5 className="text-3xl font-semibold py-5">Branches ({branchListData.length})</h5>
+                    <h5 className="text-3xl font-semibold py-5">Branches ({branchData.length})</h5>
                 </div>
 
                 {/* Add New Branch */}
@@ -108,8 +122,8 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
 
             {/* Branch Card */}
             <div className="grid grid-cols-4 gap-5">
-                {branchListData.length > 0 ? (
-                    branchListData.map((branch) => (
+                {branchData.length > 0 ? (
+                    branchData.map((branch) => (
                         <BranchCard
                             branchID={branch.branch_id}
                             branchName={branch.branch_name}
