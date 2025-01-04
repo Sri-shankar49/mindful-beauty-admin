@@ -121,7 +121,7 @@ function App() {
 
           <Route path="/" element={<ProtectedRoute><LoginLayout /></ProtectedRoute>}>
             {/* <Route path="/" element={<LoginLayout />}> */}
-            <Route path="/Dashboard" element={<Dashboard />} >
+            <Route path="/Dashboard" element={<ProtectedRoute permissionKey="dashboard"><Dashboard /></ProtectedRoute>} >
 
               {/* Redirect to DashBoardData when /Dashboard is accessed */}
               <Route index element={<Navigate to="DashBoardData" replace />} />
@@ -132,7 +132,7 @@ function App() {
               <Route path="ProfileProgress" element={<ProfileProgress />} />
             </Route>
 
-            <Route path="/ManageRole" element={<ManageRole />} >
+            <Route path="/ManageRole" element={<ProtectedRoute permissionKey="manage_role"><ManageRole /></ProtectedRoute>} >
 
               {/* Redirect to RolesManagement when /ManageRole is accessed */}
               <Route index element={<Navigate to="RolesManagement" replace />} />
@@ -143,7 +143,7 @@ function App() {
               <Route path="BranchManagement" element={<BranchManagement branch_id={''} branch_name={''} phone={''} location={''} logo={''} />} />
             </Route>
 
-            <Route path="/ServiceListing" element={<ServiceListing />}>
+            <Route path="/ServiceListing" element={<ProtectedRoute permissionKey="service_listing"><ServiceListing /></ProtectedRoute>}>
 
               {/* Redirect to ServiceList when /ServiceListing is accessed */}
               <Route index element={<Navigate to="ServiceList" replace />} />
@@ -153,7 +153,7 @@ function App() {
               <Route path="AddServices" element={<AddServices />} />
             </Route>
 
-            <Route path="/ServiceManagement" element={<ServiceManagement />}>
+            <Route path="/ServiceManagement" element={<ProtectedRoute permissionKey="service_management"><ServiceManagement /></ProtectedRoute>}>
 
               {/* Redirect to BookingStatus when /ServiceManagement is accessed */}
               <Route index element={<Navigate to="BookingStatus" replace />} />
@@ -176,9 +176,9 @@ function App() {
 
             </Route>
 
-            <Route path="/SalesTransactions" element={<SalesTransactions />} />
-            <Route path="/RatingsReviews" element={<RatingsReviews />} />
-            <Route path="/Reports" element={<Reports />} />
+            <Route path="/SalesTransactions" element={<ProtectedRoute permissionKey="sales_transactions"><SalesTransactions /></ProtectedRoute>} />
+            <Route path="/RatingsReviews" element={<ProtectedRoute permissionKey="ratings_reviews"><RatingsReviews /></ProtectedRoute>} />
+            <Route path="/Reports" element={<ProtectedRoute permissionKey="report_details"><Reports /></ProtectedRoute>} />
           </Route>
         </Routes>
 
