@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
 // import Select, { SingleValue } from 'react-select';
@@ -12,12 +12,69 @@ import { InvoicePopup } from '../ServiceManagement/Completed/InvoicePopup';
 import { Button } from '@/common/Button';
 import { InputField } from '@/common/InputField';
 import { BiCalendar } from "react-icons/bi";
+import { salesTransactionsList } from "@/api/apiConfig";
+import { Pagination } from "@/common/Pagination";
+import { ShimmerTable } from "shimmer-effects-react";
 // import { Pagination } from '@/common/Pagination';
 
-export const SalesTransactionsTable = () => {
+interface SalesTransactionProps {
+    amount: number;
+    appointment_date: string;
+    appointment_status: string;
+    cgst: number;
+    city: string;
+    order_id: number;
+    paymode: string;
+    paystatus: string;
+    phone: string;
+    services: string;
+    sgst: number;
+    total: number;
+    user_name: string;
+}
 
+export const SalesTransactionsTable: React.FC = () => {
     // State Declaration for Invoice Popup
     const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [salesTransactionsData, setSalesTransactionsData] = useState<SalesTransactionProps[]>([]);
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Login Provider ID
+    const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+    console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+    useEffect(() => {
+        // Fetch data from API
+        const fetchServiceListData = async () => {
+
+            try {
+                setLoading(true);
+                // const data: BranchCardProps[] = await branchList();
+
+                const data = await salesTransactionsList(Number(sessionLoginProviderID), currentPage);
+
+
+                // const data = await servicesList(Number(1), currentPage);
+
+                setSalesTransactionsData(data.results || []);
+                // setTotalItems(data.count);
+
+                console.log("Fetched Service List data log:", data);
+                console.log("Fetched Booking List pagination count data log :", data.count);
+
+            } catch (error: any) {
+                setError(error.message || "Failed to fetch service list data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchServiceListData();
+    }, [currentPage, itemsPerPage]);
 
     const openInvoicePopup = () => {
         setShowInvoicePopup(!showInvoicePopup)
@@ -27,6 +84,23 @@ export const SalesTransactionsTable = () => {
         setShowInvoicePopup(false)
     }
 
+    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
+
+    if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -174,7 +248,7 @@ export const SalesTransactionsTable = () => {
                         <table className="w-full">
                             <thead className="bg-mindfulLightgrey">
                                 <tr className="">
-                                    <th className="text-start px-2 py-3">#</th>
+                                    {/* <th className="text-start px-2 py-3">#</th> */}
                                     <th className="text-start px-2 py-3">Order ID</th>
                                     <th className="text-start px-2 py-3">Date of Service</th>
                                     <th className="text-start px-2 py-3">Branch</th>
@@ -194,54 +268,52 @@ export const SalesTransactionsTable = () => {
 
                             <tbody>
                                 {/* Content */}
-                                <tr className="border-b-2">
-                                    <td className="text-start px-2 py-5">1</td>
-                                    <td className="text-start px-2 py-5">MB65541</td>
-                                    <td className="text-start px-2 py-5">20-08-2024</td>
-                                    <td className="text-start px-2 py-5">Chottanikkara</td>
-                                    <td className="text-start px-2 py-5">Ramya</td>
-                                    <td className="text-start px-2 py-5">97347196578</td>
-                                    <td className="text-start px-2 py-5">
-                                        <ul>
-                                            <li>Eyesbrows Threading</li>
-                                            <li>Forehead Threading</li>
-                                        </ul>
-                                    </td>
-                                    <td className="text-start px-2 py-5">1200</td>
-                                    <td className="text-start px-2 py-5">30</td>
-                                    <td className="text-start px-2 py-5">20</td>
-                                    <td className="text-start px-2 py-5">1250</td>
-                                    <td className="text-start px-2 py-5">Gpay</td>
-                                    <td className="text-start px-2 py-5">Paid</td>
-                                    <td className="text-start px-2 py-5">Completed</td>
+                                {salesTransactionsData.length > 0 ? (
+                                    salesTransactionsData.map((transaction) => (
+                                        <tr key={transaction.order_id} className="border-b-2">
+                                            {/* <td className="text-start px-2 py-5">1</td> */}
+                                            <td className="text-start px-2 py-5">{transaction.order_id}</td>
+                                            <td className="text-start px-2 py-5">{transaction.appointment_date}</td>
+                                            <td className="text-start px-2 py-5">{transaction.city}</td>
+                                            <td className="text-start px-2 py-5">{transaction.user_name}</td>
+                                            <td className="text-start px-2 py-5">{transaction.phone}</td>
+                                            <td className="text-start px-2 py-5">
+                                                {transaction.services}
+                                            </td>
+                                            <td className="text-start px-2 py-5">{transaction.amount}</td>
+                                            <td className="text-start px-2 py-5">{transaction.sgst}</td>
+                                            <td className="text-start px-2 py-5">{transaction.cgst}</td>
+                                            <td className="text-start px-2 py-5">{transaction.total}</td>
+                                            <td className="text-start px-2 py-5">{transaction.paymode}</td>
+                                            <td className="text-start px-2 py-5">{transaction.paystatus}</td>
+                                            <td className="text-start px-2 py-5">{transaction.appointment_status}</td>
 
-                                    {/* <td className="text-start px-2 py-5">
-                                        <div>
-                                        <Button
-                                            buttonType="button"
-                                            buttonTitle={"Completed"}
-                                            className="bg-[#e5ffec] text-md text-mindfulGreen font-semibold rounded-sm px-3 py-1"
-                                        />
-                                        </div>
-                                    </td> */}
 
-                                    <td className="text-start px-2 py-5">
-                                        <div className="flex items-center space-x-2">
-                                            {/* Eye Button */}
-                                            <div
-                                                onClick={openInvoicePopup}
-                                                className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
-                                                <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
-                                            </div>
+                                            <td className="text-start px-2 py-5">
+                                                <div className="flex items-center space-x-2">
+                                                    {/* Eye Button */}
+                                                    <div
+                                                        onClick={openInvoicePopup}
+                                                        className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
+                                                        <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
+                                                    </div>
 
-                                            {/* Download Button */}
-                                            <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
-                                                <FiDownload className="text-[18px] text-mindfulGreen" />
-                                            </div>
-                                        </div>
-                                    </td>
+                                                    {/* Download Button */}
+                                                    <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
+                                                        <FiDownload className="text-[18px] text-mindfulGreen" />
+                                                    </div>
+                                                </div>
+                                            </td>
 
-                                </tr>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={15} className="text-center py-5">
+                                            No transactions available.
+                                        </td>
+                                    </tr>
+                                )}
 
                             </tbody>
                         </table>
@@ -249,17 +321,13 @@ export const SalesTransactionsTable = () => {
 
                     {/* Pagination */}
                     <div>
-                        {/* <Pagination
-                            currentPage={0}
-                            totalItems={0}
-                            itemsPerPage={0}
-                            onPageChange={function (page: number): void {
-                                throw new Error('Function not implemented.');
-                            }}
-                            onItemsPerPageChange={function (items: number): void {
-                                throw new Error('Function not implemented.');
-                            }}
-                        /> */}
+                        <Pagination
+                            currentPage={currentPage}
+                            totalItems={salesTransactionsData.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={(page: number) => setCurrentPage(page)}
+                            onItemsPerPageChange={(items: number) => setItemsPerPage(items)}
+                        />
                     </div>
                 </div>
             </div>

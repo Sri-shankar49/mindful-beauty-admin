@@ -337,12 +337,13 @@ export const fetchDeclineMessages = async () => {
 
 // Dashboard Page -- --> Bookings
 // POST Method from the API
-export const declineMessageAction = async (appointmentID: number, messageID: number) => {
+export const declineMessageAction = async (formData: FormData) => {
 
   try {
-    const response = await apiAxios.post(`/api/message/`, {
-      appointment_id: appointmentID,
-      message_id: messageID,
+    const response = await apiAxios.post(`/api/message/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
     console.log("Decline Message Action POST Method response", response.data);
@@ -351,7 +352,7 @@ export const declineMessageAction = async (appointmentID: number, messageID: num
       throw new Error("Unexpected response from the server.");
     }
 
-    return response.data; // Ensure the entire response data is returned
+    return response.data;
   } catch (error: any) {
     console.error("Error in Decline Message Action:", error.message || error);
     throw new Error(error.response?.data?.message || "Unable to process Decline Message Action. Please try again later.");
@@ -911,7 +912,7 @@ export const servicesList = async (providerID: number, branchID: number, pageNum
 
 
 
-// Manage Role Page -- --> Branch Management
+// Service Listing Page -- --> Service List
 // PUT Method from the API
 export const editServices = async (formData: FormData): Promise<any> => {
 
@@ -1049,7 +1050,7 @@ export const addServicesCheckbox = async (categoryID: string, subCategoryID: str
 
 
 
-
+// Service Listing Page -> Service List
 export const addServices = async (formData: FormData): Promise<any> => {
   try {
 
@@ -1142,6 +1143,34 @@ export const updateActiveServices = async (formData: FormData): Promise<any> => 
   catch (error: any) {
     console.error("Error updating active services:", error.message || error);
     throw new Error(error.response?.data?.message || "Unable to updating active services. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing -- --> Copy Services
+// POST Method from the API
+export const copyServices = async (sourceBranchId: number, targetBranchIds: string, providerId: number) => {
+  try {
+    const response = await apiAxios.post(`/provider-api/copy-services/`, {
+      source_branch_id: sourceBranchId,
+      target_branch_id: targetBranchIds,
+      provider_id: providerId
+    });
+
+    console.log("Copy Services API response", response.data);
+
+    // Check for both status code and response data
+    if (!response.data || (response.status !== 200 && response.status !== 201)) {
+      throw new Error(response.data?.message || "Failed to copy services");
+    }
+
+    return response.data;
+  }
+  catch (error: any) {
+    console.error("Error copying services:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "Unable to copy services. Please try again later.");
   }
 }
 
@@ -1357,11 +1386,12 @@ export const modifyStatus = async (appointmentID: number, statusID: number) => {
 
 // Sales & Transactions Page
 // GET Method from the API
-export const salesTransactionsList = async (pageNumber: number) => {
+export const salesTransactionsList = async (providerID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/sales-transactions/`, {
       params: {
+        provider_id: providerID,
         page: pageNumber,
       },
     });
@@ -1377,7 +1407,7 @@ export const salesTransactionsList = async (pageNumber: number) => {
   }
   catch (error: any) {
     console.error("Error fetching sales & transactions list:", error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to fetch sales & transactions list. Please try again later.");
+    throw new Error(error.response?.data?.message || "Unable to fetch sales & transactions list. Please try again later.");
   }
 }
 

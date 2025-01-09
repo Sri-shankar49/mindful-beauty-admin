@@ -13,6 +13,7 @@ import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiC
 import "./DashBoardData.css";
 import { ShimmerTable } from "shimmer-effects-react"
 import { NavLink } from "react-router-dom"
+import { DenialPopup } from "./DashBoardData/DenialPopup"
 
 
 // Define the type for each option
@@ -82,9 +83,11 @@ export const DashBoardData = () => {
     // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
 
     // State declaration for Denial Popup
-    // const [showDenialPopup, setShowDenialPopup] = useState(false);
+    const [showDenialPopup, setShowDenialPopup] = useState(false);
     // State declaration for Stylist Popup
     const [showStylistPopup, setShowStylistPopup] = useState(false);
+
+    const [selectedAppointmentID, setSelectedAppointmentID] = useState<string | null>(null);
 
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
@@ -152,13 +155,16 @@ export const DashBoardData = () => {
     };
 
 
-    // const openDenialPopup = () => {
-    //     setShowDenialPopup(true);
-    // }
+    const openDenialPopup = (appointmentID: string) => {
+        setSelectedAppointmentID(appointmentID);
+        setShowDenialPopup(true);
+    };
 
-    // const closeDenialPopup = () => {
-    //     setShowDenialPopup(false);
-    // }
+    const closeDenialPopup = () => {
+        setShowDenialPopup(false);
+        setSelectedAppointmentID(null);
+    };
+
 
     // const openStylistPopup = () => {
     //   setShowStylistPopup(true);
@@ -547,14 +553,14 @@ export const DashBoardData = () => {
                                                     </div> */}
 
                                                     <div>
-                                                        {/* <Button
-                                                            // onClick={openDenialPopup}
+                                                        <Button
+                                                            onClick={() => openDenialPopup(dashboardData.appointment_id)}
                                                             buttonType="button"
                                                             buttonTitle="Decline"
                                                             className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                        /> */}
+                                                        />
 
-                                                        <Button
+                                                        {/* <Button
                                                             onClick={() =>
                                                                 !declinedAppointments[dashboardData.appointment_id] &&
                                                                 handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
@@ -563,7 +569,7 @@ export const DashBoardData = () => {
                                                             buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
                                                             className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
                                                             disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
-                                                        />
+                                                        /> */}
                                                     </div>
                                                 </div>
                                             </td>
@@ -794,7 +800,9 @@ export const DashBoardData = () => {
                 </div>
             </div>
 
-            {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
+            {showDenialPopup && selectedAppointmentID !== null && (
+                <DenialPopup closePopup={closeDenialPopup} appointmentID={selectedAppointmentID} />
+            )}
             {/* {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />} */}
             {showStylistPopup && selectedStylist && (
                 <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />

@@ -3,7 +3,13 @@ import { declineMessageAction, fetchDeclineMessages } from '@/api/apiConfig';
 import { Button } from '@/common/Button';
 // import { SelectField } from '@/common/SelectField';
 import { IoCloseCircle } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
+import { SelectField } from '@/common/SelectField';
 // import { ShimmerTable } from 'shimmer-effects-react';
+import * as zod from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface DenialPopupProps {
     closePopup: () => void;
@@ -15,10 +21,16 @@ interface DeclineListDataProps {
     text: string;
 }
 
-export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmentID }) => {
+type addReasonormData = zod.infer<typeof addReasonSchema>;
 
+// Zod schema for form validation
+const addReasonSchema = zod.object({
+    reason: zod.string().min(1, "Reason is required"),
+});
+
+export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmentID }) => {
+    const navigate = useNavigate();
     const [declineListData, setDeclineListData] = useState<DeclineListDataProps[]>([]);
-    const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -43,27 +55,24 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
     }, []);
 
 
-    const handleDeclineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const messageID = e.target.value;
-        setSelectedReason(messageID);
-        console.log(`Selected reason: ${messageID}`);
-    };
+    const { register, handleSubmit, formState: { errors } } = useForm<addReasonormData>({
+        resolver: zodResolver(addReasonSchema),
+    });
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!selectedReason) {
-            setError("Please select a reason for order denial.");
-            return;
-        }
-
+    const onSubmit = async (data: addReasonormData) => {
+        setLoading(true);
+        setError(null);
+        console.log(`Selected reason: ${data.reason}`);
         try {
-            setLoading(true);
-            const data = await declineMessageAction(Number(appointmentID), Number(selectedReason));
-            console.log("Modify status data log:", data);
+            const formData = new FormData();
+            formData.append("appointment_id", appointmentID.toString());
+            formData.append("message_id", data.reason);
 
-            // Optionally close the popup or show success message
-            closePopup();
+            const DeclineMSg = await declineMessageAction(formData);
+            if (DeclineMSg?.status === "success") {
+                closePopup();
+                navigate(0);
+            }
         } catch (error: any) {
             setError(error.message || "Failed to decline the appointment.");
         } finally {
@@ -71,21 +80,22 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
         }
     };
 
+
     if (loading) return <div>Loading...</div>;
-    // if (loading) return <div>
-    //     <div>
-    //         <ShimmerTable
-    //             mode="light"
-    //             row={2}
-    //             col={4}
-    //             border={1}
-    //             borderColor={"#cbd5e1"}
-    //             rounded={0.25}
-    //             rowGap={16}
-    //             colPadding={[15, 5, 15, 5]}
-    //         />
-    //     </div>
-    // </div>;
+    if (loading) return <div>
+        <div>
+            <ShimmerTable
+                mode="light"
+                row={2}
+                col={4}
+                border={1}
+                borderColor={"#cbd5e1"}
+                rounded={0.25}
+                rowGap={16}
+                colPadding={[15, 5, 15, 5]}
+            />
+        </div>
+    </div>;
     if (error) return <div>Error: {error}</div>;
     return (
         <div>
@@ -114,50 +124,29 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                     <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                                 </div>
 
-                                <form onSubmit={handleSubmit} method="post">
+                                <form onSubmit={handleSubmit(onSubmit)} method="post">
                                     <div>
                                         {/* Branch Select Field */}
                                         <div>
-                                            {/* <SelectField
+                                            <SelectField
                                                 label=""
-                                                name="reason"
+                                                id="reason"
                                                 // required
                                                 className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                // options={[
-                                                //     { value: "staffNotAvailable", label: "Staff Not Available" },
-                                                //     { value: "serviceUnavailableAtSelectedTime", label: "Service Unavailable At Selected Time" },
-                                                //     { value: "appointmentOverbooked", label: "Appointment Overbooked" },
-                                                //     { value: "technicalIssuesWithService", label: "Technical Issues With Service" },
-                                                // ]}
-                                                options={declineListData.map((decline) => ({
-                                                    value: String(decline.message_id), // Replace 'value' with the actual key from your API
-                                                    label: decline.text, // Replace 'label' with the actual key from your API
-                                                }))}
-                                                value={"Select any one of the Reason"} // Set default value from the API response
-                                                onChange={handleDeclineChange}
-                                            // error="This field is required."
-                                            /> */}
-
-                                            <select
-                                                // name=""
-                                                id=""
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                // value={selectedBranch}
-                                                // onChange={handleBranchChange} // Call on change
-                                                // value={bookingData.status_id} // Set default value from the API response
-                                                onChange={handleDeclineChange} // Handle status change
-
-                                            >
-                                                <option value="" disabled>
-                                                    Select the reason
-                                                </option>
-
-                                                {declineListData.map((decline) => (
-                                                    <option key={decline.message_id} value={decline.message_id}>
-                                                        {decline.text}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                options={
+                                                    declineListData.length
+                                                        ? declineListData.map((branch) => ({
+                                                            key: branch.message_id,
+                                                            value: branch.message_id ? String(branch.message_id) : "",
+                                                            label: branch.text,
+                                                        }))
+                                                        : [{ value: "", label: "No reason available" }]
+                                                }
+                                                {...register("reason")}
+                                            />
+                                            {errors.reason && (
+                                                <p className="text-sm text-red-500">{errors.reason.message}</p>
+                                            )}
                                         </div>
 
                                         {/* Buttons */}

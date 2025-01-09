@@ -8,6 +8,9 @@ import { IoCloseCircle } from 'react-icons/io5'
 import { activeServices, addServices, addServicesCheckbox, categories, staffBranchList, subCategories, updateActiveServices } from '@/api/apiConfig';
 import "./ServiceListing.css";
 import { ShimmerTable } from "shimmer-effects-react";
+import { PiCopySimpleLight } from 'react-icons/pi';
+import { Button } from '@/common/Button';
+import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
 
 interface categoriesDataProps {
     category_id?: string;
@@ -55,20 +58,24 @@ interface ActiveServicesListDataProps {
     subcategories: Subcategories[];
 }
 
-
-
+// Update CopyServicesPopup props interface
+// interface CopyServicesPopupProps {
+//     closePopup: () => void;
+//     selectedBranch?: string;
+//     selectedBranchName?: string;
+// }
 
 export const AddServices: React.FC = () => {
 
-    // const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
+    const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
 
-    // const openCopyServicesPopup = () => {
-    //     setShowCopyServicesPopup(true);
-    // }
+    const openCopyServicesPopup = () => {
+        setShowCopyServicesPopup(true);
+    }
 
-    // const closeCopyServicesPopup = () => {
-    //     setShowCopyServicesPopup(false);
-    // }
+    const closeCopyServicesPopup = () => {
+        setShowCopyServicesPopup(false);
+    }
 
     const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
     const [subCategoriesData, setSubCategoriesData] = useState<SubCategoriesDataProps[]>([]);
@@ -106,9 +113,13 @@ export const AddServices: React.FC = () => {
             try {
                 const loadCategoriesData = await categories();
                 const branchesData = await staffBranchList();
+                // if (branchesData.data && branchesData.data.length > 0) {
+                //     setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
+                // }
+                // setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
                 // const activeServicesListData = await activeServices(Number(sessionProviderID), 1);
-                const activeServicesListData = await activeServices(Number(sessionProviderID), Number(selectedBranch));
-
+                const activeServicesListData = await activeServices(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
+                console.log("Selected branch ==>", selectedBranch, loadCategoriesData)
                 setcategoriesData(loadCategoriesData.data);
 
                 setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
@@ -319,13 +330,15 @@ export const AddServices: React.FC = () => {
 
     // Function call for handling the input field change for price & timing in the active services data
     const handleInputChange = (serviceProviderID: number, field: string, value: string) => {
-        setActiveServicesData((prevData) =>
+        setServicesData((prevData) =>
             prevData.map((category) => ({
                 ...category,
                 subcategories: category.subcategories.map((subcategory) => ({
                     ...subcategory,
                     services: subcategory.services.map((service) =>
-                        service.provider_service_id === serviceProviderID ? { ...service, [field]: value } : service
+                        service.provider_service_id === serviceProviderID
+                            ? { ...service, [field]: value || '' } // Ensure emptystring if value is null/undefined
+                            : service
                     ),
                 })),
             }))
@@ -717,7 +730,7 @@ export const AddServices: React.FC = () => {
                                         <div className="flex items-center space-x-5">
 
                                             {/* Copy Services */}
-                                            {/* <div
+                                            <div
                                                 onClick={openCopyServicesPopup}
                                                 className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
                                             >
@@ -730,7 +743,7 @@ export const AddServices: React.FC = () => {
                                                     buttonTitle="Copy Services"
                                                     className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
                                                 />
-                                            </div> */}
+                                            </div>
 
                                             {/* Branch Select Field */}
                                             <div>
@@ -821,7 +834,7 @@ export const AddServices: React.FC = () => {
                                                                                             label=""
                                                                                             placeholder={service.price?.toString() || "N/A"}
                                                                                             className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.price}
+                                                                                            value={service.price || ''} // Ensure empty string if price isnull/undefined
                                                                                             onChange={(e) =>
                                                                                                 handleInputChange(
                                                                                                     service.provider_service_id,
@@ -868,14 +881,9 @@ export const AddServices: React.FC = () => {
                                                         ) : (
                                                             <div className="py-3 text-sm text-mindfulgrey">No services available</div>
                                                         )}
-
-
                                                     </div>
                                                 ))}
-
-
                                             </div>
-
                                         ))
                                     ) : (
                                         <div>No active services available</div>
@@ -898,19 +906,19 @@ export const AddServices: React.FC = () => {
                                         {updateServicesloading ? "Updating..." : updateButtonState.text}
                                     </button>
                                 </div>
-
-
                             </div>
-
-
-
-
-
                         </div>
                     </div>
                 </div>
 
-                {/* {showCopyServicesPopup && <CopyServicesPopup closePopup={closeCopyServicesPopup} />} */}
+                {showCopyServicesPopup && (
+                    <CopyServicesPopup
+                        closePopup={closeCopyServicesPopup}
+                        selectedBranch={selectedBranch}
+                        selectedBranchName={staffBranchListData.find(branch =>
+                            branch.branch_id === Number(selectedBranch))?.branch_name}
+                    />
+                )}
             </div>
         </div >
     )
