@@ -664,7 +664,7 @@ export const Completed = () => {
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
       {showPaymentDetailsPopup && <PaymentDetailsPopup closePopup={closePaymentDetailsPopup} />}
-      {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} />}
+      {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} appointmentId={0} />}
 
 
       {/* Pagination */}

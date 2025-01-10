@@ -88,6 +88,9 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
         fetchInvoiceDetails();
     }, [appointmentId]);
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>
+
     return (
         <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
             <div className="container mx-auto">
