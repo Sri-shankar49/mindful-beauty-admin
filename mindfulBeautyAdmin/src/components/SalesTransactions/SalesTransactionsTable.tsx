@@ -42,6 +42,7 @@ export const SalesTransactionsTable: React.FC = () => {
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
     // Login Provider ID
     const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -76,8 +77,9 @@ export const SalesTransactionsTable: React.FC = () => {
         fetchServiceListData();
     }, [currentPage, itemsPerPage]);
 
-    const openInvoicePopup = () => {
-        setShowInvoicePopup(!showInvoicePopup)
+    const openInvoicePopup = (orderId: number) => {
+        setSelectedOrderId(orderId);
+        setShowInvoicePopup(true);
     }
 
     const closeInvoicePopup = () => {
@@ -293,7 +295,7 @@ export const SalesTransactionsTable: React.FC = () => {
                                                 <div className="flex items-center space-x-2">
                                                     {/* Eye Button */}
                                                     <div
-                                                        onClick={openInvoicePopup}
+                                                        onClick={() => openInvoicePopup(transaction.order_id)}
                                                         className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                                                         <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                                                     </div>
@@ -332,7 +334,12 @@ export const SalesTransactionsTable: React.FC = () => {
                 </div>
             </div>
 
-            {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} />}
+            {showInvoicePopup && selectedOrderId && (
+                <InvoicePopup
+                    closePopup={closeInvoicePopup}
+                    appointmentId={selectedOrderId}
+                />
+            )}
 
         </div>
     )
