@@ -463,99 +463,99 @@ export const AddServices: React.FC = () => {
     return (
         <div>
 
-            <div className="bg-mindfulLightPink px-5 py-5" >
+            {/* <div className="bg-mindfulLightPink px-5 py-5" > */}
 
-                <div className="bg-mindfulWhite px-5 py-5">
+            {/* <div className="bg-mindfulWhite px-5 py-5"> */}
+            <div className="">
+                <div>
+                    <h5 className="text-3xl font-semibold py-5">Add Services</h5>
+                </div>
+
+
+                <div className="grid grid-cols-2 gap-5">
+
+                    {/* Whole Grid Column One */}
                     <div className="">
-                        <div>
-                            <h5 className="text-3xl font-semibold py-5">Add Services</h5>
-                        </div>
+                        <form onSubmit={onSubmitAddServices}>
 
+                            <div className="bg-mindfulLightgrey rounded-sm px-5 py-5">
+                                <div className="grid grid-cols-2 gap-5">
 
-                        <div className="grid grid-cols-2 gap-5">
+                                    {/* Grid Column One */}
+                                    <div className="space-y-5">
+                                        {/* City */}
+                                        <div>
+                                            <label
+                                                htmlFor="city"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                City
+                                            </label>
 
-                            {/* Whole Grid Column One */}
-                            <div className="">
-                                <form onSubmit={onSubmitAddServices}>
+                                            <SelectField
+                                                label={''}
+                                                // name="city"
+                                                id="city"
+                                                options={[
+                                                    { value: "kochi", label: "Kochi" },
+                                                    { value: "trivandrum", label: "Trivandrum" },
+                                                    { value: "kollam", label: "Kollam" },
+                                                    { value: "thrissur", label: "Thrissur" },
+                                                ]}
+                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                            />
 
-                                    <div className="bg-mindfulLightgrey rounded-sm px-5 py-5">
-                                        <div className="grid grid-cols-2 gap-5">
-
-                                            {/* Grid Column One */}
-                                            <div className="space-y-5">
-                                                {/* City */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="city"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        City
-                                                    </label>
-
-                                                    <SelectField
-                                                        label={''}
-                                                        // name="city"
-                                                        id="city"
-                                                        options={[
-                                                            { value: "kochi", label: "Kochi" },
-                                                            { value: "trivandrum", label: "Trivandrum" },
-                                                            { value: "kollam", label: "Kollam" },
-                                                            { value: "thrissur", label: "Thrissur" },
-                                                        ]}
-                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    />
-
-                                                    {/* {error.city && (
+                                            {/* {error.city && (
                                                         <p className="text-sm text-red-500">{error.city}</p>
                                                     )} */}
-                                                </div>
+                                        </div>
 
-                                                {/* Category */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="category"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        Category
-                                                    </label>
+                                        {/* Category */}
+                                        <div>
+                                            <label
+                                                htmlFor="category"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                Category
+                                            </label>
 
-                                                    <select
-                                                        // name=""
-                                                        id=""
-                                                        className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                        value={selectedCategory}
-                                                        onChange={handleCategoryChange} // Call on change
+                                            <select
+                                                // name=""
+                                                id=""
+                                                className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={selectedCategory}
+                                                onChange={handleCategoryChange} // Call on change
 
-                                                    >
-                                                        <option value="" disabled>
-                                                            Select Category
-                                                        </option>
+                                            >
+                                                <option value="" disabled>
+                                                    Select Category
+                                                </option>
 
-                                                        {categoriesData.map((category) => (
-                                                            <option key={category.category_id} value={category.category_id}>
-                                                                {category.category_name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                {categoriesData.map((category) => (
+                                                    <option key={category.category_id} value={category.category_id}>
+                                                        {category.category_name}
+                                                    </option>
+                                                ))}
+                                            </select>
 
-                                                    {/* {error.category && (
+                                            {/* {error.category && (
                                                         <p className="text-sm text-red-500">{error.category}</p>
                                                     )} */}
-                                                </div>
-                                            </div>
+                                        </div>
+                                    </div>
 
-                                            {/* Grid Column Two */}
-                                            <div className="space-y-5">
+                                    {/* Grid Column Two */}
+                                    <div className="space-y-5">
 
-                                                {/* Branch */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="branch"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        Branch
-                                                    </label>
-                                                    {/* <SelectField
+                                        {/* Branch */}
+                                        <div>
+                                            <label
+                                                htmlFor="branch"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                Branch
+                                            </label>
+                                            {/* <SelectField
                                                         label=""
                                                         name="branch"
                                                         // required
@@ -575,179 +575,179 @@ export const AddServices: React.FC = () => {
                                                     // error="This field is required."
                                                     /> */}
 
-                                                    <select
-                                                        // name=""
-                                                        id=""
-                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                        value={selectedBranch}
-                                                        onChange={handleBranchChange} // Call on change
+                                            <select
+                                                // name=""
+                                                id=""
+                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={selectedBranch}
+                                                onChange={handleBranchChange} // Call on change
 
-                                                    >
-                                                        <option value="" disabled>
-                                                            Select Branch
-                                                        </option>
+                                            >
+                                                <option value="" disabled>
+                                                    Select Branch
+                                                </option>
 
-                                                        {staffBranchListData.map((branch) => (
-                                                            <option key={branch.branch_id} value={branch.branch_id}>
-                                                                {branch.branch_name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                {staffBranchListData.map((branch) => (
+                                                    <option key={branch.branch_id} value={branch.branch_id}>
+                                                        {branch.branch_name}
+                                                    </option>
+                                                ))}
+                                            </select>
 
-                                                    {/* {error.branch && (
+                                            {/* {error.branch && (
                                                         <p className="text-sm text-red-500">{error.branch}</p>
                                                     )} */}
-                                                </div>
+                                        </div>
 
-                                                {/* Sub Category */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="subCategory"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        Sub Category
-                                                    </label>
+                                        {/* Sub Category */}
+                                        <div>
+                                            <label
+                                                htmlFor="subCategory"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                Sub Category
+                                            </label>
 
-                                                    <select
-                                                        // name="subCategory"
-                                                        id="subCategory"
-                                                        className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                        value={selectedSubCategory}
-                                                        onChange={handleCheckboxList} // Call on change
-                                                    >
-                                                        <option value="" disabled>
-                                                            Select Sub Category
-                                                        </option>
+                                            <select
+                                                // name="subCategory"
+                                                id="subCategory"
+                                                className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={selectedSubCategory}
+                                                onChange={handleCheckboxList} // Call on change
+                                            >
+                                                <option value="" disabled>
+                                                    Select Sub Category
+                                                </option>
 
-                                                        {subCategoriesData.map((subCategory) => (
-                                                            <option key={subCategory.subcategory_id} value={subCategory.subcategory_id}>
-                                                                {subCategory.subcategory_name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                {subCategoriesData.map((subCategory) => (
+                                                    <option key={subCategory.subcategory_id} value={subCategory.subcategory_id}>
+                                                        {subCategory.subcategory_name}
+                                                    </option>
+                                                ))}
+                                            </select>
 
-                                                    {/* {error.subCategory && (
+                                            {/* {error.subCategory && (
                                                         <p className="text-sm text-red-500">{error.subCategory}</p>
                                                     )} */}
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
 
-                                    {/* Services */}
-                                    <div>
+                                </div>
+                            </div>
 
-                                        <div>
-                                            <h5 className="text-lg font-semibold py-5">Services</h5>
-                                        </div>
+                            {/* Services */}
+                            <div>
 
-                                        <div className="space-y-5">
+                                <div>
+                                    <h5 className="text-lg font-semibold py-5">Services</h5>
+                                </div>
 
-                                            {/* Grid Column One */}
-                                            {/* <div> */}
-                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                                <div className="space-y-5">
 
-                                                {/* Services List */}
-                                                {checkboxData.length > 0 ? (
-                                                    checkboxData.map((service) => (
-                                                        <div key={service.service_id}
-                                                            className=""
-                                                        >
-                                                            <label htmlFor={service.service_id}
-                                                                className="custom-checkbox"
-                                                            >
-                                                                <input
-                                                                    id={service.service_id}
-                                                                    // name="dummy"
-                                                                    type="checkbox"
-                                                                    value={service.service_id}
-                                                                    className="mr-2"
-                                                                    // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
-                                                                    onChange={() => handleCheckboxClick(Number(service.service_id))}
+                                    {/* Grid Column One */}
+                                    {/* <div> */}
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
 
-                                                                />
-                                                                <span className="checkmark"></span>{service.service_name}
-                                                            </label>
+                                        {/* Services List */}
+                                        {checkboxData.length > 0 ? (
+                                            checkboxData.map((service) => (
+                                                <div key={service.service_id}
+                                                    className=""
+                                                >
+                                                    <label htmlFor={service.service_id}
+                                                        className="custom-checkbox"
+                                                    >
+                                                        <input
+                                                            id={service.service_id}
+                                                            // name="dummy"
+                                                            type="checkbox"
+                                                            value={service.service_id}
+                                                            className="mr-2"
+                                                            // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
+                                                            onChange={() => handleCheckboxClick(Number(service.service_id))}
 
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="col-span-3 text-center">No services available</div>
-                                                    // Takes the full row if no data
-                                                )}
+                                                        />
+                                                        <span className="checkmark"></span>{service.service_name}
+                                                    </label>
 
-                                                {/* {error.checkbox && (
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="col-span-3 text-center">No services available</div>
+                                            // Takes the full row if no data
+                                        )}
+
+                                        {/* {error.checkbox && (
                                                     <p className="text-sm text-red-500">{error.checkbox}</p>
                                                 )} */}
 
-                                            </div>
-
-                                        </div>
                                     </div>
 
+                                </div>
+                            </div>
 
-                                    {/* Add Service Button */}
-                                    <div className="text-center mt-20">
-                                        {/* <button
+
+                            {/* Add Service Button */}
+                            <div className="text-center mt-20">
+                                {/* <button
                                             className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
                                         >
                                            Add Service
                                         </button> */}
-                                        <button
-                                            type='submit'
-                                            className={`text-lg text-mindfulWhite rounded-sm px-8 py-2 
+                                <button
+                                    type='submit'
+                                    className={`text-lg text-mindfulWhite rounded-sm px-8 py-2 
                                                 ${buttonState.success ? "bg-green-500" : "bg-main"}
                                                 ${addServicesloading ? "bg-mindfulgrey" : ""}
                                                 `}
-                                            disabled={addServicesloading}
-                                        >
-                                            {addServicesloading ? "Loading..." : buttonState.text}
-                                        </button>
+                                    disabled={addServicesloading}
+                                >
+                                    {addServicesloading ? "Loading..." : buttonState.text}
+                                </button>
 
-                                        {/* Error response from the API */}
-                                        {error && <p className="text-sm text-red-600">{error}</p>}
-                                    </div>
-                                </form>
+                                {/* Error response from the API */}
+                                {error && <p className="text-sm text-red-600">{error}</p>}
                             </div>
+                        </form>
+                    </div>
 
 
 
 
 
 
-                            {/* Whole Grid Column Two */}
-                            {/* h-screen overflow-y-auto */}
-                            <div className="border-l-2 pl-5 h-screen overflow-y-auto">
+                    {/* Whole Grid Column Two */}
+                    {/* h-screen overflow-y-auto */}
+                    <div className="border-l-2 pl-5 h-screen overflow-y-auto">
 
-                                <div className="border-b-2">
-                                    <div className="flex items-center justify-between">
+                        <div className="border-b-2">
+                            <div className="flex items-center justify-between">
 
+                                <div>
+                                    <h5 className="text-2xl font-semibold py-3">Active Services</h5>
+                                </div>
+
+                                <div className="flex items-center space-x-5">
+
+                                    {/* Copy Services */}
+                                    <div
+                                        onClick={openCopyServicesPopup}
+                                        className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
+                                    >
                                         <div>
-                                            <h5 className="text-2xl font-semibold py-3">Active Services</h5>
+                                            <PiCopySimpleLight className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
                                         </div>
 
-                                        <div className="flex items-center space-x-5">
+                                        <Button
+                                            buttonType="button"
+                                            buttonTitle="Copy Services"
+                                            className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
+                                        />
+                                    </div>
 
-                                            {/* Copy Services */}
-                                            <div
-                                                onClick={openCopyServicesPopup}
-                                                className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
-                                            >
-                                                <div>
-                                                    <PiCopySimpleLight className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
-                                                </div>
-
-                                                <Button
-                                                    buttonType="button"
-                                                    buttonTitle="Copy Services"
-                                                    className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
-                                                />
-                                            </div>
-
-                                            {/* Branch Select Field */}
-                                            <div>
-                                                {/* <SelectField
+                                    {/* Branch Select Field */}
+                                    <div>
+                                        {/* <SelectField
                                                     label=""
                                                     name="branch"
                                                     // required
@@ -766,160 +766,160 @@ export const AddServices: React.FC = () => {
                                                 // error="This field is required."
                                                 /> */}
 
-                                                <select
-                                                    // name=""
-                                                    id=""
-                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    value={selectedBranch}
-                                                    onChange={handleBranchChange} // Call on change
+                                        <select
+                                            // name=""
+                                            id=""
+                                            className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                            value={selectedBranch}
+                                            onChange={handleBranchChange} // Call on change
 
-                                                >
-                                                    <option value="" disabled>
-                                                        Select Branch
-                                                    </option>
+                                        >
+                                            <option value="" disabled>
+                                                Select Branch
+                                            </option>
 
-                                                    {staffBranchListData.map((branch) => (
-                                                        <option key={branch.branch_id} value={branch.branch_id}>
-                                                            {branch.branch_name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
+                                            {staffBranchListData.map((branch) => (
+                                                <option key={branch.branch_id} value={branch.branch_id}>
+                                                    {branch.branch_name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
 
-                                {/* Content */}
-                                <>
-                                    {servicesData.length > 0 ? (
-                                        servicesData.map((activeData) => (
-                                            <div key={activeData.category_id}>
-                                                {/* Category Heading */}
-                                                <div className="border-b-[1px] py-3">
-                                                    <h5 className="text-md text-mindfulBlack font-semibold">{activeData.category}</h5>
+                        {/* Content */}
+                        <>
+                            {servicesData.length > 0 ? (
+                                servicesData.map((activeData) => (
+                                    <div key={activeData.category_id}>
+                                        {/* Category Heading */}
+                                        <div className="border-b-[1px] py-3">
+                                            <h5 className="text-md text-mindfulBlack font-semibold">{activeData.category}</h5>
+                                        </div>
+
+                                        {/* Subcategories and Services */}
+                                        {activeData.subcategories.map((subcategory) => (
+                                            <div key={subcategory.subcategory_id} className="border-b-2 px-5 pb-5">
+                                                {/* Subcategory Heading */}
+                                                <div className="py-3">
+                                                    <p className="text-md text-mindfulBlack font-semibold">{subcategory.subcategory}</p>
                                                 </div>
 
-                                                {/* Subcategories and Services */}
-                                                {activeData.subcategories.map((subcategory) => (
-                                                    <div key={subcategory.subcategory_id} className="border-b-2 px-5 pb-5">
-                                                        {/* Subcategory Heading */}
-                                                        <div className="py-3">
-                                                            <p className="text-md text-mindfulBlack font-semibold">{subcategory.subcategory}</p>
-                                                        </div>
+                                                {/* Pricing Table */}
+                                                {subcategory.services.length > 0 ? (
+                                                    <div>
+                                                        <table className="w-full">
+                                                            <thead>
+                                                                <tr className="border-b-[1px] border-dashed">
+                                                                    <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">SKU ID</th>
+                                                                    <th className="w-72 text-sm text-start text-mindfulgrey font-normal px-2 py-2">Service</th>
+                                                                    <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Prices (Rs)</th>
+                                                                    <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Timing</th>
+                                                                    <th className="text-sm text-center text-mindfulgrey font-normal px-2 py-2">Action</th>
+                                                                </tr>
+                                                            </thead>
 
-                                                        {/* Pricing Table */}
-                                                        {subcategory.services.length > 0 ? (
-                                                            <div>
-                                                                <table className="w-full">
-                                                                    <thead>
-                                                                        <tr className="border-b-[1px] border-dashed">
-                                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">SKU ID</th>
-                                                                            <th className="w-72 text-sm text-start text-mindfulgrey font-normal px-2 py-2">Service</th>
-                                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Prices (Rs)</th>
-                                                                            <th className="text-sm text-start text-mindfulgrey font-normal px-2 py-2">Timing</th>
-                                                                            <th className="text-sm text-center text-mindfulgrey font-normal px-2 py-2">Action</th>
+                                                            <tbody>
+                                                                {subcategory.services
+                                                                    .filter((service: any) => !service.is_deleted) // Exclude services where `is_deleted` is true
+                                                                    .map((service: any) => (
+                                                                        <tr key={service.provider_service_id} className="border-b-2 border-dashed">
+                                                                            <td className="px-2 py-5">{service.sku_value || "N/A"}</td>
+                                                                            <td className="px-2 py-5">{service.service_name || "N/A"}</td>
+                                                                            <td className="px-2 py-5">
+                                                                                <InputField
+                                                                                    label=""
+                                                                                    placeholder={service.price?.toString() || "N/A"}
+                                                                                    className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                                    value={service.price || ''} // Ensure empty string if price isnull/undefined
+                                                                                    onChange={(e) =>
+                                                                                        handleInputChange(
+                                                                                            service.provider_service_id,
+                                                                                            "price",
+                                                                                            e.target.value
+                                                                                        )
+                                                                                    }
+                                                                                />
+                                                                            </td>
+                                                                            <td className="px-2 py-5">
+                                                                                <InputField
+                                                                                    label=""
+                                                                                    placeholder={service.service_time || "N/A"}
+                                                                                    className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
+                                                                                    value={service.service_time}
+                                                                                    onChange={(e) =>
+                                                                                        handleInputChange(
+                                                                                            service.provider_service_id,
+                                                                                            "service_time",
+                                                                                            e.target.value
+                                                                                        )
+                                                                                    }
+                                                                                />
+                                                                            </td>
+                                                                            <td className="px-2 py-5 text-center">
+                                                                                <div
+                                                                                    className="w-fit mx-auto cursor-pointer"
+                                                                                    onClick={() =>
+                                                                                        handleDeleteServiceData(
+                                                                                            activeData.category_id,
+                                                                                            subcategory.subcategory_id,
+                                                                                            service.provider_service_id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <IoCloseCircle className="text-[28px] text-mindfulRed" />
+                                                                                </div>
+                                                                            </td>
                                                                         </tr>
-                                                                    </thead>
-
-                                                                    <tbody>
-                                                                        {subcategory.services
-                                                                            .filter((service: any) => !service.is_deleted) // Exclude services where `is_deleted` is true
-                                                                            .map((service: any) => (
-                                                                                <tr key={service.provider_service_id} className="border-b-2 border-dashed">
-                                                                                    <td className="px-2 py-5">{service.sku_value || "N/A"}</td>
-                                                                                    <td className="px-2 py-5">{service.service_name || "N/A"}</td>
-                                                                                    <td className="px-2 py-5">
-                                                                                        <InputField
-                                                                                            label=""
-                                                                                            placeholder={service.price?.toString() || "N/A"}
-                                                                                            className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.price || ''} // Ensure empty string if price isnull/undefined
-                                                                                            onChange={(e) =>
-                                                                                                handleInputChange(
-                                                                                                    service.provider_service_id,
-                                                                                                    "price",
-                                                                                                    e.target.value
-                                                                                                )
-                                                                                            }
-                                                                                        />
-                                                                                    </td>
-                                                                                    <td className="px-2 py-5">
-                                                                                        <InputField
-                                                                                            label=""
-                                                                                            placeholder={service.service_time || "N/A"}
-                                                                                            className="w-16 text-sm text-mindfulBlack border-2 rounded-sm px-2 py-1 focus-within:outline-none"
-                                                                                            value={service.service_time}
-                                                                                            onChange={(e) =>
-                                                                                                handleInputChange(
-                                                                                                    service.provider_service_id,
-                                                                                                    "service_time",
-                                                                                                    e.target.value
-                                                                                                )
-                                                                                            }
-                                                                                        />
-                                                                                    </td>
-                                                                                    <td className="px-2 py-5 text-center">
-                                                                                        <div
-                                                                                            className="w-fit mx-auto cursor-pointer"
-                                                                                            onClick={() =>
-                                                                                                handleDeleteServiceData(
-                                                                                                    activeData.category_id,
-                                                                                                    subcategory.subcategory_id,
-                                                                                                    service.provider_service_id
-                                                                                                )
-                                                                                            }
-                                                                                        >
-                                                                                            <IoCloseCircle className="text-[28px] text-mindfulRed" />
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            ))}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="py-3 text-sm text-mindfulgrey">No services available</div>
-                                                        )}
+                                                                    ))}
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                ))}
+                                                ) : (
+                                                    <div className="py-3 text-sm text-mindfulgrey">No services available</div>
+                                                )}
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div>No active services available</div>
-                                    )}
-                                </>
+                                        ))}
+                                    </div>
+                                ))
+                            ) : (
+                                <div>No active services available</div>
+                            )}
+                        </>
 
-                                {/* Update Button */}
-                                <div className="my-5" >
-                                    {/* <Button
+                        {/* Update Button */}
+                        <div className="my-5" >
+                            {/* <Button
                                         onClick={onSubmitActiveServices}
                                         buttonTitle={'Update'}
                                         className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
                                     /> */}
-                                    <button
-                                        onClick={onSubmitActiveServices}
-                                        className={`text-lg text-mindfulWhite rounded-sm px-8 py-2
+                            <button
+                                onClick={onSubmitActiveServices}
+                                className={`text-lg text-mindfulWhite rounded-sm px-8 py-2
                                              ${updateButtonState.success ? "bg-green-500" : "bg-main"}`}
-                                        disabled={updateServicesloading}
-                                    >
-                                        {updateServicesloading ? "Updating..." : updateButtonState.text}
-                                    </button>
-                                </div>
-                            </div>
+                                disabled={updateServicesloading}
+                            >
+                                {updateServicesloading ? "Updating..." : updateButtonState.text}
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                {showCopyServicesPopup && (
-                    <CopyServicesPopup
-                        closePopup={closeCopyServicesPopup}
-                        selectedBranch={selectedBranch}
-                        selectedBranchName={staffBranchListData.find(branch =>
-                            branch.branch_id === Number(selectedBranch))?.branch_name}
-                    />
-                )}
             </div>
+            {/* </div> */}
+
+            {showCopyServicesPopup && (
+                <CopyServicesPopup
+                    closePopup={closeCopyServicesPopup}
+                    selectedBranch={selectedBranch}
+                    selectedBranchName={staffBranchListData.find(branch =>
+                        branch.branch_id === Number(selectedBranch))?.branch_name}
+                />
+            )}
+            {/* </div> */}
         </div >
     )
 }

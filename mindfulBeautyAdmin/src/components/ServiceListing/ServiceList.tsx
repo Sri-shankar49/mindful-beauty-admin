@@ -267,7 +267,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                     </div>
 
                                     {/* Add Service */}
-                                    <Link to="/ServiceListing/AddServices">
+                                    <Link to="/ServiceListing/ServiceList/AddServices">
                                         <div
                                             // onClick={openBranchPopup}
                                             className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"

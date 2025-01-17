@@ -22,8 +22,11 @@ import { RolesManagement } from './components/ManageRole/RolesManagement';
 import { StaffManagement } from './components/ManageRole/StaffManagement';
 import { BranchManagement } from './components/ManageRole/BranchManagement';
 
-import { AddServices } from './components/ServiceListing/AddServices';
+
+import { ServicesMotherComponent } from './components/ServiceListing/ServicesMotherComponent';
 import { ServiceList } from './components/ServiceListing/ServiceList';
+import { AddServices } from './components/ServiceListing/AddServices';
+import { PackagesMotherComponent } from './components/ServiceListing/PackagesMotherComponent';
 import { PackagesList } from './components/ServiceListing/PackagesList';
 import { AddPackages } from './components/ServiceListing/AddPackages';
 
@@ -52,6 +55,7 @@ import { Thankyou } from './pages/Thankyou';
 import { MyAccount } from './pages/MyAccount';
 import { GeneralInfo } from './components/MyAccount/GeneralInfo';
 import { Wallet } from './components/MyAccount/Wallet';
+
 
 
 
@@ -158,10 +162,16 @@ function App() {
               <Route index element={<Navigate to="ServiceList" replace />} />
 
               {/* Sub-routes */}
-              <Route path="ServiceList" element={<ServiceList service_id={0} service_name={''} category={''} subcategory={''} price={''} service_time={''} status={''} sku_value={''} duration={''} />} />
-              <Route path="AddServices" element={<AddServices />} />
-              <Route path="PackagesList" element={<PackagesList />} />
-              <Route path="AddPackages" element={<AddPackages />} />
+              <Route path="/ServiceListing/ServiceList" element={<ServicesMotherComponent />}>
+                <Route index element={<ServiceList service_name={''} category={''} subcategory={''} service_time={''} duration={''} status={''} sku_value={''} />} /> {/* Default child route */}
+                <Route path="AddServices" element={<AddServices />} /> {/* Sub-route */}
+              </Route>
+
+              {/* Sub-routes */}
+              <Route path="/ServiceListing/PackagesList" element={<PackagesMotherComponent />}>
+                <Route index element={<PackagesList />} /> {/* Default child route */}
+                <Route path="AddPackages" element={<AddPackages />} /> {/* Sub-route */}
+              </Route>
 
             </Route>
 

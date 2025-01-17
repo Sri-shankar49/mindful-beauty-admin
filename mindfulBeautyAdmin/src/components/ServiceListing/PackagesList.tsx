@@ -78,7 +78,7 @@ export const PackagesList = () => {
                             </div>
 
                             {/* Add Service */}
-                            <Link to="/ServiceListing/AddPackages">
+                            <Link to="/ServiceListing/PackagesList/AddPackages">
                                 <div
                                     // onClick={openBranchPopup}
                                     className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
@@ -166,7 +166,7 @@ export const PackagesList = () => {
                                 <td className="text-start px-2 py-5">
                                     <div className="flex items-center space-x-5">
                                         <button
-                                        onClick={openEditPackagesPopup}
+                                            onClick={openEditPackagesPopup}
                                         >
                                             <img src={editButton} alt="Edit" />
                                         </button>
@@ -182,6 +182,7 @@ export const PackagesList = () => {
                         </table>
                     </div>
                 </div>
+
 
                 {showEditPackagesPopup && <EditPackagesPopup closePopup={closeEditPackagesPopup} />}
             </div>

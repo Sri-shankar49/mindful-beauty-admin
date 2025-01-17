@@ -149,55 +149,48 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ closePopup
                                     <div className="px-5 py-5">
                                         <div className="grid grid-cols-2 gap-5">
 
-                                            {/* Grid Column One */}
-                                            <div className="space-y-5">
-                                                {/* Category */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="category"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        Category
-                                                    </label>
+                                            {/* Category */}
+                                            <div>
+                                                <label
+                                                    htmlFor="category"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Category
+                                                </label>
 
-                                                    <SelectField
-                                                        label={''}
-                                                        // name="category"
-                                                        id="category"
-                                                        options={[
-                                                            { value: "hair", label: "Hair" },
-                                                            { value: "skin", label: "Skin" },
-                                                        ]}
-                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    />
+                                                <SelectField
+                                                    label={''}
+                                                    // name="category"
+                                                    id="category"
+                                                    options={[
+                                                        { value: "hair", label: "Hair" },
+                                                        { value: "skin", label: "Skin" },
+                                                    ]}
+                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                />
 
-                                                </div>
                                             </div>
 
+                                            {/* Sub Category */}
+                                            <div>
+                                                <label
+                                                    htmlFor="subCategory"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Sub Category
+                                                </label>
 
-                                            {/* Grid Column One */}
-                                            <div className="space-y-5">
-                                                {/* Sub Category */}
-                                                <div>
-                                                    <label
-                                                        htmlFor="subCategory"
-                                                        className="text-md text-mindfulBlack font-semibold mb-1"
-                                                    >
-                                                        Sub Category
-                                                    </label>
+                                                <SelectField
+                                                    label={''}
+                                                    // name="subCategory"
+                                                    id="subCategory"
+                                                    options={[
+                                                        { value: "facials", label: "Facials" },
+                                                        { value: "waxing", label: "Waxing" },
+                                                    ]}
+                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                />
 
-                                                    <SelectField
-                                                        label={''}
-                                                        // name="subCategory"
-                                                        id="subCategory"
-                                                        options={[
-                                                            { value: "facials", label: "Facials" },
-                                                            { value: "waxing", label: "Waxing" },
-                                                        ]}
-                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    />
-
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
