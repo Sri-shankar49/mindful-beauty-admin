@@ -12,6 +12,12 @@ export const Header = () => {
 
     const [profileHover, setProfileHover] = useState(false);
 
+    const [isActive, setIsActive] = useState(false); // State to track the toggle status
+
+    const handleToggle = () => {
+        setIsActive(!isActive); // Toggle the state on click
+    };
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -154,13 +160,23 @@ export const Header = () => {
                         <div className="flex items-center">
                             {/* Service Online */}
                             <div>
-                                <p className="text-md text-mindfulBlack font-semibold">Service Online</p>
+                                <p className={`text-md font-semibold
+                                             ${isActive ? "text-mindfulBlack" : "text-mindfulgrey"}
+                                            `}>
+                                    Service  {isActive ? 'Online' : 'Offline'}
+                                </p>
                             </div>
 
                             {/* Toggle Button */}
                             <div>
-                                <div className="toggle-switch">
-                                    <input className="toggle-input" id="toggle" type="checkbox" />
+                                <div className={`toggle-switch ${isActive ? 'active' : 'inactive'}`}>
+                                    <input
+                                        className="toggle-input"
+                                        id="toggle"
+                                        type="checkbox"
+                                        checked={isActive}
+                                        onChange={handleToggle}
+                                    />
                                     <label className="toggle-label" htmlFor="toggle"></label>
                                 </div>
                             </div>
@@ -193,11 +209,15 @@ export const Header = () => {
                             <div>
                                 {profileHover && (
                                     <div className="absolute bottom-[-9.5rem] right-0 mt-2 w-48 bg-mindfulWhite rounded-md shadow-lg py-1 z-20">
-                                        {/* <Link to=""> */}
-                                        <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
-                                            My Profile
-                                        </div>
-                                        {/* </Link> */}
+                                        <Link
+                                            to="/MyAccount"
+                                            aria-current="page"
+                                        // className="active-nav"
+                                        >
+                                            <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
+                                                My Account
+                                            </div>
+                                        </Link>
 
                                         {/* <Link to=""> */}
                                         <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">

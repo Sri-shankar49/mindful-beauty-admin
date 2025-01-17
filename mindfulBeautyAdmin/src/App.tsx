@@ -24,6 +24,10 @@ import { BranchManagement } from './components/ManageRole/BranchManagement';
 
 import { AddServices } from './components/ServiceListing/AddServices';
 import { ServiceList } from './components/ServiceListing/ServiceList';
+import { PackagesList } from './components/ServiceListing/PackagesList';
+import { AddPackages } from './components/ServiceListing/AddPackages';
+
+
 
 import { BookingStatus } from './components/ServiceManagement/BookingStatus';
 import { EditServices } from './components/ServiceManagement/EditServices';
@@ -43,6 +47,11 @@ import { GeneralInfoFreelanceForm } from './pages/GeneralInfoFreelanceForm';
 import { BankAccInfoFreelanceForm } from './pages/BankAccInfoFreelanceForm';
 import { TaxInfoFreelanceForm } from './pages/TaxInfoFreelanceForm';
 import { Thankyou } from './pages/Thankyou';
+
+
+import { MyAccount } from './pages/MyAccount';
+import { GeneralInfo } from './components/MyAccount/GeneralInfo';
+import { Wallet } from './components/MyAccount/Wallet';
 
 
 
@@ -151,6 +160,9 @@ function App() {
               {/* Sub-routes */}
               <Route path="ServiceList" element={<ServiceList service_id={0} service_name={''} category={''} subcategory={''} price={''} service_time={''} status={''} sku_value={''} duration={''} />} />
               <Route path="AddServices" element={<AddServices />} />
+              <Route path="PackagesList" element={<PackagesList />} />
+              <Route path="AddPackages" element={<AddPackages />} />
+
             </Route>
 
             <Route path="/ServiceManagement" element={<ProtectedRoute permissionKey="service_management"><ServiceManagement /></ProtectedRoute>}>
@@ -179,6 +191,17 @@ function App() {
             <Route path="/SalesTransactions" element={<ProtectedRoute permissionKey="sales_transactions"><SalesTransactions /></ProtectedRoute>} />
             <Route path="/RatingsReviews" element={<ProtectedRoute permissionKey="ratings_reviews"><RatingsReviews /></ProtectedRoute>} />
             <Route path="/Reports" element={<ProtectedRoute permissionKey="report_details"><Reports /></ProtectedRoute>} />
+
+            <Route path="/MyAccount" element={<MyAccount />} >
+
+              {/* Redirect to GeneralInfo when /MyAccount is accessed */}
+              <Route index element={<Navigate to="GeneralInfo" replace />} />
+
+              {/* Sub-routes */}
+              <Route path="GeneralInfo" element={<GeneralInfo />} />
+              <Route path="Wallet" element={<Wallet />} />
+            </Route>
+
           </Route>
         </Routes>
 

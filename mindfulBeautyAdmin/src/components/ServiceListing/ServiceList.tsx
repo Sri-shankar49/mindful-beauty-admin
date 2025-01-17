@@ -216,15 +216,15 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     return (
         <div>
             <div>
-                <div className="bg-mindfulLightPink px-5 py-5">
+                {/* <div className="bg-mindfulLightPink px-5 py-5"> */}
 
-                    <div className="bg-mindfulWhite px-5 py-5">
+                    {/* <div className="bg-mindfulWhite px-5 py-5"> */}
 
-                        <div className="pb-5">
+                        <div className="">
                             <div className="flex items-center justify-between">
                                 <div>
                                     {/* <h5 className="text-3xl font-semibold">Services List (85)</h5> */}
-                                    <h5 className="text-3xl font-semibold">Services List ({totalItems})</h5>
+                                    <h5 className="text-3xl font-semibold py-5">Services List ({totalItems})</h5>
                                 </div>
 
                                 {/* Select, Add Service & Search */}
@@ -298,6 +298,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
                             </div>
                         </div>
+                        
                         <div>
                             <table className="w-full">
                                 <thead className="bg-mindfulLightgrey">
@@ -470,9 +471,9 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                 onItemsPerPageChange={handleItemsPerPageChange}
                             />
                         </div>
-                    </div>
+                    {/* </div> */}
 
-                </div>
+                {/* </div> */}
             </div>
         </div>
     )
