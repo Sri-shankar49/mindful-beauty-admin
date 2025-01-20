@@ -337,26 +337,16 @@ export const DashBoardData = () => {
                     <div>
                         {/* Sort */}
                         <div>
-                            <label
+                            {/* <label
                                 htmlFor="sort"
                                 className="text-md text-mindfulBlack font-semibold mb-1"
                             >
                                 Sort
-                            </label>
-                            {/* <SelectField
-                                label={''}
-                                name="sort"
-                                id="sort"
-                                options={[
-                                    { value: "asc", label: "A-Z" },
-                                    { value: "desc", label: "Z-A" },
-                                ]}
-                                onChange={handleSortChange} // Handle the state update
-                                className="w-72 rounded-sm border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                            /> */}
+                            </label> */}
+
 
                         </div>
-                        <select
+                        {/* <select
                             id="sort"
                             value={sortOrder}
                             onChange={handleSortChange} // Trigger sort logic
@@ -364,7 +354,7 @@ export const DashBoardData = () => {
                         >
                             <option value="asc">A-Z</option>
                             <option value="desc">Z-A</option>
-                        </select>
+                        </select> */}
                     </div>
                 </div>
             </div>

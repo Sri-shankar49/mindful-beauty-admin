@@ -197,6 +197,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                             <th className="w-[15%] px-2 py-3">Role</th>
                             <th className="w-[15%] px-2 py-3">Branch</th>
                             <th className="w-[15%] px-2 py-3">Status</th>
+                            <th className="w-[15%] px-2 py-3">Phone Number</th>
                             <th className="w-[30%] text-start px-2 py-3">Actions</th>
                         </tr>
                     </thead>
@@ -221,11 +222,12 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                     <td className="text-center px-2 py-5">{staff.role_name}</td>
                                     <td className="text-center px-2 py-5">{staff.branch_name}</td>
                                     <td className="text-center px-2 py-5">{staff.status}</td>
+                                    <td className="text-center px-2 py-5">{staff.phone}</td>
                                     <td className="px-2 py-5">
                                         <div className="flex items-center space-x-5">
-                                            <button>
+                                            {/* <button>
                                                 <img src={resetPasswordButton} alt="Reset Password" />
-                                            </button>
+                                            </button> */}
                                             <button onClick={() => openEditStaffPopup(Number(staff.staff))}>
                                                 <img src={editButton} alt="Edit" />
                                             </button>

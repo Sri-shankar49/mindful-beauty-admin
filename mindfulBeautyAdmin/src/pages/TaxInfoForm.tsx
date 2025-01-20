@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
 import { Link, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
@@ -22,7 +22,7 @@ const taxInfoSchema = zod.object({
     taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
     gstNumber: zod.string().regex(/^[0-9]{15}$/, { message: "GST Number must be 15 digits" }),
     proofOfIdentityType: zod.string().optional(),
-    proofOfIdentityNumber: zod.string().optional(),
+    proofOfIdentityNumber: zod.string().min(3, "ID Number must be 3 digits"),
     proofOfAddressType: zod.string().optional(),
 });
 
@@ -204,15 +204,40 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
         }
 
         catch (error: any) {
+            console.log("Tax Info Form Error:", error);
             setError(error.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
     }
 
+    // Add a new useEffect to handle error message timeout
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
-    // if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // Update the ErrorMessage component to include a transition
+    const ErrorMessage = () => error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6 transition-opacity duration-500 ease-in-out">
+            <div className="flex">
+                <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <div className="ml-3">
+                    <p className="text-sm text-red-600">
+                        {error}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div>
@@ -490,6 +515,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                         className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                                         {...register("proofOfIdentityNumber")}
                                                     />
+                                                    {errors.proofOfIdentityNumber && <p className="text-sm text-red-600">{errors.proofOfIdentityNumber.message}</p>}
+
                                                 </div>
 
                                                 {/* File Upload Area Three */}
@@ -580,6 +607,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                         <div className="text-center py-10">
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Reset Button */}
+                                                <ErrorMessage />
                                                 <Button
                                                     onClick={() => location.reload()}
                                                     buttonType="button"

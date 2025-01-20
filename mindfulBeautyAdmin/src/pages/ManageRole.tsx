@@ -9,13 +9,6 @@ import { RootState } from '@/redux/store';
 
 export const ManageRole = () => {
 
-  // const dispatch = useDispatch();
-  // const searchQuery = useSelector((state: RootState) => state.staff.searchQuery);
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   dispatch(setSearchQuery(e.target.value));
-  // };
-
   const dispatch = useDispatch();
   const location = useLocation(); // Detect current route
 
@@ -29,6 +22,9 @@ export const ManageRole = () => {
       dispatch(setBranchSearchQuery(query));
     }
   };
+
+  // Add this to check if we're on the RolesManagement page
+  const showSearch = !location.pathname.includes('RolesManagement');
 
   return (
     <div className="bg-mindfulLightPink px-5 py-5" >
@@ -71,26 +67,20 @@ export const ManageRole = () => {
 
             </ul>
 
-            <div>
-              <div className="">
-                {/* <input
-                  type="text"
-                  name="search"
-                  id="search"
-                  placeholder="Search"
-                  className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
-                /> */}
-                <InputField
-                  label={''}
-                  placeholder="Search"
-                  className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-                {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" /> */}
-                {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-[9.5rem] right-12 cursor-pointer z-[-1]" /> */}
+            {/* Only show search input if not on RolesManagement */}
+            {showSearch && (
+              <div>
+                <div className="">
+                  <InputField
+                    label={''}
+                    placeholder="Search"
+                    className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
