@@ -32,8 +32,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
 
     // Form data From the Register component
-    const location = useLocation();
-    const registartionFormData = location.state; // Access the passed data
+    // const location = useLocation();
+    // const registartionFormData = location.state; // Access the passed data
 
     const navigate = useNavigate();
 
@@ -50,10 +50,14 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFormData>({
         resolver: zodResolver(generalInfoSchema),
         defaultValues: {
-            ownersName: registartionFormData.name || '',
-            salonName: registartionFormData.name || '',
-            contactNumber: registartionFormData.phone || '',
-            emailAddress: registartionFormData.email || '',
+            // ownersName: registartionFormData.name || '',
+            // salonName: registartionFormData.name || '',
+            // contactNumber: registartionFormData.phone || '',
+            // emailAddress: registartionFormData.email || '',
+            ownersName: sessionStorage.getItem("providerName") || '',
+            salonName: sessionStorage.getItem("providerName") || '',
+            contactNumber: sessionStorage.getItem("phoneNumber") || '',
+            emailAddress: sessionStorage.getItem("providerEmail") || '',
         },
     });
 

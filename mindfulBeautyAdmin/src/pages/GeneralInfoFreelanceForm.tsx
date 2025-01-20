@@ -35,8 +35,8 @@ type GeneralInfoFreelanceFormData = zod.infer<typeof generalInfoFreelanceSchema>
 export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = () => {
 
     // Form data From the Register component
-    const location = useLocation();
-    const registartionFormData = location.state; // Access the passed data
+    // const location = useLocation();
+    // const registartionFormData = location.state; // Access the passed data
 
     const [willingToWork, setWillingToWork] = useState<number>(1);
 
@@ -60,9 +60,13 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
     const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFreelanceFormData>({
         resolver: zodResolver(generalInfoFreelanceSchema),
         defaultValues: {
-            fullName: registartionFormData.name || '',
-            emailAddress: registartionFormData.email || '',
-            contactNumber: registartionFormData.phone || '',
+            // fullName: registartionFormData.name || '',
+            // emailAddress: registartionFormData.email || '',
+            // contactNumber: registartionFormData.phone || '',
+            fullName: sessionStorage.getItem("providerName") || '',
+            // salonName: sessionStorage.getItem("providerName") || '',
+            contactNumber: sessionStorage.getItem("phoneNumber") || '',
+            emailAddress: sessionStorage.getItem("providerEmail") || '',
         },
     });
 

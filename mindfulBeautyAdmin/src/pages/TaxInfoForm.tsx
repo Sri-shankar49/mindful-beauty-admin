@@ -10,6 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { taxInfo } from "@/api/apiConfig";
 
+interface TaxInfoResponse {
+    data: {
+        tax_identification_number: string;
+        gst_number: string;
+    };
+}
+
 // Define Zod schema for validation
 const taxInfoSchema = zod.object({
     taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
@@ -74,6 +81,14 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
     // React Hook Form setup with Zod validation
     const { register, handleSubmit, formState: { errors } } = useForm<TaxInfoFormData>({
         resolver: zodResolver(taxInfoSchema),
+        defaultValues: {
+            // ownersName: registartionFormData.name || '',
+            // salonName: registartionFormData.name || '',
+            // contactNumber: registartionFormData.phone || '',
+            // emailAddress: registartionFormData.email || '',
+            taxIdentificationNumber: sessionStorage.getItem("taxIdNumber") || '',
+            gstNumber: sessionStorage.getItem("gstNumber") || '',
+        },
     });
 
     // const onSubmit = async (data: TaxInfoFormData) => {
@@ -175,9 +190,13 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
             }
 
             // Call the taxInfo function
-            const taxInfoData = await taxInfo(formData);
+            const taxInfoData = await taxInfo(formData) as TaxInfoResponse;
 
             console.log("Tax Info Submission Success:", taxInfoData);
+
+            sessionStorage.setItem("taxIdNumber", taxInfoData.data.tax_identification_number);
+            sessionStorage.setItem("gstNumber", taxInfoData.data.gst_number);
+
 
             // Navigate to the next step
             // navigate("/Dashboard/ProfileProgress");

@@ -66,7 +66,11 @@ export const Register: React.FC<RegisterFormData> = () => {
 
       // Store provider ID in sessionStorage
       sessionStorage.setItem("providerID", registrationData.data.provider_id);
+      sessionStorage.setItem("providerName", registrationData.data.name);
+      sessionStorage.setItem("providerEmail", registrationData.data.email);
       sessionStorage.setItem("phoneNumber", registrationData.data.phone);
+      // sessionStorage.setItem("providerActiveUser", registrationData.data.activeUser);
+      // sessionStorage.setItem("providerLocation", registrationData.data.location);
     }
 
     catch (error: any) {

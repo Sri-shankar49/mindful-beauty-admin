@@ -12,7 +12,7 @@ import { bankAccInfo } from "@/api/apiConfig";
 const bankAccInfoSchema = zod.object({
     bankAccHolderName: zod.string().min(3, "Bank Account Holder Name is required"),
     bankName: zod.string().min(3, "Bank Name is required"),
-    bankAccountNumber: zod.string().regex(/^[0-9]{10}$/, { message: "Bank Account Number must be 10 digits" }),
+    bankAccountNumber: zod.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
     accountType: zod.string().min(1, "Account Type is required"),
     bankBranch: zod.string().optional(),
     ifscCode: zod.string().optional(),
@@ -37,6 +37,16 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
     // React Hook Form setup with Zod validation
     const { register, handleSubmit, formState: { errors } } = useForm<BankAccInfoFormData>({
         resolver: zodResolver(bankAccInfoSchema),
+        defaultValues: {
+            // ownersName: registartionFormData.name || '',
+            // salonName: registartionFormData.name || '',
+            // contactNumber: registartionFormData.phone || '',
+            // emailAddress: registartionFormData.email || '',
+            bankAccHolderName: sessionStorage.getItem("bankAccHolderName") || '',
+            bankName: sessionStorage.getItem("bankName") || '',
+            bankAccountNumber: sessionStorage.getItem("bankAccountNumber") || '',
+            accountType: sessionStorage.getItem("accountType") || '',
+        },
     });
 
 
@@ -65,6 +75,12 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
             );
 
             console.log("Bank Account Info Data", bankAccInfoData);
+
+            // Store provider ID in sessionStorage
+            sessionStorage.setItem("bankAccHolderName", bankAccInfoData.data.account_holder_name);
+            sessionStorage.setItem("bankName", bankAccInfoData.data.bank_name);
+            sessionStorage.setItem("bankAccountNumber", bankAccInfoData.data.bank_account_number);
+            sessionStorage.setItem("accountType", bankAccInfoData.data.account_type);
 
             // Navigate to the next step
             navigate("/TaxInfoForm");
