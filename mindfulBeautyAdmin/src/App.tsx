@@ -113,7 +113,7 @@ function App() {
             <TaxInfoForm
               taxIdentificationNumber={''}
               gstNumber={''}
-            />
+              proofOfIdentityNumber={''} />
           } />
 
           <Route path="/GeneralInfoFreelanceForm" element={

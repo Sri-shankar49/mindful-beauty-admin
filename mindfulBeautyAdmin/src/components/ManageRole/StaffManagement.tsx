@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import resetPasswordButton from "../../assets/icons/resetPasswordButton.png";
+// import resetPasswordButton from "../../assets/icons/resetPasswordButton.png";
 import editButton from "../../assets/icons/editButton.png";
 import deleteButton from "../../assets/icons/deleteButton.png";
 import { Button } from '@/common/Button';
