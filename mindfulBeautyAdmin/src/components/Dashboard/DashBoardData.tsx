@@ -92,7 +92,7 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
     const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-    const [sortOrder, setSortOrder] = useState<string>("desc");
+    // const [sortOrder, setSortOrder] = useState<string>("desc");
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -185,7 +185,10 @@ export const DashBoardData = () => {
             console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
             try {
-                const data = await dashBoardBookingList(Number(sessionLoginProviderID), sortOrder);
+                const data = await dashBoardBookingList(
+                    Number(sessionLoginProviderID),
+                    //  sortOrder
+                );
 
                 const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
@@ -204,7 +207,9 @@ export const DashBoardData = () => {
             }
         }
         loadBookingList();
-    }, [sortOrder]);
+    }, [
+        // sortOrder
+    ]);
 
 
     // Handle Sort Change

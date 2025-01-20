@@ -256,13 +256,16 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 // Dashboard Page -- --> Bookings
 // GET Method from the API
-export const dashBoardBookingList = async (providerID: number, sortOrder: string) => {
+export const dashBoardBookingList = async (
+  providerID: number,
+  // sortOrder: string
+) => {
 
   try {
     const response = await apiAxios.get(`/api/bookings/`, {
       params: {
         provider_id: providerID,
-        sort_order: sortOrder
+        // sort_order: sortOrder
       }
     });
 
