@@ -367,10 +367,11 @@ export const DashBoardData = () => {
 
 
             {/* Charts & Booking Table */}
-            <div className="grid grid-cols-3 gap-5">
+            {/* <div className="grid grid-cols-3 gap-5"> */}
+            <div className="grid grid-cols-1 gap-5">
 
                 {/* Grid Column One -- --> Charts  */}
-                <div>
+                {/* <div>
                     <div>
                         <h5 className="text-lg font-semibold py-5">Overview</h5>
                     </div>
@@ -395,7 +396,7 @@ export const DashBoardData = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
 
                 {/* Grid Column Two -- --> Booking Table  */}

@@ -34,7 +34,6 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-
     useEffect(() => {
         const fetchDeclineList = async () => {
             setLoading(true);
@@ -42,9 +41,10 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
             try {
                 const loadDeclineData = await fetchDeclineMessages();
                 setDeclineListData(loadDeclineData.data);
-
-                console.log("Fetched decline list data log:", loadDeclineData.data);
-
+                // If there's data, set the first item as default value
+                if (loadDeclineData.data.length > 0) {
+                    setValue("reason", String(loadDeclineData.data[0].message_id));
+                }
             } catch (error: any) {
                 setError(error.message || 'Failed to fetch decline list');
             } finally {
@@ -54,8 +54,7 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
         fetchDeclineList();
     }, []);
 
-
-    const { register, handleSubmit, formState: { errors } } = useForm<addReasonormData>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<addReasonormData>({
         resolver: zodResolver(addReasonSchema),
     });
 
@@ -131,7 +130,6 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                             <SelectField
                                                 label=""
                                                 id="reason"
-                                                // required
                                                 className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                 options={
                                                     declineListData.length
@@ -142,6 +140,7 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                                         }))
                                                         : [{ value: "", label: "No reason available" }]
                                                 }
+                                                defaultValue={declineListData.length > 0 ? String(declineListData[0].message_id) : ""}
                                                 {...register("reason")}
                                             />
                                             {errors.reason && (
