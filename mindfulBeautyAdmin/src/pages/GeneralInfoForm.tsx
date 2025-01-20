@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";

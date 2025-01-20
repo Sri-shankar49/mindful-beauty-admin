@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 import salonChair from "../assets/icons/salonChair.svg";
 import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
