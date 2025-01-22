@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './loginSlice'; // Updated import
 import staffReducer from './staffSlice';
 import branchReducer from './branchSlice';
-
+import serviceReducer from './servicesListSlice';
 
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { persistReducer, persistStore } from 'redux-persist';
@@ -23,6 +23,7 @@ const rootReducer = combineReducers({
     login: loginReducer, // Add other reducers here if necessary
     staff: staffReducer,
     branch: branchReducer,
+    service: serviceReducer,
 });
 
 // Create a persisted reducer

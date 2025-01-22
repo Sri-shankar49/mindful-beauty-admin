@@ -885,13 +885,14 @@ export const deleteBranch = async (branchID: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const servicesList = async (providerID: number, branchID: number, pageNumber: number) => {
+export const servicesList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/provider-services/`, {
       params: {
         provider_id: providerID,
         branch_id: branchID,
+        search: searchQuery,
         page: pageNumber
       }
     });
@@ -1465,6 +1466,29 @@ export const reviewsList = async (pageNumber: number) => {
   }
 }
 
+
+// My Account Page
+// GET Method from the API
+export const fetchProviderTransactions = async (providerId: number) => {
+  try {
+    const response = await apiAxios.get(`/provider-api/provider-transactions/`, {
+      params: {
+        provider_id: providerId
+      }
+    });
+
+    console.log("Provider Transactions response:", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch provider transactions");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching provider transactions:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch provider transactions. Please try again later.");
+  }
+};
 
 
 

@@ -1,10 +1,37 @@
 import { Button } from '@/common/Button'
 import React from 'react'
 import { CreditsPopup } from './CreditsPopup';
+import { fetchProviderTransactions } from '@/api/apiConfig';
+
+interface Transaction {
+    id: number;
+    date: string;
+    amount: string;
+    type: string;
+    payment_type: string;
+    transaction_id: string;
+}
 
 export const Wallet = () => {
-
     const [showCreditsPopup, setShowCreditsPopup] = React.useState(false);
+    const [transactions, setTransactions] = React.useState<Transaction[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const sessionProviderID = sessionStorage.getItem("loginProviderID");
+
+    React.useEffect(() => {
+        const getTransactions = async () => {
+            try {
+                const data = await fetchProviderTransactions(Number(sessionProviderID));
+                setTransactions(data);
+            } catch (error) {
+                console.error("Failed to fetch transactions:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getTransactions();
+    }, [sessionProviderID]);
 
     const openCreditsPopup = () => {
         setShowCreditsPopup(true);
@@ -13,6 +40,7 @@ export const Wallet = () => {
     const closeCreditsPopup = () => {
         setShowCreditsPopup(false);
     }
+
     return (
         <div>
             <div className="py-8">
@@ -65,19 +93,30 @@ export const Wallet = () => {
                                         <th className="text-start px-2 py-3">Amount</th>
                                         <th className="text-start px-2 py-3">Type</th>
                                         <th className="text-start px-2 py-3">Payment Type</th>
-                                        <th className="text-start px-2 py-3">Transactions ID</th>
+                                        <th className="text-start px-2 py-3">Transaction ID</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td className="text-center px-2 py-5">1</td>
-                                        <td className="text-start px-2 py-5">18 Aug 2024</td>
-                                        <td className="text-start px-2 py-5">Rs. 15000</td>
-                                        <td className="text-start px-2 py-5">Purchase</td>
-                                        <td className="text-start px-2 py-5">Online</td>
-                                        <td className="text-start px-2 py-5">OCB3948236</td>
-                                        {/* <td className="text-center py-5">No Bookings found.</td> */}
-                                    </tr>
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={6} className="text-center py-5">Loading...</td>
+                                        </tr>
+                                    ) : transactions.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className="text-center py-5">No transactions found.</td>
+                                        </tr>
+                                    ) : (
+                                        transactions.map((transaction, index) => (
+                                            <tr key={transaction.id}>
+                                                <td className="text-center px-2 py-5">{index + 1}</td>
+                                                <td className="text-start px-2 py-5">{transaction.date}</td>
+                                                <td className="text-start px-2 py-5">{transaction.amount}</td>
+                                                <td className="text-start px-2 py-5">{transaction.type}</td>
+                                                <td className="text-start px-2 py-5">{transaction.payment_type}</td>
+                                                <td className="text-start px-2 py-5">{transaction.transaction_id}</td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
