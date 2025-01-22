@@ -99,7 +99,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
     const dispatch = useDispatch<AppDispatch>();
-    const { serviceListData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.service);
+    const { serviceListData, loading, totalItems, searchQuery } = useSelector((state: RootState) => state.service);
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
