@@ -1493,6 +1493,58 @@ export const fetchProviderTransactions = async (providerId: number) => {
 
 
 
+// My Account Page -- --> Wallet Tab --> Wallet Balance
+// POST Method from the API
+export const getWalletCredits = async (provider_id: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/wallet-credits/`, {
+      params: {
+        provider_id,
+      },
+    });
+
+    console.log("Wallet credits response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch wallet credits");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching wallet credits:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch wallet credits. Please try again later.");
+  }
+};
+
+
+
+// My Account Page -- --> Wallet Tab --> Credit Popup
+// POST Method from the API
+export const addWalletTransaction = async (provider_id: number, amount: number) => {
+
+  try {
+    const response = await apiAxios.post(`/provider-api/add-wallet-transaction/`, {
+      provider_id,
+      amount,
+    });
+
+    console.log("Add Wallet Transaction response:", response.data);
+
+    if (!response.data || response.status !== 201) {
+      throw new Error("Failed to add wallet transaction.");
+    }
+
+    return response.data; // Return the successful response data
+  } catch (error: any) {
+    console.error("Error adding wallet transaction:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add wallet transaction. Please try again later.");
+  }
+};
+
+
+
+
 
 // Fetch Messages
 // export const fetchMessages = async () => {
@@ -1534,3 +1586,6 @@ export const fetchProviderTransactions = async (providerId: number) => {
 //     throw new Error(error.response?.data?.message || "Unable to send message. Please try again later.");
 //   }
 // };
+
+
+

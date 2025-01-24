@@ -1,7 +1,13 @@
 import { Button } from '@/common/Button'
 import React from 'react'
 import { CreditsPopup } from './CreditsPopup';
-import { fetchProviderTransactions } from '@/api/apiConfig';
+import { fetchProviderTransactions, getWalletCredits } from '@/api/apiConfig';
+
+interface Credits {
+    available_credits: number;
+    total_credits: number;
+    used_credits: number;
+}
 
 interface Transaction {
     id: number;
@@ -15,15 +21,30 @@ interface Transaction {
 export const Wallet = () => {
     const [showCreditsPopup, setShowCreditsPopup] = React.useState(false);
     const [transactions, setTransactions] = React.useState<Transaction[]>([]);
+    // const [creditsData, setCreditsData] = React.useState<Credits[]>([]);
+    const [creditsData, setCreditsData] = React.useState<Credits | null>(null);
     const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
     const sessionProviderID = sessionStorage.getItem("loginProviderID");
 
     React.useEffect(() => {
+        if (!sessionProviderID) {
+            setError("Session Provider ID not found. Please log in again.");
+            setLoading(false);
+            return;
+        }
         const getTransactions = async () => {
             try {
                 const data = await fetchProviderTransactions(Number(sessionProviderID));
+                const response = await getWalletCredits(Number(sessionProviderID));
                 setTransactions(data);
-            } catch (error) {
+                setCreditsData(response);
+
+                console.log("Transactions data log: ", data);
+                console.log("Credit data log: ", response);
+
+
+            } catch (error: any) {
                 console.error("Failed to fetch transactions:", error);
             } finally {
                 setLoading(false);
@@ -41,43 +62,84 @@ export const Wallet = () => {
         setShowCreditsPopup(false);
     }
 
+    const refreshWalletListData = async () => {
+        try {
+            const data = await fetchProviderTransactions(Number(sessionProviderID));
+            const response = await getWalletCredits(Number(sessionProviderID));
+            setTransactions(data);
+            setCreditsData(response);
+
+            console.log("Transactions data refreshed: ", data);
+            console.log("Credit data log refreshed: ", response);
+
+        } catch (error: any) {
+            console.error("Error refreshing Branch list data:", error.message);
+        }
+    };
+
     return (
         <div>
             <div className="py-8">
+
+                {error && (
+                    <div className="text-red-500 text-center mb-4">{error}</div>
+                )}
+
                 <div className="grid grid-cols-4 gap-5">
-
-                    {/* Credits */}
-                    <div className="space-y-5">
-                        {/* Available Credits */}
-                        <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                            <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                <p>Available Credits</p>
+                    {creditsData ? (
+                        <div className="space-y-5">
+                            {/* Available Credits */}
+                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                    <p>Available Credits</p>
+                                </div>
+                                <div className="pt-3">
+                                    <h6 className="text-4xl text-mindfulGreen font-semibold">
+                                        {creditsData?.available_credits ?? 0}
+                                    </h6>
+                                </div>
                             </div>
-                            <div className="pt-3">
-                                <h6 className="text-4xl text-mindfulGreen font-semibold">5000</h6>
+
+                            {/* Used Credits */}
+                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                    <p>Used Credits</p>
+                                </div>
+                                <div className="pt-3">
+                                    <h6 className="text-4xl text-main font-semibold">
+                                        {creditsData?.used_credits ?? 0}
+                                    </h6>
+                                </div>
+                            </div>
+
+                            {/* Total Credits */}
+                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                    <p>Total Credits</p>
+                                </div>
+                                <div className="pt-3">
+                                    <h6 className="text-4xl text-mindfulBlack font-semibold">
+                                        {creditsData?.total_credits ?? 0}
+                                    </h6>
+                                </div>
+                            </div>
+
+                            <div className="pt-5">
+                                {/* Wallet Balance */}
+                                <Button
+                                    onClick={openCreditsPopup}
+                                    buttonType="button"
+                                    buttonTitle={"Buy Credits"}
+                                    className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
+                                />
                             </div>
                         </div>
-
-                        {/* Available Credits */}
-                        <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                            <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                <p>Used Credits</p>
-                            </div>
-                            <div className="pt-3">
-                                <h6 className="text-4xl text-main font-semibold">25000</h6>
-                            </div>
+                    ) : (
+                        <div className="text-center col-span-1">
+                            <p className="text-center py-5">Loading credit data...</p>
                         </div>
+                    )}
 
-                        {/* Total Credits */}
-                        <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                            <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                <p>Total Credits</p>
-                            </div>
-                            <div className="pt-3">
-                                <h6 className="text-4xl text-mindfulBlack font-semibold">30000</h6>
-                            </div>
-                        </div>
-                    </div>
 
                     {/* Transactions History */}
                     <div className="col-span-3">
@@ -123,18 +185,10 @@ export const Wallet = () => {
                     </div>
                 </div>
 
-                <div className="pt-5">
-                    {/* Wallet Balance */}
-                    <Button
-                        onClick={openCreditsPopup}
-                        buttonType="button"
-                        buttonTitle={"Buy Credits"}
-                        className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
-                    />
-                </div>
+
             </div>
 
-            {showCreditsPopup && <CreditsPopup closePopup={closeCreditsPopup} />}
-        </div>
+            {showCreditsPopup && <CreditsPopup closePopup={closeCreditsPopup} refreshWalletData={refreshWalletListData} />}
+        </div >
     )
 }
