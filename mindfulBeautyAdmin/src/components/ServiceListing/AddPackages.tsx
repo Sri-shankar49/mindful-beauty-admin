@@ -435,7 +435,7 @@ export const AddPackages = () => {
 
       // Create FormData object
       const formData = new FormData();
-      formData.append("packages", JSON.stringify(updatedPackages));y
+      formData.append("packages", JSON.stringify(updatedPackages));
 
       console.log("Submitting FormData:", Object.fromEntries(formData.entries())); // Debugging purposes
 
