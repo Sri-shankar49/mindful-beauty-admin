@@ -92,6 +92,7 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
     const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
+
     // const [sortOrder, setSortOrder] = useState<string>("desc");
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -99,6 +100,8 @@ export const DashBoardData = () => {
     // const [isAccepted, setIsAccepted] = useState(false);
     const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
     const [declinedAppointments, setDeclinedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
+
+    const [stylistError, setStylistError] = useState<{ [key: number]: string; }>({});  // Key is appointment ID, value is the error message
 
     // handle onChange event of the dropdown
     // const handleStylistOption = (option: SingleValue<StylistOption>) => {
@@ -136,7 +139,7 @@ export const DashBoardData = () => {
     //     }
     // };
 
-    const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+    const handleStylistOption = (newValue: SingleValue<StylistOption>, appointmentID: number) => {
         if (newValue) {
             const selectedBeautician = beauticiansListData.find(
                 (beautician) => beautician.id === newValue.value
@@ -148,6 +151,13 @@ export const DashBoardData = () => {
             if (selectedBeautician) {
                 setSelectedStylist(selectedBeautician);
                 setShowStylistPopup(true);
+
+                // Clear the error for the selected appointment
+                setStylistError((prevState) => {
+                    const newState = { ...prevState };
+                    delete newState[appointmentID]; // Remove the error for this specific appointment
+                    return newState;
+                });
             }
         } else {
             console.log("No option selected.");
@@ -235,6 +245,18 @@ export const DashBoardData = () => {
 
 
     const handleActionSubmit = async (appointmentID: number, stylistID: number, actionID: number,) => {
+
+
+        // Check if stylist is selected
+        if (!selectedStylist) {
+            // Set error message for the specific appointment
+            setStylistError((prevState) => ({
+                ...prevState,
+                [appointmentID]: "Please select a stylist", // Error message for this specific booking
+            }));
+            return; // Prevent further execution if no stylist is selected
+        }
+
         setLoading(true);
         setError(null);
 
@@ -264,6 +286,10 @@ export const DashBoardData = () => {
                         ...prevState,
                         [appointmentID]: false,
                     }));
+                    
+                    // Clear selected stylist after accepting the appointment
+                    setSelectedStylist(null);
+
                 } else if (actionID === 2) { // Action for Decline
                     setDeclinedAppointments((prevState) => ({
                         ...prevState,
@@ -463,7 +489,7 @@ export const DashBoardData = () => {
                                             </td> */}
 
                                             <td className="text-start px-2 py-5">
-                                                {/* Branch Select Field */}
+                                                {/* Stylist Select Field */}
                                                 <div>
                                                     <Select
                                                         placeholder="Select Option"
@@ -474,7 +500,8 @@ export const DashBoardData = () => {
                                                             text: beautician.name,
                                                             icon: beautician.profile_image,
                                                         }))}
-                                                        onChange={handleStylistOption}
+                                                        // onChange={handleStylistOption}
+                                                        onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
                                                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                                                         formatOptionLabel={(option) => (
                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -484,6 +511,11 @@ export const DashBoardData = () => {
                                                         )}
                                                         getOptionValue={(option) => option.value.toString()}
                                                     />
+
+                                                    {/* Display the error message for the specific appointment */}
+                                                    {stylistError && stylistError[dashboardData.appointment_id] && (
+                                                        <div className="text-sm text-red-600">{stylistError[dashboardData.appointment_id]}</div>
+                                                    )}
                                                 </div>
                                             </td>
 
@@ -547,26 +579,28 @@ export const DashBoardData = () => {
                                                             className="w-24 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
                                                         />
                                                     </div> */}
+                                                    {!acceptedAppointments[dashboardData.appointment_id] && (
+                                                        <div>
+                                                            <Button
+                                                                onClick={() => openDenialPopup(dashboardData.appointment_id)}
+                                                                buttonType="button"
+                                                                buttonTitle="Decline"
+                                                                className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
+                                                            />
 
-                                                    <div>
-                                                        <Button
-                                                            onClick={() => openDenialPopup(dashboardData.appointment_id)}
-                                                            buttonType="button"
-                                                            buttonTitle="Decline"
-                                                            className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                        />
+                                                            {/* <Button
+                                                                onClick={() =>
+                                                                    !declinedAppointments[dashboardData.appointment_id] &&
+                                                                    handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
+                                                                }
+                                                                buttonType="button"
+                                                                buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
+                                                                className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
+                                                                disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
+                                                            /> */}
+                                                        </div>
+                                                    )}
 
-                                                        {/* <Button
-                                                            onClick={() =>
-                                                                !declinedAppointments[dashboardData.appointment_id] &&
-                                                                handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
-                                                            }
-                                                            buttonType="button"
-                                                            buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
-                                                            className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
-                                                            disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
-                                                        /> */}
-                                                    </div>
                                                 </div>
                                             </td>
 

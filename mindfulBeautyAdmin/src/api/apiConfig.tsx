@@ -1153,7 +1153,7 @@ export const updateActiveServices = async (formData: FormData): Promise<any> => 
 
 
 
-// Service Listing -- --> Copy Services
+// Service Listing Page -- --> Copy Services
 // POST Method from the API
 export const copyServices = async (sourceBranchId: number, targetBranchIds: string, providerId: number) => {
   try {
@@ -1180,9 +1180,217 @@ export const copyServices = async (sourceBranchId: number, targetBranchIds: stri
 
 
 
+// Service Listing Page -- --> Packages Tab
+// GET Method from the API
+// export const packagesList = async (providerID: number, pageNumber: number) => {
+
+//   try {
+//     const response = await apiAxios.get(`/provider-api/packages-list/`, {
+//       params: {
+//         provider_id: providerID,
+//         page: pageNumber,
+//       },
+//     });
+
+//     console.log("Packages list GET Method response", response.data);
+
+//     if (!response.data || response.status !== 200) {
+//       throw new Error("Failed to fetch packages list");
+//     }
+
+//     return response.data;
+
+//   }
+//   catch (error: any) {
+//     console.error("Error fetching packages list:", error.message || error);
+//     throw new Error(error.response?.data?.message || "Unable to fetch packages list. Please try again later.");
+//   }
+// }
+
+export const packagesList = async (providerID: number, branchID: string, searchQuery: string, pageNumber: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/packages-list/`, {
+      params: {
+        provider_id: providerID,
+        branch_id: branchID,
+        search: searchQuery,
+        page: pageNumber
+      }
+    });
+
+    console.log("Packages list GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch packages list");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching packages list:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch packages list. Please try again later.");
+  }
+}
 
 
-// Service Management Page -- --> All Booking
+
+
+// Service Listing Page -- --> Packages Tab
+// DELETE Method from the API
+export const deletePackage = async (packageID: number) => {
+
+  try {
+    const response = await apiAxios.delete(`/provider-api/delete-package/`, {
+      data: { service_id: packageID }, // Include branch_id in the data property
+
+    });
+
+    console.log("Package list DELETE Method response:", response.data);   // Log the response data for debugging purposes
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to delete package. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+  }
+  catch (error: any) {
+    console.error("Error deleting package:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to delete package. Please try again later.");
+  }
+
+}
+
+
+// Service Listing Page -> Active Packages List
+export const activePackages = async (providerID: number, branchID: number) => {
+
+  try {
+    const response = await apiAxios.get('/provider-api/active-packages/', {
+      params: {
+        provider_id: providerID, // Replace with the actual category ID
+        branch_id: branchID, // Replace with the actual branch ID
+      },
+    });
+    console.log("Active Packages List response", response.data);
+
+    // Assuming the API returns an object with a `status` field and a `data` field
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch Active Packages list");
+    }
+
+    return response.data; // Adjust based on the actual response structure
+
+  } catch (error: any) {
+    console.error("Error fetching active packages list:", error.message || error);
+    throw new Error("Unable to fetch active packages list. Please try again later.");
+  }
+};
+
+
+
+
+
+// Service Listing Page -> Service List
+export const addPackages = async (formData: FormData): Promise<any> => {
+  try {
+
+    // Debugging: Log the FormData contents
+    console.log("Sending the following add packages FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+
+    const response = await apiAxios.post(`/provider-api/add-package-service/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+    });
+
+    console.log("Packages list added POST Method response:", response.data);
+
+    // Validate HTTP status
+    if (!response.data || response.status !== 201) {
+      throw new Error("Failed to add packages. Invalid server response.");
+    }
+
+    return response.data; // Return the actual response data
+
+  }
+  catch (error: any) {
+    console.error("Error adding packages:", error.response?.data?.message || error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to add packages. Please try again later.");
+  }
+}
+
+
+// Service Listing -- --> Packages -- --> Active Packages
+// PUT Method from the API
+export const updateActivePackages = async (formData: FormData): Promise<any> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/update-packages/`, formData, {
+
+      headers: {
+        // "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+        "Content-Type": "application/json",
+      },
+
+    });
+
+    console.log("Update Active Packages PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit update Active Packages");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error updating active packages:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to updating active packages. Please try again later.");
+  }
+}
+
+
+
+
+// Service Listing Page -- --> Service List
+// PUT Method from the API
+export const editPackages = async (formData: FormData): Promise<any> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/edit-package/`, formData, {
+
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
+    });
+
+    console.log("Edit Selected Package PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected package");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error editing selected package:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected package. Please try again later.");
+  }
+}
+
+
+
+
+// Service Management Page -- --> All Booking List
 // GET Method from the API
 export const bookingsList = async (providerID: number, pageNumber: number) => {
 
@@ -1213,7 +1421,7 @@ export const bookingsList = async (providerID: number, pageNumber: number) => {
 
 
 
-// Service Listing Page -- --> Services List
+// Service Management Page -- --> Schedule List
 // GET Method from the API
 export const scheduleList = async (providerID: number, status: number, pageNumber: number) => {
 
@@ -1244,7 +1452,7 @@ export const scheduleList = async (providerID: number, status: number, pageNumbe
 
 
 
-// Service Listing Page -- --> Services List
+// Service Management Page -- --> Inprogress List
 // GET Method from the API
 export const inprogressList = async (providerID: number, status: number, pageNumber: number) => {
 
@@ -1276,7 +1484,7 @@ export const inprogressList = async (providerID: number, status: number, pageNum
 
 
 
-// Service Listing Page -- --> Services List
+// Service Management Page -- --> Completed List
 // GET Method from the API
 export const completedList = async (providerID: number, status: number, pageNumber: number) => {
 
@@ -1307,7 +1515,7 @@ export const completedList = async (providerID: number, status: number, pageNumb
 
 
 
-// Service Listing Page -- --> Services List
+// Service Management Page -- --> Cancelled List
 // GET Method from the API
 export const cancelledList = async (providerID: number, status: number, pageNumber: number) => {
 

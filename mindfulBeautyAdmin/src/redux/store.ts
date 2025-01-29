@@ -4,6 +4,7 @@ import loginReducer from './loginSlice'; // Updated import
 import staffReducer from './staffSlice';
 import branchReducer from './branchSlice';
 import serviceReducer from './servicesListSlice';
+import packageReducer from './packagesListSlice';
 
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { persistReducer, persistStore } from 'redux-persist';
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
     staff: staffReducer,
     branch: branchReducer,
     service: serviceReducer,
+    package: packageReducer,
 });
 
 // Create a persisted reducer
