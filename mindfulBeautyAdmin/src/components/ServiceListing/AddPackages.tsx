@@ -154,10 +154,7 @@ export const AddPackages = () => {
       setLoading(true);
 
       // Fetch active packages for the selected branch and category
-      const loadActivePackagesData = await activePackages(
-        Number(sessionProviderID),
-        // Number(selectedBranchId)
-      );
+      const loadActivePackagesData = await activePackages(Number(sessionProviderID), Number(selectedBranchId));
 
       // Update the active services data
       setActivePackagesData(loadActivePackagesData.data);
