@@ -71,8 +71,20 @@ export const loginRegister = async (userName: string, userEmail: string, userPho
   }
   catch (error: any) {
     console.error("Error registering:", error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to register. Please try again later.");
+    // throw new Error(error.response?.data?.message || "Unable to register. Please try again later.");
     // throw new Error(error.response?.data?.errors?.phone || "Unable to register. Please try again later.");
+    // Extract specific error messages
+    const emailError = error.response?.data?.errors?.email?.[0] || null;
+    const phoneError = error.response?.data?.errors?.phone?.[0] || null;
+
+    // Combine the error messages for display
+    const combinedError = [emailError, phoneError].filter(Boolean).join(" & ");
+    if (combinedError) {
+      throw new Error(combinedError);
+    } else {
+      throw new Error("Unable to register. Please try again later.");
+    }
+
   }
 }
 

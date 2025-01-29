@@ -33,7 +33,10 @@ export const Register: React.FC<RegisterFormData> = () => {
 
   // State Declaration to store form data
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
+
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   // React Hook Form setup with Zod validation
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
@@ -46,7 +49,9 @@ export const Register: React.FC<RegisterFormData> = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     setLoading(true);
-    setError(null);
+    // setError(null);
+    setEmailError(null);
+    setPhoneError(null);
 
     console.log("Form Data Submitted:", data, typeof (activeUser), "active user");
 
@@ -74,7 +79,21 @@ export const Register: React.FC<RegisterFormData> = () => {
     }
 
     catch (error: any) {
-      setError(error.message || "Failed to register.")
+      // setError(error.message || "Failed to register.");
+
+      console.log("Error on register error ==>", error);
+      const combinedError = error.message.split(" & ").map((err: string) => err.trim());
+
+      // Set email and phone errors based on the combined error messages
+      if (combinedError.length > 0 && combinedError[0] == "service provider with this phone already exists.") {
+        setPhoneError(combinedError[0]);
+      } else if (combinedError.length > 0 && combinedError[1] == "service provider with this email already exists.") {
+        setEmailError(combinedError[0] || null);
+      } else {
+        setEmailError(combinedError[0]);
+        setPhoneError(combinedError[1] || null);
+      }
+
     } finally {
       setLoading(false);
     }
@@ -201,6 +220,10 @@ export const Register: React.FC<RegisterFormData> = () => {
               />
               {errors.email && <p className="text-white text-sm">{errors.email.message}</p>}
 
+
+              {/* Error from API response  */}
+              {emailError && <p className="text-sm text-mindfulWhite">{emailError}</p>}
+
             </div>
 
             {/* Mobile */}
@@ -215,8 +238,11 @@ export const Register: React.FC<RegisterFormData> = () => {
 
               {errors.phone && <p className="text-white text-sm">{errors.phone.message}</p>}
 
+              {/* Error from API response 
+              {error && <p className="text-sm text-mindfulWhite">{error}</p>} */}
+
               {/* Error from API response  */}
-              {error && <p className="text-sm text-mindfulWhite">{error}</p>}
+              {phoneError && <p className="text-sm text-mindfulWhite">{phoneError}</p>}
 
             </div>
 
