@@ -349,6 +349,14 @@ export const AddPackages = () => {
         // Update button UI to success state
         setButtonState({ text: "Package Added Successfully!", success: true });
 
+        // Clear all selected fields
+        // setSelectedBranch("");
+        setFormValues({ packageTitle: "", price: "" });  // Properly reset form values
+        setSelectedCategory("");
+        setSelectedSubCategory("");
+        setSelectedCheckboxIDs([]);
+        setCheckboxData([]); // If you need to clear the services list
+
 
         // Refresh active services list
         await refreshActivePackages();
