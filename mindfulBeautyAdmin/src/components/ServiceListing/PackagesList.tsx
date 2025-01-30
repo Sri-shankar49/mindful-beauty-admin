@@ -10,7 +10,7 @@ import "./ServiceListing.css";
 import editButton from "../../assets/icons/editButton.png";
 import deleteButton from "../../assets/icons/deleteButton.png";
 import { EditPackagesPopup } from './EditPackagesPopup';
-import { staffBranchList } from '@/api/apiConfig';
+import { packageStatusAction, staffBranchList } from '@/api/apiConfig';
 import { Pagination } from '@/common/Pagination';
 import { DeletePackagesPopup } from './DeletePackagesPopup';
 import { ShimmerTable } from 'shimmer-effects-react';
@@ -49,10 +49,41 @@ export const PackagesList = () => {
     const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [selectedBranch, setSelectedBranch] = useState<string>("");
 
-    const [isActive, setIsActive] = useState(false); // State to track the toggle status
+    // const [isActive, setIsActive] = useState(false); // State to track the toggle status
 
-    const handleToggle = () => {
-        setIsActive(!isActive); // Toggle the state on click
+    const [activeStates, setActiveStates] = useState<{ [key: number]: string }>({});
+
+    // const handleToggle = (service_id: number) => {
+    //     setIsActive(!isActive); // Toggle the state on click
+    // };
+
+    const handleToggle = async (service_id: number, currentStatus: string) => {
+
+        // Toggle between "Active" and "Inactive"
+        const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+
+        // Optimistically update the state
+        setActiveStates((prevState) => ({
+            ...prevState,
+            [service_id]: newStatus,
+        }));
+
+        console.log("Package ID: ", service_id);
+        console.log("Package Status: ", newStatus);
+
+
+        try {
+            const response = await packageStatusAction(service_id, newStatus);
+            console.log("Status updated successfully", response);
+        } catch (error: any) {
+            console.error("Error updating status:", error.message);
+
+            // Revert the state if API call fails
+            setActiveStates((prevState) => ({
+                ...prevState,
+                [service_id]: currentStatus,
+            }));
+        }
     };
 
     const [showEditPackagesPopup, setShowEditPackagesPopup] = React.useState(false);
@@ -397,7 +428,12 @@ export const PackagesList = () => {
                                     </tr>
                                 ) : packageListData.length > 0 ? (
                                     packageListData.map((packageData) => {
-                                        const isActive = packageData.isActive; // Ensure it's correctly defined
+
+                                        // const isActiveAPI = packageData.status; // Ensure it's correctly defined
+
+                                        const isActiveAPI = packageData.status; // Initial status from API
+                                        const isActive = activeStates[packageData.service_id] ?? isActiveAPI; // Use state if changed
+
                                         return (
                                             <tr key={packageData.service_id} className="border-b-2">
                                                 <td className="w-96 text-start px-2 py-5">
@@ -411,18 +447,34 @@ export const PackagesList = () => {
                                                 </td>
                                                 <td className="w-72 text-start px-2 py-5">{packageData.price}</td>
                                                 <td className="w-52 text-start px-2 py-5">
-                                                    <div className="flex items-center">
+                                                    {/* <div className="flex items-center">
                                                         <p className={`text-md font-semibold ${isActive ? "text-mindfulBlack" : "text-mindfulgrey"}`}>
                                                             {isActive ? 'Active' : 'Inactive'}
                                                         </p>
-                                                        <div className={`toggle-switch-pkg ${isActive ? 'active' : 'inactive'}`}>
+                                                        <div className={`toggle-switch-pkg ${isActive ? 'Active' : 'Inactive'}`}>
                                                             <input
                                                                 className="toggle-input-pkg"
                                                                 id={`toggle-${packageData.service_id}`}
                                                                 type="checkbox"
                                                                 checked={isActive}
-                                                                // onChange={() => handleToggle(packageData.service_id)}
-                                                                onChange={handleToggle}
+                                                                onChange={() => handleToggle(Number(packageData.service_id), isActive)}
+                                                            // onChange={handleToggle}
+                                                            />
+                                                            <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.service_id}`}></label>
+                                                        </div>
+                                                    </div> */}
+
+                                                    <div className="flex items-center">
+                                                        <p className={`text-md font-semibold ${isActive === "Active" ? "text-mindfulBlack" : "text-mindfulgrey"}`}>
+                                                            {isActive}
+                                                        </p>
+                                                        <div className={`toggle-switch-pkg ${isActive}`}>
+                                                            <input
+                                                                className="toggle-input-pkg"
+                                                                id={`toggle-${packageData.service_id}`}
+                                                                type="checkbox"
+                                                                checked={isActive === "Active"}
+                                                                onChange={() => handleToggle(packageData.service_id, isActive)}
                                                             />
                                                             <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.service_id}`}></label>
                                                         </div>

@@ -7,6 +7,7 @@ import ashtamudiLogo from "../assets/icons/ashtamudiLogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor, RootState } from "@/redux/store";
 import { logout } from "@/redux/loginSlice";
+import { onlineAction } from "@/api/apiConfig";
 
 export const Header = () => {
 
@@ -14,9 +15,9 @@ export const Header = () => {
 
     const [isActive, setIsActive] = useState(false); // State to track the toggle status
 
-    const handleToggle = () => {
-        setIsActive(!isActive); // Toggle the state on click
-    };
+    // const handleToggle = () => {
+    //     setIsActive(!isActive); // Toggle the state on click
+    // };
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -46,6 +47,26 @@ export const Header = () => {
     const handleMouseLeave = () => {
         setProfileHover(false);
     };
+
+    // Login Provider ID
+    const sessionLoginBranchID = sessionStorage.getItem("loginBranchID");
+    console.log("Login Provider ID from session storage", sessionLoginBranchID);
+
+    const handleOnlineToggle = async () => {
+        const status = isActive ? 1 : 0;        // Set the value based on toggle state
+        setIsActive(!isActive);                 // Update state
+
+        console.log("Branch ID: ", sessionLoginBranchID);
+        console.log("Service Status: ", 1);
+
+        try {
+            const response = await onlineAction(Number(sessionLoginBranchID), status);
+            console.log("Online Status updated successfully", response);
+        } catch (error: any) {
+            console.error("Error updating online status:", error.message);
+        }
+    };
+
     return (
         <header>
 
@@ -175,7 +196,8 @@ export const Header = () => {
                                         id="toggle"
                                         type="checkbox"
                                         checked={isActive}
-                                        onChange={handleToggle}
+                                        // onChange={() => handleToggle()}
+                                        onChange={() => handleOnlineToggle()}
                                     />
                                     <label className="toggle-label" htmlFor="toggle"></label>
                                 </div>

@@ -57,6 +57,9 @@ import { GeneralInfo } from './components/MyAccount/GeneralInfo';
 import { Wallet } from './components/MyAccount/Wallet';
 
 
+import AuthWatcher from './common/AuthWatcher';
+
+
 
 
 
@@ -87,6 +90,10 @@ function App() {
       </p> */}
 
       <BrowserRouter>
+
+        {/* AuthWatcher component */}
+        <AuthWatcher />
+
         {/* ScrollToTop component */}
         <ScrollToTop />
 

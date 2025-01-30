@@ -24,7 +24,7 @@ export const ManageRole = () => {
   };
 
   // Add this to check if we're on the RolesManagement page
-  const showSearch = !location.pathname.includes('RolesManagement');
+  // const showSearch = !location.pathname.includes('RolesManagement');
 
   return (
     <div className="bg-mindfulLightPink px-5 py-5" >
@@ -35,6 +35,16 @@ export const ManageRole = () => {
           <div className="flex items-center justify-between">
             {/* Sub Menus */}
             <ul className="flex items-center space-x-10">
+              {/* <NavLink
+                to="RolesManagement"
+                className={({ isActive }) =>
+                  isActive ? "active-sub-nav active" : undefined
+                }
+                aria-current="page"
+              >
+                <li>Roles Management</li>
+              </NavLink> */}
+
               <NavLink
                 to="RolesManagement"
                 className={({ isActive }) =>
@@ -44,7 +54,7 @@ export const ManageRole = () => {
               >
                 <li>Roles Management</li>
               </NavLink>
-
+              
               <NavLink
                 to="StaffManagement"
                 className={({ isActive }) =>
@@ -68,7 +78,7 @@ export const ManageRole = () => {
             </ul>
 
             {/* Only show search input if not on RolesManagement */}
-            {showSearch && (
+            {/* {showSearch && ( */}
               <div>
                 <div className="">
                   <InputField
@@ -80,7 +90,7 @@ export const ManageRole = () => {
                   />
                 </div>
               </div>
-            )}
+            {/* )} */}
           </div>
         </div>
 

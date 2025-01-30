@@ -266,6 +266,33 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 
 
+// Dashboard --> DashBoardData Page
+// POST Method from the API
+export const onlineAction = async (branchID: number, serviceStatus: number) => {
+
+  try {
+    const response = await apiAxios.post(`/provider-api/update-service-status/`, {
+      branch_id: branchID,
+      service_status: serviceStatus
+    });
+
+    console.log("Online Action POST Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Unexpected response from the server.");
+    }
+
+    return response.data; // Ensure the entire response data is returned
+  } catch (error: any) {
+    console.error("Error in online Action:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to process online action. Please try again later.");
+  }
+};
+
+
+
+
+
 // Dashboard Page -- --> Bookings
 // GET Method from the API
 export const dashBoardBookingList = async (
@@ -1248,6 +1275,31 @@ export const packagesList = async (providerID: number, branchID: string, searchQ
 
 
 
+// Service Listing Page -- --> Packages Tab 
+// POST Method from the API
+export const packageStatusAction = async (packageID: number, statusName: string) => {
+
+  try {
+    const response = await apiAxios.post(`/provider-api/toggle-service-status/`, {
+      service_id: packageID,
+      status: statusName
+    });
+
+    console.log("Status Action POST Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Unexpected response from the server.");
+    }
+
+    return response.data; // Ensure the entire response data is returned
+  } catch (error: any) {
+    console.error("Error in status Action:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to process status action. Please try again later.");
+  }
+};
+
+
+
 
 // Service Listing Page -- --> Packages Tab
 // DELETE Method from the API
@@ -1662,11 +1714,12 @@ export const salesTransactionsList = async (providerID: number, pageNumber: numb
 
 // Ratings & Reviews Page
 // GET Method from the API
-export const reviewsList = async (pageNumber: number) => {
+export const reviewsList = async (providerID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/reviews/`, {
       params: {
+        provider_id: providerID,
         page: pageNumber,
       },
     });
@@ -1685,6 +1738,31 @@ export const reviewsList = async (pageNumber: number) => {
     throw new Error(error.response?.data?.message || "Unable to fetch reviews list. Please try again later.");
   }
 }
+
+
+// Ratings & Reviews Page 
+// POST Method from the API
+export const reviewAction = async (reviewID: number, statusID: number, userID: number) => {
+
+  try {
+    const response = await apiAxios.post(`/provider-api/approve-review/`, {
+      review_id: reviewID,
+      status: statusID,
+      user_id: userID,
+    });
+
+    console.log("Review Action POST Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Unexpected response from the server.");
+    }
+
+    return response.data; // Ensure the entire response data is returned
+  } catch (error: any) {
+    console.error("Error in review Action:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to process review action. Please try again later.");
+  }
+};
 
 
 // My Account Page
@@ -1762,6 +1840,51 @@ export const addWalletTransaction = async (provider_id: number, amount: number) 
   }
 };
 
+
+
+
+
+// My Account Page -- --> General Info Tab --> Credit Popup
+// GET Method from the API
+export const fetchGeneralInfoDetails = async (provider_id: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/general_info/`, {
+      params: {
+        provider_id,
+      },
+    });
+    console.log("general info response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch general info");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching general info:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch general info. Please try again later.");
+  }
+};
+
+
+
+
+
+// My Account Page -- --> General Info Tab --> Credit Popup
+// POST Method from the API
+export const updateGeneralInfo = async (data: any) => {
+  console.log("general info data load params ==>", data)
+  try {
+    const response = await apiAxios.put(`/provider-api/update-provider-details/`, data);
+    console.log("Update General Info response:", response.data);
+
+    return response.data; // Return the successful response data
+  } catch (error: any) {
+    console.error("Error adding General Info:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to update General Info. Please try again later.");
+  }
+};
 
 
 
