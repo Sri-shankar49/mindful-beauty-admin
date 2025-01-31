@@ -53,15 +53,31 @@ export const Header = () => {
     console.log("Login Provider ID from session storage", sessionLoginBranchID);
 
     const handleOnlineToggle = async () => {
-        const status = isActive ? 1 : 0;        // Set the value based on toggle state
-        setIsActive(!isActive);                 // Update state
+
+        if (!sessionLoginBranchID) {
+            console.error("Branch ID is missing from session storage.");
+            return;
+        }
+
+        const branchID = Number(sessionLoginBranchID);
+        if (isNaN(branchID)) {
+            console.error("Invalid Branch ID:", sessionLoginBranchID);
+            return;
+        }
+
+        const status = isActive ? 0 : 1;       // Toggle between 0 and 1  // Set the value based on toggle state
+
+        // setIsActive(!isActive);                 // Update state
 
         console.log("Branch ID: ", sessionLoginBranchID);
-        console.log("Service Status: ", 1);
+        console.log("Service Status: ", status);
 
         try {
-            const response = await onlineAction(Number(sessionLoginBranchID), status);
+            const response = await onlineAction(Number(sessionLoginBranchID), String(status));
+
+            setIsActive(!isActive); // Update UI only after successful API call
             console.log("Online Status updated successfully", response);
+
         } catch (error: any) {
             console.error("Error updating online status:", error.message);
         }

@@ -8,8 +8,13 @@ import Select, { SingleValue } from 'react-select';
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, inprogressList, fetchStatus, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import { useDispatch } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { fetchInprogressList } from "@/redux/inprogressSlice";
 
 
 interface StatusListDataProps {
@@ -133,126 +138,112 @@ export const Inprogress = () => {
   // }
 
 
-  const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
+  // const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [totalItems, setTotalItems] = useState(0);
 
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
-
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { inprogressListData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.inprogress);
+  console.log("All schedule data page open scheduleListData==>", inprogressListData)
 
   useEffect(() => {
-
-    const fetchInprogressListData = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
-
-        const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
-
-        const statusData = await fetchStatus();
-
-        setBeauticiansListData(beauticiansData.data);
+    dispatch(fetchInprogressList({
+      providerID: Number(sessionLoginProviderID),
+      status: 2,
+      searchQuery,
+      currentPage
+    }));
+  }, [dispatch, sessionLoginProviderID, searchQuery, currentPage, itemsPerPage]);
 
 
-        setStatusListData(statusData);
-        // const data = await inprogressList(1, 2, currentPage);
-        setInprogressListData(data.results);
+  // Fetch in-progress list data function
+  const fetchInprogressListData = async () => {
+    // setLoading(true);
+    // setError(null);
 
-        setTotalItems(data.count);
-        console.log("Fetched Inprogress List data log:", data);
-        console.log("Fetched Inprogress List pagination count data log :", data.count);
+    try {
+      // const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
+      dispatch(fetchInprogressList({
+        providerID: Number(sessionLoginProviderID),
+        status: 2,
+        searchQuery,
+        currentPage
+      }));
+      const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+      const statusData = await fetchStatus();
+      console.log("statusData Inprogress List data log:", statusData);
+      setBeauticiansListData(beauticiansData.data);
+      setStatusListData(statusData);
+      // setInprogressListData(data.results);
+      // setTotalItems(data.count);
 
-      }
-      catch (error: any) {
-        setError(error.message || 'Failed to fetch inprogress list');
-      } finally {
-        setLoading(false); // Ensure loading is false after fetching
-      }
+      // console.log("Fetched Inprogress List data log:", data);
+      // console.log("Fetched Inprogress List pagination count data log :", data.count);
+    } catch (error: any) {
+      // setError(error.message || 'Failed to fetch inprogress list');
+    } finally {
+      // setLoading(false); // Ensure loading is false after fetching
     }
+  };
 
+  // Call the function to fetch data on component mount
+  useEffect(() => {
     fetchInprogressListData();
-
   }, [currentPage, itemsPerPage]);
 
 
   // Function call to get the updated scheduled list
-  const fetchRefreshedInprogressListData = async () => {
-    setLoading(true);
-    setError(null);
+  // const fetchRefreshedInprogressListData = async () => {
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      const data = await inprogressList(Number(sessionLoginProviderID), 1, currentPage);
-      const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
-      const statusData = await fetchStatus();
+  //   try {
+  //     const data = await inprogressList(Number(sessionLoginProviderID), 1, currentPage);
+  //     const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+  //     const statusData = await fetchStatus();
 
-      setBeauticiansListData(beauticiansData.data);
-      setStatusListData(statusData);
-      setInprogressListData(data.results);
-      setTotalItems(data.count);
+  //     setBeauticiansListData(beauticiansData.data);
+  //     setStatusListData(statusData);
+  //     setInprogressListData(data.results);
+  //     setTotalItems(data.count);
 
-      console.log("Fetched Refreshed Inprogress List data log:", data);
-      console.log("Fetched Refreshed Inprogress List pagination count data log :", data.count);
-    } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRefreshedInprogressListData();
-  }, [currentPage, itemsPerPage]);
-
-
+  //     console.log("Fetched Refreshed Inprogress List data log:", data);
+  //     console.log("Fetched Refreshed Inprogress List pagination count data log :", data.count);
+  //   } catch (error: any) {
+  //     setError(error.message || "Failed to fetch schedule list");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
     const newStatusId = e.target.value;
     console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
-
-    // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
-      setLoading(true);
-
+      // setLoading(true);
       const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
-
       console.log("Modify status data log:", data);
-
-
       // Refresh the schedule list data after status update
-      await fetchRefreshedInprogressListData();
-
-      // Take a deep copy of the service list data and update
-      // const updatedScheduleList = [...data.results]; // Assuming results is an array
-
-      // Update the schedule list based on the status
-      // setScheduleListData(updatedScheduleList || []);
-      // setTotalItems(data.count);
-
-
+      await fetchInprogressListData();
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list for the selected status");
-    }
-    finally {
-      setLoading(false);
-
+      // setError(error.message || "Failed to fetch schedule list for the selected status");
+    } finally {
+      // setLoading(false);
     }
   };
-
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -283,7 +274,6 @@ export const Inprogress = () => {
 
   return (
     <div>
-
       {/* Sub Heading */}
       <div>
         <h5 className="text-3xl font-semibold py-5">Inprogress</h5>
@@ -323,7 +313,7 @@ export const Inprogress = () => {
 
                   <td className="text-start px-2 py-5">
                     <ul>
-                      {inprogress.services.map((service, index) => (
+                      {inprogress.services.map((service: Service, index: number) => (
                         <li key={index}>{service.name}</li>
                       ))}
                     </ul>
@@ -387,37 +377,19 @@ export const Inprogress = () => {
                   </td>
 
                   <td>
-                    {/* <SelectField
-                      label={''}
-                      name="status"
-                      id="status"
-                      options={[
-                        { value: "scheduled", label: "Scheduled" },
-                        { value: "inprogress", label: "Inprogress" },
-                        { value: "completed", label: "Completed" },
-                      ]}
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    /> */}
-
                     <select
-                      // name=""
                       id=""
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      // value={selectedBranch}
-                      // onChange={handleBranchChange} // Call on change
-                      value={inprogress.status_id} // Set default value from the API response
-                      onChange={(e) => handleStatusChange(e, inprogress.id)} // Handle status change
-
+                      value={inprogress.status_id}
+                      onChange={(e) => handleStatusChange(e, inprogress.id)}
                     >
-                      {/* <option value="" disabled>
-                        Select Status
-                      </option> */}
-
-                      {statusListData.map((status) => (
-                        <option key={status.status_id} value={status.status_id}>
-                          {status.status_name}
-                        </option>
-                      ))}
+                      {statusListData
+                        .filter(status => status.status_id !== 1 && status.status_id !== 4)
+                        .map((status) => (
+                          <option key={status.status_id} value={status.status_id}>
+                            {status.status_name}
+                          </option>
+                        ))}
                     </select>
                   </td>
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/common/Button';
 import { MdModeEdit } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +46,9 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
     // Initialize otpRefs as an array of refs for OTP input fields
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+    const [timer, setTimer] = useState(60); // State for the timer
+    const [isResendEnabled, setIsResendEnabled] = useState(false); // State for resend button
+
     useEffect(() => {
         const storedPhoneNumber = sessionStorage.getItem('EnteredPhoneNumber');
         console.log("Getting phone Number from redux persist", storedPhoneNumber);
@@ -54,6 +57,17 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
             dispatch(setPhoneNumber(storedPhoneNumber)); // Sync Redux state with sessionStorage
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        if (timer > 0) {
+            const interval = setInterval(() => {
+                setTimer(prev => prev - 1);
+            }, 1000);
+            return () => clearInterval(interval);
+        } else {
+            setIsResendEnabled(true); // Enable resend after 60 seconds
+        }
+    }, [timer]);
 
     // Handle OTP submission
     const onSubmit = (data: VerifyOtpFormData) => {
@@ -160,8 +174,14 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
 
                     {/* Din't receive OTP */}
                     <div className="pb-5">
-                        <p className="text-lg text-mindfulWhite">Din't receive OTP? {" "}
-                            <span className="underline cursor-pointer hover:no-underline">Resend</span>
+                        <p className="text-lg text-mindfulWhite">Didn't receive OTP? {" "}
+                            {isResendEnabled ? (
+                                <span className="underline cursor-pointer hover:no-underline"
+                                // onClick={onVerifyOtp}
+                                >Resend</span>
+                            ) : (
+                                <span className="text-gray-500">Resend in {timer} seconds</span>
+                            )}
                         </p>
                     </div>
 

@@ -9,8 +9,11 @@ import Select, { SingleValue } from 'react-select';
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, bookingsList, fetchStatus, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchAllBookingList } from '@/redux/allbookingSlice'; // Assuming you have a fetchBookingList action
 
 
 
@@ -60,78 +63,22 @@ interface BeauticiansDataProps {
 
 export const AllBooking = () => {
 
-
-  // const stylistData: StylistOption[] = [
-  //   {
-  //     value: 1,
-  //     text: 'Swetha',
-  //     icon: `${stylist}`
-  //   },
-  //   {
-  //     value: 2,
-  //     text: 'Swetha',
-  //     icon: `${stylist}`
-  //   },
-  //   {
-  //     value: 3,
-  //     text: 'Swetha',
-  //     icon: `${stylist}`
-  //   },
-  //   {
-  //     value: 4,
-  //     text: 'Swetha',
-  //     icon: `${stylist}`
-  //   }
-  // ];
-
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
-
-
-  // const openStylistPopup = () => {
-  //   setShowStylistPopup(true);
-  // }
-
   const closeStylistPopup = () => {
     setShowStylistPopup(false);
     setSelectedStylist(null);
   }
-  // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
-
-
-  // handle onChange event of the dropdown
-  // const handleStylistOption = (option: SingleValue<StylistOption>) => {
-  //   setSelectedStylistOption(option);
-
-  //   // Open Stylist Popup
-  //   setShowStylistPopup(true);
-  // };
-
-  // Handle change events for the Select component
-  // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
-  //   if (newValue) {
-  //     // Access the beautician ID
-  //     const selectedBeauticianId = newValue.value;
-
-  //     console.log("Selected Beautician ID:", selectedBeauticianId);
-
-  //     // Perform additional actions, e.g., opening a popup or saving the state
-  //     // setShowStylistPopup(true); // Example
-  //   } else {
-  //     console.log("No option selected.");
-  //   }
-  // };
-
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
         (beautician) => beautician.id === newValue.value
       );
-
       console.log("Selected Beautician ID:", selectedBeautician);
-
-
       if (selectedBeautician) {
         setSelectedStylist(selectedBeautician);
         setShowStylistPopup(true);
@@ -141,116 +88,78 @@ export const AllBooking = () => {
     }
   };
 
-  // Function to get default stylist from API response
-  // const getDefaultStylist = () => {
-  //   const defaultStylist = beauticiansListData.find(
-  //     (beautician) => beautician.id === bookingData.stylist
-  //   );
-
-  //   if (defaultStylist) {
-  //     return {
-  //       value: defaultStylist.id,
-  //       text: defaultStylist.name,
-  //       icon: defaultStylist.profile_image,
-  //     };
-  //   }
-  //   return null;
-  // };
-
-  // const [showEditServicePopup, setShowEditServicePopup] = useState(false);
-
-  // const openEditService = () => {
-  //   setShowEditServicePopup(!showEditServicePopup)
-  // }
-
-  // const closeEditService = () => {
-  //   setShowEditServicePopup(false)
-  // }
-
-  const [bookingListData, setBookingListData] = useState<BookingListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { bookingListData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.allbooking);
+  console.log("All booking data page open bookingListData==>", bookingListData)
 
   useEffect(() => {
+    dispatch(fetchAllBookingList({
+      providerID: Number(sessionLoginProviderID),
+      searchQuery,
+      currentPage
+    }));
+  }, [dispatch, sessionLoginProviderID, searchQuery, currentPage, itemsPerPage]);
 
+  useEffect(() => {
     const fetchBookingListData = async () => {
-      setLoading(true);
-      setError(null);
+      // setLoading(true);
+      // setError(null);
 
       try {
-        const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
-
+        // const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
-
         const statusData = await fetchStatus();
-
         setBeauticiansListData(beauticiansData.data);
-
-
         setStatusListData(statusData);
-
-        // const data = await bookingsList(
-        //   1,
-        //   currentPage,
-        //   // {
-        //   //   page: currentPage,
-        //   //   limit: itemsPerPage,
-        //   // }
-        // );
-        setBookingListData(data.results);
-
-        setTotalItems(data.count);
-
-        console.log("Fetched Booking List data log:", data);
-        console.log("Fetched Booking List pagination count data log :", data.count);
+        // setBookingListData(data.results);
+        // setTotalItems(data.count);
+        // console.log("Fetched Booking List data log:", data);
+        // console.log("Fetched Booking List pagination count data log :", data.count);
       }
       catch (error: any) {
-        setError(error.message || 'Failed to fetch booking list');
+        // setError(error.message || 'Failed to fetch booking list');
       } finally {
-        setLoading(false); // Ensure loading is false after fetching
+        // setLoading(false); // Ensure loading is false after fetching
       }
     }
-
     fetchBookingListData();
-
   }, [currentPage, itemsPerPage]);
-
-
 
   // Function call to get the updated booking list
   const fetchRefreshedBookingListData = async () => {
-    setLoading(true);
-    setError(null);
-
+    // setLoading(true);
+    // setError(null);
     try {
-      const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
+      // const data = await bookingsList(Number(sessionLoginProviderID), currentPage);
+      dispatch(fetchAllBookingList({
+        providerID: Number(sessionLoginProviderID),
+        searchQuery,
+        currentPage
+      }));
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
       setBeauticiansListData(beauticiansData.data);
       setStatusListData(statusData);
-      setBookingListData(data.results);
-      setTotalItems(data.count);
+      // setBookingListData(data.results);
+      // setTotalItems(data.count);
 
-      console.log("Fetched Refreshed Booking List data log:", data);
-      console.log("Fetched Refreshed Booking List pagination count data log :", data.count);
+      // console.log("Fetched Refreshed Booking List data log:", data);
+      // console.log("Fetched Refreshed Booking List pagination count data log :", data.count);
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list");
+      // setError(error.message || "Failed to fetch schedule list");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -258,30 +167,21 @@ export const AllBooking = () => {
     fetchRefreshedBookingListData();
   }, [currentPage, itemsPerPage]);
 
-
-
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
     const newStatusId = e.target.value;
     console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
 
-    // Optional: Update the status in the backend or state
-    // API call or local state update logic here
     try {
-      setLoading(true);
-
       const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
-
       console.log("Modify status data log:", data);
 
-
-      // Refresh the schedule list data after status update
+      // Refresh the booking list data after status update
       await fetchRefreshedBookingListData();
-
     } catch (error: any) {
-      setError(error.message || "Failed to fetch booking list for the selected status");
+      // setError(error.message || "Failed to fetch booking list for the selected status");
     }
     finally {
-      setLoading(false);
+      // setLoading(false);
 
     }
   };
@@ -294,7 +194,6 @@ export const AllBooking = () => {
     setItemsPerPage(items);
     setCurrentPage(1); // Reset to the first page when items per page changes
   };
-
 
   // if (loading) return <div>Loading...</div>;
   if (loading) return <div>
@@ -358,7 +257,7 @@ export const AllBooking = () => {
 
                   <td className="text-start px-2 py-5">
                     <ul>
-                      {bookingData.services.map((service, index) => (
+                      {bookingData.services.map((service: Service, index: number) => (
                         <li key={index}>{service.name}</li>
                       ))}
                     </ul>

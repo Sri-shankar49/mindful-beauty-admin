@@ -268,7 +268,7 @@ export const taxInfo = async (formData: FormData): Promise<unknown> => {
 
 // Dashboard --> DashBoardData Page
 // POST Method from the API
-export const onlineAction = async (branchID: number, serviceStatus: number) => {
+export const onlineAction = async (branchID: number, serviceStatus: string) => {
 
   try {
     const response = await apiAxios.post(`/provider-api/update-service-status/`, {

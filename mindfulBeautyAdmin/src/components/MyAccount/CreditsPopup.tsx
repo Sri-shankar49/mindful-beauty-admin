@@ -14,8 +14,15 @@ interface CreditsPopupProps {
 
 // Zod schema for form validation
 const creditPopupSchema = zod.object({
-    requiredCredit: zod.string().min(1, { message: "Credit amount is required" }) // Ensure input is not empty
-        .regex(/^\d+$/, { message: "Credit amount must be a valid number" }), // Ensure input is a number
+    // requiredCredit: zod.string().min(1, { message: "Credit amount is required" }) // Ensure input is not empty
+    //     .regex(/^\d+$/, { message: "Credit amount must be a valid number" }), // Ensure input is a number
+    requiredCredit: zod
+        .string()
+        .min(1, { message: "Credit amount is required" }) // Ensure input is not empty
+        .regex(/^\d+$/, { message: "Credit amount must be a valid number" }) // Ensure input is a number
+        .refine((val) => Number(val) >= 2000, {
+            message: "Minimum credit amount should be 2000"
+        }), // Ensure value is at least 2000
 });
 
 type creditsPopupFormData = zod.infer<typeof creditPopupSchema>;
@@ -155,7 +162,7 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                                         <button
                                             type="submit"
                                             className={`${buttonState.isSubmitted ? "bg-green-500" : "bg-main"}
-                 text-md text-mindfulWhite rounded-sm px-4 py-2.5 focus-within:outline-none`}
+                text-md text-mindfulWhite rounded-sm px-4 py-2.5 focus-within:outline-none`}
                                             disabled={loading}
                                         >
                                             {/* Submit */}

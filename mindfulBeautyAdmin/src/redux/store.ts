@@ -5,6 +5,11 @@ import staffReducer from './staffSlice';
 import branchReducer from './branchSlice';
 import serviceReducer from './servicesListSlice';
 import packageReducer from './packagesListSlice';
+import allbookingReducer from './allbookingSlice';
+import scheduleReducer from './scheduleSlice';
+import inprogressReducer from './inprogressSlice';
+import completedReducer from './completedSlice';
+import cancelledReducer from './cancelledSlice';
 
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { persistReducer, persistStore } from 'redux-persist';
@@ -26,6 +31,11 @@ const rootReducer = combineReducers({
     branch: branchReducer,
     service: serviceReducer,
     package: packageReducer,
+    allbooking: allbookingReducer,
+    schedule: scheduleReducer,
+    inprogress: inprogressReducer,
+    completed: completedReducer,
+    cancelled: cancelledReducer
 });
 
 // Create a persisted reducer

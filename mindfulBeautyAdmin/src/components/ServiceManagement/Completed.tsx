@@ -13,6 +13,11 @@ import { Pagination } from "@/common/Pagination";
 import { beauticiansList, completedList } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import { SelectField } from "@/common/SelectField";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { fetchCompletedList } from "@/redux/completedSlice";
 
 // interface StatusListDataProps {
 //   status_id?: number;
@@ -149,31 +154,48 @@ export const Completed = () => {
   }
 
 
-  const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
+  // const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
   // const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [totalItems, setTotalItems] = useState(0);
 
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { completedListData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.completed);
+  console.log("All schedule data page open scheduleListData==>", completedListData)
+
+  useEffect(() => {
+    dispatch(fetchCompletedList({
+      providerID: Number(sessionLoginProviderID),
+      status: 3,
+      searchQuery,
+      currentPage
+    }));
+  }, [dispatch, sessionLoginProviderID, searchQuery, currentPage, itemsPerPage]);
+
   useEffect(() => {
 
     const fetchCompletedListData = async () => {
-      setLoading(true);
-      setError(null);
+      // setLoading(true);
+      // setError(null);
 
       // Login Provider ID
       const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
       console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        const data = await completedList(Number(sessionLoginProviderID), 3, currentPage);
+        // const data = await completedList(Number(sessionLoginProviderID), 3, currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
@@ -183,17 +205,17 @@ export const Completed = () => {
 
         // setStatusListData(statusData);
         // const data = await completedList(1, 3, currentPage);
-        setCompletedListData(data.results);
+        // setCompletedListData(data.results);
 
-        setTotalItems(data.count);
-        console.log("Fetched Completed List data log:", data);
-        console.log("Fetched Completed List pagination count data log :", data.count);
+        // setTotalItems(data.count);
+        // console.log("Fetched Completed List data log:", data);
+        // console.log("Fetched Completed List pagination count data log :", data.count);
 
       }
       catch (error: any) {
-        setError(error.message || 'Failed to fetch completed list');
+        // setError(error.message || 'Failed to fetch completed list');
       } finally {
-        setLoading(false); // Ensure loading is false after fetching
+        // setLoading(false); // Ensure loading is false after fetching
       }
     }
 
@@ -270,7 +292,7 @@ export const Completed = () => {
 
                   <td className="text-start px-2 py-5">
                     <ul>
-                      {completed.services.map((service, index) => (
+                      {completed.services.map((service: Service, index: number) => (
                         <li key={index}>{service.name}</li>
                       ))}
                     </ul>
