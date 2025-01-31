@@ -1,35 +1,8 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { InputField } from '@/common/InputField'
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { setSearchQuery as setBookingSearchQuery } from '@/redux/allbookingSlice';
-import { setSearchQuery as setScheduleSearchQuery } from '@/redux/scheduleSlice';
-import { setSearchQuery as setInprogressSearchQuery } from '@/redux/inprogressSlice';
-import { setSearchQuery as setCompletedSearchQuery } from '@/redux/completedSlice';
-import { setSearchQuery as setCancelledSearchQuery } from '@/redux/cancelledSlice';
 // import { MdSearch } from "react-icons/md";
 
 export const BookingStatus = () => {
-    const dispatch = useDispatch()
-    const searchQuery = useSelector((state: RootState) => state.allbooking.searchQuery || state.schedule.searchQuery
-        || state.inprogress.searchQuery ||
-        state.completed.searchQuery || state.cancelled.searchQuery)
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value
-        if (location.pathname.includes('AllBooking')) {
-            dispatch(setBookingSearchQuery(query))
-        } else if (location.pathname.includes('Schedule')) {
-            dispatch(setScheduleSearchQuery(query));
-        } else if (location.pathname.includes('Inprogress')) {
-            dispatch(setInprogressSearchQuery(query));
-        } else if (location.pathname.includes('Completed')) {
-            dispatch(setCompletedSearchQuery(query));
-        } else if (location.pathname.includes('Cancelled')) {
-            dispatch(setCancelledSearchQuery(query));
-        }
-    }
-
     return (
         <div>
             <div className="bg-mindfulLightPink px-5 py-5">
@@ -84,13 +57,18 @@ export const BookingStatus = () => {
 
                             <div>
                                 <div className="">
+                                    {/* <input
+                                            type="text"
+                                            name=""
+                                            id=""
+                                            className=''
+                                        /> */}
                                     <InputField
                                         label={''}
                                         placeholder="Search"
                                         className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
-                                        value={searchQuery}
-                                        onChange={handleSearchChange}
                                     />
+                                    {/* <MdSearch className="text-[22px] text-mindfulBlack absolute top-2 right-1 cursor-pointer" /> */}
                                 </div>
                             </div>
                         </div>

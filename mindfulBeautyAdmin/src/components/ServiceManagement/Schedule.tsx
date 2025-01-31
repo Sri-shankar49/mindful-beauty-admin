@@ -10,12 +10,6 @@ import { Link } from "react-router-dom";
 import { Pagination } from "@/common/Pagination";
 import { beauticiansList, fetchStatus, modifyStatus, scheduleList } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
-import { fetchAllBookingList } from "@/redux/allbookingSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { fetchScheduleList } from "@/redux/scheduleSlice";
 
 
 interface StatusListDataProps {
@@ -63,19 +57,64 @@ interface BeauticiansDataProps {
 }
 
 export const Schedule = () => {
+
+
+  // const stylistData: StylistOption[] = [
+  //   {
+  //     value: 1,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 2,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 3,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   },
+  //   {
+  //     value: 4,
+  //     text: 'Swetha',
+  //     icon: `${stylist}`
+  //   }
+  // ];
+
+
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
+
+
+  // const openStylistPopup = () => {
+  //   setShowStylistPopup(true);
+  // }
 
   const closeStylistPopup = () => {
     setShowStylistPopup(false);
   }
+  // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
+
+
+  // handle onChange event of the dropdown
+  // const handleStylistOption = (option: SingleValue<StylistOption>) => {
+  //   setSelectedStylistOption(option);
+
+  //   // Open Stylist Popup
+  //   setShowStylistPopup(true);
+  // };
+
 
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
         (beautician) => beautician.id === newValue.value
       );
+
       console.log("Selected Beautician ID:", selectedBeautician);
+
+
       if (selectedBeautician) {
         setSelectedStylist(selectedBeautician);
         setShowStylistPopup(true);
@@ -86,14 +125,15 @@ export const Schedule = () => {
   };
 
 
-  // const [scheduleListData, setScheduleListData] = useState<ScheduleListProps[]>([]);
+  const [scheduleListData, setScheduleListData] = useState<ScheduleListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
 
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [error, setError] = useState<string | null>(null);
-  // const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
+
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -103,44 +143,37 @@ export const Schedule = () => {
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const { scheduleListData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.schedule);
-  console.log("All schedule data page open scheduleListData==>", scheduleListData)
-
-  useEffect(() => {
-    dispatch(fetchScheduleList({
-      providerID: Number(sessionLoginProviderID),
-      status: 1,
-      searchQuery,
-      currentPage
-    }));
-  }, [dispatch, sessionLoginProviderID, searchQuery, currentPage, itemsPerPage]);
-
   useEffect(() => {
 
     const fetchScheduleListData = async () => {
-      // setLoading(true);
-      // setError(null);
+      setLoading(true);
+      setError(null);
 
 
 
       try {
-        // const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
+        const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
+
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+
         const statusData = await fetchStatus();
+
         setBeauticiansListData(beauticiansData.data);
+
+
         setStatusListData(statusData);
         // const data = await scheduleList(1, 1, currentPage);
-        // setScheduleListData(data.results);
-        // setTotalItems(data.count);
-        // console.log("Fetched Schedule List data log:", data);
-        // console.log("Fetched Schedule List pagination count data log :", data.count);
+        setScheduleListData(data.results);
+
+        setTotalItems(data.count);
+        console.log("Fetched Schedule List data log:", data);
+        console.log("Fetched Schedule List pagination count data log :", data.count);
 
       }
       catch (error: any) {
-        // setError(error.message || 'Failed to fetch schedule list');
+        setError(error.message || 'Failed to fetch schedule list');
       } finally {
-        // setLoading(false); // Ensure loading is false after fetching
+        setLoading(false); // Ensure loading is false after fetching
       }
     }
 
@@ -151,31 +184,25 @@ export const Schedule = () => {
 
   // Function call to get the updated scheduled list
   const fetchRefreshedScheduleListData = async () => {
-    // setLoading(true);
-    // setError(null);
+    setLoading(true);
+    setError(null);
 
     try {
-      // const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
-      dispatch(fetchScheduleList({
-        providerID: Number(sessionLoginProviderID),
-        status: 1,
-        searchQuery,
-        currentPage
-      }));
+      const data = await scheduleList(Number(sessionLoginProviderID), 1, currentPage);
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
       setBeauticiansListData(beauticiansData.data);
       setStatusListData(statusData);
-      // setScheduleListData(data.results);
-      // setTotalItems(data.count);
+      setScheduleListData(data.results);
+      setTotalItems(data.count);
 
-      // console.log("Fetched Refreshed Schedule List data log:", data);
-      // console.log("Fetched Refreshed Schedule List pagination count data log :", data.count);
+      console.log("Fetched Refreshed Schedule List data log:", data);
+      console.log("Fetched Refreshed Schedule List pagination count data log :", data.count);
     } catch (error: any) {
-      // setError(error.message || "Failed to fetch schedule list");
+      setError(error.message || "Failed to fetch schedule list");
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -192,7 +219,7 @@ export const Schedule = () => {
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
-      // setLoading(true);
+      setLoading(true);
 
       const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
 
@@ -211,10 +238,10 @@ export const Schedule = () => {
 
 
     } catch (error: any) {
-      // setError(error.message || "Failed to fetch schedule list for the selected status");
+      setError(error.message || "Failed to fetch schedule list for the selected status");
     }
     finally {
-      // setLoading(false);
+      setLoading(false);
 
     }
   };
@@ -300,7 +327,7 @@ export const Schedule = () => {
 
                   <td className="text-start px-2 py-5">
                     <ul>
-                      {schedule.services.map((service: Service, index: number) => (
+                      {schedule.services.map((service, index) => (
                         <li key={index}>{service.name}</li>
                       ))}
                     </ul>
@@ -331,7 +358,7 @@ export const Schedule = () => {
                         )}
                         getOptionValue={(option) => option.value.toString()}
                       /> */}
-
+                      
                       <Select
                         placeholder="Select Option"
                         // value={selectedStylistOption}
