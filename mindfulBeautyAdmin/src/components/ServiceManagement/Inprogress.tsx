@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import editButton from "../../assets/icons/editButton.png"
-// import deleteButton from "../../assets/icons/deleteButton.png"
-// import rectangleBlack from "../../assets/images/rectangleBlack.png"
+import editButton from "../../assets/icons/editButton.png";
+// import deleteButton from "../../assets/icons/deleteButton.png";
+// import rectangleBlack from "../../assets/images/rectangleBlack.png";
 import Select, { SingleValue } from 'react-select';
-// import stylist from "../../assets/images/stylist.png"
+// import stylist from "../../assets/images/stylist.png";
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
 import { beauticiansList, inprogressList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import stylist from "../../assets/images/stylist.png";
+
 
 
 interface StatusListDataProps {
@@ -46,13 +48,22 @@ interface InprogressListProps {
 }
 
 interface BeauticiansDataProps {
-  id?: any;
+  // id?: any;
+  // name: string;
+  // role: string;
+  // years_of_experience?: string;
+  // rating: string;
+  // profile_image: string;
+  // provider: string;
+
+  staff?: any;
   name: string;
-  role: string;
-  years_of_experience?: string;
-  rating: string;
-  profile_image: string;
-  provider: string;
+  role_name: string;
+  branch_name: string;
+  status: string;
+  role_id: string;
+  branch_id: string;
+  phone: string;
 }
 
 export const Inprogress = () => {
@@ -107,7 +118,7 @@ export const Inprogress = () => {
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.id === newValue.value
+        (beautician) => beautician.staff === newValue.value
       );
 
       console.log("Selected Beautician ID:", selectedBeautician);
@@ -151,7 +162,7 @@ export const Inprogress = () => {
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
-
+  // Function call to get the inprogress list
   useEffect(() => {
 
     const fetchInprogressListData = async () => {
@@ -189,13 +200,13 @@ export const Inprogress = () => {
   }, [currentPage, itemsPerPage]);
 
 
-  // Function call to get the updated scheduled list
+  // Function call to get the updated inprogress list
   const fetchRefreshedInprogressListData = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await inprogressList(Number(sessionLoginProviderID), 1, currentPage);
+      const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
@@ -360,9 +371,10 @@ export const Inprogress = () => {
                         // value={selectedStylistOption}
                         // options={stylistData}
                         options={beauticiansListData.map((beautician) => ({
-                          value: beautician.id,
+                          value: beautician.staff,
                           text: beautician.name,
-                          icon: beautician.profile_image,
+                          // icon: beautician.profile_image,
+                          icon: stylist,
                         }))}
                         onChange={handleStylistOption}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
@@ -376,9 +388,10 @@ export const Inprogress = () => {
                         value={
                           beauticiansListData
                             .map((beautician) => ({
-                              value: beautician.id,
+                              value: beautician.staff,
                               text: beautician.name,
-                              icon: beautician.profile_image,
+                              // icon: beautician.profile_image,
+                              icon: stylist,
                             }))
                             .find((option) => option.value === inprogress.stylist_id) || null // Set default value
                         }
@@ -413,11 +426,19 @@ export const Inprogress = () => {
                         Select Status
                       </option> */}
 
-                      {statusListData.map((status) => (
+                      {/* {statusListData.map((status) => (
                         <option key={status.status_id} value={status.status_id}>
                           {status.status_name}
                         </option>
-                      ))}
+                      ))} */}
+
+                      {statusListData
+                        .filter((status) => status.status_id !== 0 && status.status_id !== 1) // Exclude the option with status_id = 3
+                        .map((status) => (
+                          <option key={status.status_id} value={status.status_id}>
+                            {status.status_name}
+                          </option>
+                        ))}
                     </select>
                   </td>
 

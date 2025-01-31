@@ -331,7 +331,8 @@ export const dashBoardBookingList = async (
 export const beauticiansList = async (providerID: number) => {
 
   try {
-    const response = await apiAxios.get(`/provider-api/beauticians/`, {
+    // const response = await apiAxios.get(`/provider-api/beauticians/`, {
+    const response = await apiAxios.get(`/provider-api/stylists/`, {
       params: {
         provider_id: providerID,
       }
@@ -1654,6 +1655,33 @@ export const modifyStatus = async (appointmentID: number, statusID: number) => {
   catch (error: any) {
     console.error("Error modify status:", error.message || error);
     throw new Error(error.response?.data?.message || "Unable to modify status. Please try again later.");
+  }
+}
+
+
+
+// Service Management -- --> Payment Status
+// POST Method from the API
+export const paymentStatus = async (appointmentID: number, paymentStatus: string) => {
+
+  try {
+    const response = await apiAxios.post(`/provider-api/update-payment-status/`, {
+      appointment_id: appointmentID,
+      payment_status: paymentStatus,
+    });
+
+    console.log("Payment Status PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to payment Status");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error payment status:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to payment status. Please try again later.");
   }
 }
 

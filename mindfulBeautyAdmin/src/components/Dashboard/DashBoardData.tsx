@@ -14,6 +14,8 @@ import "./DashBoardData.css";
 import { ShimmerTable } from "shimmer-effects-react"
 import { NavLink } from "react-router-dom"
 import { DenialPopup } from "./DashBoardData/DenialPopup"
+import stylist from "../../assets/images/stylist.png"
+
 
 
 // Define the type for each option
@@ -42,13 +44,22 @@ interface DashBoardDataProps {
 }
 
 interface BeauticiansDataProps {
-    id?: any;
+    // id?: any;
+    // name: string;
+    // role: string;
+    // years_of_experience?: string;
+    // rating: string;
+    // profile_image: string;
+    // provider: string;
+
+    staff?: any;
     name: string;
-    role: string;
-    years_of_experience?: string;
-    rating: string;
-    profile_image: string;
-    provider: string;
+    role_name: string;
+    branch_name: string;
+    status: string;
+    role_id: string;
+    branch_id: string;
+    phone: string;
 }
 
 
@@ -142,7 +153,7 @@ export const DashBoardData = () => {
     const handleStylistOption = (newValue: SingleValue<StylistOption>, appointmentID: number) => {
         if (newValue) {
             const selectedBeautician = beauticiansListData.find(
-                (beautician) => beautician.id === newValue.value
+                (beautician) => beautician.staff === newValue.value
             );
 
             console.log("Selected Beautician ID:", selectedBeautician);
@@ -286,7 +297,7 @@ export const DashBoardData = () => {
                         ...prevState,
                         [appointmentID]: false,
                     }));
-                    
+
                     // Clear selected stylist after accepting the appointment
                     setSelectedStylist(null);
 
@@ -496,9 +507,10 @@ export const DashBoardData = () => {
                                                         // value={selectedStylistOption}
                                                         // options={stylistData}
                                                         options={beauticiansListData.map((beautician) => ({
-                                                            value: beautician.id,
+                                                            value: beautician.staff,
                                                             text: beautician.name,
-                                                            icon: beautician.profile_image,
+                                                            // icon: beautician.profile_image,
+                                                            icon: stylist,
                                                         }))}
                                                         // onChange={handleStylistOption}
                                                         onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here

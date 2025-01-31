@@ -11,6 +11,7 @@ import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { Pagination } from "@/common/Pagination";
 import { beauticiansList, bookingsList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import stylist from "../../assets/images/stylist.png"
 
 
 
@@ -49,13 +50,22 @@ interface BookingListProps {
 }
 
 interface BeauticiansDataProps {
-  id?: any;
+  // id?: any;
+  // name: string;
+  // role: string;
+  // years_of_experience?: string;
+  // rating: string;
+  // profile_image: string;
+  // provider: string;
+
+  staff?: any;
   name: string;
-  role: string;
-  years_of_experience?: string;
-  rating: string;
-  profile_image: string;
-  provider: string;
+  role_name: string;
+  branch_name: string;
+  status: string;
+  role_id: string;
+  branch_id: string;
+  phone: string;
 }
 
 export const AllBooking = () => {
@@ -126,7 +136,7 @@ export const AllBooking = () => {
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.id === newValue.value
+        (beautician) => beautician.staff === newValue.value
       );
 
       console.log("Selected Beautician ID:", selectedBeautician);
@@ -434,9 +444,10 @@ export const AllBooking = () => {
                         // value={selectedStylistOption}
                         // options={stylistData}
                         options={beauticiansListData.map((beautician) => ({
-                          value: beautician.id,
+                          value: beautician.staff,
                           text: beautician.name,
-                          icon: beautician.profile_image,
+                          // icon: beautician.profile_image,
+                          icon: stylist,
                         }))}
                         onChange={handleStylistOption}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
@@ -446,13 +457,15 @@ export const AllBooking = () => {
                             <span style={{ marginLeft: 5 }}>{option.text}</span>
                           </div>
                         )}
+
                         getOptionValue={(option) => option.value.toString()}
                         value={
                           beauticiansListData
                             .map((beautician) => ({
-                              value: beautician.id,
+                              value: beautician.staff,
                               text: beautician.name,
-                              icon: beautician.profile_image,
+                              // icon: beautician.profile_image,
+                              icon: stylist,
                             }))
                             .find((option) => option.value === bookingData.stylist_id) || null // Set default value
                         }

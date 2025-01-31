@@ -1,17 +1,26 @@
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
-// import stylist from "../../../assets/images/stylist.png"
+import stylist from "../../../assets/images/stylist.png"
 
 interface StylistPopupProps {
     closePopup: () => void;
     stylistDetails: {
-        id?: any;
+        // id?: any;
+        // name: string;
+        // role: string;
+        // years_of_experience?: string;
+        // rating: string;
+        // profile_image: string;
+        // provider: string;
+
+        staff?: any;
         name: string;
-        role: string;
-        years_of_experience?: string;
-        rating: string;
-        profile_image: string;
-        provider: string;
+        role_name: string;
+        branch_name: string;
+        status: string;
+        role_id: string;
+        branch_id: string;
+        phone: string;
     }
 }
 
@@ -31,10 +40,13 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylistD
                                     <div className="flex items-center justify-center space-x-5">
                                         <div>
                                             {/* <img src={stylist} alt="" /> */}
-                                            <img src={stylistDetails.profile_image} alt={stylistDetails.name} />
+                                            {/* <img src={stylistDetails.profile_image} alt={stylistDetails.name} /> */}
+                                            <img src={stylist} alt={stylistDetails.name} />
                                         </div>
                                         <div className="text-center">
-                                            <h2 className="text-2xl text-mindfulBlack font-semibold">{stylistDetails.name}</h2>
+                                            <h2 key={stylistDetails.staff} className="text-2xl text-mindfulBlack font-semibold">
+                                                {stylistDetails.name}
+                                            </h2>
                                         </div>
                                     </div>
                                     {/* <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">

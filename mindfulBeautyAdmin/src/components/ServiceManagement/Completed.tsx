@@ -10,9 +10,11 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, completedList } from "@/api/apiConfig";
+import { beauticiansList, completedList, paymentStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import { SelectField } from "@/common/SelectField";
+import stylist from "../../assets/images/stylist.png"
+
 
 // interface StatusListDataProps {
 //   status_id?: number;
@@ -49,13 +51,22 @@ interface CompletedListProps {
 }
 
 interface BeauticiansDataProps {
-  id?: any;
+  // id?: any;
+  // name: string;
+  // role: string;
+  // years_of_experience?: string;
+  // rating: string;
+  // profile_image: string;
+  // provider: string;
+
+  staff?: any;
   name: string;
-  role: string;
-  years_of_experience?: string;
-  rating: string;
-  profile_image: string;
-  provider: string;
+  role_name: string;
+  branch_name: string;
+  status: string;
+  role_id: string;
+  branch_id: string;
+  phone: string;
 }
 
 export const Completed = () => {
@@ -111,7 +122,7 @@ export const Completed = () => {
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.id === newValue.value
+        (beautician) => beautician.staff === newValue.value
       );
 
       console.log("Selected Beautician ID:", selectedBeautician);
@@ -162,6 +173,7 @@ export const Completed = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Function call to get the completed list
   useEffect(() => {
 
     const fetchCompletedListData = async () => {
@@ -200,6 +212,32 @@ export const Completed = () => {
     fetchCompletedListData();
 
   }, [currentPage, itemsPerPage]);
+
+
+
+  const handlePaymentStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: number) => {
+    const newStatus = e.target.value;
+    console.log(`Payment Status changed for booking ID ${appointmentID} to ${newStatus}`);
+
+    // Optional: Update the status in the backend or state
+    // API call or local state update logic here
+    try {
+      setLoading(true);
+
+
+      // ✅ Pass the string value directly to the API call
+      const data = await paymentStatus(Number(appointmentID), newStatus);
+
+      console.log("Payment status data log:", data);
+
+    } catch (error: any) {
+      setError(error.message || "Failed to update payment status");
+    }
+    finally {
+      setLoading(false);
+
+    }
+  };
 
 
   const handlePageChange = (page: number) => {
@@ -307,9 +345,10 @@ export const Completed = () => {
                         // value={selectedStylistOption}
                         // options={stylistData}
                         options={beauticiansListData.map((beautician) => ({
-                          value: beautician.id,
+                          value: beautician.staff,
                           text: beautician.name,
-                          icon: beautician.profile_image,
+                          // icon: beautician.profile_image,
+                          icon: stylist,
                         }))}
                         onChange={handleStylistOption}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
@@ -323,9 +362,10 @@ export const Completed = () => {
                         value={
                           beauticiansListData
                             .map((beautician) => ({
-                              value: beautician.id,
+                              value: beautician.staff,
                               text: beautician.name,
-                              icon: beautician.profile_image,
+                              // icon: beautician.profile_image,
+                              icon: stylist,
                             }))
                             .find((option) => option.value === completed.stylist_id) || null // Set default value
                         }
@@ -339,11 +379,12 @@ export const Completed = () => {
                       name="status"
                       id="status"
                       options={[
-                        { value: "paid", label: "Paid" },
-                        { value: "partlyPaid", label: "Partly Paid" },
-                        { value: "notPaid", label: "Not Paid" },
+                        { value: "Paid", label: "Paid" },
+                        { value: "Partly Paid", label: "Partly Paid" },
+                        { value: "Not Paid", label: "Not Paid" },
                       ]}
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                      onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
                     />
                     {/* <select
                       // name=""

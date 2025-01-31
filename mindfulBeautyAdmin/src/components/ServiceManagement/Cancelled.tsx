@@ -8,6 +8,8 @@ import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 import { Pagination } from "@/common/Pagination";
 import { beauticiansList, cancelledList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
+import stylist from "../../assets/images/stylist.png"
+
 
 
 interface StatusListDataProps {
@@ -46,13 +48,22 @@ interface CancelledListProps {
 }
 
 interface BeauticiansDataProps {
-  id?: any;
+  // id?: any;
+  // name: string;
+  // role: string;
+  // years_of_experience?: string;
+  // rating: string;
+  // profile_image: string;
+  // provider: string;
+
+  staff?: any;
   name: string;
-  role: string;
-  years_of_experience?: string;
-  rating: string;
-  profile_image: string;
-  provider: string;
+  role_name: string;
+  branch_name: string;
+  status: string;
+  role_id: string;
+  branch_id: string;
+  phone: string;
 }
 
 export const Cancelled = () => {
@@ -107,7 +118,7 @@ export const Cancelled = () => {
   const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
     if (newValue) {
       const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.id === newValue.value
+        (beautician) => beautician.staff === newValue.value
       );
 
       console.log("Selected Beautician ID:", selectedBeautician);
@@ -153,7 +164,7 @@ export const Cancelled = () => {
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
 
-
+  // Function call to get the cancelled list
   useEffect(() => {
 
     const fetchCancelledListData = async () => {
@@ -194,13 +205,13 @@ export const Cancelled = () => {
 
 
 
-  // Function call to get the updated scheduled list
+  // Function call to get the updated cancelled list
   const fetchRefreshedCancelledListData = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await cancelledList(Number(sessionLoginProviderID), 1, currentPage);
+      const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
@@ -355,9 +366,10 @@ export const Cancelled = () => {
                         // value={selectedStylistOption}
                         // options={stylistData}
                         options={beauticiansListData.map((beautician) => ({
-                          value: beautician.id,
+                          value: beautician.staff,
                           text: beautician.name,
-                          icon: beautician.profile_image,
+                          // icon: beautician.profile_image,
+                          icon: stylist,
                         }))}
                         onChange={handleStylistOption}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
@@ -371,9 +383,10 @@ export const Cancelled = () => {
                         value={
                           beauticiansListData
                             .map((beautician) => ({
-                              value: beautician.id,
+                              value: beautician.staff,
                               text: beautician.name,
-                              icon: beautician.profile_image,
+                              // icon: beautician.profile_image,
+                              icon: stylist,
                             }))
                             .find((option) => option.value === cancelled.stylist_id) || null // Set default value
                         }
@@ -407,11 +420,19 @@ export const Cancelled = () => {
                         Select Status
                       </option> */}
 
-                      {statusListData.map((status) => (
+                      {/* {statusListData.map((status) => (
                         <option key={status.status_id} value={status.status_id}>
                           {status.status_name}
                         </option>
-                      ))}
+                      ))} */}
+
+                      {statusListData
+                        .filter((status) => status.status_id !== 0 && status.status_id !== 1 && status.status_id !== 2 && status.status_id !== 3 && status.status_id !== 5 )
+                        .map((status) => (
+                          <option key={status.status_id} value={status.status_id}>
+                            {status.status_name}
+                          </option>
+                        ))}
                     </select>
                   </td>
                 </tr>
