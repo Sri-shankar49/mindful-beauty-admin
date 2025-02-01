@@ -9,6 +9,7 @@ import * as zod from "zod";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store'; // Import RootState
 import { verifyOTPThunk, setPhoneNumber } from '../../redux/loginSlice';
+import { fetchLogin } from '@/api/apiConfig';
 
 interface VerifyOtpProps {
     onVerifyOtp: () => void;
@@ -26,6 +27,8 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
     const dispatch: AppDispatch = useDispatch();
 
     const navigate = useNavigate();
+    // const [error, setError] = useState<string | null>(null);
+    // console.log(error, "Set Error for this error state");
 
     const { otpError, token, phoneNumber } = useSelector((state: RootState) => state.login);
 
@@ -87,21 +90,43 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
     }, [token, navigate]);
 
     // Handle OTP input changes and move focus
-    const handleOtpInputChange = (value: string, index: number) => {
-        setValue(`otp.${index}`, value); // Set value in React Hook Form
-        // setOtpError(null); // Clear any existing error
+    // const handleOtpInputChange = (value: string, index: number) => {
+    //     setValue(`otp.${index}`, value); // Set value in React Hook Form
+    //     // setOtpError(null); // Clear any existing error
 
-        // Focus on the next input field
-        if (value && index < otpFields.length - 1) {
-            otpRefs.current[index + 1]?.focus();
-        }
+    //     // Focus on the next input field
+    //     if (value && index < otpFields.length - 1) {
+    //         otpRefs.current[index + 1]?.focus();
+    //     }
 
-        // Move to the previous input if backspace is pressed and current field is empty
-        if (!value && index > 0) {
-            otpRefs.current[index - 1]?.focus();
+    //     // Move to the previous input if backspace is pressed and current field is empty
+    //     if (!value && index > 0) {
+    //         otpRefs.current[index - 1]?.focus();
+    //     }
+    // };
+
+    const handleResendOtp = async () => {
+        console.log('Login Form Submitted Data:', phoneNumber);
+
+        try {
+            // Ensure phoneNumber is a valid number
+            if (phoneNumber) {
+                const loginData = await fetchLogin(Number(phoneNumber)); // Convert to number
+                console.log('OTP Generated Response:', loginData);
+
+                if (loginData.status === "success") {
+                    sessionStorage.setItem('EnteredPhoneNumber', String(phoneNumber));
+                    setIsResendEnabled(false);
+                    setTimer(60);
+                }
+            } else {
+                throw new Error("Phone number is required.");
+            }
+        } catch (error: any) {
+            console.error('Error Generating OTP:', error.message);
+            // setError(error.message || "Failed to generate OTP. Please try again.");
         }
     };
-
 
     return (
         <div>
@@ -129,43 +154,37 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
                                 type="text"
                                 maxLength={1}
                                 {...register(`otp.${index}`)}
-                                className="w-10 h-10 border-none rounded-sm px-3 py-3 text-center focus:outline-none"
-                                onChange={(e) => handleOtpInputChange(e.target.value, index)}
-                                ref={(el) => otpRefs.current[index] = el} // Save input refs for focusing
+                                className="w-10 h-10 border-2 border-mindfulLightGrey rounded-[6px] px-3 py-3 text-center focus:outline-none"
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, ""); // Allow only numbers
 
+                                    // Set the value properly
+                                    setValue(`otp.${index}`, value);
+
+                                    // Move focus to the next input if user types a digit
+                                    if (value && index < otpFields.length - 1) {
+                                        otpRefs.current[index + 1]?.focus();
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (!/^[0-9]$/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete") {
+                                        e.preventDefault(); // Prevent non-numeric input
+                                    }
+
+                                    if (e.key === "Backspace") {
+                                        setValue(`otp.${index}`, ""); // Clear the current input
+
+                                        // Move to previous input if it's empty
+                                        if (index > 0) {
+                                            otpRefs.current[index - 1]?.focus();
+                                        }
+                                    }
+                                }}
+                                value={otpFields[index]} // Ensure reactivity
+                                ref={(el) => (otpRefs.current[index] = el)}
                             />
                         ))}
-
-                        {/* <input
-                    type="text"
-                    maxLength={1}
-                    name=""
-                    className="w-10 h-10 border-none rounded-sm px-3 py-3 text-center focus:outline-none"
-                />
-                <input
-                    type="text"
-                    maxLength={1}
-                    name=""
-                    className="w-10 h-10 border-none rounded-sm px-3 py-3 text-center focus:outline-none"
-                />
-                <input
-                    type="text"
-                    maxLength={1}
-                    name=""
-                    className="w-10 h-10 border-none rounded-sm px-3 py-3 text-center focus:outline-none"
-                />
-                <input
-                    type="text"
-                    maxLength={1}
-                    name=""
-                    className="w-10 h-10 border-none rounded-sm px-3 py-3 text-center focus:outline-none"
-                /> */}
                     </div>
-
-                    {/* <div className="text-sm text-mindfulWhite my-2">
-                        Current OTP : {otpValue || "No OTP entered yet"}
-                    </div> */}
-
                     {errors.otp && <p className="text-sm text-mindfulWhite">
                         {errors.otp?.message || "Please enter a valid 4-digit OTP."}
                     </p>
@@ -177,10 +196,10 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
                         <p className="text-lg text-mindfulWhite">Didn't receive OTP? {" "}
                             {isResendEnabled ? (
                                 <span className="underline cursor-pointer hover:no-underline"
-                                // onClick={onVerifyOtp}
+                                    onClick={handleResendOtp}
                                 >Resend</span>
                             ) : (
-                                <span className="underline cursor-pointer hover:no-underline">Resend in {timer} seconds</span>
+                                <span className="text-gray-500">Resend in {timer} seconds</span>
                             )}
                         </p>
                     </div>
