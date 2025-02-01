@@ -180,11 +180,11 @@ export const Inprogress = () => {
   useEffect(() => {
 
     const fetchInprogressListData = async () => {
-      setLoading(true);
-      setError(null);
+      // setLoading(true);
+      // setError(null);
 
       try {
-        const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
+        // const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
@@ -195,17 +195,17 @@ export const Inprogress = () => {
 
         setStatusListData(statusData);
         // const data = await inprogressList(1, 2, currentPage);
-        setInprogressListData(data.results);
+        // setInprogressListData(data.results);
 
-        setTotalItems(data.count);
-        console.log("Fetched Inprogress List data log:", data);
-        console.log("Fetched Inprogress List pagination count data log :", data.count);
+        // setTotalItems(data.count);
+        // console.log("Fetched Inprogress List data log:", data);
+        // console.log("Fetched Inprogress List pagination count data log :", data.count);
 
       }
       catch (error: any) {
-        setError(error.message || 'Failed to fetch inprogress list');
+        // setError(error.message || 'Failed to fetch inprogress list');
       } finally {
-        setLoading(false); // Ensure loading is false after fetching
+        // setLoading(false); // Ensure loading is false after fetching
       }
     }
 
