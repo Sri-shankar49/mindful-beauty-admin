@@ -29,27 +29,26 @@ interface StylistOption {
   icon: string; // URL or path to the image
 }
 
-interface Service {
-  name: string;
-  price: number;
-}
+// interface Service {
+//   name: string;
+//   price: number;
+// }
 
-interface ScheduleListProps {
-  id: string;
-  date: string;
-  time: string;
-  location: string;
-  name: string;
-  phone: string;
-  services: Service[];
-  amount: string;
-  status: string;
-  status_id?: string;
-  modify_status: string;
-  stylist: string;
-  stylist_id?: string;
-
-}
+// interface ScheduleListProps {
+//   id: string;
+//   date: string;
+//   time: string;
+//   location: string;
+//   name: string;
+//   phone: string;
+//   services: Service[];
+//   amount: string;
+//   status: string;
+//   status_id?: string;
+//   modify_status: string;
+//   stylist: string;
+//   stylist_id?: string;
+// }
 
 interface BeauticiansDataProps {
   // id?: any;
