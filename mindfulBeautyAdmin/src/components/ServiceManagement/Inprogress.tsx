@@ -8,7 +8,7 @@ import Select, { SingleValue } from 'react-select';
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, inprogressList, fetchStatus, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
