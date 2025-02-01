@@ -3,6 +3,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './loginSlice'; // Updated import
 import staffReducer from './staffSlice';
 import branchReducer from './branchSlice';
+import allbookingReducer from './allbookingSlice'
+import scheduleReducer from './scheduleSlice'
+import inprogressReducer from './inprogressSlice'
+import completedReducer from './completedSlice'
+import cancelledReducer from './cancelledSlice'
 import serviceReducer from './servicesListSlice';
 import packageReducer from './packagesListSlice';
 
@@ -24,6 +29,11 @@ const rootReducer = combineReducers({
     login: loginReducer, // Add other reducers here if necessary
     staff: staffReducer,
     branch: branchReducer,
+    allbooking: allbookingReducer,
+    schedule: scheduleReducer,
+    inprogress: inprogressReducer,
+    completed: completedReducer,
+    cancelled: cancelledReducer,
     service: serviceReducer,
     package: packageReducer,
 });

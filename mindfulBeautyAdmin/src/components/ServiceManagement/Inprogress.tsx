@@ -11,7 +11,9 @@ import { Pagination } from "@/common/Pagination";
 import { beauticiansList, inprogressList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchInprogressList, setCurrentPage } from '@/redux/inprogressSlice';
 
 
 interface StatusListDataProps {
@@ -144,23 +146,35 @@ export const Inprogress = () => {
   // }
 
 
-  const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
+  // const [inprogressListData, setInprogressListData] = useState<InprogressListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [totalItems, setTotalItems] = useState(0);
 
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Redux state
+  const { inprogressListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.inprogress);
+
+  // Fetch inprogress list on mount and when dependencies change
+  useEffect(() => {
+    dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, searchQuery, currentPage }));
+  }, [dispatch, searchQuery, currentPage]);
 
   // Function call to get the inprogress list
   useEffect(() => {
@@ -202,25 +216,26 @@ export const Inprogress = () => {
 
   // Function call to get the updated inprogress list
   const fetchRefreshedInprogressListData = async () => {
-    setLoading(true);
-    setError(null);
+    // setLoading(true);
+    // setError(null);
 
     try {
-      const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
+      // const data = await inprogressList(Number(sessionLoginProviderID), 2, currentPage);
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
       setBeauticiansListData(beauticiansData.data);
       setStatusListData(statusData);
-      setInprogressListData(data.results);
-      setTotalItems(data.count);
+      // setInprogressListData(data.results);
+      // setTotalItems(data.count);
 
-      console.log("Fetched Refreshed Inprogress List data log:", data);
-      console.log("Fetched Refreshed Inprogress List pagination count data log :", data.count);
+      // console.log("Fetched Refreshed Inprogress List data log:", data);
+      // console.log("Fetched Refreshed Inprogress List pagination count data log :", data.count);
+
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list");
+      // setError(error.message || "Failed to fetch inprogress list");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -237,36 +252,38 @@ export const Inprogress = () => {
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
 
       console.log("Modify status data log:", data);
 
 
-      // Refresh the schedule list data after status update
+      // Refresh the inprogress list data after status update
       await fetchRefreshedInprogressListData();
 
       // Take a deep copy of the service list data and update
       // const updatedScheduleList = [...data.results]; // Assuming results is an array
 
-      // Update the schedule list based on the status
+      // Update the inprogress list based on the status
       // setScheduleListData(updatedScheduleList || []);
       // setTotalItems(data.count);
 
 
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list for the selected status");
+      // setError(error.message || "Failed to fetch inprogress list for the selected status");
     }
     finally {
-      setLoading(false);
+      // setLoading(false);
 
     }
   };
 
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // setCurrentPage(page);
+    dispatch(setCurrentPage(page));
+
   };
 
   const handleItemsPerPageChange = (items: number) => {

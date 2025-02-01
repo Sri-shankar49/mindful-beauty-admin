@@ -10,10 +10,13 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, completedList, paymentStatus } from "@/api/apiConfig";
+import { beauticiansList, paymentStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import { SelectField } from "@/common/SelectField";
 import stylist from "../../assets/images/stylist.png"
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchCompletedList, setCurrentPage } from '@/redux/completedSlice';
 
 
 // interface StatusListDataProps {
@@ -160,32 +163,46 @@ export const Completed = () => {
   }
 
 
-  const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
+  // const [completedListData, setCompletedListData] = useState<CompletedListProps[]>([]);
   // const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [totalItems, setTotalItems] = useState(0);
 
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+
+  // Login Provider ID
+  const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+  console.log("Login Provider ID from session storage", sessionLoginProviderID);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Redux state
+  const { completedListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.completed);
+
+  // Fetch inprogress list on mount and when dependencies change
+  useEffect(() => {
+    dispatch(fetchCompletedList({ providerID: Number(sessionLoginProviderID), status: 3, searchQuery, currentPage }));
+  }, [dispatch, searchQuery, currentPage]);
+
 
   // Function call to get the completed list
   useEffect(() => {
 
     const fetchCompletedListData = async () => {
-      setLoading(true);
-      setError(null);
+      // setLoading(true);
+      // setError(null);
 
-      // Login Provider ID
-      const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-      console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
       try {
-        const data = await completedList(Number(sessionLoginProviderID), 3, currentPage);
+        // const data = await completedList(Number(sessionLoginProviderID), 3, currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
@@ -195,17 +212,18 @@ export const Completed = () => {
 
         // setStatusListData(statusData);
         // const data = await completedList(1, 3, currentPage);
-        setCompletedListData(data.results);
+        // setCompletedListData(data.results);
 
-        setTotalItems(data.count);
-        console.log("Fetched Completed List data log:", data);
-        console.log("Fetched Completed List pagination count data log :", data.count);
+        // setTotalItems(data.count);
+
+        // console.log("Fetched Completed List data log:", data);
+        // console.log("Fetched Completed List pagination count data log :", data.count);
 
       }
       catch (error: any) {
-        setError(error.message || 'Failed to fetch completed list');
+        // setError(error.message || 'Failed to fetch completed list');
       } finally {
-        setLoading(false); // Ensure loading is false after fetching
+        // setLoading(false); // Ensure loading is false after fetching
       }
     }
 
@@ -222,7 +240,7 @@ export const Completed = () => {
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
-      setLoading(true);
+      // setLoading(true);
 
 
       // ✅ Pass the string value directly to the API call
@@ -231,17 +249,18 @@ export const Completed = () => {
       console.log("Payment status data log:", data);
 
     } catch (error: any) {
-      setError(error.message || "Failed to update payment status");
+      // setError(error.message || "Failed to update payment status");
     }
     finally {
-      setLoading(false);
+      // setLoading(false);
 
     }
   };
 
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // setCurrentPage(page);
+    dispatch(setCurrentPage(page));
   };
 
   const handleItemsPerPageChange = (items: number) => {

@@ -1457,12 +1457,13 @@ export const editPackages = async (formData: FormData): Promise<any> => {
 
 // Service Management Page -- --> All Booking List
 // GET Method from the API
-export const bookingsList = async (providerID: number, pageNumber: number) => {
+export const bookingsList = async (providerID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
+        search: searchQuery,
         page: pageNumber,
       }
     });
@@ -1488,13 +1489,14 @@ export const bookingsList = async (providerID: number, pageNumber: number) => {
 
 // Service Management Page -- --> Schedule List
 // GET Method from the API
-export const scheduleList = async (providerID: number, status: number, pageNumber: number) => {
+export const scheduleList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        search: searchQuery,
         page: pageNumber,
       }
     });
@@ -1519,13 +1521,14 @@ export const scheduleList = async (providerID: number, status: number, pageNumbe
 
 // Service Management Page -- --> Inprogress List
 // GET Method from the API
-export const inprogressList = async (providerID: number, status: number, pageNumber: number) => {
+export const inprogressList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        search: searchQuery,
         page: pageNumber,
 
       }
@@ -1534,7 +1537,7 @@ export const inprogressList = async (providerID: number, status: number, pageNum
     console.log("Inprogress Booking list GET Method response", response.data);
 
     if (!response.data || response.status !== 200) {
-      throw new Error("Failed to fetch schedule inprogress list");
+      throw new Error("Failed to fetch inprogress list");
     }
 
     return response.data;
@@ -1542,7 +1545,7 @@ export const inprogressList = async (providerID: number, status: number, pageNum
   }
   catch (error: any) {
     console.error("Error fetching inprogress booking list:", error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to fetch schedule inprogress list. Please try again later.");
+    throw new Error(error.response?.data?.message || "Unable to fetch inprogress list. Please try again later.");
   }
 }
 
@@ -1551,13 +1554,14 @@ export const inprogressList = async (providerID: number, status: number, pageNum
 
 // Service Management Page -- --> Completed List
 // GET Method from the API
-export const completedList = async (providerID: number, status: number, pageNumber: number) => {
+export const completedList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        search: searchQuery,
         page: pageNumber,
       }
     });
@@ -1582,13 +1586,14 @@ export const completedList = async (providerID: number, status: number, pageNumb
 
 // Service Management Page -- --> Cancelled List
 // GET Method from the API
-export const cancelledList = async (providerID: number, status: number, pageNumber: number) => {
+export const cancelledList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        search: searchQuery,
         page: pageNumber,
       }
     });

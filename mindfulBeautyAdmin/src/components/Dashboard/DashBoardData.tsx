@@ -156,7 +156,8 @@ export const DashBoardData = () => {
                 (beautician) => beautician.staff === newValue.value
             );
 
-            console.log("Selected Beautician ID:", selectedBeautician);
+            console.log("Selected Beautician Data log:", selectedBeautician);
+            console.log("Selected Beautician ID:", selectedBeautician?.staff);
 
 
             if (selectedBeautician) {
@@ -572,7 +573,8 @@ export const DashBoardData = () => {
                                                         <Button
                                                             onClick={() =>
                                                                 !acceptedAppointments[dashboardData.appointment_id] &&
-                                                                handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 1)
+                                                                // handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 1)
+                                                                handleActionSubmit(dashboardData.appointment_id, selectedStylist?.staff, 1)
                                                             }
                                                             buttonType="button"
                                                             buttonTitle={acceptedAppointments[dashboardData.appointment_id] ? "Accepted" : loading ? "Accepting..." : "Accept"}

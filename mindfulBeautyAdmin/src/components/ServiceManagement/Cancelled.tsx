@@ -6,9 +6,12 @@ import Select, { SingleValue } from 'react-select';
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, cancelledList, fetchStatus, modifyStatus } from "@/api/apiConfig";
+import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
-import stylist from "../../assets/images/stylist.png"
+import stylist from "../../assets/images/stylist.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux/store';
+import { fetchCancelledList, setCurrentPage } from '@/redux/cancelledSlice';
 
 
 
@@ -145,17 +148,18 @@ export const Cancelled = () => {
   // }
 
 
-  const [cancelledListData, setCancelledListData] = useState<CancelledListProps[]>([]);
+  // const [cancelledListData, setCancelledListData] = useState<CancelledListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
   const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
   const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [totalItems, setTotalItems] = useState(0);
 
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
 
@@ -164,16 +168,27 @@ export const Cancelled = () => {
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Redux state
+  const { cancelledListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.cancelled);
+
+  // Fetch inprogress list on mount and when dependencies change
+  useEffect(() => {
+    dispatch(fetchCancelledList({ providerID: Number(sessionLoginProviderID), status: 4, searchQuery, currentPage }));
+  }, [dispatch, searchQuery, currentPage]);
+
+
   // Function call to get the cancelled list
   useEffect(() => {
 
     const fetchCancelledListData = async () => {
-      setLoading(true);
-      setError(null);
+      // setLoading(true);
+      // setError(null);
 
 
       try {
-        const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
+        // const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
 
         const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
@@ -184,18 +199,18 @@ export const Cancelled = () => {
         setStatusListData(statusData);
 
         // const data = await cancelledList(1, 4, currentPage);
-        setCancelledListData(data.results);
+        // setCancelledListData(data.results);
 
-        setTotalItems(data.count);
+        // setTotalItems(data.count);
 
-        console.log("Fetched Cancelled List data log:", data);
-        console.log("Fetched Cancelled List pagination count data log :", data.count);
+        // console.log("Fetched Cancelled List data log:", data);
+        // console.log("Fetched Cancelled List pagination count data log :", data.count);
 
       }
       catch (error: any) {
-        setError(error.message || 'Failed to fetch completed list');
+        // setError(error.message || 'Failed to fetch cancelled list');
       } finally {
-        setLoading(false); // Ensure loading is false after fetching
+        // setLoading(false); // Ensure loading is false after fetching
       }
     }
 
@@ -207,25 +222,26 @@ export const Cancelled = () => {
 
   // Function call to get the updated cancelled list
   const fetchRefreshedCancelledListData = async () => {
-    setLoading(true);
-    setError(null);
+    // setLoading(true);
+    // setError(null);
 
     try {
-      const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
+      // const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
       const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
       setBeauticiansListData(beauticiansData.data);
       setStatusListData(statusData);
-      setCancelledListData(data.results);
-      setTotalItems(data.count);
+      // setCancelledListData(data.results);
+      // setTotalItems(data.count);
 
-      console.log("Fetched Refreshed Inprogress List data log:", data);
-      console.log("Fetched Refreshed Inprogress List pagination count data log :", data.count);
+      // console.log("Fetched Refreshed Cancelled List data log:", data);
+      // console.log("Fetched Refreshed Cancelled List pagination count data log :", data.count);
+
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list");
+      // setError(error.message || "Failed to fetch cancelled list");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -242,36 +258,37 @@ export const Cancelled = () => {
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
 
       console.log("Modify status data log:", data);
 
 
-      // Refresh the schedule list data after status update
+      // Refresh the cancelled list data after status update
       await fetchRefreshedCancelledListData();
 
       // Take a deep copy of the service list data and update
       // const updatedScheduleList = [...data.results]; // Assuming results is an array
 
-      // Update the schedule list based on the status
+      // Update the cancelled list based on the status
       // setScheduleListData(updatedScheduleList || []);
       // setTotalItems(data.count);
 
 
     } catch (error: any) {
-      setError(error.message || "Failed to fetch schedule list for the selected status");
+      // setError(error.message || "Failed to fetch cancelled list for the selected status");
     }
     finally {
-      setLoading(false);
+      // setLoading(false);
 
     }
   };
 
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // setCurrentPage(page);
+    dispatch(setCurrentPage(page));
   };
 
   const handleItemsPerPageChange = (items: number) => {
@@ -427,7 +444,7 @@ export const Cancelled = () => {
                       ))} */}
 
                       {statusListData
-                        .filter((status) => status.status_id !== 0 && status.status_id !== 1 && status.status_id !== 2 && status.status_id !== 3 && status.status_id !== 5 )
+                        .filter((status) => status.status_id !== 0 && status.status_id !== 1 && status.status_id !== 2 && status.status_id !== 3 && status.status_id !== 5)
                         .map((status) => (
                           <option key={status.status_id} value={status.status_id}>
                             {status.status_name}
