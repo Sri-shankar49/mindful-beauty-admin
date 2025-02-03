@@ -8,6 +8,7 @@ interface loginState {
     loginProviderID: number | null;
     permissions: { [key: string]: boolean } | null;
     loginBranchID: number | null;
+    walletPoints: number | null;
 }
 
 const initialState: loginState = {
@@ -17,6 +18,7 @@ const initialState: loginState = {
     loginProviderID: null,
     permissions: null,
     loginBranchID: null,
+    walletPoints: null,
 }
 
 // Thunk for OTP Validation
@@ -32,7 +34,8 @@ export const verifyOTPThunk = createAsyncThunk('login/verifyOTP', async ({ phone
                 token: response.token,
                 loginProviderID: response.provider_id,
                 permissions: response.permissions, // Get permissions dynamically
-                loginBranchID: response.branch_id
+                loginBranchID: response.branch_id,
+                walletPoints: response.available_credits,
                 // permissions: {
                 //     "dashboard": true,
                 //     "manage_role": true,
@@ -50,7 +53,7 @@ export const verifyOTPThunk = createAsyncThunk('login/verifyOTP', async ({ phone
                 //     "completed": true,
                 //     "cancelled": false
                 // }
-            }; // Return both token and loginProviderID & loginBranchID
+            }; // Return both token and loginProviderID & loginBranchID & walletPoints
         } else {
             return rejectWithValue(response.message || 'Invalid OTP'); // Use API's message if available
         }
@@ -78,24 +81,28 @@ export const loginSlice = createSlice({
             state.loginProviderID = null;
             state.permissions = null;
             state.loginBranchID = null;
+            state.walletPoints = null;
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('EnteredPhoneNumber');
             sessionStorage.removeItem('loginProviderID');
             sessionStorage.removeItem('permissions');
             sessionStorage.removeItem('loginBranchID');
+            sessionStorage.removeItem('walletPoints');
         },
     },
     extraReducers: builder => {
         builder
-            .addCase(verifyOTPThunk.fulfilled, (state, action: PayloadAction<{ token: string; loginProviderID: number; loginBranchID: number; permissions: { [key: string]: boolean }; }>) => {
+            .addCase(verifyOTPThunk.fulfilled, (state, action: PayloadAction<{ token: string; loginProviderID: number; loginBranchID: number; walletPoints: number; permissions: { [key: string]: boolean }; }>) => {
                 state.token = action.payload.token;
                 state.loginProviderID = action.payload.loginProviderID;
                 state.permissions = action.payload.permissions;        // Update permissions dynamically
                 state.loginBranchID = action.payload.loginBranchID;
+                state.walletPoints = action.payload.walletPoints;
                 sessionStorage.setItem('token', action.payload.token); // Sync token with session storage
-                sessionStorage.setItem('loginProviderID', String(action.payload.loginProviderID)); // Sync providerID with session storage
+                sessionStorage.setItem('loginProviderID', String(action.payload.loginProviderID)); // Sync loginProviderID with session storage
                 sessionStorage.setItem('permissions', JSON.stringify(action.payload.permissions));
-                sessionStorage.setItem('loginBranchID', String(action.payload.loginBranchID)); // Sync providerID with session storage
+                sessionStorage.setItem('loginBranchID', String(action.payload.loginBranchID)); // Sync loginBranchID with session storage
+                sessionStorage.setItem('walletPoints', String(action.payload.walletPoints)); // Sync walletPoints with session storage
                 state.otpError = null; // Clear OTP error on success
             })
             .addCase(verifyOTPThunk.rejected, (state, action) => {

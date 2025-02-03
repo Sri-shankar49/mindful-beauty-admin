@@ -15,6 +15,7 @@ import { ShimmerTable } from "shimmer-effects-react"
 import { NavLink } from "react-router-dom"
 import { DenialPopup } from "./DashBoardData/DenialPopup"
 import stylist from "../../assets/images/stylist.png"
+import { WalletPopup } from "./WalletPopup";
 
 
 
@@ -114,6 +115,16 @@ export const DashBoardData = () => {
 
     const [stylistError, setStylistError] = useState<{ [key: number]: string; }>({});  // Key is appointment ID, value is the error message
 
+    const [showWalletPopup, setShowWalletPopup] = useState<boolean>(false);
+
+    const openWalletPopup = () => {
+        setShowWalletPopup(true);
+    }
+
+    const closeWalletPopup = () => {
+        setShowWalletPopup(false);
+    }
+
     // handle onChange event of the dropdown
     // const handleStylistOption = (option: SingleValue<StylistOption>) => {
     //     setSelectedStylistOption(option);
@@ -197,6 +208,7 @@ export const DashBoardData = () => {
     }
 
 
+    // Function Handler for loading appointment data
     useEffect(() => {
         const loadBookingList = async () => {
             setLoading(true);
@@ -256,8 +268,11 @@ export const DashBoardData = () => {
     // }, [sortOrder]); // Only sort when sortOrder changes
 
 
-    const handleActionSubmit = async (appointmentID: number, stylistID: number, actionID: number,) => {
+    // Available Credits
+    // const sessionWalletPoints = Number(sessionStorage.getItem("walletPoints"));
+    // console.log("Wallet Points from session storage", sessionWalletPoints);
 
+    const handleActionSubmit = async (appointmentID: number, stylistID: number, actionID: number,) => {
 
         // Check if stylist is selected
         if (!selectedStylist) {
@@ -268,6 +283,22 @@ export const DashBoardData = () => {
             }));
             return; // Prevent further execution if no stylist is selected
         }
+
+        // Check if wallet points are below the minimum threshold
+        // if (sessionWalletPoints <= 1000) {
+        //     openWalletPopup(); // Trigger wallet popup
+        //     return; // Stop further execution
+        // }
+
+        // Fetch updated wallet points dynamically from session storage
+        const updatedWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
+
+        // Validate wallet points for this specific appointment
+        if (updatedWalletPoints < 1000) {
+            openWalletPopup(); // Trigger wallet popup
+            return; // Stop execution
+        }
+
 
         setLoading(true);
         setError(null);
@@ -316,8 +347,13 @@ export const DashBoardData = () => {
                 }
             }
 
-
             console.log("Booking Action data log:", data);
+
+            // Re-check wallet balance after booking action
+            const newWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
+            if (newWalletPoints < 1000) {
+                openWalletPopup(); // Trigger wallet popup if balance drops below 1000
+            }
 
         } catch (error: any) {
             setError(error.message || 'Failed to fetch staff list');
@@ -365,7 +401,8 @@ export const DashBoardData = () => {
             />
         </div>
     </div>;
-    if (error) return <div>{error}</div>;
+
+    // if (error) return <div>{error}</div>;
 
 
     return (
@@ -847,10 +884,14 @@ export const DashBoardData = () => {
             {showDenialPopup && selectedAppointmentID !== null && (
                 <DenialPopup closePopup={closeDenialPopup} appointmentID={selectedAppointmentID} />
             )}
+
             {/* {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />} */}
             {showStylistPopup && selectedStylist && (
                 <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
             )}
+
+
+            {showWalletPopup && <WalletPopup closePopup={closeWalletPopup} errorMessage={error} />}
 
         </div>
 

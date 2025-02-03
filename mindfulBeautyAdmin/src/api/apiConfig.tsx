@@ -1640,12 +1640,13 @@ export const fetchStatus = async () => {
 
 // Service Management -- --> All Booking, Schedule, Inprogress, Completed, Cancelled
 // PUT Method from the API
-export const modifyStatus = async (appointmentID: number, statusID: number) => {
+export const modifyStatus = async (appointmentID: number, statusID: number, stylistID: number) => {
 
   try {
     const response = await apiAxios.put(`/provider-api/modify-status/`, {
       appointment_id: appointmentID,
       status_id: statusID,
+      stylist_id: stylistID,
     });
 
     console.log("Modify Status PUT Method response", response.data);

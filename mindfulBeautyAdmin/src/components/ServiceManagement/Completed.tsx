@@ -10,13 +10,14 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, paymentStatus } from "@/api/apiConfig";
+import { beauticiansList, modifyStatus, paymentStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import { SelectField } from "@/common/SelectField";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchCompletedList, setCurrentPage } from '@/redux/completedSlice';
+import { useNavigate } from "react-router-dom";
 
 
 // interface StatusListDataProps {
@@ -98,6 +99,9 @@ export const Completed = () => {
   //   }
   // ];
 
+  // Navigate from react router dom
+  const navigate = useNavigate();
+
 
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
@@ -122,21 +126,67 @@ export const Completed = () => {
   // };
 
 
-  const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
-    if (newValue) {
-      const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.staff === newValue.value
-      );
+  // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+  //   if (newValue) {
+  //     const selectedBeautician = beauticiansListData.find(
+  //       (beautician) => beautician.staff === newValue.value
+  //     );
 
-      console.log("Selected Beautician ID:", selectedBeautician);
+  //     console.log("Selected Beautician ID:", selectedBeautician);
 
 
-      if (selectedBeautician) {
-        setSelectedStylist(selectedBeautician);
-        setShowStylistPopup(true);
+  //     if (selectedBeautician) {
+  //       setSelectedStylist(selectedBeautician);
+  //       setShowStylistPopup(true);
+  //     }
+  //   } else {
+  //     console.log("No option selected.");
+  //   }
+  // };
+
+
+  // Function Handler for Stylist Option while Changing the Stylist Value on API call
+  const handleStylistOption = async (
+    newValue: SingleValue<StylistOption>,
+    appointmentID: string,
+    // statusID: string
+  ) => {
+    if (!newValue) {
+      console.log("No stylist selected.");
+      return;
+    }
+
+    const selectedBeautician = beauticiansListData.find(
+      (beautician) => beautician.staff === Number(newValue.value)
+    );
+
+    console.log("Selected Beautician:", selectedBeautician);
+
+    if (selectedBeautician) {
+      setSelectedStylist(selectedBeautician);
+      setShowStylistPopup(true);
+
+      // Dispatch loading state before calling API
+      // dispatch(setLoading(true));
+
+      try {
+        // Call modifyStatus API to update the stylist
+        const data = await modifyStatus(
+          Number(appointmentID),      // Keep the same appointment ID
+          Number("0"), // Keep the same status
+          Number(selectedBeautician.staff) // New stylist ID
+        );
+
+        console.log("Modify Stylist status data log:", data);
+
+        // Refresh the inprogress list after the update
+        // await fetchRefreshedInprogressListData();
+
+      } catch (error: any) {
+        console.error("Failed to update stylist:", error.message);
+      } finally {
+        // dispatch(setLoading(false)); // Reset loading state
       }
-    } else {
-      console.log("No option selected.");
     }
   };
 
@@ -248,6 +298,10 @@ export const Completed = () => {
 
       console.log("Payment status data log:", data);
 
+      if (data?.status === "success") {
+        navigate(0);
+      }
+
     } catch (error: any) {
       // setError(error.message || "Failed to update payment status");
     }
@@ -284,6 +338,7 @@ export const Completed = () => {
       />
     </div>
   </div>;
+
   if (error) return <div>{error}</div>;
 
   return (
@@ -369,7 +424,8 @@ export const Completed = () => {
                           // icon: beautician.profile_image,
                           icon: stylist,
                         }))}
-                        onChange={handleStylistOption}
+                        // onChange={handleStylistOption}
+                        onChange={(e) => handleStylistOption(e, completed.id)}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                         formatOptionLabel={(option) => (
                           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -402,6 +458,7 @@ export const Completed = () => {
                         { value: "Partly Paid", label: "Partly Paid" },
                         { value: "Not Paid", label: "Not Paid" },
                       ]}
+                      value={completed.payment_status} // Set default value from API response
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                       onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
                     />

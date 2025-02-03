@@ -16,6 +16,7 @@ interface CompletedItem {
     modify_status: string;
     stylist: string;
     stylist_id?: string;
+    payment_status: string;
 }
 
 interface Service {

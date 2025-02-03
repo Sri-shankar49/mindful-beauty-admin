@@ -1,6 +1,7 @@
 import { Button } from '@/common/Button';
 import { IoCloseCircle } from 'react-icons/io5';
 import stylist from "../../../assets/images/stylist.png"
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface StylistPopupProps {
     closePopup: () => void;
@@ -25,6 +26,26 @@ interface StylistPopupProps {
 }
 
 export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylistDetails }) => {
+
+    const navigate = useNavigate();
+
+    const location = useLocation(); // Detect current route
+
+
+    const onSubmit = () => {
+        // console.log(stylistDetails);
+        // navigate(0);
+        closePopup();
+
+        // Prevent refresh in Dashboard/DashboardData
+        if (location.pathname.includes("ServiceManagement")) {
+            navigate(0); // Refresh page only if NOT in DashboardData
+        }
+
+        console.log("Refreshing the page after the popup confirm", stylistDetails);
+
+
+    }
     return (
         <div>
             <div>
@@ -69,17 +90,30 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylistD
                                 <div className="pt-5">
                                     <div className="flex items-center justify-center space-x-5">
                                         {/* Cancel Button */}
-                                        <Button
+
+                                        {/* Conditionally Render Cancel Button */}
+                                        {/* {!location.pathname.includes("ServiceManagement") && (
+                                            <Button
+                                                onClick={closePopup}
+                                                buttonType="button"
+                                                buttonTitle="Cancel"
+                                                className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                            />
+                                        )} */}
+
+                                        {/* <Button
                                             onClick={closePopup}
                                             buttonType="button"
                                             buttonTitle="Cancel"
                                             className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                        />
+                                        /> */}
+
 
                                         {/* Submit Button */}
                                         <Button
-                                            onClick={closePopup}
-                                            buttonType="submit"
+                                            // onClick={closePopup}
+                                            onClick={onSubmit}
+                                            buttonType="button"
                                             buttonTitle="Confirm"
                                             className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
                                         />

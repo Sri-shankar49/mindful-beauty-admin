@@ -48,7 +48,7 @@ export const Header = () => {
         setProfileHover(false);
     };
 
-    // Login Provider ID
+    // Login Branch ID
     const sessionLoginBranchID = sessionStorage.getItem("loginBranchID");
     console.log("Login Provider ID from session storage", sessionLoginBranchID);
 

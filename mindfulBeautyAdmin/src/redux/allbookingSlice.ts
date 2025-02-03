@@ -71,6 +71,13 @@ const allbookingSlice = createSlice({
         setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -90,5 +97,5 @@ const allbookingSlice = createSlice({
     },
 });
 
-export const { setSearchQuery, setCurrentPage } = allbookingSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading, setError } = allbookingSlice.actions;
 export default allbookingSlice.reducer;

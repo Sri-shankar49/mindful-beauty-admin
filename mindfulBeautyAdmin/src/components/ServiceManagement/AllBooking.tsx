@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchBookingList, setCurrentPage } from '@/redux/allbookingSlice';
 import { EditAppointmentPopup } from "./EditAppointmentPopup";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -97,6 +98,9 @@ export const AllBooking = () => {
   //   }
   // ];
 
+  // Navigate from react router dom
+  const navigate = useNavigate();
+
 
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
@@ -136,23 +140,69 @@ export const AllBooking = () => {
   //   }
   // };
 
-  const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
-    if (newValue) {
-      const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.staff === newValue.value
-      );
+  // Already Working Function
+  // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+  //   if (newValue) {
+  //     const selectedBeautician = beauticiansListData.find(
+  //       (beautician) => beautician.staff === newValue.value
+  //     );
 
-      console.log("Selected Beautician ID:", selectedBeautician);
+  //     console.log("Selected Beautician ID:", selectedBeautician);
 
 
-      if (selectedBeautician) {
-        setSelectedStylist(selectedBeautician);
-        setShowStylistPopup(true);
+  //     if (selectedBeautician) {
+  //       setSelectedStylist(selectedBeautician);
+  //       setShowStylistPopup(true);
+  //     }
+  //   } else {
+  //     console.log("No option selected.");
+  //   }
+  // };
+
+  // Function Handler for Stylist Option while Changing the Stylist Value on API call
+  const handleStylistOption = async (
+    newValue: SingleValue<StylistOption>,
+    appointmentID: string,
+    // statusID: string
+  ) => {
+    if (!newValue) {
+      console.log("No stylist  selected.");
+      return;
+    }
+
+    const selectedBeautician = beauticiansListData.find(
+      (beautician) => beautician.staff === Number(newValue.value)
+    );
+
+    console.log("Selected Beautician:", selectedBeautician);
+
+    if (selectedBeautician) {
+      setSelectedStylist(selectedBeautician);
+      setShowStylistPopup(true);
+
+      // Dispatch loading state before calling API
+      // dispatch(setLoading(true));
+
+      try {
+        // Call modifyStatus API to update the stylist
+        const data = await modifyStatus(
+          Number(appointmentID),      // Keep the same appointment ID
+          Number("0"), // Keep the same status
+          Number(selectedBeautician.staff) // New stylist ID
+        );
+
+        console.log("Modify Stylist status data log:", data);
+
+        // Refresh the booking list after the update
+        await fetchRefreshedBookingListData();
+      } catch (error: any) {
+        console.error("Failed to update stylist:", error.message);
+      } finally {
+        // dispatch(setLoading(false)); // Reset loading state
       }
-    } else {
-      console.log("No option selected.");
     }
   };
+
 
   // Function to get default stylist from API response
   // const getDefaultStylist = () => {
@@ -300,23 +350,30 @@ export const AllBooking = () => {
   }, [currentPage, itemsPerPage]);
 
 
-
-  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
+  // Function handler on Changing the status for the appointment
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string, stylistID?: string) => {
     const newStatusId = e.target.value;
-    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
+    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId} and stylist ID ${stylistID}`);
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
       // setLoading(true);
 
-      const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
+      const data = await modifyStatus(Number(appointmentID), Number(newStatusId), Number(stylistID));
 
       console.log("Modify status data log:", data);
+
+      if (data?.status === "success") {
+        // toast.success("Status updated successfully");
+        navigate(0);
+      }
 
 
       // Refresh the booking list data after status update
       await fetchRefreshedBookingListData();
+
+
 
     } catch (error: any) {
       // setError(error.message || "Failed to fetch booking list for the selected status");
@@ -482,7 +539,7 @@ export const AllBooking = () => {
                           // icon: beautician.profile_image,
                           icon: stylist,
                         }))}
-                        onChange={handleStylistOption}
+                        onChange={(e) => handleStylistOption(e, bookingData.id)}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                         formatOptionLabel={(option) => (
                           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -525,7 +582,7 @@ export const AllBooking = () => {
                       // value={selectedBranch}
                       // onChange={handleBranchChange} // Call on change
                       value={bookingData.status_id} // Set default value from the API response
-                      onChange={(e) => handleStatusChange(e, bookingData.id)} // Handle status change
+                      onChange={(e) => handleStatusChange(e, bookingData.id, String(bookingData.stylist_id))} // Handle status change
 
                     >
                       {/* <option value="" disabled>

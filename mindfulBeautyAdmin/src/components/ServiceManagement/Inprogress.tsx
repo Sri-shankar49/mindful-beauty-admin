@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import editButton from "../../assets/icons/editButton.png";
 // import deleteButton from "../../assets/icons/deleteButton.png";
@@ -95,6 +95,9 @@ export const Inprogress = () => {
   // ];
 
 
+  // Navigate from react router dom
+  const navigate = useNavigate();
+
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
 
@@ -117,21 +120,66 @@ export const Inprogress = () => {
   //   setShowStylistPopup(true);
   // };
 
-  const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
-    if (newValue) {
-      const selectedBeautician = beauticiansListData.find(
-        (beautician) => beautician.staff === newValue.value
-      );
+  // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
+  //   if (newValue) {
+  //     const selectedBeautician = beauticiansListData.find(
+  //       (beautician) => beautician.staff === newValue.value
+  //     );
 
-      console.log("Selected Beautician ID:", selectedBeautician);
+  //     console.log("Selected Beautician ID:", selectedBeautician);
 
 
-      if (selectedBeautician) {
-        setSelectedStylist(selectedBeautician);
-        setShowStylistPopup(true);
+  //     if (selectedBeautician) {
+  //       setSelectedStylist(selectedBeautician);
+  //       setShowStylistPopup(true);
+  //     }
+  //   } else {
+  //     console.log("No option selected.");
+  //   }
+  // };
+
+
+  // Function Handler for Stylist Option while Changing the Stylist Value on API call
+  const handleStylistOption = async (
+    newValue: SingleValue<StylistOption>,
+    appointmentID: string,
+    // statusID: string
+  ) => {
+    if (!newValue) {
+      console.log("No stylist  selected.");
+      return;
+    }
+
+    const selectedBeautician = beauticiansListData.find(
+      (beautician) => beautician.staff === Number(newValue.value)
+    );
+
+    console.log("Selected Beautician:", selectedBeautician);
+
+    if (selectedBeautician) {
+      setSelectedStylist(selectedBeautician);
+      setShowStylistPopup(true);
+
+      // Dispatch loading state before calling API
+      // dispatch(setLoading(true));
+
+      try {
+        // Call modifyStatus API to update the stylist
+        const data = await modifyStatus(
+          Number(appointmentID),      // Keep the same appointment ID
+          Number("0"), // Keep the same status
+          Number(selectedBeautician.staff) // New stylist ID
+        );
+
+        console.log("Modify Stylist status data log:", data);
+
+        // Refresh the inprogress list after the update
+        await fetchRefreshedInprogressListData();
+      } catch (error: any) {
+        console.error("Failed to update stylist:", error.message);
+      } finally {
+        // dispatch(setLoading(false)); // Reset loading state
       }
-    } else {
-      console.log("No option selected.");
     }
   };
 
@@ -245,19 +293,23 @@ export const Inprogress = () => {
 
 
 
-  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string) => {
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: string, stylistID?: string) => {
     const newStatusId = e.target.value;
-    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId}`);
+    console.log(`Status changed for booking ID ${appointmentID} to ${newStatusId} and stylist ID ${stylistID}`);
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
       // setLoading(true);
 
-      const data = await modifyStatus(Number(appointmentID), Number(newStatusId));
+      const data = await modifyStatus(Number(appointmentID), Number(newStatusId), Number(stylistID));
 
       console.log("Modify status data log:", data);
 
+      if (data?.status === "success") {
+        // toast.success("Status updated successfully");
+        navigate(0);
+      }
 
       // Refresh the inprogress list data after status update
       await fetchRefreshedInprogressListData();
@@ -393,7 +445,8 @@ export const Inprogress = () => {
                           // icon: beautician.profile_image,
                           icon: stylist,
                         }))}
-                        onChange={handleStylistOption}
+                        // onChange={handleStylistOption}
+                        onChange={(e) => handleStylistOption(e, inprogress.id)}
                         getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                         formatOptionLabel={(option) => (
                           <div style={{ display: 'flex', alignItems: 'center' }}>

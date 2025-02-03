@@ -199,7 +199,7 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
                                     onClick={handleResendOtp}
                                 >Resend</span>
                             ) : (
-                                <span className="text-gray-500">Resend in {timer} seconds</span>
+                                <span className="underline cursor-pointer hover:no-underline">Resend in {timer} seconds</span>
                             )}
                         </p>
                     </div>
