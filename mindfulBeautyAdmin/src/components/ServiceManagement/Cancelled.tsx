@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
-import Select, { SingleValue } from 'react-select';
+// import Select, { SingleValue } from 'react-select';
 // import stylist from "../../assets/images/stylist.png"
-import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
+// import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
+import { fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
-import stylist from "../../assets/images/stylist.png";
+// import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchCancelledList, setCurrentPage } from '@/redux/cancelledSlice';
@@ -23,11 +23,11 @@ interface StatusListDataProps {
 
 
 // Define the type for each option
-interface StylistOption {
-  value: number;
-  text: string;
-  icon: string; // URL or path to the image
-}
+// interface StylistOption {
+//   value: number;
+//   text: string;
+//   icon: string; // URL or path to the image
+// }
 
 
 // interface Service {
@@ -51,24 +51,24 @@ interface StylistOption {
 //   stylist_id?: string;
 // }
 
-interface BeauticiansDataProps {
-  // id?: any;
-  // name: string;
-  // role: string;
-  // years_of_experience?: string;
-  // rating: string;
-  // profile_image: string;
-  // provider: string;
+// interface BeauticiansDataProps {
+//   // id?: any;
+//   // name: string;
+//   // role: string;
+//   // years_of_experience?: string;
+//   // rating: string;
+//   // profile_image: string;
+//   // provider: string;
 
-  staff?: any;
-  name: string;
-  role_name: string;
-  branch_name: string;
-  status: string;
-  role_id: string;
-  branch_id: string;
-  phone: string;
-}
+//   staff?: any;
+//   name: string;
+//   role_name: string;
+//   branch_name: string;
+//   status: string;
+//   role_id: string;
+//   branch_id: string;
+//   phone: string;
+// }
 
 export const Cancelled = () => {
 
@@ -101,16 +101,16 @@ export const Cancelled = () => {
   const navigate = useNavigate();
 
   // State declaration for Stylist Popup
-  const [showStylistPopup, setShowStylistPopup] = useState(false);
+  // const [showStylistPopup, setShowStylistPopup] = useState(false);
 
 
   // const openStylistPopup = () => {
   //   setShowStylistPopup(true);
   // }
 
-  const closeStylistPopup = () => {
-    setShowStylistPopup(false);
-  }
+  // const closeStylistPopup = () => {
+  //   setShowStylistPopup(false);
+  // }
   // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
 
 
@@ -142,48 +142,48 @@ export const Cancelled = () => {
   // };
 
   // Function Handler for Stylist Option while Changing the Stylist Value on API call
-  const handleStylistOption = async (
-    newValue: SingleValue<StylistOption>,
-    appointmentID: string,
-    // statusID: string
-  ) => {
-    if (!newValue) {
-      console.log("No stylist  selected.");
-      return;
-    }
+  // const handleStylistOption = async (
+  //   newValue: SingleValue<StylistOption>,
+  //   appointmentID: string,
+  //   // statusID: string
+  // ) => {
+  //   if (!newValue) {
+  //     console.log("No stylist  selected.");
+  //     return;
+  //   }
 
-    const selectedBeautician = beauticiansListData.find(
-      (beautician) => beautician.staff === Number(newValue.value)
-    );
+  //   const selectedBeautician = beauticiansListData.find(
+  //     (beautician) => beautician.staff === Number(newValue.value)
+  //   );
 
-    console.log("Selected Beautician:", selectedBeautician);
+  //   console.log("Selected Beautician:", selectedBeautician);
 
-    if (selectedBeautician) {
-      setSelectedStylist(selectedBeautician);
-      setShowStylistPopup(true);
+  //   if (selectedBeautician) {
+  //     setSelectedStylist(selectedBeautician);
+  //     setShowStylistPopup(true);
 
-      // Dispatch loading state before calling API
-      // dispatch(setLoading(true));
+  //     // Dispatch loading state before calling API
+  //     // dispatch(setLoading(true));
 
-      try {
-        // Call modifyStatus API to update the stylist
-        const data = await modifyStatus(
-          Number(appointmentID),      // Keep the same appointment ID
-          Number("0"), // Keep the same status
-          Number(selectedBeautician.staff) // New stylist ID
-        );
+  //     try {
+  //       // Call modifyStatus API to update the stylist
+  //       const data = await modifyStatus(
+  //         Number(appointmentID),      // Keep the same appointment ID
+  //         Number("0"), // Keep the same status
+  //         Number(selectedBeautician.staff) // New stylist ID
+  //       );
 
-        console.log("Modify Stylist status data log:", data);
+  //       console.log("Modify Stylist status data log:", data);
 
-        // Refresh the cancelled list after the update
-        await fetchRefreshedCancelledListData();
-      } catch (error: any) {
-        console.error("Failed to update stylist:", error.message);
-      } finally {
-        // dispatch(setLoading(false)); // Reset loading state
-      }
-    }
-  };
+  //       // Refresh the cancelled list after the update
+  //       await fetchRefreshedCancelledListData();
+  //     } catch (error: any) {
+  //       console.error("Failed to update stylist:", error.message);
+  //     } finally {
+  //       // dispatch(setLoading(false)); // Reset loading state
+  //     }
+  //   }
+  // };
 
 
   // const [showEditServicePopup, setShowEditServicePopup] = useState(false);
@@ -199,8 +199,8 @@ export const Cancelled = () => {
 
   // const [cancelledListData, setCancelledListData] = useState<CancelledListProps[]>([]);
   const [statusListData, setStatusListData] = useState<StatusListDataProps[]>([]);
-  const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
-  const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
+  // const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
+  // const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
 
   // const [loading, setLoading] = useState<boolean>(false);
   // const [error, setError] = useState<string | null>(null);
@@ -239,11 +239,11 @@ export const Cancelled = () => {
       try {
         // const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
 
-        const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+        // const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
 
         const statusData = await fetchStatus();
 
-        setBeauticiansListData(beauticiansData.data);
+        // setBeauticiansListData(beauticiansData.data);
 
         setStatusListData(statusData);
 
@@ -276,10 +276,10 @@ export const Cancelled = () => {
 
     try {
       // const data = await cancelledList(Number(sessionLoginProviderID), 4, currentPage);
-      const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+      // const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
       const statusData = await fetchStatus();
 
-      setBeauticiansListData(beauticiansData.data);
+      // setBeauticiansListData(beauticiansData.data);
       setStatusListData(statusData);
       // setCancelledListData(data.results);
       // setTotalItems(data.count);
@@ -418,7 +418,7 @@ export const Cancelled = () => {
 
                   {/* <td className="text-start px-2 py-5">
                     <div> */}
-                      {/* <Select
+                  {/* <Select
                         placeholder="Select Option"
                         value={selectedStylistOption}
                         options={stylistData}
@@ -434,7 +434,7 @@ export const Cancelled = () => {
                       /> */}
 
 
-                      {/* <Select
+                  {/* <Select
                         placeholder="Select Option"
                         // value={selectedStylistOption}
                         // options={stylistData}
@@ -466,8 +466,8 @@ export const Cancelled = () => {
                         }
                       /> */}
 
-                      
-                    {/* </div>
+
+                  {/* </div>
                   </td> */}
 
                   <td>
@@ -724,9 +724,9 @@ export const Cancelled = () => {
 
       {/* {showDenialPopup && <DenialPopup closePopup={closeDenialPopup} />} */}
       {/* {showStylistPopup && <StylistPopup closePopup={closeStylistPopup} />} */}
-      {showStylistPopup && selectedStylist && (
+      {/* {showStylistPopup && selectedStylist && (
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
-      )}
+      )} */}
 
 
       {/* Pagination */}
