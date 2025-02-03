@@ -522,7 +522,7 @@ export const PackagesList = () => {
 
                 {showEditPackagesPopup && <EditPackagesPopup
                     closePopup={closeEditPackagesPopup}
-                // editStaffData={ }
+                    providerPackageID={Number(selectedPackageID)}     
                 />}
 
                 {showDeletePackagePopup && <DeletePackagesPopup
