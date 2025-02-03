@@ -1454,6 +1454,55 @@ export const editPackages = async (formData: FormData): Promise<any> => {
 
 
 
+// Service Listing Page -- --> Package List
+// Function to edit a package
+export const editPackage = async (providerPackageID: number): Promise<any> => {
+  try {
+    const response = await apiAxios.put(`/provider-api/edit-package/`, {
+      service_id: providerPackageID
+    });
+
+    console.log("Edit Selected Package PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected package");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error editing selected package:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected package. Please try again later.");
+  }
+};
+
+
+// Service Listing Page -- --> Package List
+// Function to edit a package
+export const editPackageUpdate = async (providerPackageID: number, packageTitle: string, price: number, selectedBranch: number, checkboxIDsString: string): Promise<any> => {
+  try {
+    const response = await apiAxios.put(`/provider-api/edit-package/`, {
+      service_id: providerPackageID,
+      branch_id: selectedBranch,
+      package_name: packageTitle,
+      price: price,
+      selected_service_ids: checkboxIDsString,
+    });
+
+    console.log("Edit Selected Package PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected package");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error editing selected package:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected package. Please try again later.");
+  }
+};
+
+
+
 
 // Service Management Page -- --> All Booking List
 // GET Method from the API
