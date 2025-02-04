@@ -3,12 +3,50 @@ import { InputField } from '@/common/InputField'
 import { SelectField } from '@/common/SelectField';
 import React from 'react';
 import { IoCloseCircle } from 'react-icons/io5'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface PaymentDetailsPopupProps {
     closePopup: () => void;
+    editPaymentData: {
+        id: string;
+        date: string;
+        time: string;
+        location: string;
+        name: string;
+        phone: string;
+        // services: Service[];
+        services: { name: string }[];
+        amount: string;
+        status: string;
+        modify_status: string;
+        stylist: string;
+        stylist_id?: string;
+    };
 }
 
-export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closePopup }) => {
+// interface Service {
+//     name: string;
+//     price: number;
+// }
+
+export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closePopup, editPaymentData }) => {
+
+    const navigate = useNavigate();
+
+    const location = useLocation(); // Detect current route
+
+    const onSubmit = () => {
+
+        closePopup();
+
+        if (location.pathname.includes("ServiceManagement")) {
+            navigate(0); // Refresh page only if NOT in DashboardData
+        }
+
+        console.log("Refreshing the page after the payment status popup confirm", editPaymentData);
+
+    }
+
     return (
         <div>
             <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
@@ -47,7 +85,10 @@ export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closeP
                                                 Services
                                             </label>
 
-                                            <p className="text-md text-mindfulBlack">Bridal Glow, Facial, Hair Spa, Gel Extension</p>
+                                            {/* <p className="text-md text-mindfulBlack">Bridal Glow, Facial, Hair Spa, Gel Extension</p> */}
+                                            <p className="text-md text-mindfulBlack">
+                                                {editPaymentData.services.map((service) => service.name).join(", ")}
+                                            </p>
                                         </div>
 
                                         {/* Payment */}
@@ -65,6 +106,8 @@ export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closeP
                                                 id="price"
                                                 placeholder="1500"
                                                 className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={editPaymentData.amount}
+                                                readOnly
                                             />
 
                                             <p></p>
@@ -83,7 +126,8 @@ export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closeP
                                                 Total Price
                                             </label>
 
-                                            <p className="text-md text-mindfulgrey">Rs. 5170</p>
+                                            {/* <p className="text-md text-mindfulgrey">Rs. 5170</p> */}
+                                            <p className="text-md text-mindfulgrey">Rs. {editPaymentData.amount}</p>
 
                                         </div>
 
@@ -124,7 +168,8 @@ export const PaymentDetailsPopup: React.FC<PaymentDetailsPopupProps> = ({ closeP
 
                                         {/* Submit Button */}
                                         <Button
-                                            buttonType="submit"
+                                            onClick={onSubmit}
+                                            buttonType="button"
                                             buttonTitle="Submit"
                                             className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
                                         />

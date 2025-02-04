@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import editButton from "../../assets/icons/editButton.png";
 // import deleteButton from "../../assets/icons/deleteButton.png";
@@ -14,6 +14,7 @@ import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchInprogressList, setCurrentPage } from '@/redux/inprogressSlice';
+import { EditAppointmentPopup } from "./EditAppointmentPopup";
 
 
 interface StatusListDataProps {
@@ -207,6 +208,24 @@ export const Inprogress = () => {
   // Pagination state
   // const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // State Declaration for Edit Appointment Popup
+  const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
+
+
+
+  const openEditAppointmentPopup = (appointmentDetails: any) => {
+    setSelectedAppointment(appointmentDetails); // Store appointment details
+    setShowEditAppointmentPopup(true);
+    console.log("All Booking appointment ID:", appointmentDetails);
+
+  }
+
+  const closeEditAppointmentPopup = () => {
+    setShowEditAppointmentPopup(false);
+    setSelectedAppointment(null); // Clear the selected data when closing
+  }
 
 
   // Login Provider ID
@@ -513,19 +532,20 @@ export const Inprogress = () => {
                   </td>
 
                   <td className="text-start px-2 py-5">
-                    <Link
-                      to="/ServiceManagement/EditServices"
-                      aria-current="page"
-                      aria-label="Edit Services" // Accessibility improvement
+                    {/* <Link
+                        to="/ServiceManagement/EditServices"
+                        aria-current="page"
+                        aria-label="Edit Services" // Accessibility improvement
+                      > */}
+                    <button
+                      // onClick={openEditService}
+                      onClick={openEditAppointmentPopup}
+                      type="button"
+                      className=""  // Optional: Add a class for better styling control
                     >
-                      <button
-                        // onClick={openEditService}
-                        type="button"
-                        className=""  // Optional: Add a class for better styling control
-                      >
-                        <img src={editButton} alt="editButton" />
-                      </button>
-                    </Link>
+                      <img src={editButton} alt="editButton" />
+                    </button>
+                    {/* </Link> */}
                   </td>
 
                 </tr>
@@ -807,6 +827,11 @@ export const Inprogress = () => {
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
 
+      {showEditAppointmentPopup &&
+        <EditAppointmentPopup
+          closePopup={closeEditAppointmentPopup}
+          appointmentDetails={selectedAppointment} // Pass selected data 
+        />}
 
       {/* Pagination */}
       <div>

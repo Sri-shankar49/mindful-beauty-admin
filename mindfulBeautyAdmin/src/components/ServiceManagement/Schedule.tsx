@@ -6,7 +6,7 @@ import Select, { SingleValue } from 'react-select';
 // import stylist from "../../assets/images/stylist.png"
 import { StylistPopup } from "../Dashboard/DashBoardData/StylistPopup";
 // import { SelectField } from "@/common/SelectField";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Pagination } from "@/common/Pagination";
 import { beauticiansList, fetchStatus, modifyStatus } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
@@ -14,6 +14,7 @@ import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchScheduleList, setCurrentPage } from '@/redux/scheduleSlice';
+import { EditAppointmentPopup } from "./EditAppointmentPopup";
 
 
 
@@ -199,6 +200,24 @@ export const Schedule = () => {
   // Pagination state
   // const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // State Declaration for Edit Appointment Popup
+  const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
+
+
+
+  const openEditAppointmentPopup = (appointmentDetails: any) => {
+    setSelectedAppointment(appointmentDetails); // Store appointment details
+    setShowEditAppointmentPopup(true);
+    console.log("All Booking appointment ID:", appointmentDetails);
+
+  }
+
+  const closeEditAppointmentPopup = () => {
+    setShowEditAppointmentPopup(false);
+    setSelectedAppointment(null); // Clear the selected data when closing
+  }
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -519,19 +538,20 @@ export const Schedule = () => {
                   </td>
 
                   <td className="text-start px-2 py-5">
-                    <Link
+                    {/* <Link
                       to="/ServiceManagement/EditServices"
                       aria-current="page"
                       aria-label="Edit Services" // Accessibility improvement
+                    > */}
+                    <button
+                      // onClick={openEditService}
+                      onClick={openEditAppointmentPopup}
+                      type="button"
+                      className=""  // Optional: Add a class for better styling control
                     >
-                      <button
-                        // onClick={openEditService}
-                        type="button"
-                        className=""  // Optional: Add a class for better styling control
-                      >
-                        <img src={editButton} alt="editButton" />
-                      </button>
-                    </Link>
+                      <img src={editButton} alt="editButton" />
+                    </button>
+                    {/* </Link> */}
                   </td>
                 </tr>
               ))
@@ -802,6 +822,12 @@ export const Schedule = () => {
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
 
+
+      {showEditAppointmentPopup &&
+        <EditAppointmentPopup
+          closePopup={closeEditAppointmentPopup}
+          appointmentDetails={selectedAppointment} // Pass selected data 
+        />}
 
 
       {/* Pagination */}

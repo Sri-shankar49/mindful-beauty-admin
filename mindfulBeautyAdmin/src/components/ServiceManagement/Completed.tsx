@@ -192,14 +192,17 @@ export const Completed = () => {
 
   // State Declaration for Payment Details Popup
   const [showPaymentDetailsPopup, setShowPaymentDetailsPopup] = useState(false);
+  const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<any>(null); // Store entire completed object
 
-  // const openPaymentDetailsPopup = () => {
-  //   setShowPaymentDetailsPopup(!showPaymentDetailsPopup)
-  // }
+  const openPaymentDetailsPopup = (completedData: any) => {
+    setSelectedPaymentDetails(completedData); // Store full appointment data
+    setShowPaymentDetailsPopup(true);
+  };
 
   const closePaymentDetailsPopup = () => {
-    setShowPaymentDetailsPopup(false)
-  }
+    setShowPaymentDetailsPopup(false);
+    setSelectedPaymentDetails(null); // Reset state
+  };
 
   // State Declaration for Invoice Popup
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
@@ -283,27 +286,35 @@ export const Completed = () => {
 
 
 
-  const handlePaymentStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, appointmentID: number) => {
+  const handlePaymentStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, completedData: any) => {
     const newStatus = e.target.value;
-    console.log(`Payment Status changed for booking ID ${appointmentID} to ${newStatus}`);
+    console.log(`Payment Status changed for booking ID ${completedData.id} to ${newStatus}`);
+
+    // Update the selected data with the new status
+    const updatedData = { ...completedData, payment_status: newStatus };
+
+    openPaymentDetailsPopup(updatedData); // Pass updated data to popup
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
     try {
       // setLoading(true);
 
-
       // ✅ Pass the string value directly to the API call
-      const data = await paymentStatus(Number(appointmentID), newStatus);
+      // const data = await paymentStatus(Number(appointmentID), newStatus);
+      const data = await paymentStatus(Number(completedData.id), newStatus);
 
       console.log("Payment status data log:", data);
 
-      if (data?.status === "success") {
-        navigate(0);
-      }
+
+      // Commented Out
+      // if (data?.status === "success") {
+      //   navigate(0);
+      // }
 
     } catch (error: any) {
       // setError(error.message || "Failed to update payment status");
+      console.error("Failed to update payment status:", error);
     }
     finally {
       // setLoading(false);
@@ -460,7 +471,8 @@ export const Completed = () => {
                       ]}
                       value={completed.payment_status} // Set default value from API response
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
+                      // onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
+                      onChange={(e) => handlePaymentStatusChange(e, completed)} // Pass full completed object
                     />
                     {/* <select
                       // name=""
@@ -780,7 +792,14 @@ export const Completed = () => {
       {showStylistPopup && selectedStylist && (
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
-      {showPaymentDetailsPopup && <PaymentDetailsPopup closePopup={closePaymentDetailsPopup} />}
+
+      {showPaymentDetailsPopup && selectedPaymentDetails && (
+        <PaymentDetailsPopup
+          closePopup={closePaymentDetailsPopup}
+          editPaymentData={selectedPaymentDetails}
+        />
+      )}
+
       {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} appointmentId={0} />}
 
 

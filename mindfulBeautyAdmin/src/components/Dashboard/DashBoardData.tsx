@@ -104,6 +104,8 @@ export const DashBoardData = () => {
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
     const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
+    const [selectedStylists, setSelectedStylists] = useState<{ [key: number]: any }>({});
+
 
     // const [sortOrder, setSortOrder] = useState<string>("desc");
 
@@ -175,6 +177,15 @@ export const DashBoardData = () => {
                 setSelectedStylist(selectedBeautician);
                 setShowStylistPopup(true);
 
+                // Setting Stylist value to the selected beautician
+                setSelectedStylists((prevState) => ({
+                    ...prevState,
+                    [appointmentID]: selectedBeautician,
+                }));
+
+                // Save the selected stylist in sessionStorage
+                sessionStorage.setItem(`selectedStylist_${appointmentID}`, JSON.stringify(selectedBeautician));
+
                 // Clear the error for the selected appointment
                 setStylistError((prevState) => {
                     const newState = { ...prevState };
@@ -186,6 +197,20 @@ export const DashBoardData = () => {
             console.log("No option selected.");
         }
     };
+
+    // Function handler for storing the stylist data in the session storage
+    useEffect(() => {
+        const updatedStylists = { ...selectedStylists };
+
+        dashboardBookingListData.forEach((dashboardData) => {
+            const storedStylist = sessionStorage.getItem(`selectedStylist_${dashboardData.appointment_id}`);
+            if (storedStylist) {
+                updatedStylists[dashboardData.appointment_id] = JSON.parse(storedStylist);
+            }
+        });
+
+        setSelectedStylists(updatedStylists);
+    }, [dashboardBookingListData]);
 
 
     const openDenialPopup = (appointmentID: string) => {
@@ -560,6 +585,13 @@ export const DashBoardData = () => {
                                                             </div>
                                                         )}
                                                         getOptionValue={(option) => option.value.toString()}
+                                                        value={selectedStylists[dashboardData.appointment_id] ?
+                                                            {
+                                                                value: selectedStylists[dashboardData.appointment_id].staff,
+                                                                text: selectedStylists[dashboardData.appointment_id].name,
+                                                                icon: stylist
+                                                            }
+                                                            : null}
                                                     />
 
                                                     {/* Display the error message for the specific appointment */}
