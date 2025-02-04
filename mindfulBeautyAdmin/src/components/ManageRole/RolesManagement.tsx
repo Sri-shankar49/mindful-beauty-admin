@@ -1,265 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { roleList, addPermissions } from "@/api/apiConfig";
-// import { useEffect, useState } from "react";
-
-// interface RolesManagementProps {
-//   role_id?: number;
-//   role_name: string;
-//   status: boolean;
-// }
-
-// export const RolesManagement = () => {
-//   const [roleListData, setRoleListData] = useState<RolesManagementProps[]>([]);
-//   const [loading, setLoading] = useState<boolean>(false);
-//   const [error, setError] = useState<string | null>(null);
-
-//   // State to track checkbox selections for permissions per role
-//   const [permissions, setPermissions] = useState<
-//     Record<number, Record<string, boolean>>
-//   >({});
-
-//   useEffect(() => {
-//     const fetchRoles = async () => {
-//       setLoading(true);
-//       setError(null);
-
-//       try {
-//         const loadRolesData = await roleList();
-
-//         setRoleListData(loadRolesData.data);
-//         console.log("Role list data log:", loadRolesData);
-
-//         // Initialize permissions state for all roles
-//         const initialPermissions: Record<number, Record<string, boolean>> = {};
-//         loadRolesData.data.forEach((role: RolesManagementProps) => {
-//           if (role.role_id !== undefined) {
-//             initialPermissions[role.role_id] = {
-//               dashboard: false,
-//               manage_role: false,
-//               roles_management: false,
-//               staff_management: false,
-//               branch_management: false,
-//             };
-//           }
-//         });
-//         setPermissions(initialPermissions);
-//       } catch (error: any) {
-//         setError(error.message || "Failed to fetch role list");
-//       } finally {
-//         setLoading(false); // Ensure loading is false after fetching
-//       }
-//     };
-
-//     fetchRoles();
-//   }, []);
-
-//   const handleCheckboxChange = (roleId: number, permission: string) => {
-//     setPermissions((prevPermissions) => {
-//       const updatedPermissions = {
-//         ...prevPermissions,
-//         [roleId]: {
-//           ...prevPermissions[roleId],
-//           [permission]: !prevPermissions[roleId][permission],
-//         },
-//       };
-
-//       // Make API call for adding permissions when a checkbox is clicked
-//       addPermissions(
-//         roleId,
-//         12,
-//         updatedPermissions[roleId].dashboard,
-//         updatedPermissions[roleId].manage_role
-//       )
-//         .then((response) => {
-//           console.log("Permissions updated:", response);
-//         })
-//         .catch((error) => {
-//           console.error("Error updating permissions:", error);
-//         });
-
-//       return updatedPermissions;
-//     });
-//   };
-
-//   if (loading) return <div>Loading...</div>;
-//   if (error) return <div>Error: {error}</div>;
-
-//   return (
-//     <div className="">
-//       <div>
-//         <h5 className="text-3xl font-semibold py-5">User Role Manager</h5>
-//       </div>
-
-//       <div>
-//         <table className="w-full">
-//           <thead className="border-y-2 border-mindfulgrey">
-//             <tr>
-//               <th className="w-[80%] text-start px-2 py-3">Actions</th>
-//               {/* Dynamically render column headers based on role list */}
-//               {roleListData.map((role) => (
-//                 <th key={role.role_id} className="w-[10%] px-2 py-3">
-//                   {role.role_name}
-//                 </th>
-//               ))}
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {/* Heading */}
-
-//             <tr>
-//               <th
-//                 colSpan={5}
-//                 className="bg-mindfulLightgrey text-start px-2 py-4"
-//               >
-//                 Dashboard
-//               </th>
-
-//               {/* Dynamically render checkboxes for each role */}
-//               {roleListData.map((role) => (
-//                 <td key={role.role_id} className="text-center px-2 py-2">
-//                   <label className="cl-checkbox">
-//                     <input
-//                       type="checkbox"
-//                       checked={permissions.dashboard}
-//                       onChange={() => {
-//                         if (role.role_id !== undefined) {
-//                           handleCheckboxChange(role.role_id, "dashboard");
-//                         } else {
-//                           console.error("Role ID is undefined");
-//                         }
-//                       }}
-//                     />
-
-//                     <span></span>
-//                   </label>
-//                 </td>
-//               ))}
-//             </tr>
-//             <tr>
-//               <th
-//                 colSpan={5}
-//                 className="bg-mindfulLightgrey text-start px-2 py-4"
-//               >
-//                 Manage Role
-//               </th>
-
-//               {/* Dynamically render checkboxes for each role */}
-//               {roleListData.map((role) => (
-//                 <td key={role.role_id} className="text-center px-2 py-2">
-//                   <label className="cl-checkbox">
-//                     <input
-//                       type="checkbox"
-//                       checked={permissions.manage_role}
-//                       onChange={() => {
-//                         if (role.role_id !== undefined) {
-//                           handleCheckboxChange(role.role_id, "manage_role");
-//                         } else {
-//                           console.error("Role ID is undefined");
-//                         }
-//                       }}
-//                     />
-
-//                     <span></span>
-//                   </label>
-//                 </td>
-//               ))}
-//             </tr>
-//             {/* Content & Checkbox */}
-
-//             {/* Content & Checkbox */}
-//             <tr>
-//               <td className="px-2 py-2">Roles Management</td>
-//               {roleListData.map((role) => (
-//                 <td key={role.role_id} className="text-center px-2 py-2">
-//                   <label className="cl-checkbox">
-//                     <input
-//                       type="checkbox"
-//                       checked={permissions.roles_management}
-//                       //   onChange={() => handleCheckboxChange(role.role_id, 'roles_management')}
-//                       onChange={() => {
-//                         if (role.role_id !== undefined) {
-//                           handleCheckboxChange(
-//                             role.role_id,
-//                             "roles_management"
-//                           );
-//                         } else {
-//                           console.error("Role ID is undefined");
-//                         }
-//                       }}
-//                     />
-
-//                     <span></span>
-//                   </label>
-//                 </td>
-//               ))}
-//             </tr>
-
-//             <tr>
-//               <td className="px-2 py-2">Staff Management</td>
-//               {roleListData.map((role) => (
-//                 <td key={role.role_id} className="text-center px-2 py-2">
-//                   <label className="cl-checkbox">
-//                     <input
-//                       type="checkbox"
-//                       checked={permissions.staff_management}
-//                       //   onChange={() => handleCheckboxChange(role.role_id, 'staff_management')}
-
-//                       onChange={() => {
-//                         if (role.role_id !== undefined) {
-//                           handleCheckboxChange(
-//                             role.role_id,
-//                             "staff_management"
-//                           );
-//                         } else {
-//                           console.error("Role ID is undefined");
-//                         }
-//                       }}
-//                     />
-//                     <span></span>
-//                   </label>
-//                 </td>
-//               ))}
-//             </tr>
-
-//             <tr>
-//               <td className="px-2 py-2">Branch Management</td>
-//               {roleListData.map((role) => (
-//                 <td key={role.role_id} className="text-center px-2 py-2">
-//                   <label className="cl-checkbox">
-//                     <input
-//                       type="checkbox"
-//                       checked={permissions.branch_management}
-//                       //   onChange={() => handleCheckboxChange(role.role_id, 'branch_management')}
-//                       onChange={() => {
-//                         if (role.role_id !== undefined) {
-//                           handleCheckboxChange(
-//                             role.role_id,
-//                             "branch_management"
-//                           );
-//                         } else {
-//                           console.error("Role ID is undefined");
-//                         }
-//                       }}
-//                     />
-//                     <span></span>
-//                   </label>
-//                 </td>
-//               ))}
-//             </tr>
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// };
-
 import { useEffect, useState } from "react";
-import {
-    roleList,
-    addPermissions,
-    getProviderPermissions,
-} from "@/api/apiConfig";
+import { roleList, addPermissions, getProviderPermissions } from "@/api/apiConfig";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ShimmerTable } from "shimmer-effects-react";
@@ -291,13 +31,11 @@ export const RolesManagement = () => {
                 return; // Early return if loginProviderID is not available
             }
 
-            setLoading(true);
-            setError(null);
-
             try {
+                // Fetch role list data
                 const loadRolesData = await roleList();
                 setRoleListData(loadRolesData.data);
-                console.log("Role list data log:", loadRolesData);
+                console.log("Role list data log all data ===>", loadRolesData);
 
                 // Initialize permissions state for all roles
                 const initialPermissions: Record<number, Record<string, boolean>> = {};
@@ -322,36 +60,30 @@ export const RolesManagement = () => {
                         };
                     }
                 });
-                setPermissions(initialPermissions);
-                console.log("initialPermissions", initialPermissions);
-                // Fetch provider permissions for role id 12 (static providerId)
-                const providerPermissions = await getProviderPermissions(
-                    loginProviderID
-                );
-                console.log("providerPermissions", providerPermissions);
-                // Map the provider permissions to the roles management permissions
+
+                console.log("Initial Permissions:", initialPermissions);
+
+                // Fetch provider permissions
+                const providerPermissions = await getProviderPermissions(loginProviderID);
+                console.log("Provider Permissions ===>", providerPermissions);
+
+                // Merge provider permissions into role-based permissions
                 providerPermissions.forEach((permission: any) => {
-                    if (initialPermissions[permission.role]) {
-                        initialPermissions[permission.role] = {
-                            dashboard: permission.dashboard,
-                            manage_role: permission.manage_role,
-                            roles_management: permission.roles_management,
-                            staff_management: permission.staff_management,
-                            branch_management: permission.branch_management,
-                            service_listing: permission.service_listing,
-                            service_management: permission.service_management,
-                            sales_transactions: permission.sales_transactions,
-                            ratings_reviews: permission.ratings_reviews,
-                            report_details: permission.report_details,
-                            all_booking: permission.all_booking,
-                            schedule: permission.schedule,
-                            inprogress: permission.inprogress,
-                            completed: permission.completed,
-                            cancelled: permission.cancelled,
-                        };
+                    if (!initialPermissions[permission.role]) {
+                        initialPermissions[permission.role] = {};
                     }
+
+                    Object.keys(permission).forEach((key) => {
+                        if (key !== "permission_id" && key !== "role" && key !== "provider") {
+                            initialPermissions[permission.role][key] =
+                                initialPermissions[permission.role][key] || permission[key];
+                        }
+                    });
                 });
+
+                // Update the state with merged permissions
                 setPermissions(initialPermissions);
+                console.log("Final Permissions after merging:", initialPermissions);
             } catch (error: any) {
                 setError(error.message || "Failed to fetch role list");
             } finally {
@@ -362,6 +94,7 @@ export const RolesManagement = () => {
         fetchRoles();
     }, []);
 
+
     const handleCheckboxChange = (roleId: number, permission: string, roleName: string) => {
         // Don't allow changes if the role is Admin
         if (roleName === "Admin") {
@@ -371,6 +104,7 @@ export const RolesManagement = () => {
         if (!loginProviderID) {
             return;
         }
+        console.log("roleId, permission, roleName ===>", roleId, permission, roleName);
         setPermissions((prevPermissions) => {
             const updatedPermissions = {
                 ...prevPermissions,
@@ -382,6 +116,26 @@ export const RolesManagement = () => {
 
             // Make API call for adding permissions when a checkbox is clicked
             const rolePermissions = updatedPermissions[roleId];
+            // console.log("roleid permissions ===>", 
+            //     roleId,
+            // );
+            // console.log("loginProviderID ===>", loginProviderID);
+            // console.log("rolePermissions dashboard ===>", rolePermissions.dashboard);
+            // console.log("rolePermissions manage_role ===>", rolePermissions.manage_role);
+            // console.log("rolePermissions roles_management ===>", rolePermissions.roles_management);
+            // console.log("rolePermissions staff_management ===>", rolePermissions.staff_management);
+            // console.log("rolePermissions branch_management ===>", rolePermissions.branch_management);
+            // console.log("rolePermissions service_listing ===>", rolePermissions.service_listing);
+            // console.log("rolePermissions service_management ===>", rolePermissions.service_management);
+            // console.log("rolePermissions all_booking ===>", rolePermissions.all_booking);
+            // console.log("rolePermissions schedule ===>", rolePermissions.schedule);
+            // console.log("rolePermissions inprogress ===>", rolePermissions.inprogress);
+            // console.log("rolePermissions completed ===>", rolePermissions.completed);
+            // console.log("rolePermissions cancelled ===>", rolePermissions.cancelled);
+            // console.log("rolePermissions sales_transactions ===>", rolePermissions.sales_transactions);
+            // console.log("rolePermissions ratings_reviews ===>", rolePermissions.ratings_reviews);
+            // console.log("rolePermissions report_details ===>", rolePermissions.report_details);
+
             addPermissions(
                 roleId,
                 loginProviderID,
@@ -392,14 +146,14 @@ export const RolesManagement = () => {
                 rolePermissions.branch_management,
                 rolePermissions.service_listing,
                 rolePermissions.service_management,
-                rolePermissions.sales_transactions,
-                rolePermissions.ratings_reviews,
-                rolePermissions.report_details,
                 rolePermissions.all_booking,
                 rolePermissions.schedule,
                 rolePermissions.inprogress,
                 rolePermissions.completed,
-                rolePermissions.cancelled
+                rolePermissions.cancelled,
+                rolePermissions.sales_transactions,
+                rolePermissions.ratings_reviews,
+                rolePermissions.report_details,
             )
                 .then((response) => {
                     console.log("Permissions updated:", response);

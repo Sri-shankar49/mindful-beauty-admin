@@ -1,9 +1,10 @@
-import { addServicesCheckbox, categories, staffBranchList, subCategories, editPackage, editPackageUpdate } from '@/api/apiConfig';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { IoCloseCircle } from 'react-icons/io5';
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
 import { SelectField } from '@/common/SelectField';
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { addServicesCheckbox, categories, staffBranchList, subCategories, editPackage, editPackageUpdate } from '@/api/apiConfig';
 
 interface EditPackagesPopupProps {
     providerPackageID: number
@@ -192,9 +193,13 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         console.log("Changed to string value", checkboxIDsString, selectedCheckboxIDs);
         console.log("Selected all ID", providerPackageID, formValues.packageTitle, Number(formValues.price), selectedBranch, selectedCheckboxNames);
         try {
-            const response = await editPackageUpdate
-                (providerPackageID, formValues.packageTitle,
-                    Number(formValues.price), selectedBranch, checkboxIDsString);
+            const response = await editPackageUpdate(
+                providerPackageID,
+                formValues.packageTitle,
+                Number(formValues.price),
+                selectedBranch,
+                checkboxIDsString
+            );
             console.log("response ===>", response);
             if (response?.status === "success") {
                 closePopup();
@@ -356,6 +361,14 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                             <h2 className="text-2xl text-mindfulBlack font-semibold">Edit Package</h2>
                                         </div>
                                         <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">
+                                        </div>
+
+                                        {/* Close Button */}
+                                        <div
+                                            onClick={closePopup}
+                                            className="absolute top-0 right-0 w-fit cursor-pointer"
+                                        >
+                                            <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                                         </div>
                                     </div>
 
@@ -638,7 +651,6 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                 className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                                             />
                                         </div>
-                                        
                                         {/* Error response from the API */}
                                         {error && <p className="text-sm text-red-600">{error}</p>}
                                     </form>
