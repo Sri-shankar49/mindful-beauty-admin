@@ -17,7 +17,6 @@ import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchCompletedList, setCurrentPage } from '@/redux/completedSlice';
-import { useNavigate } from "react-router-dom";
 
 
 // interface StatusListDataProps {
@@ -100,7 +99,7 @@ export const Completed = () => {
   // ];
 
   // Navigate from react router dom
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
   // State declaration for Stylist Popup
