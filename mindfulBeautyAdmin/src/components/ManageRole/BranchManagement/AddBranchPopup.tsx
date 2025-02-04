@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoCloseCircle } from 'react-icons/io5'
 // import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
@@ -8,7 +8,7 @@ import { MdCloudUpload } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { addBranch } from '@/api/apiConfig';
+import { addBranch, googleMapApi } from '@/api/apiConfig';
 import { ShimmerTable } from 'shimmer-effects-react';
 
 interface AddBranchPopupProps {
@@ -45,6 +45,75 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
     const [loading, setLoading] = useState(false); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
 
+
+    const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string>("");
+
+    const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
+
+    // Load Google Maps API
+    useEffect(() => {
+        googleMapApi(() => {
+            console.log("Google Maps API loaded");
+        });
+    }, []);
+
+    // Function to handle location input and get suggestions
+    const handleLocationInput = (input: string) => {
+        if (input.length > 1) {
+            // Trigger after 3 characters
+            const autocomplete = new window.google.maps.places.AutocompleteService();
+            autocomplete.getPlacePredictions({ input }, (predictions, status) => {
+                if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK &&
+                    predictions
+                ) {
+                    setLocationSuggestions(
+                        predictions.map((prediction) => prediction.description)
+                    );
+                } else {
+                    setLocationSuggestions([]);
+                }
+            });
+        } else {
+            setLocationSuggestions([]);
+        }
+    };
+
+    // Handle input changes in location field
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        console.log("inputvalue", inputValue);
+        setSelectedLocation(inputValue); // Update the input value
+        handleLocationInput(inputValue); // Fetch location suggestions
+    };
+
+    const handleLocationSelect = (location: string) => {
+        setSelectedLocation(location);
+        setLocationSuggestions([]); // Clear suggestions after selection
+
+        // Use Google Maps Geocoding API to get the latitude and longitude
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: location }, (results, status) => {
+            if (status === window.google.maps.GeocoderStatus.OK && results?.[0]) {
+                const { lat, lng } = results[0].geometry.location;
+                const fullAddress = results[0].formatted_address; // Full address
+
+                // Store latitude and longitude in state (you can use these values for submission)
+                setLocationCoordinates({
+                    lat: lat(),
+                    lng: lng(),
+                });
+
+                // Optionally, store the full address in a separate state if needed
+                setSelectedLocation(fullAddress); // Store the full address instead of the description
+                console.log("Latitude:", lat(), "Longitude:", lng());
+            } else {
+                console.error("Geocoding failed:", status);
+            }
+        });
+    };
+
     // React Hook Form setup with Zod validation
     const { register, handleSubmit, formState: { errors } } = useForm<addBranchFormData>({
         resolver: zodResolver(addBranchSchema),
@@ -72,11 +141,19 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
             formData.append("branch_name", data.branchName);
             formData.append("branch_phone_number", data.branchPhoneNumber);
             formData.append("branch_address", data.branchAddress);
-            formData.append("branch_location", data.branchLocation);
+            // formData.append("branch_location", data.branchLocation);
+            formData.append("branch_location", selectedLocation);
+
 
             // if (logo) {
             //     formData.append("logo", logo);
             // }
+
+            // Append latitude and longitude if they exist
+            if (locationCoordinates.lat && locationCoordinates.lng) {
+                formData.append("latitude", String(locationCoordinates.lat));
+                formData.append("longitude", String(locationCoordinates.lng));
+            }
 
             // Append selected files
             Object.keys(logo).forEach((key) => {
@@ -341,7 +418,7 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
                                             </div>
 
                                             {/* Branch Location */}
-                                            <div>
+                                            <div className="relative">
                                                 <label
                                                     htmlFor="branchLocation"
                                                     className="text-lg text-mindfulBlack font-semibold">
@@ -353,7 +430,23 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
                                                     // name="branchLocation"
                                                     className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
                                                     {...register("branchLocation")}
+                                                    value={selectedLocation}
+                                                    onChange={handleLocationChange} // Handle input change
                                                 />
+
+                                                {locationSuggestions.length > 0 && (
+                                                    <ul className="absolute left-0 right-0 top-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-50">
+                                                        {locationSuggestions.map((location, index) => (
+                                                            <li
+                                                                key={index}
+                                                                className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                                                                onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                                                            >
+                                                                {location}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
 
                                                 {errors.branchLocation && (
                                                     <p className="text-red-500 text-sm">{errors.branchLocation.message}</p>

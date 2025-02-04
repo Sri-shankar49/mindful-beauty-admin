@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { loginRegister } from '@/api/apiConfig';
+import { googleMapApi, loginRegister } from '@/api/apiConfig';
 
 
 // Define Zod schema for validation
@@ -38,6 +38,76 @@ export const Register: React.FC<RegisterFormData> = () => {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
 
+
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+
+  const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
+
+  // Load Google Maps API
+  useEffect(() => {
+    googleMapApi(() => {
+      console.log("Google Maps API loaded");
+    });
+  }, []);
+
+  // Function to handle location input and get suggestions
+  const handleLocationInput = (input: string) => {
+    if (input.length > 1) {
+      // Trigger after 3 characters
+      const autocomplete = new window.google.maps.places.AutocompleteService();
+      autocomplete.getPlacePredictions({ input }, (predictions, status) => {
+        if (
+          status === window.google.maps.places.PlacesServiceStatus.OK &&
+          predictions
+        ) {
+          setLocationSuggestions(
+            predictions.map((prediction) => prediction.description)
+          );
+        } else {
+          setLocationSuggestions([]);
+        }
+      });
+    } else {
+      setLocationSuggestions([]);
+    }
+  };
+
+  // Handle input changes in location field
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    console.log("inputvalue", inputValue);
+    setSelectedLocation(inputValue); // Update the input value
+    handleLocationInput(inputValue); // Fetch location suggestions
+  };
+
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+    setLocationSuggestions([]); // Clear suggestions after selection
+
+    // Use Google Maps Geocoding API to get the latitude and longitude
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: location }, (results, status) => {
+      if (status === window.google.maps.GeocoderStatus.OK && results?.[0]) {
+        const { lat, lng } = results[0].geometry.location;
+        const fullAddress = results[0].formatted_address; // Full address
+
+        // Store latitude and longitude in state (you can use these values for submission)
+        setLocationCoordinates({
+          lat: lat(),
+          lng: lng(),
+        });
+
+        // Optionally, store the full address in a separate state if needed
+        setSelectedLocation(fullAddress); // Store the full address instead of the description
+        console.log("Latitude:", lat(), "Longitude:", lng());
+      } else {
+        console.error("Geocoding failed:", status);
+      }
+    });
+  };
+
+
   // React Hook Form setup with Zod validation
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -62,7 +132,10 @@ export const Register: React.FC<RegisterFormData> = () => {
         data.email,
         parseInt(data.phone), // Assuming phone is a string
         activeUser,     // Already a number
-        data.location
+        // data.location
+        selectedLocation, // Full address now being passed
+        locationCoordinates.lat ?? 0, // Fallback to 0 if lat is null
+        locationCoordinates.lng ?? 0 // Fallback to 0 if lng is null
       );
       console.log(registrationData.data, "Registration Data");
 
@@ -265,13 +338,33 @@ export const Register: React.FC<RegisterFormData> = () => {
               }
             </div> */}
 
-            <div>
+            <div className="relative w-full">
               <InputField
                 label={activeUser === 1 ? 'Location*' : 'What is your location?'}
                 className="w-full rounded-[5px] px-4 py-2 focus-within:outline-none"
                 required
                 {...register("location")}
+                value={selectedLocation}
+                onChange={handleLocationChange} // Handle input change
               />
+
+
+              {/* Location Suggestions Dropdown */}
+              {locationSuggestions.length > 0 && (
+                <ul className="absolute left-0 top-full w-full border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-[9999]">
+
+                  {locationSuggestions.map((location, index) => (
+                    <li
+                      key={index}
+                      className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                      onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                    >
+                      {location}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               {errors.location && <p className="text-white text-sm">{errors.location.message}</p>}
             </div>
 

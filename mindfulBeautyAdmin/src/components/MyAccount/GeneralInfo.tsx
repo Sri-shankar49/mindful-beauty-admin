@@ -1,7 +1,7 @@
 // import { Button } from "@/common/Button";
 import { useState, useEffect } from "react";
 import { MdCloudUpload } from "react-icons/md";
-import { fetchGeneralInfoDetails, updateGeneralInfo } from "@/api/apiConfig";
+import { fetchGeneralInfoDetails, googleMapApi, updateGeneralInfo } from "@/api/apiConfig";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,13 @@ const generalInfoSchema = z.object({
     salonName: z.string().min(3, "Salon name is required"),
     contactNumber: z.string().min(10, "Contact number must be 10 digits").max(10, "Contact number must be 10 digits").regex(/^[0-9]+$/, "Must be only digits"),
     emailAddress: z.string().min(1, "Email is required").email("Invalid email format"),
+
     salonLocation: z.string().optional(),
+
+    latitude: z.string().optional(),
+    longitude: z.string().optional(),
+
+
     establishedOn: z.string().optional(),
     salonAddress: z.string().optional(),
     servicesOffered: z.string().optional(),
@@ -59,6 +65,79 @@ export const GeneralInfo = () => {
     const [bankId, setBankId] = useState<number | null>(null);
     const [taxId, setTaxId] = useState<number | null>(null);
 
+
+
+    const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string>("");
+
+    const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
+
+    // Load Google Maps API
+    useEffect(() => {
+        googleMapApi(() => {
+            console.log("Google Maps API loaded");
+        });
+    }, []);
+
+    // Function to handle location input and get suggestions
+    const handleLocationInput = (input: string) => {
+        if (input.length > 1) {
+            // Trigger after 3 characters
+            const autocomplete = new window.google.maps.places.AutocompleteService();
+            autocomplete.getPlacePredictions({ input }, (predictions, status) => {
+                if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK &&
+                    predictions
+                ) {
+                    setLocationSuggestions(
+                        predictions.map((prediction) => prediction.description)
+                    );
+                } else {
+                    setLocationSuggestions([]);
+                }
+            });
+        } else {
+            setLocationSuggestions([]);
+        }
+    };
+
+    // Handle input changes in location field
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        console.log("inputvalue", inputValue);
+        setSelectedLocation(inputValue); // Update the input value
+        handleLocationInput(inputValue); // Fetch location suggestions
+    };
+
+    const handleLocationSelect = (location: string) => {
+        setSelectedLocation(location);
+        setLocationSuggestions([]); // Clear suggestions after selection
+
+        // Use Google Maps Geocoding API to get the latitude and longitude
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: location }, (results, status) => {
+            if (status === window.google.maps.GeocoderStatus.OK && results?.[0]) {
+                const { lat, lng } = results[0].geometry.location;
+                const fullAddress = results[0].formatted_address; // Full address
+
+                // Store latitude and longitude in state (you can use these values for submission)
+                setLocationCoordinates({
+                    lat: lat(),
+                    lng: lng(),
+                });
+
+                // Optionally, store the full address in a separate state if needed
+                setSelectedLocation(fullAddress); // Store the full address instead of the description
+                console.log("Latitude:", lat(), "Longitude:", lng());
+            } else {
+                console.error("Geocoding failed:", status);
+            }
+        });
+    };
+
+
+
+
     // Fetch provider details on component mount
     useEffect(() => {
         const fetchDetails = async () => {
@@ -74,7 +153,9 @@ export const GeneralInfo = () => {
                 setValue('salonName', response.data.name || '');
                 setValue('contactNumber', response.data.phone || '');
                 setValue('emailAddress', response.data.email || '');
+
                 setValue('salonLocation', response.data.branch || '');
+
                 setValue('establishedOn', response.data.established_on || '');
                 setValue('salonAddress', response.data.branch || '');
                 setValue('servicesOffered', response.data.services_offered || '');
@@ -122,6 +203,11 @@ export const GeneralInfo = () => {
                 "name": data.salonName,
                 "phone": data.contactNumber,
                 "email": data.emailAddress,
+
+                "branch": selectedLocation,
+                "latitude": String(locationCoordinates.lat),
+                "longitude": String(locationCoordinates.lng),
+
                 "established_on": data.establishedOn,
                 "services_offered": data.servicesOffered,
                 "working_hours": data.businessHours,
@@ -230,7 +316,7 @@ export const GeneralInfo = () => {
 
                                 </div>
                                 {/* Salon Location */}
-                                <div>
+                                <div className="relative">
                                     <label
                                         htmlFor="salonLocation"
                                         className="text-lg text-mindfulBlack">
@@ -239,8 +325,26 @@ export const GeneralInfo = () => {
 
                                     <input
                                         {...register("salonLocation")}
+                                        value={selectedLocation}
+                                        onChange={handleLocationChange} // Handle input change
                                         className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                     />
+
+                                    {/* Location Suggestions Dropdown */}
+                                    {locationSuggestions.length > 0 && (
+                                        <ul className="absolute left-0 top-[-10] w-full border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-[9999]">
+
+                                            {locationSuggestions.map((location, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                                                    onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                                                >
+                                                    {location}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
 
                                 {/* Established On */}

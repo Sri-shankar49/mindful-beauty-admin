@@ -1,5 +1,25 @@
 import { apiAxios } from './apiUrl';
 
+
+// Store the API key here
+const googleMapsAPIKey = 'AIzaSyAJMgVfZLEI4QjXqVEQocAmgByXIKgwKwQ';
+
+// Function to load Google Maps API script
+export const googleMapApi = (callback: () => void) => {
+  if (!window.google) {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsAPIKey}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = callback; // Call the callback once the script is loaded
+    document.body.appendChild(script);
+  } else {
+    callback(); // If already loaded, just call the callback
+  }
+};
+
+
+
 // Root Page --> Login Form
 export const fetchLogin = async (phoneNumber: number) => {
   try {
@@ -49,14 +69,24 @@ export const verifyOTP = async (phoneNumber: string, otp: string) => {
 
 
 // Root Page --> New to Mindful Beauty
-export const loginRegister = async (userName: string, userEmail: string, userPhoneNumber: number, serviceType: number, userLocation: string) => {
+export const loginRegister = async (
+  userName: string,
+  userEmail: string,
+  userPhoneNumber: number,
+  serviceType: number,
+  userLocation: string,
+  latitudeCoOrdinates: number,
+  longitudeCoOrdinates: number,
+) => {
   try {
     const response = await apiAxios.post(`/provider-api/register/`, {
       name: userName,
       email: userEmail,
       phone: userPhoneNumber,
       service_type: serviceType,
-      location: userLocation
+      location: userLocation,
+      latitude: latitudeCoOrdinates,
+      longitude: longitudeCoOrdinates
     });
 
     console.log("Login Register response", response.data);
