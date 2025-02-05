@@ -316,13 +316,13 @@ export const DashBoardData = () => {
         // }
 
         // Fetch updated wallet points dynamically from session storage
-        const updatedWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
+        // const updatedWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
 
         // Validate wallet points for this specific appointment
-        if (updatedWalletPoints < 1000) {
-            openWalletPopup(); // Trigger wallet popup
-            return; // Stop execution
-        }
+        // if (updatedWalletPoints < 1000) {
+        //     openWalletPopup(); // Trigger wallet popup
+        //     return; // Stop execution
+        // }
 
 
         setLoading(true);
@@ -375,13 +375,24 @@ export const DashBoardData = () => {
             console.log("Booking Action data log:", data);
 
             // Re-check wallet balance after booking action
-            const newWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
-            if (newWalletPoints < 1000) {
-                openWalletPopup(); // Trigger wallet popup if balance drops below 1000
-            }
+            // const newWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
+            // if (newWalletPoints < 1000) {
+            //     openWalletPopup(); // Trigger wallet popup if balance drops below 1000
+            // }
 
         } catch (error: any) {
-            setError(error.message || 'Failed to fetch staff list');
+            console.error("Error in handle Action Submit:", error);
+            setError(error.message || 'An error occurred while processing your request.');
+            // alert(error.message || "Something went wrong. Please try again.");
+            openWalletPopup(); // Trigger wallet popup if balance drops below 1000
+
+            // **Clear the stylist from the state after acceptance**
+            // setSelectedStylists((prevState) => {
+            //     const newState = { ...prevState };
+            //     delete newState[appointmentID];
+            //     return newState;
+            // });
+
         } finally {
             setLoading(false); // Ensure loading is false after fetching
         }

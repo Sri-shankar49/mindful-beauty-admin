@@ -454,7 +454,38 @@ export const bookingAction = async (appointmentID: number, stylistID: number, ac
 
     return response.data; // Ensure the entire response data is returned
   } catch (error: any) {
-    console.error("Error in booking Action:", error.message || error);
+
+    // if (error.response?.status === 403) {
+    //   console.log("Error in bookingAction: ", error.message || error);
+    //   // Handle specific case when wallet balance is insufficient
+    //   throw new Error(error.response?.data?.message || "You don't have enough balance to perform this action.");
+    // }
+
+    // Check for server response
+    if (error.response) {
+      const { status, data } = error.response;
+
+      if (status === 400) {
+        throw new Error(data?.message || "Invalid request. Please check your inputs.");
+      }
+      if (status === 401) {
+        throw new Error("Unauthorized. Please log in again.");
+      }
+      if (status === 403) {
+        throw new Error(data?.message || "You don't have enough balance to perform this action.");
+      }
+      if (status === 404) {
+        throw new Error("Appointment or stylist not found.");
+      }
+      if (status === 500) {
+        throw new Error("Server error. Please try again later.");
+      }
+
+      throw new Error(data?.message || "An unexpected error occurred.");
+    }
+
+    // General error handling
+    console.error("Error in booking Action:", error.response?.data?.message || error);
     throw new Error(error.response?.data?.message || "Unable to process booking action. Please try again later.");
   }
 };
@@ -490,45 +521,92 @@ export const roleList = async () => {
 
 
 // Function to call the permissions API
+// export const addPermissions = async (
+//   role: number,
+//   provider: number,
+//   dashboard: boolean,
+//   manageRole: boolean,
+//   service_listing: boolean,
+//   service_management: boolean,
+//   sales_transactions: boolean,
+//   ratings_reviews: boolean,
+//   report_details: boolean,
+//   all_booking: boolean,
+//   schedule: boolean,
+//   inprogress: boolean,
+//   completed: boolean,
+//   cancelled: boolean,
+//   roles_management: boolean,
+//   staff_management: boolean,
+//   branch_management: boolean
+// ) => {
+//   try {
+//     const response = await apiAxios.post(`/provider-api/permissions/`, {
+//       role,
+//       provider,
+//       dashboard,
+//       manage_role: manageRole,
+//       roles_management,
+//       staff_management,
+//       branch_management,
+//       service_listing,
+//       service_management,
+//       sales_transactions,
+//       ratings_reviews,
+//       report_details,
+//       all_booking,
+//       schedule,
+//       inprogress,
+//       completed,
+//       cancelled,
+
+//     });
+
+//     console.log("Permissions API response:", response.data);
+
+//     if (!response.data || response.status !== 200) {
+//       throw new Error("Failed to add permissions");
+//     }
+
+//     return response.data; // Return the API response for further use
+
+//   }
+
+//   catch (error: any) {
+//     console.error("Error adding permissions:", error.response?.data?.message || error.message || error);
+//     throw new Error(error.response?.data?.message || "Unable to add permissions. Please try again later.");
+//   }
+// };
+
+
+
+
 export const addPermissions = async (
   role: number,
   provider: number,
-  dashboard: boolean,
-  manageRole: boolean,
-  service_listing: boolean,
-  service_management: boolean,
-  sales_transactions: boolean,
-  ratings_reviews: boolean,
-  report_details: boolean,
-  all_booking: boolean,
-  schedule: boolean,
-  inprogress: boolean,
-  completed: boolean,
-  cancelled: boolean,
-  roles_management: boolean,
-  staff_management: boolean,
-  branch_management: boolean
+  permissions: {
+    dashboard: boolean,
+    manage_role: boolean,
+    roles_management: boolean,
+    staff_management: boolean,
+    branch_management: boolean,
+    service_listing: boolean,
+    service_management: boolean,
+    all_booking: boolean,
+    schedule: boolean,
+    inprogress: boolean,
+    completed: boolean,
+    cancelled: boolean,
+    sales_transactions: boolean,
+    ratings_reviews: boolean,
+    report_details: boolean,
+  }
 ) => {
   try {
     const response = await apiAxios.post(`/provider-api/permissions/`, {
-      role,
-      provider,
-      dashboard,
-      manage_role: manageRole,
-      roles_management,
-      staff_management,
-      branch_management,
-      service_listing,
-      service_management,
-      sales_transactions,
-      ratings_reviews,
-      report_details,
-      all_booking,
-      schedule,
-      inprogress,
-      completed,
-      cancelled,
-
+      role: role,
+      provider: provider,
+      ...permissions
     });
 
     console.log("Permissions API response:", response.data);
@@ -539,9 +617,7 @@ export const addPermissions = async (
 
     return response.data; // Return the API response for further use
 
-  }
-
-  catch (error: any) {
+  } catch (error: any) {
     console.error("Error adding permissions:", error.response?.data?.message || error.message || error);
     throw new Error(error.response?.data?.message || "Unable to add permissions. Please try again later.");
   }

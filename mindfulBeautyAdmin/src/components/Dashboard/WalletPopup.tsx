@@ -23,12 +23,12 @@ export const WalletPopup: React.FC<WalletPopupProps> = ({ errorMessage, closePop
         {/* Header */}
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-red-600">⚠️ Insufficient Wallet Balance</h2>
-          <p className="text-gray-700 mt-3">
+          <p className="text-gray-700 mt-5">
             Your wallet balance is too low to proceed. Please recharge to continue.
           </p>
         </div>
 
-        {/* Error Message (if any) */}
+        {/* Error Message (if any) from API Response */}
         {errorMessage && (
           <p className="text-center text-red-500 font-semibold mt-2">{errorMessage}</p>
         )}
