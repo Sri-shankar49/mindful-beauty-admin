@@ -14,7 +14,7 @@ import { DeleteServicesPopup } from "./DeleteServicesPopup";
 import { ShimmerTable } from "shimmer-effects-react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchServicesList, setSearchQuery } from "@/redux/servicesListSlice";
+import { fetchServicesList, setError, setLoading, setSearchQuery } from "@/redux/servicesListSlice";
 
 
 
@@ -109,6 +109,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
     // Modify the search effect to avoid duplicate calls
     useEffect(() => {
+        dispatch(setLoading(true)); // Ensure UI updates before fetching
+
         // Cancel any pending timeouts
         const delayDebounceFn = setTimeout(() => {
             dispatch(fetchServicesList({
@@ -116,11 +118,14 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                 branchID: Number(selectedBranch),
                 searchQuery,
                 currentPage
-            }));
+            })).catch((error) => {
+                console.error("Error fetching services list:", error);
+                dispatch(setError(error.message));
+            });
         }, 300); // 300ms delay
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchQuery, sessionLoginProviderID, selectedBranch, currentPage, dispatch]);
+    }, [dispatch, searchQuery, sessionLoginProviderID, selectedBranch, currentPage]);
 
     useEffect(() => {
         // Fetch data from API
@@ -211,7 +216,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     //     </div>
     // </div>;
 
-    if (errorr) return <div>{errorr}</div>;
+    // if (errorr) return <div>{errorr}</div>;
 
 
 
@@ -304,89 +309,99 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                     </div>
                 </div>
                 {/* Table section with conditional loading state */}
-                {loading ? (
-                    <div className="mt-4">
-                        <ShimmerTable
-                            mode="light"
-                            row={5}
-                            col={8}
-                            border={1}
-                            borderColor={"#cbd5e1"}
-                            rounded={0.25}
-                            rowGap={16}
-                            colPadding={[15, 5, 15, 5]}
-                        />
-                    </div>
-                ) : (
-                    <div>
-                        <table className="w-full">
-                            <thead className="bg-mindfulLightgrey">
-                                <tr className="">
-                                    <th className="text-start px-2 py-3">SKU ID</th>
-                                    <th className="text-start px-2 py-3">Service</th>
-                                    <th className="text-start px-2 py-3">Category</th>
-                                    <th className="text-start px-2 py-3">Sub Category</th>
-                                    <th className="text-start px-2 py-3">Pricing</th>
-                                    <th className="text-start px-2 py-3">Duration</th>
-                                    <th className="text-start px-2 py-3">Status</th>
-                                    <th className="text-start px-2 py-3">Action</th>
+
+                <div>
+                    <table className="w-full">
+                        <thead className="bg-mindfulLightgrey">
+                            <tr className="">
+                                <th className="text-start px-2 py-3">SKU ID</th>
+                                <th className="text-start px-2 py-3">Service</th>
+                                <th className="text-start px-2 py-3">Category</th>
+                                <th className="text-start px-2 py-3">Sub Category</th>
+                                <th className="text-start px-2 py-3">Pricing</th>
+                                <th className="text-start px-2 py-3">Duration</th>
+                                <th className="text-start px-2 py-3">Status</th>
+                                <th className="text-start px-2 py-3">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={8} className="text-center px-2 py-4">
+                                        <ShimmerTable
+                                            mode="light"
+                                            row={serviceListData.length + 1} // Adjust based on expected staff rows
+                                            col={8} // Matches table columns
+                                            border={1}
+                                            borderColor={"#cbd5e1"}
+                                            rounded={0.25}
+                                            rowGap={16}
+                                            colPadding={[15, 5, 15, 5]}
+                                        />
+                                    </td>
                                 </tr>
-                            </thead>
-
-                            <tbody>
-                                {serviceListData.length > 0 ? (
-                                    serviceListData.map((service) => (
-                                        <tr key={service.service_id} className="border-b-2">
-                                            <td className="text-start px-2 py-5">{service.sku_value}</td>
-                                            <td className="text-start px-2 py-5">
-                                                <div className="flex items-center space-x-3">
-                                                    <div>
-                                                        <img src={rectangleBlack} alt="rectangle black" />
-                                                    </div>
-
-                                                    <p className="text-md text-mindfulBlack">{service.service_name}</p>
+                            ) : errorr ? (
+                                /* Error State */
+                                <tr>
+                                    <td colSpan={8} className="text-center text-red-600 py-4">
+                                        Error: {errorr}
+                                    </td>
+                                </tr>
+                            ) : serviceListData.length > 0 ? (
+                                serviceListData.map((service) => (
+                                    <tr key={service.service_id} className="border-b-2">
+                                        <td className="text-start px-2 py-5">{service.sku_value}</td>
+                                        <td className="text-start px-2 py-5">
+                                            <div className="flex items-center space-x-3">
+                                                <div>
+                                                    <img src={rectangleBlack} alt="rectangle black" />
                                                 </div>
-                                            </td>
-                                            <td className="text-start px-2 py-5">{service.category}</td>
-                                            <td className="text-start px-2 py-5">{service.subcategory}</td>
-                                            <td className="text-start px-2 py-5">{service.price}</td>
-                                            <td className="text-start px-2 py-5">{service.duration}</td>
-                                            <td className="text-start px-2 py-5">
-                                                {service.status === "Active" ? (
-                                                    <Button
-                                                        buttonType="button"
-                                                        buttonTitle={"Active"}
-                                                        className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1"
-                                                    />
-                                                ) : (<Button
+
+                                                <p className="text-md text-mindfulBlack">{service.service_name}</p>
+                                            </div>
+                                        </td>
+                                        <td className="text-start px-2 py-5">{service.category}</td>
+                                        <td className="text-start px-2 py-5">{service.subcategory}</td>
+                                        <td className="text-start px-2 py-5">{service.price}</td>
+                                        <td className="text-start px-2 py-5">{service.duration}</td>
+                                        <td className="text-start px-2 py-5">
+                                            {service.status === "Active" ? (
+                                                <Button
                                                     buttonType="button"
-                                                    buttonTitle={"InActive"}
-                                                    className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1"
-                                                />)}
+                                                    buttonTitle={"Active"}
+                                                    className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1 cursor-default"
+                                                />
+                                            ) : (<Button
+                                                buttonType="button"
+                                                buttonTitle={"InActive"}
+                                                className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1 cursor-default"
+                                            />)}
 
-                                            </td>
-                                            <td className="px-2 py-5">
-                                                <div className="flex items-center space-x-5">
-                                                    <button onClick={() => openEditService(Number(service.provider_service_id))}>
-                                                        <img src={editButton} alt="editButton" />
-                                                    </button>
-                                                    <button onClick={() => openDeleteServicePopup(Number(service.provider_service_id))}>
-                                                        <img src={deleteButton} alt="deleteButton" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={8} className="text-center py-5">
-                                            No service data available.
+                                        </td>
+                                        <td className="px-2 py-5">
+                                            <div className="flex items-center space-x-5">
+                                                <button onClick={() => openEditService(Number(service.provider_service_id))}>
+                                                    <img src={editButton} alt="editButton" />
+                                                </button>
+                                                <button onClick={() => openDeleteServicePopup(Number(service.provider_service_id))}>
+                                                    <img src={deleteButton} alt="deleteButton" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
-                                )}
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={8} className="text-center py-5">
+                                        No service data available.
+                                    </td>
+                                </tr>
+                            )}
 
-                                {/* Content */}
-                                {/* <tr className="border-b-2">
+
+                            {/* Content */}
+                            {/* <tr className="border-b-2">
                                         <td className="text-start px-2 py-5">MB94873</td>
                                         <td className="text-start px-2 py-5">
                                             <div className="flex items-center space-x-3">
@@ -423,8 +438,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
                                     </tr> */}
 
-                                {/* Content */}
-                                {/* <tr className="border-b-2">
+                            {/* Content */}
+                            {/* <tr className="border-b-2">
                                         <td className="text-start px-2 py-5">MB94873</td>
                                         <td className="text-start px-2 py-5">
                                             <div className="flex items-center space-x-3">
@@ -459,10 +474,11 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                         </td>
 
                                     </tr> */}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                        </tbody>
+                    </table>
+                </div>
+
+
                 {/* // Inside your JSX, where you're conditionally rendering the EditServicePopup: */}
                 {showEditServicePopup && selectedServiceID && (
                     <EditServicePopup

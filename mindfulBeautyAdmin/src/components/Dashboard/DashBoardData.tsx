@@ -381,10 +381,12 @@ export const DashBoardData = () => {
             // }
 
         } catch (error: any) {
-            console.error("Error in handle Action Submit:", error);
-            setError(error.message || 'An error occurred while processing your request.');
+            // console.error("Error in handle Action Submit:", error);
+            // setError(error.message || 'An error occurred while processing your request.');
+
             // alert(error.message || "Something went wrong. Please try again.");
-            openWalletPopup(); // Trigger wallet popup if balance drops below 1000
+
+            // openWalletPopup(); // Trigger wallet popup if balance drops below 1000
 
             // **Clear the stylist from the state after acceptance**
             // setSelectedStylists((prevState) => {
@@ -392,6 +394,46 @@ export const DashBoardData = () => {
             //     delete newState[appointmentID];
             //     return newState;
             // });
+
+            setError(error.message || 'An error occurred while processing your request.');
+            console.error("Error in handle Action Submit:", error);
+
+            if (error.response?.status === 403) {
+                // Handle 403 Forbidden error
+                // For example, you can redirect the user to a login page or display an error message
+                openWalletPopup();
+            }
+
+            // alert(error.message || "Something went wrong. Please try again.");
+
+            // openWalletPopup(); // Trigger wallet popup if balance drops below 1000
+
+            // **Clear the stylist from the state after acceptance**
+            // setSelectedStylists((prevState) => {
+            //     const newState = { ...prevState };
+            //     delete newState[appointmentID];
+            //     return newState;
+            // });
+
+            // **Trigger wallet popup only for insufficient balance errors**
+            // if (error.response?.status === 403 || error.message.includes("minimum")) {
+            //     openWalletPopup();
+            // }
+
+            // // **Clear the stylist selection from the state**
+            // setSelectedStylists((prevState) => {
+            //     const newState = { ...prevState };
+            //     delete newState[appointmentID];
+            //     return newState;
+            // });
+
+            // // Clear the stylist error in case it was previously set
+            // setStylistError((prevState) => {
+            //     const newState = { ...prevState };
+            //     delete newState[appointmentID];
+            //     return newState;
+            // });
+
 
         } finally {
             setLoading(false); // Ensure loading is false after fetching

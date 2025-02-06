@@ -29,7 +29,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({ label
                 // className="outline-none w-full px-4 py-2 border-none rounded-[5px]"
                 {...rest} // Spread the rest props to ensure all standard input props are passed down
             />
-            {error && <span className="text-red-500">{error}</span>}
+            {error && <span className="text-red-600">{error}</span>}
         </div>
     );
 }

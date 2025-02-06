@@ -144,7 +144,7 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                                 {...register("reason")}
                                             />
                                             {errors.reason && (
-                                                <p className="text-sm text-red-500">{errors.reason.message}</p>
+                                                <p className="text-sm text-red-600">{errors.reason.message}</p>
                                             )}
                                         </div>
 

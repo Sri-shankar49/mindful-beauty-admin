@@ -30,7 +30,7 @@ export const WalletPopup: React.FC<WalletPopupProps> = ({ errorMessage, closePop
 
         {/* Error Message (if any) from API Response */}
         {errorMessage && (
-          <p className="text-center text-red-500 font-semibold mt-2">{errorMessage}</p>
+          <p className="text-center text-red-600 font-semibold mt-2">{errorMessage}</p>
         )}
 
         {/* Buttons */}

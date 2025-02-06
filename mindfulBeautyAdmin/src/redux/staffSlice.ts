@@ -50,6 +50,13 @@ const staffSlice = createSlice({
         setSearchQuery(state, action: PayloadAction<string>) {
             state.searchQuery = action.payload;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -69,5 +76,5 @@ const staffSlice = createSlice({
     },
 });
 
-export const { setSearchQuery } = staffSlice.actions;
+export const { setSearchQuery, setLoading, setError } = staffSlice.actions;
 export default staffSlice.reducer;

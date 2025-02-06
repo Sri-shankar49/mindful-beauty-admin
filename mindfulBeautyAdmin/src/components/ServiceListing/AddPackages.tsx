@@ -496,7 +496,7 @@ export const AddPackages = () => {
 
                   {/* Render validation errors */}
                   {/* {Object.values(validationErrors).map((error, idx) => (
-                    <p key={idx} className="text-red-500 text-sm italic">
+                    <p key={idx} className="text-red-600 text-sm italic">
                       {error}
                     </p>
                   ))} */}
@@ -547,7 +547,7 @@ export const AddPackages = () => {
                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                           />
                           {validationErrors.packageTitle && (
-                            <p className="text-red-500 text-sm italic">
+                            <p className="text-red-600 text-sm italic">
                               {validationErrors.packageTitle}
                             </p>
                           )}
@@ -595,7 +595,7 @@ export const AddPackages = () => {
                             ))}
                           </select>
                           {validationErrors.branch && (
-                            <p className="text-red-500 text-sm italic">
+                            <p className="text-red-600 text-sm italic">
                               {validationErrors.branch}
                             </p>
                           )}
@@ -622,7 +622,7 @@ export const AddPackages = () => {
                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                           />
                           {validationErrors.price && (
-                            <p className="text-red-500 text-sm italic">
+                            <p className="text-red-600 text-sm italic">
                               {validationErrors.price}
                             </p>
                           )}
@@ -686,13 +686,13 @@ export const AddPackages = () => {
                         </select>
 
                         {validationErrors.category && (
-                          <p className="text-red-500 text-sm italic">
+                          <p className="text-red-600 text-sm italic">
                             {validationErrors.category}
                           </p>
                         )}
 
                         {/* {error.category && (
-                                <p className="text-sm text-red-500">{error.category}</p>
+                                <p className="text-sm text-red-600">{error.category}</p>
                             )} */}
                       </div>
 
@@ -745,13 +745,13 @@ export const AddPackages = () => {
                         </select>
 
                         {validationErrors.subCategory && (
-                          <p className="text-red-500 text-sm italic">
+                          <p className="text-red-600 text-sm italic">
                             {validationErrors.subCategory}
                           </p>
                         )}
 
                         {/* {error.subCategory && (
-                                <p className="text-sm text-red-500">{error.subCategory}</p>
+                                <p className="text-sm text-red-600">{error.subCategory}</p>
                             )} */}
                       </div>
                     </div>
@@ -793,7 +793,7 @@ export const AddPackages = () => {
 
                     </div>
                     {validationErrors.services && (
-                      <p className="text-red-500 text-sm italic mt-5">{validationErrors.services}</p>
+                      <p className="text-red-600 text-sm italic mt-5">{validationErrors.services}</p>
                     )}
                   </div>
 

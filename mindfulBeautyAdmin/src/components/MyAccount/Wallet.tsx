@@ -82,7 +82,7 @@ export const Wallet = () => {
             <div className="py-8">
 
                 {error && (
-                    <div className="text-red-500 text-center mb-4">{error}</div>
+                    <div className="text-red-600 text-center mb-4">{error}</div>
                 )}
 
                 <div className="grid grid-cols-4 gap-5">

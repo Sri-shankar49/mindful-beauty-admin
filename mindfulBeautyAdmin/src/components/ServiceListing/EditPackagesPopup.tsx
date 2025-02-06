@@ -5,6 +5,7 @@ import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
 import { SelectField } from '@/common/SelectField';
 import { addServicesCheckbox, categories, staffBranchList, subCategories, editPackage, editPackageUpdate } from '@/api/apiConfig';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface EditPackagesPopupProps {
     providerPackageID: number
@@ -261,7 +262,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         } catch (error: any) {
             setError(error.message);
         } finally {
-            // setLoading(false);
+            setLoading(false);
         }
     }
 
@@ -349,32 +350,56 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
                         <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10">
 
-                            {loading ? (
-                                <div className="text-center py-10">
-                                    <p className="text-lg font-semibold">Loading...</p>
+                            {/* {loading ? (
+                                // <div className="text-center py-10">
+                                //     <p className="text-lg font-semibold">Loading...</p>
+                                // </div>
+                                <div>
+                                    <ShimmerTable
+                                        mode="light"
+                                        row={8}
+                                        col={2}
+                                        border={1}
+                                        borderColor={"#cbd5e1"}
+                                        rounded={0.25}
+                                        rowGap={16}
+                                        colPadding={[15, 5, 15, 5]}
+                                    />
                                 </div>
-                            ) : (
+                            ) : ( */}
+                            <div className="relative mb-5">
+
+                                <div className="">
+                                    <h2 className="text-2xl text-mindfulBlack font-semibold">Edit Package</h2>
+                                </div>
+                                <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">
+                                </div>
+
+                                {/* Close Button */}
+                                <div
+                                    onClick={closePopup}
+                                    className="absolute top-0 right-0 w-fit cursor-pointer"
+                                >
+                                    <IoCloseCircle className="text-mindfulGrey text-[32px]" />
+                                </div>
+                            </div>
+
+                            {/* Close Button */}
+                            {loading ? (
+
+                                <div>
+                                    <ShimmerTable
+                                        mode="light"
+                                        row={8}
+                                        col={2}
+                                        border={1}
+                                        borderColor={"#cbd5e1"}
+                                        rounded={0.25}
+                                        rowGap={16}
+                                        colPadding={[15, 5, 15, 5]}
+                                    />
+                                </div>) : (
                                 <>
-                                    <div className="relative mb-5">
-
-                                        <div className="">
-                                            <h2 className="text-2xl text-mindfulBlack font-semibold">Edit Package</h2>
-                                        </div>
-                                        <div className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5">
-                                        </div>
-
-                                        {/* Close Button */}
-                                        <div
-                                            onClick={closePopup}
-                                            className="absolute top-0 right-0 w-fit cursor-pointer"
-                                        >
-                                            <IoCloseCircle className="text-mindfulGrey text-[32px]" />
-                                        </div>
-                                    </div>
-
-                                    {/* Close Button */}
-
-
                                     <form onSubmit={onSubmitAddPackages} method="post">
                                         <div className="py-5">
                                             <div className="bg-mindfulLightgrey rounded-sm px-5 py-5">
@@ -425,7 +450,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                 className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             />
                                                             {validationErrors.packageTitle && (
-                                                                <p className="text-red-500 text-sm italic">
+                                                                <p className="text-red-600 text-sm italic">
                                                                     {validationErrors.packageTitle}
                                                                 </p>
                                                             )}
@@ -464,10 +489,10 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                 ))}
                                                             </select>
                                                             {/* {validationErrors.branch && (
-                            <p className="text-red-500 text-sm italic">
-                              {validationErrors.branch}
-                            </p>
-                          )} */}
+                                                                    <p className="text-red-600 text-sm italic">
+                                                                                {validationErrors.branch}
+                                                                    </p>
+                                                                )} */}
                                                         </div>
 
                                                         {/* Price */}
@@ -491,7 +516,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                 className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             />
                                                             {validationErrors.price && (
-                                                                <p className="text-red-500 text-sm italic">
+                                                                <p className="text-red-600 text-sm italic">
                                                                     {validationErrors.price}
                                                                 </p>
                                                             )}
@@ -535,7 +560,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                         </select>
 
                                                         {validationErrors.category && (
-                                                            <p className="text-red-500 text-sm italic">
+                                                            <p className="text-red-600 text-sm italic">
                                                                 {validationErrors.category}
                                                             </p>
                                                         )}
@@ -570,7 +595,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                         </select>
 
                                                         {validationErrors.subCategory && (
-                                                            <p className="text-red-500 text-sm italic">
+                                                            <p className="text-red-600 text-sm italic">
                                                                 {validationErrors.subCategory}
                                                             </p>
                                                         )}
@@ -592,16 +617,16 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                             <div key={service.service_id} className="">
                                                                 <label htmlFor={service.service_id} className="custom-checkbox">
                                                                     {/* <input
-                                id={service.service_id}
-                                // name="dummy"
-                                type="checkbox"
-                                value={service.service_id}
-                                className="mr-2"
-                                checked={selectedCheckboxNames.includes(service.service_name)}
-                                // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
-                                onChange={() => handleCheckboxClick(Number(service.service_id), service.service_name)}
+                                                                            id={service.service_id}
+                                                                            // name="dummy"
+                                                                            type="checkbox"
+                                                                            value={service.service_id}
+                                                                            className="mr-2"
+                                                                            checked={selectedCheckboxNames.includes(service.service_name)}
+                                                                            // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
+                                                                            onChange={() => handleCheckboxClick(Number(service.service_id), service.service_name)}
 
-                              /> */}
+                                                                        /> */}
                                                                     <input
                                                                         id={service.service_id}
                                                                         type="checkbox"
@@ -621,9 +646,11 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                     )}
 
                                                 </div>
+
                                                 {/* {validationErrors.services && (
-                      <p className="text-red-500 text-sm italic mt-5">{validationErrors.services}</p>
-                    )} */}
+                                                        <p className="text-red-600 text-sm italic mt-5">{validationErrors.services}</p>
+                                                    )} */}
+
                                             </div>
                                         </div>
                                         <div className="px-5">
@@ -643,6 +670,13 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                         {/* </div> */}
 
 
+
+                                        <div className="px-5 py-3">
+                                            {/* Error response from the API */}
+                                            {error && <p className="text-sm text-red-600">{error}</p>}
+                                        </div>
+
+
                                         {/* Button */}
                                         <div className="px-5 text-center">
                                             <Button
@@ -651,8 +685,8 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                 className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                                             />
                                         </div>
-                                        {/* Error response from the API */}
-                                        {error && <p className="text-sm text-red-600">{error}</p>}
+
+
                                     </form>
                                 </>
                             )}

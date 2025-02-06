@@ -12,7 +12,7 @@ import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup';
 import { ShimmerTable } from 'shimmer-effects-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchStaffList } from '@/redux/staffSlice';
+import { fetchStaffList, setError, setLoading } from '@/redux/staffSlice';
 
 interface StaffManagementProps {
     staff?: number;
@@ -128,7 +128,11 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
 
     useEffect(() => {
-        dispatch(fetchStaffList({ searchQuery, currentPage }));
+        dispatch(setLoading(true)); // Ensure UI updates before fetching
+        dispatch(fetchStaffList({ searchQuery, currentPage })).catch((error) => {
+            console.error("Error fetching staff list:", error);
+            dispatch(setError(error.message));
+        });
     }, [dispatch, searchQuery, currentPage, itemsPerPage]);
 
 
@@ -143,21 +147,21 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
+    // if (error) return <div>{error}</div>;
 
 
     return (
@@ -209,15 +213,37 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                         </tr> */}
 
                         {/* Content & Checkbox */}
-                        {staffData.length > 0 ? (
+                        {loading ? (
+                            <tr>
+                                <td colSpan={6} className="text-center px-2 py-4">
+                                    <ShimmerTable
+                                        mode="light"
+                                        row={staffData.length + 1} // Adjust based on expected staff rows
+                                        col={6} // Matches table columns
+                                        border={1}
+                                        borderColor={"#cbd5e1"}
+                                        rounded={0.25}
+                                        rowGap={16}
+                                        colPadding={[15, 5, 15, 5]}
+                                    />
+                                </td>
+                            </tr>
+                        ) : error ? (
+                            /* Error State */
+                            <tr>
+                                <td colSpan={6} className="text-center text-red-600 py-4">
+                                    Error: {error}
+                                </td>
+                            </tr>
+                        ) : staffData.length > 0 ? (
                             staffData.map((staff) => (
                                 <tr key={staff.staff} className="border-b-2">
                                     {/* <td className="text-center px-2 py-2">
-                                        <label className="cl-checkbox">
-                                            <input type="checkbox" />
-                                            <span></span>
-                                        </label>
-                                    </td> */}
+                                    <label className="cl-checkbox">
+                                        <input type="checkbox" />
+                                        <span></span>
+                                    </label>
+                                </td> */}
                                     <td className="px-2 py-5">{staff.name}</td>
                                     <td className="text-center px-2 py-5">{staff.role_name}</td>
                                     <td className="text-center px-2 py-5">{staff.branch_name}</td>
@@ -226,8 +252,8 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                     <td className="px-2 py-5">
                                         <div className="flex items-center space-x-5">
                                             {/* <button>
-                                                <img src={resetPasswordButton} alt="Reset Password" />
-                                            </button> */}
+                                            <img src={resetPasswordButton} alt="Reset Password" />
+                                        </button> */}
                                             <button onClick={() => openEditStaffPopup(Number(staff.staff))}>
                                                 <img src={editButton} alt="Edit" />
                                             </button>

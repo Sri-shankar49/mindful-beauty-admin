@@ -799,8 +799,8 @@ export const editBranch = async (formData: FormData): Promise<any> => {
 
   }
   catch (error: any) {
-    console.error("Error editing selected branch:", error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to edit selected branch. Please try again later.");
+    console.error("Error editing selected branch:", error.response?.data?.error || error);
+    throw new Error(error.response?.data?.error || "Unable to edit selected branch. Please try again later.");
   }
 }
 
@@ -865,8 +865,8 @@ export const addStaff = async (formData: FormData): Promise<any> => {
 
   }
   catch (error: any) {
-    console.error("Error adding staff:", error.response?.data?.message || error.message || error);
-    throw new Error(error.response?.data?.message || "Unable to add staff. Please try again later.");
+    console.error("Error adding staff:", error.response?.data?.phone || error.message || error);
+    throw new Error(error.response?.data?.phone || "Unable to add staff. Please try again later.");
   }
 }
 

@@ -21,12 +21,12 @@ const initialState: ServicesState = {
 // Async thunk for fetching services list
 export const fetchServicesList = createAsyncThunk(
     'services/fetchServicesList',
-    async ({  
-        providerID, 
+    async ({
+        providerID,
         branchID,
         searchQuery,
         currentPage
-    }: { 
+    }: {
         providerID: number;
         branchID: number;
         searchQuery: string;
@@ -50,6 +50,13 @@ const servicesListSlice = createSlice({
             state.searchQuery = action.payload;
             state.loading = true;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -74,5 +81,5 @@ const servicesListSlice = createSlice({
     },
 });
 
-export const { setSearchQuery } = servicesListSlice.actions;
+export const { setSearchQuery, setLoading, setError } = servicesListSlice.actions;
 export default servicesListSlice.reducer;

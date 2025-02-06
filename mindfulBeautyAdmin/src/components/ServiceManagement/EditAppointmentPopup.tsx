@@ -83,7 +83,7 @@ export const EditAppointmentPopup: React.FC<EditAppointmentPopupProps> = ({ clos
 
                                                     />
                                                     {/* {errors.appID && (
-                                                    <p className="text-sm text-red-500">{errors.appID.message}</p>
+                                                    <p className="text-sm text-red-600">{errors.appID.message}</p>
                                                 )} */}
                                                 </div>
                                             </div>
@@ -109,7 +109,7 @@ export const EditAppointmentPopup: React.FC<EditAppointmentPopupProps> = ({ clos
 
                                                     />
                                                     {/* {errors.price && (
-                                                    <p className="text-sm text-red-500">{errors.price.message}</p>
+                                                    <p className="text-sm text-red-600">{errors.price.message}</p>
                                                 )} */}
                                                 </div>
                                             </div>

@@ -33,7 +33,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                         </option>
                     ))}
                 </select>
-                {error && <span className="text-red-500 text-sm">{error}</span>}
+                {error && <span className="text-red-600 text-sm">{error}</span>}
             </div>
         );
     }

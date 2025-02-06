@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { useNavigate } from 'react-router-dom';
+import { ShimmerTable } from 'shimmer-effects-react';
 // import { SelectField } from '@/common/SelectField';
 
 
@@ -133,8 +134,8 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
 
 
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -158,15 +159,28 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                             <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                         </div>
 
-                        <div className="">
-                            <form method="post" onSubmit={handleSubmit(onSubmit)}>
-                                <div className="grid grid-cols-2 gap-x-5 items-center">
 
-                                    {/* Grid Column One */}
-                                    <div className="space-y-5">
+                        {loading ? (
+                            <ShimmerTable
+                                mode="light"
+                                row={1} // Adjust based on expected staff rows
+                                col={2} // Matches table columns
+                                border={1}
+                                borderColor={"#cbd5e1"}
+                                rounded={0.25}
+                                rowGap={16}
+                                colPadding={[15, 5, 15, 5]}
+                            />
+                        ) : (
+                            <div className="">
+                                <form method="post" onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="grid grid-cols-2 gap-x-5 items-center">
 
-                                        {/* City */}
-                                        {/* <div className="">
+                                        {/* Grid Column One */}
+                                        <div className="space-y-5">
+
+                                            {/* City */}
+                                            {/* <div className="">
                                             <label
                                                 htmlFor="city"
                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -186,8 +200,8 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
 
                                         </div> */}
 
-                                        {/* Category */}
-                                        {/* <div className="">
+                                            {/* Category */}
+                                            {/* <div className="">
                                             <label
                                                 htmlFor="category"
                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -207,34 +221,34 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                                             />
                                         </div> */}
 
-                                        {/* Price */}
-                                        <div className="">
-                                            <label
-                                                htmlFor="price"
-                                                className="text-md text-mindfulBlack font-semibold mb-1"
-                                            >
-                                                Price
-                                            </label>
-                                            <InputField
-                                                label={''}
-                                                // type="number"
-                                                // name="price"
-                                                id="price"
-                                                placeholder="price"
-                                                className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                {...register("price")}
+                                            {/* Price */}
+                                            <div className="">
+                                                <label
+                                                    htmlFor="price"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Price
+                                                </label>
+                                                <InputField
+                                                    label={''}
+                                                    // type="number"
+                                                    // name="price"
+                                                    id="price"
+                                                    placeholder="price"
+                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("price")}
 
-                                            />
-                                            {errors.price && (
-                                                <p className="text-sm text-red-500">{errors.price.message}</p>
-                                            )}
+                                                />
+                                                {errors.price && (
+                                                    <p className="text-sm text-red-600">{errors.price.message}</p>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    {/* Grid Column two */}
-                                    <div className="space-y-5">
-                                        {/* Add Branch */}
-                                        {/* <div className="">
+                                        {/* Grid Column two */}
+                                        <div className="space-y-5">
+                                            {/* Add Branch */}
+                                            {/* <div className="">
                                             <label
                                                 htmlFor="branch"
                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -256,8 +270,8 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                                             />
                                         </div> */}
 
-                                        {/* Sub Category */}
-                                        {/* <div className="">
+                                            {/* Sub Category */}
+                                            {/* <div className="">
                                             <label
                                                 htmlFor="subCategory"
                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -278,53 +292,57 @@ export const EditServicePopup: React.FC<EditServicePopupProps> = ({ editServiceD
                                             />
                                         </div> */}
 
-                                        {/* Duration */}
-                                        <div className="">
-                                            <label
-                                                htmlFor="time"
-                                                className="text-md text-mindfulBlack font-semibold mb-1"
-                                            >
-                                                Duration
-                                            </label>
-                                            <InputField
-                                                label={''}
-                                                type="text"
-                                                // name="time"
-                                                id="time"
-                                                placeholder="time"
-                                                className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                {...register("duration")}
-                                            />
-                                            {errors.duration && (
-                                                <p className="text-sm text-red-500">{errors.duration.message}</p>
-                                            )}
+                                            {/* Duration */}
+                                            <div className="">
+                                                <label
+                                                    htmlFor="time"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Duration
+                                                </label>
+                                                <InputField
+                                                    label={''}
+                                                    type="text"
+                                                    // name="time"
+                                                    id="time"
+                                                    placeholder="time"
+                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    {...register("duration")}
+                                                />
+                                                {errors.duration && (
+                                                    <p className="text-sm text-red-600">{errors.duration.message}</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
+                                    {/* Error Response from the API */}
+                                    {error && <p className="text-sm text-red-600">{error}</p>}
 
-                                {/* Buttons */}
-                                <div className="pt-10">
-                                    <div className="flex items-center justify-center space-x-5">
-                                        {/* Cancel Button */}
-                                        <Button
-                                            onClick={closePopup}
-                                            buttonType="button"
-                                            buttonTitle="Cancel"
-                                            className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                        />
+                                    {/* Buttons */}
+                                    <div className="pt-10">
+                                        <div className="flex items-center justify-center space-x-5">
+                                            {/* Cancel Button */}
+                                            <Button
+                                                onClick={closePopup}
+                                                buttonType="button"
+                                                buttonTitle="Cancel"
+                                                className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                            />
 
-                                        {/* Submit Button */}
-                                        <Button
-                                            buttonType="submit"
-                                            buttonTitle="Save"
-                                            className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                        />
+                                            {/* Submit Button */}
+                                            <Button
+                                                buttonType="submit"
+                                                buttonTitle="Save"
+                                                className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                            </form>
-                        </div>
+                                </form>
+                            </div>
+                        )}
+
                     </div>
                 </div>
             </div>

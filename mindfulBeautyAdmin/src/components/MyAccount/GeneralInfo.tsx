@@ -846,7 +846,7 @@ export const GeneralInfo = () => {
                         className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                     /> */}
                             {submitError && (
-                                <p className="text-red-500 mb-2">{submitError}</p>
+                                <p className="text-red-600 mb-2">{submitError}</p>
                             )}
                             {submitSuccess && (
                                 <p className="text-green-500 mb-2">{submitSuccess}</p>

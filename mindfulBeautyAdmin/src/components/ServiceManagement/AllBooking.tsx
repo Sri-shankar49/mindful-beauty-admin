@@ -397,21 +397,21 @@ export const AllBooking = () => {
 
 
   // if (loading) return <div>Loading...</div>;
-  if (loading) return <div>
-    <div>
-      <ShimmerTable
-        mode="light"
-        row={2}
-        col={4}
-        border={1}
-        borderColor={"#cbd5e1"}
-        rounded={0.25}
-        rowGap={16}
-        colPadding={[15, 5, 15, 5]}
-      />
-    </div>
-  </div>;
-  if (error) return <div>{error}</div>;
+  // if (loading) return <div>
+  //   <div>
+  //     <ShimmerTable
+  //       mode="light"
+  //       row={2}
+  //       col={4}
+  //       border={1}
+  //       borderColor={"#cbd5e1"}
+  //       rounded={0.25}
+  //       rowGap={16}
+  //       colPadding={[15, 5, 15, 5]}
+  //     />
+  //   </div>
+  // </div>;
+  // if (error) return <div>{error}</div>;
 
 
   return (
@@ -443,28 +443,51 @@ export const AllBooking = () => {
 
           <tbody>
             {/* Content */}
-            {bookingListData.length > 0 ? (
-              bookingListData.map((bookingData) => (
-                <tr key={bookingData.id} className="border-b-2">
-                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
-                  <td className="text-start px-2 py-5">{bookingData.id}</td>
-                  <td className="text-start px-2 py-5">{bookingData.date}</td>
-                  <td className="text-start px-2 py-5">{bookingData.time}</td>
-                  <td className="text-start px-2 py-5">{bookingData.location || null}</td>
-                  <td className="text-start px-2 py-5">{bookingData.name}</td>
-                  <td className="text-start px-2 py-5">{bookingData.phone}</td>
+            {loading ? (
+              <tr>
+                <td colSpan={12} className="text-center px-2 py-5">
+                  <ShimmerTable
+                    mode="light"
+                    row={bookingListData.length + 1} // Adjust based on expected staff rows
+                    col={12} // Matches table columns
+                    border={1}
+                    borderColor={"#cbd5e1"}
+                    rounded={0.25}
+                    rowGap={16}
+                    colPadding={[15, 5, 15, 5]}
+                  />
+                </td>
+              </tr>
+            ) : error ? (
+              /* Error State */
+              <tr>
+                <td colSpan={12} className="text-center text-red-600 py-5">
+                  Error: {error}
+                </td>
+              </tr>
+            ) :
+              bookingListData.length > 0 ? (
+                bookingListData.map((bookingData) => (
+                  <tr key={bookingData.id} className="border-b-2">
+                    {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                    <td className="text-start px-2 py-5">{bookingData.id}</td>
+                    <td className="text-start px-2 py-5">{bookingData.date}</td>
+                    <td className="text-start px-2 py-5">{bookingData.time}</td>
+                    <td className="text-start px-2 py-5">{bookingData.location || null}</td>
+                    <td className="text-start px-2 py-5">{bookingData.name}</td>
+                    <td className="text-start px-2 py-5">{bookingData.phone}</td>
 
-                  {/* <td className="text-start px-2 py-5">{bookingData.services}</td> */}
+                    {/* <td className="text-start px-2 py-5">{bookingData.services}</td> */}
 
-                  <td className="text-start px-2 py-5">
-                    <ul>
-                      {bookingData.services.map((service, index) => (
-                        <li key={index}>{service.name}</li>
-                      ))}
-                    </ul>
-                  </td>
+                    <td className="text-start px-2 py-5">
+                      <ul>
+                        {bookingData.services.map((service, index) => (
+                          <li key={index}>{service.name}</li>
+                        ))}
+                      </ul>
+                    </td>
 
-                  {/* <td className="text-start px-2 py-5">
+                    {/* <td className="text-start px-2 py-5">
                     {bookingData.services.map((service, index) => (
                       <ul key={index}>
                         <li>{service}</li>
@@ -472,49 +495,49 @@ export const AllBooking = () => {
                     ))}
                   </td> */}
 
-                  <td className="text-start px-2 py-5">{bookingData.amount}</td>
+                    <td className="text-start px-2 py-5">{bookingData.amount}</td>
 
-                  <td className="text-start px-2 py-5">
-                    {bookingData.status === "Completed" ? (
-                      <div>
-                        <Button
-                          buttonType="button"
-                          buttonTitle={"Completed"}
-                          className="bg-[#e5ffec] text-md text-mindfulGreen font-semibold rounded-sm px-3 py-1"
-                        />
-                      </div>
-                    ) : bookingData.status === "Inprogress" ? (
-                      <div>
-                        <Button
-                          buttonType="button"
-                          buttonTitle={"Inprogress"}
-                          className="bg-[#e6f2ff] text-md text-mindfulSecondaryBlue font-semibold rounded-sm px-3 py-1"
-                        />
-                      </div>
-                    ) : bookingData.status === "Schedule" ? (
-                      <div>
-                        <Button
-                          buttonType="button"
-                          buttonTitle={"Schedule"}
-                          className="bg-[#fff8e5] text-md text-mindfulYellow font-semibold rounded-sm px-3 py-1"
-                        />
-                      </div>
-                    ) : bookingData.status === "Cancelled" ? (
-                      <div>
-                        <Button
-                          buttonType="button"
-                          buttonTitle={"Cancelled"}
-                          className="bg-[#ffe1e1] text-md text-mindfulRed font-semibold rounded-sm px-3 py-1"
-                        />
-                      </div>
+                    <td className="text-start px-2 py-5">
+                      {bookingData.status === "Completed" ? (
+                        <div>
+                          <Button
+                            buttonType="button"
+                            buttonTitle={"Completed"}
+                            className="bg-[#e5ffec] text-md text-mindfulGreen font-semibold rounded-sm px-3 py-1"
+                          />
+                        </div>
+                      ) : bookingData.status === "Inprogress" ? (
+                        <div>
+                          <Button
+                            buttonType="button"
+                            buttonTitle={"Inprogress"}
+                            className="bg-[#e6f2ff] text-md text-mindfulSecondaryBlue font-semibold rounded-sm px-3 py-1"
+                          />
+                        </div>
+                      ) : bookingData.status === "Schedule" ? (
+                        <div>
+                          <Button
+                            buttonType="button"
+                            buttonTitle={"Schedule"}
+                            className="bg-[#fff8e5] text-md text-mindfulYellow font-semibold rounded-sm px-3 py-1"
+                          />
+                        </div>
+                      ) : bookingData.status === "Cancelled" ? (
+                        <div>
+                          <Button
+                            buttonType="button"
+                            buttonTitle={"Cancelled"}
+                            className="bg-[#ffe1e1] text-md text-mindfulRed font-semibold rounded-sm px-3 py-1"
+                          />
+                        </div>
 
-                    ) : "Not Available"}
+                      ) : "Not Available"}
 
-                  </td>
+                    </td>
 
-                  <td className="text-start px-2 py-5">
-                    <div>
-                      {/* <Select
+                    <td className="text-start px-2 py-5">
+                      <div>
+                        {/* <Select
                         placeholder="Select Option"
                         value={selectedStylistOption}
                         options={stylistData}
@@ -529,42 +552,42 @@ export const AllBooking = () => {
                         getOptionValue={(option) => option.value.toString()}
                       /> */}
 
-                      <Select
-                        placeholder="Select Option"
-                        // value={selectedStylistOption}
-                        // options={stylistData}
-                        options={beauticiansListData.map((beautician) => ({
-                          value: beautician.staff,
-                          text: beautician.name,
-                          // icon: beautician.profile_image,
-                          icon: stylist,
-                        }))}
-                        onChange={(e) => handleStylistOption(e, bookingData.id)}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
+                        <Select
+                          placeholder="Select Option"
+                          // value={selectedStylistOption}
+                          // options={stylistData}
+                          options={beauticiansListData.map((beautician) => ({
+                            value: beautician.staff,
+                            text: beautician.name,
+                            // icon: beautician.profile_image,
+                            icon: stylist,
+                          }))}
+                          onChange={(e) => handleStylistOption(e, bookingData.id)}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
 
-                        getOptionValue={(option) => option.value.toString()}
-                        value={
-                          beauticiansListData
-                            .map((beautician) => ({
-                              value: beautician.staff,
-                              text: beautician.name,
-                              // icon: beautician.profile_image,
-                              icon: stylist,
-                            }))
-                            .find((option) => option.value === bookingData.stylist_id) || null // Set default value
-                        }
-                      />
-                    </div>
-                  </td>
+                          getOptionValue={(option) => option.value.toString()}
+                          value={
+                            beauticiansListData
+                              .map((beautician) => ({
+                                value: beautician.staff,
+                                text: beautician.name,
+                                // icon: beautician.profile_image,
+                                icon: stylist,
+                              }))
+                              .find((option) => option.value === bookingData.stylist_id) || null // Set default value
+                          }
+                        />
+                      </div>
+                    </td>
 
-                  <td>
-                    {/* <SelectField
+                    <td>
+                      {/* <SelectField
                       label={''}
                       name="status"
                       id="status"
@@ -575,62 +598,62 @@ export const AllBooking = () => {
                       ]}
                       className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                     /> */}
-                    <select
-                      // name=""
-                      id=""
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      // value={selectedBranch}
-                      // onChange={handleBranchChange} // Call on change
-                      value={bookingData.status_id} // Set default value from the API response
-                      onChange={(e) => handleStatusChange(e, bookingData.id, String(bookingData.stylist_id))} // Handle status change
+                      <select
+                        // name=""
+                        id=""
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                        // value={selectedBranch}
+                        // onChange={handleBranchChange} // Call on change
+                        value={bookingData.status_id} // Set default value from the API response
+                        onChange={(e) => handleStatusChange(e, bookingData.id, String(bookingData.stylist_id))} // Handle status change
 
-                    >
-                      {/* <option value="" disabled>
+                      >
+                        {/* <option value="" disabled>
                         Select Status
                       </option> */}
 
-                      {/* {statusListData.map((status) => (
+                        {/* {statusListData.map((status) => (
                         <option key={status.status_id} value={status.status_id}>
                           {status.status_name}
                         </option>
                       ))} */}
 
-                      {statusListData
-                        .filter((status) => status.status_id !== 0) // Exclude the option with status_id = 0
-                        .map((status) => (
-                          <option key={status.status_id} value={status.status_id}>
-                            {status.status_name}
-                          </option>
-                        ))}
-                    </select>
-                  </td>
+                        {statusListData
+                          .filter((status) => status.status_id !== 0) // Exclude the option with status_id = 0
+                          .map((status) => (
+                            <option key={status.status_id} value={status.status_id}>
+                              {status.status_name}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
 
-                  <td className="text-start px-2 py-5">
-                    {/* <Link
+                    <td className="text-start px-2 py-5">
+                      {/* <Link
                       to="/ServiceManagement/EditServices"
                       aria-current="page"
                     > */}
-                    <button
-                      // onClick={openEditService}
-                      onClick={() => openEditAppointmentPopup(bookingData)}
-                      type="button"
-                      aria-label="Edit Services" // Accessibility improvement
-                      className="edit-button"  // Optional: Add a class for better styling control
-                    >
-                      <img src={editButton} alt="editButton" />
-                    </button>
+                      <button
+                        // onClick={openEditService}
+                        onClick={() => openEditAppointmentPopup(bookingData)}
+                        type="button"
+                        aria-label="Edit Services" // Accessibility improvement
+                        className="edit-button"  // Optional: Add a class for better styling control
+                      >
+                        <img src={editButton} alt="editButton" />
+                      </button>
 
-                    {/* </Link> */}
+                      {/* </Link> */}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={12} className="text-center py-5">
+                    No Booking data available.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={12} className="text-center py-5">
-                  No Booking data available.
-                </td>
-              </tr>
-            )}
+              )}
 
 
             {/* <tr className="border-b-2">

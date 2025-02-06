@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { editBranch, googleMapApi } from '@/api/apiConfig';
 import { useNavigate } from 'react-router-dom';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface EditBranchPopupProps {
     closePopup: () => void;
@@ -184,8 +185,8 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
     };
 
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>{error}</div>;
 
 
     return (
@@ -291,136 +292,158 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                                     </div>
 
                                     {/* Add Branch Form */}
-                                    <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="space-y-5">
-                                            {/* Branch Name */}
-                                            <div>
-                                                <label
-                                                    htmlFor="branchName"
-                                                    className="text-lg text-mindfulBlack font-semibold">
-                                                    Branch Name
-                                                </label>
-
-                                                <InputField
-                                                    label=""
-                                                    // name="branchName"
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register('branchName')}
-                                                />
-
-                                                {errors.branchName && (
-                                                    <p className="text-sm text-red-600">{errors.branchName.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Branch Phone Number */}
-                                            <div>
-                                                <label
-                                                    htmlFor="branchPhoneNumber"
-                                                    className="text-lg text-mindfulBlack font-semibold">
-                                                    Branch Phone Number
-                                                </label>
-
-                                                <InputField
-                                                    label=""
-                                                    // name="branchPhoneNumber"
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register('branchPhoneNumber')}
-                                                />
-
-                                                {errors.branchPhoneNumber && (
-                                                    <p className="text-sm text-red-600">{errors.branchPhoneNumber.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Branch Address */}
-                                            <div>
-                                                <label
-                                                    htmlFor="branchAddress"
-                                                    className="text-lg text-mindfulBlack font-semibold">
-                                                    Branch Address
-                                                </label>
-
-                                                <textarea
-                                                    // name="branchAddress"
-                                                    id="branchAddress"
-                                                    rows={4}
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register('branchAddress')}
-                                                >
-                                                </textarea>
-
-                                                {errors.branchAddress && (
-                                                    <p className="text-sm text-red-600">{errors.branchAddress.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Branch Location */}
-                                            <div className="relative">
-                                                <label
-                                                    htmlFor="branchLocation"
-                                                    className="text-lg text-mindfulBlack font-semibold">
-                                                    Branch Location
-                                                </label>
-
-                                                <InputField
-                                                    label=""
-                                                    // name="branchLocation"
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                    {...register('branchLocation')}
-                                                    value={selectedLocation}
-                                                    onChange={handleLocationChange} // Handle input change
-                                                />
-
-                                                {locationSuggestions.length > 0 && (
-                                                    <ul className="absolute left-0 right-0 top-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-50">
-
-                                                        {locationSuggestions.map((location, index) => (
-                                                            <li
-                                                                key={index}
-                                                                className="cursor-pointer px-2 py-1 hover:bg-gray-200"
-                                                                onClick={() => handleLocationSelect(location)} // Handle suggestion click
-                                                            >
-                                                                {location}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-
-
-                                                {errors.branchLocation && (
-                                                    <p className="text-sm text-red-600">{errors.branchLocation.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Buttons */}
-                                            <div>
-                                                <div className="flex items-center justify-center space-x-5">
-                                                    {/* Cancel Button */}
-                                                    <Button
-                                                        onClick={closePopup}
-                                                        buttonType="button"
-                                                        buttonTitle="Cancel"
-                                                        className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                                    />
-
-                                                    {/* Submit Button */}
-                                                    <Button
-                                                        buttonType="submit"
-                                                        buttonTitle="Update"
-                                                        className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                                    />
-                                                </div>
-                                            </div>
-
+                                    {loading ? (
+                                        <div>
+                                            <ShimmerTable
+                                                mode="light"
+                                                row={6}
+                                                col={1}
+                                                border={1}
+                                                borderColor={"#cbd5e1"}
+                                                rounded={0.25}
+                                                rowGap={16}
+                                                colPadding={[15, 5, 15, 5]}
+                                            />
                                         </div>
-                                    </form>
+                                    ) : (
+                                        <div>
+                                            <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
+                                                <div className="space-y-5">
+                                                    {/* Branch Name */}
+                                                    <div>
+                                                        <label
+                                                            htmlFor="branchName"
+                                                            className="text-lg text-mindfulBlack font-semibold">
+                                                            Branch Name
+                                                        </label>
+
+                                                        <InputField
+                                                            label=""
+                                                            // name="branchName"
+                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                            {...register('branchName')}
+                                                        />
+
+                                                        {errors.branchName && (
+                                                            <p className="text-sm text-red-600">{errors.branchName.message}</p>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Branch Phone Number */}
+                                                    <div>
+                                                        <label
+                                                            htmlFor="branchPhoneNumber"
+                                                            className="text-lg text-mindfulBlack font-semibold">
+                                                            Branch Phone Number
+                                                        </label>
+
+                                                        <InputField
+                                                            label=""
+                                                            // name="branchPhoneNumber"
+                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                            {...register('branchPhoneNumber')}
+                                                        />
+
+                                                        {errors.branchPhoneNumber && (
+                                                            <p className="text-sm text-red-600">{errors.branchPhoneNumber.message}</p>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Branch Address */}
+                                                    <div>
+                                                        <label
+                                                            htmlFor="branchAddress"
+                                                            className="text-lg text-mindfulBlack font-semibold">
+                                                            Branch Address
+                                                        </label>
+
+                                                        <textarea
+                                                            // name="branchAddress"
+                                                            id="branchAddress"
+                                                            rows={4}
+                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                            {...register('branchAddress')}
+                                                        >
+                                                        </textarea>
+
+                                                        {errors.branchAddress && (
+                                                            <p className="text-sm text-red-600">{errors.branchAddress.message}</p>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Branch Location */}
+                                                    <div className="relative">
+                                                        <label
+                                                            htmlFor="branchLocation"
+                                                            className="text-lg text-mindfulBlack font-semibold">
+                                                            Branch Location
+                                                        </label>
+
+                                                        <InputField
+                                                            label=""
+                                                            // name="branchLocation"
+                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                            {...register('branchLocation')}
+                                                            value={selectedLocation}
+                                                            onChange={handleLocationChange} // Handle input change
+                                                        />
+
+                                                        {locationSuggestions.length > 0 && (
+                                                            <ul className="absolute left-0 right-0 top-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-50">
+
+                                                                {locationSuggestions.map((location, index) => (
+                                                                    <li
+                                                                        key={index}
+                                                                        className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                                                                        onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                                                                    >
+                                                                        {location}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        )}
+
+
+                                                        {errors.branchLocation && (
+                                                            <p className="text-sm text-red-600">{errors.branchLocation.message}</p>
+                                                        )}
+
+                                                    </div>
+
+                                                    {/* Error Response from the API */}
+                                                    {error && <p className="text-sm text-red-600">{error}</p>}
+
+                                                    {/* Buttons */}
+                                                    <div>
+                                                        <div className="flex items-center justify-center space-x-5">
+                                                            {/* Cancel Button */}
+                                                            <Button
+                                                                onClick={closePopup}
+                                                                buttonType="button"
+                                                                buttonTitle="Cancel"
+                                                                className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                            />
+
+                                                            {/* Submit Button */}
+                                                            <Button
+                                                                buttonType="submit"
+                                                                buttonTitle="Update"
+                                                                className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     )
 }

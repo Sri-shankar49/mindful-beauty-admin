@@ -142,21 +142,21 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
 
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -181,189 +181,205 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                                 <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                             </div>
 
-                            <div className="">
-                                <form method="post" onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="">
+                            {loading ? (<div>
+                                <ShimmerTable
+                                    mode="light"
+                                    row={6}
+                                    col={1}
+                                    border={1}
+                                    borderColor={"#cbd5e1"}
+                                    rounded={0.25}
+                                    rowGap={16}
+                                    colPadding={[15, 5, 15, 5]}
+                                />
+                            </div>) : (
+                                <div className="">
+                                    <form method="post" onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="">
 
-                                        {/* Add Staff Form */}
-                                        <div className="space-y-5">
+                                            {/* Add Staff Form */}
+                                            <div className="space-y-5">
 
-                                            {/* City */}
-                                            <div className="">
-                                                <label
-                                                    htmlFor="name"
-                                                    className="text-md text-mindfulBlack font-semibold mb-1"
-                                                >
-                                                    Name
-                                                </label>
-                                                <InputField
-                                                    label={''}
-                                                    type="text"
-                                                    // name="name"
-                                                    id="name"
-                                                    placeholder="Name"
-                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("name")}
-                                                />
-
-                                                {errors.name && (
-                                                    <p className="text-sm text-red-500">{errors.name.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Role */}
-                                            <div>
-                                                <label
-                                                    htmlFor="role"
-                                                    className="text-md text-mindfulBlack font-semibold mb-1"
-                                                >
-                                                    Role
-                                                </label>
-
-                                                <SelectField
-                                                    label={''}
-                                                    // name="role"
-                                                    id="role"
-                                                    options={staffRoleListData.map((role) => ({
-                                                        value: role.role_id?.toString() || '', // Ensure value is a string
-                                                        label: role.role_name,
-                                                    }))}
-                                                    // defaultValue={editStaffData.role_name} // Set the default value to the role name
-                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("role")}
-                                                />
-
-                                                {errors.role && (
-                                                    <p className="text-sm text-red-500">{errors.role.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Branch */}
-                                            <div>
-                                                <label
-                                                    htmlFor="branch"
-                                                    className="text-md text-mindfulBlack font-semibold mb-1"
-                                                >
-                                                    Branch
-                                                </label>
-
-                                                <SelectField
-                                                    label={''}
-                                                    // name="branch"
-                                                    id="branch"
-                                                    options={staffBranchListData.map((branch) => ({
-                                                        value: branch.branch_id?.toString() || '', // Ensure value is a string
-                                                        label: branch.branch_name || 'Unknown',   // Provide a fallback label
-                                                    }))}
-                                                    // defaultValue={editStaffData.branch_name} // Set the default value to the branch name
-                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("branch")}
-                                                />
-
-                                                {errors.branch && (
-                                                    <p className="text-sm text-red-500">{errors.branch.message}</p>
-                                                )}
-                                            </div>
-
-
-                                            {/* Phone */}
-                                            <div className="">
-                                                <label
-                                                    htmlFor="phone"
-                                                    className="text-md text-mindfulBlack font-semibold mb-1"
-                                                >
-                                                    Phone Number
-                                                </label>
-                                                <InputField
-                                                    label={''}
-                                                    type="text"
-                                                    // name="name"
-                                                    id="phone"
-                                                    placeholder="Phone Number"
-                                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("staffPhoneNumber")}
-                                                />
-
-                                                {errors.staffPhoneNumber && (
-                                                    <p className="text-sm text-red-500">{errors.staffPhoneNumber.message}</p>
-                                                )}
-                                            </div>
-
-
-                                            {/* Upload Photo */}
-                                            <div className="flex items-end justify-between">
-
-                                                <div>
-
+                                                {/* City */}
+                                                <div className="">
                                                     <label
-                                                        htmlFor="uploadPhoto"
+                                                        htmlFor="name"
                                                         className="text-md text-mindfulBlack font-semibold mb-1"
                                                     >
-                                                        Upload Photo
+                                                        Name
                                                     </label>
+                                                    <InputField
+                                                        label={''}
+                                                        type="text"
+                                                        // name="name"
+                                                        id="name"
+                                                        placeholder="Name"
+                                                        className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("name")}
+                                                    />
 
-                                                    <div className="relative">
-                                                        <InputField
-                                                            label={''}
-                                                            placeholder="Take a Photo"
-                                                            className="w-40 rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                        />
-                                                        <PiCamera className="text-[22px] text-mindfulBlack absolute top-2 right-2 cursor-pointer" />
-                                                    </div>
+                                                    {errors.name && (
+                                                        <p className="text-sm text-red-600">{errors.name.message}</p>
+                                                    )}
                                                 </div>
 
+                                                {/* Role */}
                                                 <div>
-                                                    {/* File Upload Area */}
-                                                    <div>
-                                                        <div className="">
-                                                            <label
-                                                                htmlFor="upload-photo"
-                                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                                            >
+                                                    <label
+                                                        htmlFor="role"
+                                                        className="text-md text-mindfulBlack font-semibold mb-1"
+                                                    >
+                                                        Role
+                                                    </label>
 
-                                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                                Upload Files
-                                                            </label>
-                                                            <input
-                                                                id="upload-photo"
-                                                                type="file"
-                                                                accept="image/*"
-                                                                // onChange={handleFileChange}
-                                                                className="hidden"
+                                                    <SelectField
+                                                        label={''}
+                                                        // name="role"
+                                                        id="role"
+                                                        options={staffRoleListData.map((role) => ({
+                                                            value: role.role_id?.toString() || '', // Ensure value is a string
+                                                            label: role.role_name,
+                                                        }))}
+                                                        // defaultValue={editStaffData.role_name} // Set the default value to the role name
+                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("role")}
+                                                    />
+
+                                                    {errors.role && (
+                                                        <p className="text-sm text-red-600">{errors.role.message}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Branch */}
+                                                <div>
+                                                    <label
+                                                        htmlFor="branch"
+                                                        className="text-md text-mindfulBlack font-semibold mb-1"
+                                                    >
+                                                        Branch
+                                                    </label>
+
+                                                    <SelectField
+                                                        label={''}
+                                                        // name="branch"
+                                                        id="branch"
+                                                        options={staffBranchListData.map((branch) => ({
+                                                            value: branch.branch_id?.toString() || '', // Ensure value is a string
+                                                            label: branch.branch_name || 'Unknown',   // Provide a fallback label
+                                                        }))}
+                                                        // defaultValue={editStaffData.branch_name} // Set the default value to the branch name
+                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("branch")}
+                                                    />
+
+                                                    {errors.branch && (
+                                                        <p className="text-sm text-red-600">{errors.branch.message}</p>
+                                                    )}
+                                                </div>
+
+
+                                                {/* Phone */}
+                                                <div className="">
+                                                    <label
+                                                        htmlFor="phone"
+                                                        className="text-md text-mindfulBlack font-semibold mb-1"
+                                                    >
+                                                        Phone Number
+                                                    </label>
+                                                    <InputField
+                                                        label={''}
+                                                        type="text"
+                                                        // name="name"
+                                                        id="phone"
+                                                        placeholder="Phone Number"
+                                                        className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("staffPhoneNumber")}
+                                                    />
+
+                                                    {errors.staffPhoneNumber && (
+                                                        <p className="text-sm text-red-600">{errors.staffPhoneNumber.message}</p>
+                                                    )}
+
+                                                    {error && <p className="text-sm text-red-600">{error}</p>}
+                                                </div>
+
+
+                                                {/* Upload Photo */}
+                                                <div className="flex items-end justify-between">
+
+                                                    <div>
+
+                                                        <label
+                                                            htmlFor="uploadPhoto"
+                                                            className="text-md text-mindfulBlack font-semibold mb-1"
+                                                        >
+                                                            Upload Photo
+                                                        </label>
+
+                                                        <div className="relative">
+                                                            <InputField
+                                                                label={''}
+                                                                placeholder="Take a Photo"
+                                                                className="w-40 rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             />
+                                                            <PiCamera className="text-[22px] text-mindfulBlack absolute top-2 right-2 cursor-pointer" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        {/* File Upload Area */}
+                                                        <div>
+                                                            <div className="">
+                                                                <label
+                                                                    htmlFor="upload-photo"
+                                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                                >
+
+                                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                                    Upload Files
+                                                                </label>
+                                                                <input
+                                                                    id="upload-photo"
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    // onChange={handleFileChange}
+                                                                    className="hidden"
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
 
+
                                         </div>
 
 
-                                    </div>
+                                        {/* Buttons */}
+                                        <div className="pt-10">
+                                            <div className="flex items-center justify-center space-x-5">
+                                                {/* Cancel Button */}
+                                                <Button
+                                                    onClick={closePopup}
+                                                    buttonType="button"
+                                                    buttonTitle="Cancel"
+                                                    className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                />
 
-
-                                    {/* Buttons */}
-                                    <div className="pt-10">
-                                        <div className="flex items-center justify-center space-x-5">
-                                            {/* Cancel Button */}
-                                            <Button
-                                                onClick={closePopup}
-                                                buttonType="button"
-                                                buttonTitle="Cancel"
-                                                className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                            />
-
-                                            {/* Submit Button */}
-                                            <Button
-                                                buttonType="submit"
-                                                buttonTitle="Update"
-                                                className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                            />
+                                                {/* Submit Button */}
+                                                <Button
+                                                    buttonType="submit"
+                                                    buttonTitle="Update"
+                                                    className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
 
-                                </form>
-                            </div>
+                                    </form>
+                                </div>
+                            )}
+
                         </div>
                     </div>
                 </div>

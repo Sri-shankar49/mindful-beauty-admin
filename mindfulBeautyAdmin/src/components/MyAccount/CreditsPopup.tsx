@@ -139,11 +139,11 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                                         />
 
                                         {errors.requiredCredit && (
-                                            <p className="text-sm text-red-500">{errors.requiredCredit.message}</p>
+                                            <p className="text-sm text-red-600">{errors.requiredCredit.message}</p>
                                         )}
 
                                         {/* Display error message */}
-                                        {error && (<p className="text-sm text-red-500">{error}</p>)}
+                                        {error && (<p className="text-sm text-red-600">{error}</p>)}
 
                                         <p className="text-sm text-main italic pt-3">One credit equals to Rs.1*</p>
 

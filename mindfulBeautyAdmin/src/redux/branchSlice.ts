@@ -52,6 +52,13 @@ const branchSlice = createSlice({
         setSearchQuery(state, action: PayloadAction<string>) {
             state.searchQuery = action.payload;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -71,5 +78,5 @@ const branchSlice = createSlice({
     },
 });
 
-export const { setSearchQuery } = branchSlice.actions;
+export const { setSearchQuery, setLoading, setError } = branchSlice.actions;
 export default branchSlice.reducer;

@@ -7,7 +7,7 @@ import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
 import { ShimmerTable } from "shimmer-effects-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchBranchList } from '@/redux/branchSlice';
+import { fetchBranchList, setError, setLoading } from '@/redux/branchSlice';
 // Define the type for BranchCardProps if it's not imported
 interface BranchCardProps {
     branch_id: string;
@@ -39,7 +39,10 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
     const { branchData, loading, error, searchQuery } = useSelector((state: RootState) => state.branch);
 
     useEffect(() => {
-        dispatch(fetchBranchList({ searchQuery }));
+        dispatch(setLoading(true)); // Ensure UI updates before fetching
+        dispatch(fetchBranchList({ searchQuery })).catch((error) => {
+            dispatch(setError(error.message));
+        });
     }, [dispatch, searchQuery]);
 
     // useEffect(() => {
@@ -78,21 +81,21 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
     };
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -121,7 +124,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
             </div>
 
             {/* Branch Card */}
-            <div className="grid grid-cols-4 gap-5">
+            {/* <div className="grid grid-cols-4 gap-5">
                 {branchData.length > 0 ? (
                     branchData.map((branch) => (
                         <BranchCard
@@ -135,10 +138,48 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                 ) : (
                     <div className="text-gray-500">No branches available.</div>
                 )}
-                {/* <BranchCard />
-                <BranchCard />
-                <BranchCard /> */}
+            </div> */}
+
+
+            <div className="grid grid-cols-4 gap-5">
+                {/* Show loading shimmer when data is being fetched */}
+                {loading && (
+                    <div className="col-span-4">
+                        <ShimmerTable
+                            mode="light"
+                            row={branchData.length + 1}
+                            col={4}
+                            border={1}
+                            borderColor={"#cbd5e1"}
+                            rounded={0.25}
+                            rowGap={16}
+                            colPadding={[15, 5, 15, 5]}
+                        />
+                    </div>
+                )}
+
+                {/* Show error message if there's an error */}
+                {error && <div className="text-red-600 col-span-4">{error}</div>}
+
+                {/* Show branches if data is available */}
+                {!loading && !error && branchData.length > 0 ? (
+                    branchData.map((branch) => (
+                        <BranchCard
+                            key={branch.branch_id}
+                            branchID={branch.branch_id}
+                            branchName={branch.branch_name}
+                            phone={branch.phone}
+                            location={branch.location}
+                            logo={branch.logo}
+                        />
+                    ))
+                ) : (
+                    !loading && !error && (
+                        <div className="text-gray-500 col-span-4">No branches available.</div>
+                    )
+                )}
             </div>
+
 
             {showBranchPopup && <AddBranchPopup closePopup={closeBranchPopup} refreshData={refreshBranchListData} />}
         </div>
