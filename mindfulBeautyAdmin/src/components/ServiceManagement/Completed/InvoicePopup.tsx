@@ -114,6 +114,8 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                                 colPadding={[15, 5, 15, 5]}
                             />
                         </div>
+                    ) : error ? (
+                        <p className="text-sm text-red-600">{error}</p>
                     ) : (
                         <div className="">
                             {/* Invoice to & Payment Details */}

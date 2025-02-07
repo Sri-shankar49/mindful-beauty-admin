@@ -63,6 +63,8 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
     const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState<number[]>([]);
     const [selectedCheckboxNames, setSelectedCheckboxNames] = useState<string[]>([]);
 
+    console.log(selectedCheckboxNames, "Just Logging for testing selected check box names");
+
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -177,6 +179,11 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
         });
 
     }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+
     return (
         <div>
             <div>

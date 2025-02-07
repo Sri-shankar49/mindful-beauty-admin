@@ -28,7 +28,7 @@ export const SalesTransactionsTable: React.FC = () => {
     // State Declaration for Invoice Popup
     const [showInvoicePopup, setShowInvoicePopup] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [loading1, setLoading1] = useState(false);
+    // const [loading1, setLoading1] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [salesTransactionsData, setSalesTransactionsData] = useState<SalesTransactionProps[]>([]);
     // Pagination state
@@ -99,7 +99,7 @@ export const SalesTransactionsTable: React.FC = () => {
     // Add the handleOnSubmit method
     const handleOnSubmit = async () => {
         try {
-            setLoading1(true);
+            setLoading(true);
             const response = await fetchSalesTransactionsByFilters({
                 providerID: Number(sessionLoginProviderID),
                 orderID,
@@ -113,7 +113,7 @@ export const SalesTransactionsTable: React.FC = () => {
         } catch (error: any) {
             setError(error.message || "Failed to fetch filtered sales transactions.");
         } finally {
-            setLoading1(false);
+            setLoading(false);
         }
     }
 
@@ -125,13 +125,13 @@ export const SalesTransactionsTable: React.FC = () => {
         setEndDate("");
         // Fetch default sales transactions without filters
         try {
-            setLoading1(true);
+            setLoading(true);
             const response = await salesTransactionsList(Number(sessionLoginProviderID), currentPage);
             setSalesTransactionsData(response.results || []);
         } catch (error: any) {
             setError(error.message || "Failed to fetch default sales transactions.");
         } finally {
-            setLoading1(false);
+            setLoading(false);
         }
     };
 

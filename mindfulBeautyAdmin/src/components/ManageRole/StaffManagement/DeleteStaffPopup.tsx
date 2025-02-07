@@ -3,7 +3,7 @@ import { Button } from '@/common/Button';
 import React, { useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { ShimmerTable } from 'shimmer-effects-react';
+// import { ShimmerTable } from 'shimmer-effects-react';
 
 
 interface DeleteStaffPopupProps {

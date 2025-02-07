@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5'
 import { InputField } from '@/common/InputField'
 // import { Button } from '@/common/Button'
-import { SelectField } from '@/common/SelectField';
 import { addServicesCheckbox, categories, subCategories } from '@/api/apiConfig';
 
 interface EditAppointmentPopupProps {
@@ -62,6 +61,8 @@ export const EditAppInprogressPopup: React.FC<EditAppointmentPopupProps> = ({ cl
     // State to store selected checkbox IDs
     const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState<number[]>([]);
     const [selectedCheckboxNames, setSelectedCheckboxNames] = useState<string[]>([]);
+
+    console.log(selectedCheckboxNames, "Just Logging for testing selected check box names");
 
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -177,6 +178,11 @@ export const EditAppInprogressPopup: React.FC<EditAppointmentPopupProps> = ({ cl
         });
 
     }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+
     return (
         <div>
             <div>

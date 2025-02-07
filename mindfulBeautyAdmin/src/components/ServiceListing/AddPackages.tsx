@@ -485,7 +485,7 @@ export const AddPackages = () => {
         <div>
           <div className="">
             <div>
-              <h5 className="text-3xl font-semibold py-5">Add Package </h5>
+              <h5 className="text-3xl font-semibold py-5">Add Package</h5>
             </div>
 
 
