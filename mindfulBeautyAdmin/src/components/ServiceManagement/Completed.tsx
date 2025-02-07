@@ -16,7 +16,7 @@ import { SelectField } from "@/common/SelectField";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchCompletedList, setCurrentPage } from '@/redux/completedSlice';
+import { fetchCompletedList, setCurrentPage, setError, setLoading } from '@/redux/completedSlice';
 
 
 // interface StatusListDataProps {
@@ -239,9 +239,12 @@ export const Completed = () => {
   // Redux state
   const { completedListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.completed);
 
-  // Fetch inprogress list on mount and when dependencies change
+  // Fetch completed list on mount and when dependencies change
   useEffect(() => {
-    dispatch(fetchCompletedList({ providerID: Number(sessionLoginProviderID), status: 3, searchQuery, currentPage }));
+    dispatch(setLoading(true)); // Ensure UI updates before fetching
+    dispatch(fetchCompletedList({ providerID: Number(sessionLoginProviderID), status: 3, searchQuery, currentPage })).catch((error) => {
+      dispatch(setError(error.message));
+    });
   }, [dispatch, searchQuery, currentPage]);
 
 
@@ -334,22 +337,22 @@ export const Completed = () => {
 
 
   // if (loading) return <div>Loading...</div>;
-  if (loading) return <div>
-    <div>
-      <ShimmerTable
-        mode="light"
-        row={2}
-        col={4}
-        border={1}
-        borderColor={"#cbd5e1"}
-        rounded={0.25}
-        rowGap={16}
-        colPadding={[15, 5, 15, 5]}
-      />
-    </div>
-  </div>;
+  // if (loading) return <div>
+  //   <div>
+  //     <ShimmerTable
+  //       mode="light"
+  //       row={2}
+  //       col={4}
+  //       border={1}
+  //       borderColor={"#cbd5e1"}
+  //       rounded={0.25}
+  //       rowGap={16}
+  //       colPadding={[15, 5, 15, 5]}
+  //     />
+  //   </div>
+  // </div>;
 
-  if (error) return <div>{error}</div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -379,145 +382,170 @@ export const Completed = () => {
 
           <tbody>
             {/* Content */}
-            {completedListData.length > 0 ? (
-              completedListData.map((completed) => (
-                <tr key={completed.id} className="border-b-2">
-                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
-                  <td className="text-start px-2 py-5">{completed.id}</td>
-                  <td className="text-start px-2 py-5">{completed.date}</td>
-                  <td className="text-start px-2 py-5">{completed.time}</td>
-                  <td className="text-start px-2 py-5">{completed.location}</td>
-                  <td className="text-start px-2 py-5">{completed.name}</td>
-                  <td className="text-start px-2 py-5">{completed.phone}</td>
-
-                  <td className="text-start px-2 py-5">
-                    <ul>
-                      {completed.services.map((service, index) => (
-                        <li key={index}>{service.name}</li>
-                      ))}
-                    </ul>
-                  </td>
-
-                  {/* <td className="text-start px-2 py-5">
-                    <ul>
-                      <li>Eyesbrows Threading</li>
-                      <li>Forehead Threading</li>
-                    </ul>
-                  </td> */}
-
-                  <td className="text-start px-2 py-5">{completed.amount}</td>
-
-                  <td className="text-start px-2 py-5">
-                    <div>
-                      {/* <Select
-                        placeholder="Select Option"
-                        value={selectedStylistOption}
-                        options={stylistData}
-                        onChange={handleStylistOption}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
-                      /> */}
-
-                      <Select
-                        placeholder="Select Option"
-                        // value={selectedStylistOption}
-                        // options={stylistData}
-                        options={beauticiansListData.map((beautician) => ({
-                          value: beautician.staff,
-                          text: beautician.name,
-                          // icon: beautician.profile_image,
-                          icon: stylist,
-                        }))}
-                        // onChange={handleStylistOption}
-                        onChange={(e) => handleStylistOption(e, completed.id)}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
-                        value={
-                          beauticiansListData
-                            .map((beautician) => ({
-                              value: beautician.staff,
-                              text: beautician.name,
-                              // icon: beautician.profile_image,
-                              icon: stylist,
-                            }))
-                            .find((option) => option.value === completed.stylist_id) || null // Set default value
-                        }
-                      />
-                    </div>
-                  </td>
-
-                  <td>
-                    <SelectField
-                      label={''}
-                      name="status"
-                      id="status"
-                      options={[
-                        { value: "Paid", label: "Paid" },
-                        { value: "Partly Paid", label: "Partly Paid" },
-                        { value: "Not Paid", label: "Not Paid" },
-                      ]}
-                      value={completed.payment_status} // Set default value from API response
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      // onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
-                      onChange={(e) => handlePaymentStatusChange(e, completed)} // Pass full completed object
-                    />
-                    {/* <select
-                      // name=""
-                      id=""
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    // value={selectedBranch}
-                    // onChange={handleBranchChange} // Call on change
-
-                    >
-                      <option value="" disabled>
-                        Select Branch
-                      </option>
-
-                      {statusListData.map((status) => (
-                        <option key={status.status_id} value={status.status_id}>
-                          {status.status_name}
-                        </option>
-                      ))}
-                    </select> */}
-                  </td>
-
-                  <td className="text-start px-2 py-5">
-                    <div className="flex items-center space-x-2">
-                      {/* Eye Button */}
-                      <div
-                        onClick={openInvoicePopup}
-                        className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
-                        <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
-                      </div>
-
-                      {/* Download Button */}
-                      <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
-                        <FiDownload className="text-[18px] text-mindfulGreen" />
-                      </div>
-                    </div>
-                  </td>
-
-                </tr>
-              ))
-            ) : (
+            {loading ? (
               <tr>
-                <td colSpan={11} className="text-center py-5">
-                  No Completed Booking data available.
+                <td colSpan={12} className="text-center px-2 py-5">
+                  <ShimmerTable
+                    mode="light"
+                    row={completedListData.length + 1} // Adjust based on expected staff rows
+                    col={11} // Matches table columns
+                    border={1}
+                    borderColor={"#cbd5e1"}
+                    rounded={0.25}
+                    rowGap={16}
+                    colPadding={[15, 5, 15, 5]}
+                  />
                 </td>
               </tr>
+            ) : error ? (
+              /* Error State */
+              <tr>
+                <td colSpan={12} className="text-center text-red-600 py-5">
+                  Error: {error}
+                </td>
+              </tr>
+            ) : (
+              completedListData.length > 0 ? (
+                completedListData.map((completed) => (
+                  <tr key={completed.id} className="border-b-2">
+                    {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                    <td className="text-start px-2 py-5">{completed.id}</td>
+                    <td className="text-start px-2 py-5">{completed.date}</td>
+                    <td className="text-start px-2 py-5">{completed.time}</td>
+                    <td className="text-start px-2 py-5">{completed.location}</td>
+                    <td className="text-start px-2 py-5">{completed.name}</td>
+                    <td className="text-start px-2 py-5">{completed.phone}</td>
+
+                    <td className="text-start px-2 py-5">
+                      <ul>
+                        {completed.services.map((service, index) => (
+                          <li key={index}>{service.name}</li>
+                        ))}
+                      </ul>
+                    </td>
+
+                    {/* <td className="text-start px-2 py-5">
+                      <ul>
+                        <li>Eyesbrows Threading</li>
+                        <li>Forehead Threading</li>
+                      </ul>
+                    </td> */}
+
+                    <td className="text-start px-2 py-5">{completed.amount}</td>
+
+                    <td className="text-start px-2 py-5">
+                      <div>
+                        {/* <Select
+                          placeholder="Select Option"
+                          value={selectedStylistOption}
+                          options={stylistData}
+                          onChange={handleStylistOption}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+                        /> */}
+
+                        <Select
+                          placeholder="Select Option"
+                          // value={selectedStylistOption}
+                          // options={stylistData}
+                          options={beauticiansListData.map((beautician) => ({
+                            value: beautician.staff,
+                            text: beautician.name,
+                            // icon: beautician.profile_image,
+                            icon: stylist,
+                          }))}
+                          // onChange={handleStylistOption}
+                          onChange={(e) => handleStylistOption(e, completed.id)}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+                          value={
+                            beauticiansListData
+                              .map((beautician) => ({
+                                value: beautician.staff,
+                                text: beautician.name,
+                                // icon: beautician.profile_image,
+                                icon: stylist,
+                              }))
+                              .find((option) => option.value === completed.stylist_id) || null // Set default value
+                          }
+                        />
+                      </div>
+                    </td>
+
+                    <td>
+                      <SelectField
+                        label={''}
+                        name="status"
+                        id="status"
+                        options={[
+                          { value: "Paid", label: "Paid" },
+                          { value: "Partly Paid", label: "Partly Paid" },
+                          { value: "Not Paid", label: "Not Paid" },
+                        ]}
+                        value={completed.payment_status} // Set default value from API response
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                        // onChange={(e) => handlePaymentStatusChange(e, Number(completed.id))} // Pass appointment ID dynamically
+                        onChange={(e) => handlePaymentStatusChange(e, completed)} // Pass full completed object
+                      />
+                      {/* <select
+                        // name=""
+                        id=""
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                      // value={selectedBranch}
+                      // onChange={handleBranchChange} // Call on change
+  
+                      >
+                        <option value="" disabled>
+                          Select Branch
+                        </option>
+  
+                        {statusListData.map((status) => (
+                          <option key={status.status_id} value={status.status_id}>
+                            {status.status_name}
+                          </option>
+                        ))}
+                      </select> */}
+                    </td>
+
+                    <td className="text-start px-2 py-5">
+                      <div className="flex items-center space-x-2">
+                        {/* Eye Button */}
+                        <div
+                          onClick={openInvoicePopup}
+                          className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
+                          <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
+                        </div>
+
+                        {/* Download Button */}
+                        <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
+                          <FiDownload className="text-[18px] text-mindfulGreen" />
+                        </div>
+                      </div>
+                    </td>
+
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={11} className="text-center py-5">
+                    No Completed Booking data available.
+                  </td>
+                </tr>
+              )
             )}
+
 
             {/* <tr className="border-b-2">
               <td className="text-start px-2 py-5">1</td>

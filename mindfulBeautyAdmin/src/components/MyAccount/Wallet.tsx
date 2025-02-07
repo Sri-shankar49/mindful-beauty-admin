@@ -2,6 +2,7 @@ import { Button } from '@/common/Button'
 import React from 'react'
 import { CreditsPopup } from './CreditsPopup';
 import { fetchProviderTransactions, getWalletCredits } from '@/api/apiConfig';
+import { ShimmerTable } from 'shimmer-effects-react';
 
 interface Credits {
     available_credits: number;
@@ -81,63 +82,80 @@ export const Wallet = () => {
         <div>
             <div className="py-8">
 
-                {error && (
+                {/* {error && (
                     <div className="text-red-600 text-center mb-4">{error}</div>
-                )}
+                )} */}
 
                 <div className="grid grid-cols-4 gap-5">
-                    {creditsData ? (
-                        <div className="space-y-5">
-                            {/* Available Credits */}
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                    <p>Available Credits</p>
-                                </div>
-                                <div className="pt-3">
-                                    <h6 className="text-4xl text-mindfulGreen font-semibold">
-                                        {creditsData?.available_credits ?? 0}
-                                    </h6>
-                                </div>
-                            </div>
 
-                            {/* Used Credits */}
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                    <p>Used Credits</p>
-                                </div>
-                                <div className="pt-3">
-                                    <h6 className="text-4xl text-main font-semibold">
-                                        {creditsData?.used_credits ?? 0}
-                                    </h6>
-                                </div>
-                            </div>
-
-                            {/* Total Credits */}
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
-                                <div className="border-b-[1px] border-b-mindfulgrey pb-2">
-                                    <p>Total Credits</p>
-                                </div>
-                                <div className="pt-3">
-                                    <h6 className="text-4xl text-mindfulBlack font-semibold">
-                                        {creditsData?.total_credits ?? 0}
-                                    </h6>
-                                </div>
-                            </div>
-
-                            <div className="pt-5">
-                                {/* Wallet Balance */}
-                                <Button
-                                    onClick={openCreditsPopup}
-                                    buttonType="button"
-                                    buttonTitle={"Buy Credits"}
-                                    className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
-                                />
-                            </div>
+                    {loading ? (
+                        <div>
+                            <ShimmerTable
+                                mode="light"
+                                row={6}
+                                col={1}
+                                border={1}
+                                borderColor={"#cbd5e1"}
+                                rounded={0.25}
+                                rowGap={16}
+                                colPadding={[15, 5, 15, 5]}
+                            />
                         </div>
                     ) : (
-                        <div className="text-center col-span-1">
-                            <p className="text-center py-5">Loading credit data...</p>
-                        </div>
+                        creditsData ? (
+                            <div className="space-y-5">
+                                {/* Available Credits */}
+                                <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                    <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                        <p>Available Credits</p>
+                                    </div>
+                                    <div className="pt-3">
+                                        <h6 className="text-4xl text-mindfulGreen font-semibold">
+                                            {creditsData?.available_credits ?? 0}
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                {/* Used Credits */}
+                                <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                    <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                        <p>Used Credits</p>
+                                    </div>
+                                    <div className="pt-3">
+                                        <h6 className="text-4xl text-main font-semibold">
+                                            {creditsData?.used_credits ?? 0}
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                {/* Total Credits */}
+                                <div className="border-[1px] border-mindfulgrey rounded-md px-5 py-5">
+                                    <div className="border-b-[1px] border-b-mindfulgrey pb-2">
+                                        <p>Total Credits</p>
+                                    </div>
+                                    <div className="pt-3">
+                                        <h6 className="text-4xl text-mindfulBlack font-semibold">
+                                            {creditsData?.total_credits ?? 0}
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div className="pt-5">
+                                    {/* Wallet Balance */}
+                                    <Button
+                                        onClick={openCreditsPopup}
+                                        buttonType="button"
+                                        buttonTitle={"Buy Credits"}
+                                        className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center col-span-1">
+                                <p className="text-center py-5">Loading credit data...</p>
+                            </div>
+                        )
+
                     )}
 
 
@@ -161,7 +179,24 @@ export const Wallet = () => {
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan={6} className="text-center py-5">Loading...</td>
+                                            <td colSpan={6} className="text-center px-2 py-5">
+                                                <ShimmerTable
+                                                    mode="light"
+                                                    row={transactions.length + 1} // Adjust based on expected staff rows
+                                                    col={6} // Matches table columns
+                                                    border={1}
+                                                    borderColor={"#cbd5e1"}
+                                                    rounded={0.25}
+                                                    rowGap={16}
+                                                    colPadding={[15, 5, 15, 5]}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ) : error ? (
+                                        <tr>
+                                            <td colSpan={6} className="text-center text-red-600 py-5">
+                                                Error: {error}
+                                            </td>
                                         </tr>
                                     ) : transactions.length === 0 ? (
                                         <tr>

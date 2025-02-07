@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectField } from "@/common/SelectField";
+import { ShimmerTable } from "shimmer-effects-react";
 
 // Define the validation schema
 const generalInfoSchema = z.object({
@@ -59,7 +60,7 @@ export const GeneralInfo = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
     const sessionProviderID = sessionStorage.getItem("loginProviderID");
     const [bankId, setBankId] = useState<number | null>(null);
@@ -142,7 +143,8 @@ export const GeneralInfo = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                setIsLoading(true);
+                setLoading(true);
+
                 const response = await fetchGeneralInfoDetails(Number(sessionProviderID));
                 console.log("API response on general info ==>", response)
                 console.log("API response bankid ==>", response.data.bank_details[0].bank_id)
@@ -174,10 +176,10 @@ export const GeneralInfo = () => {
                 setValue('taxIdentificationNumber', response.data.tax_details[0].tax_identification_number || '');
                 setValue('gstNumber', response.data.tax_details[0].gst_number || '');
                 setValue('idNumber', response.data.tax_details[0].proof_of_identity_number || '');
-            } catch (error) {
+            } catch (error: any) {
                 setSubmitError(error instanceof Error ? error.message : 'Failed to load profile');
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
         fetchDetails();
@@ -260,14 +262,27 @@ export const GeneralInfo = () => {
 
     return (
         <div>
-            {isLoading ? (
-                <div className="text-center py-4">Loading General Info...</div>
-            ) : (
-                <div>
-                    <form onSubmit={handleSubmit(onSubmit)} method="post">
-                        {/* General Information */}
-                        <div>
-                            <h5 className="text-xl font-semibold py-5">General Information</h5>
+
+            <div>
+                <form onSubmit={handleSubmit(onSubmit)} method="post">
+                    {/* General Information */}
+                    <div>
+                        <h5 className="text-xl font-semibold py-5">General Information</h5>
+
+                        {loading ? (
+                            <div className="text-center py-4">
+                                <ShimmerTable
+                                    mode="light"
+                                    row={3}
+                                    col={4}
+                                    border={1}
+                                    borderColor={"#cbd5e1"}
+                                    rounded={0.25}
+                                    rowGap={16}
+                                    colPadding={[15, 5, 15, 5]}
+                                />
+                            </div>
+                        ) : (
                             <div className="grid grid-cols-4 gap-5 border-b-2 border-b-mindfulgrey pb-10">
                                 {/* Owner's Name */}
                                 <div>
@@ -458,14 +473,30 @@ export const GeneralInfo = () => {
                                 </div>
 
                             </div>
+                        )}
+                    </div>
+
+                    {/* Bank Account Information */}
+                    <div>
+                        <div>
+                            <h5 className="text-xl font-semibold py-5">Bank Account Information</h5>
                         </div>
 
-                        {/* Bank Account Information */}
-                        <div>
-                            <div>
-                                <h5 className="text-xl font-semibold py-5">Bank Account Information</h5>
+                        {loading ? (
+                            <div className="text-center py-4">
+                                <ShimmerTable
+                                    mode="light"
+                                    row={2}
+                                    col={4}
+                                    border={1}
+                                    borderColor={"#cbd5e1"}
+                                    rounded={0.25}
+                                    rowGap={16}
+                                    colPadding={[15, 5, 15, 5]}
+                                />
                             </div>
 
+                        ) : (
                             <div className="grid grid-cols-4 gap-5 border-b-2 border-b-mindfulgrey pb-10">
 
                                 {/* Bank Account Holder Name */}
@@ -555,14 +586,29 @@ export const GeneralInfo = () => {
                                 </div>
 
                             </div>
+                        )}
+                    </div>
+
+                    {/* Tax Information / GST Number */}
+                    <div>
+                        <div>
+                            <h5 className="text-xl font-semibold py-5">Tax Information / GST Number</h5>
                         </div>
 
-                        {/* Tax Information / GST Number */}
-                        <div>
-                            <div>
-                                <h5 className="text-xl font-semibold py-5">Tax Information / GST Number</h5>
+                        {loading ? (
+                            <div className="text-center py-4">
+                                <ShimmerTable
+                                    mode="light"
+                                    row={4}
+                                    col={2}
+                                    border={1}
+                                    borderColor={"#cbd5e1"}
+                                    rounded={0.25}
+                                    rowGap={16}
+                                    colPadding={[15, 5, 15, 5]}
+                                />
                             </div>
-
+                        ) : (
                             <div className="grid grid-cols-2 gap-5 pb-10">
                                 {/* Tax Identification Number */}
                                 <div>
@@ -837,32 +883,34 @@ export const GeneralInfo = () => {
                                 </div>
 
                             </div>
-                        </div>
+                        )}
 
-                        <div>
-                            {/* <Button
+                    </div>
+
+                    <div>
+                        {/* <Button
                         buttonType="submit"
                         buttonTitle="Update"
                         className="bg-main text-md text-mindfulWhite font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                     /> */}
-                            {submitError && (
-                                <p className="text-red-600 mb-2">{submitError}</p>
-                            )}
-                            {submitSuccess && (
-                                <p className="text-green-500 mb-2">{submitSuccess}</p>
-                            )}
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`bg-main rounded-[4px] text-lg text-mindfulWhite px-8 py-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-                                    }`}
-                            >
-                                {isSubmitting ? 'Updating...' : 'Update'}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-        </div>
+                        {submitError && (
+                            <p className="text-red-600 mb-2">{submitError}</p>
+                        )}
+                        {submitSuccess && (
+                            <p className="text-green-500 mb-2">{submitSuccess}</p>
+                        )}
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`bg-main rounded-[4px] text-lg text-mindfulWhite px-8 py-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                        >
+                            {isSubmitting ? 'Updating...' : 'Update'}
+                        </button>
+                    </div>
+                </form>
+            </div >
+
+        </div >
     );
 }

@@ -13,8 +13,8 @@ import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchScheduleList, setCurrentPage } from '@/redux/scheduleSlice';
-import { EditAppointmentPopup } from "./EditAppointmentPopup";
+import { fetchScheduleList, setCurrentPage, setError, setLoading } from '@/redux/scheduleSlice';
+import { EditAppSchedulePopup } from "./Schedule/EditAppSchedulePopup";
 
 
 
@@ -231,7 +231,11 @@ export const Schedule = () => {
 
   // Fetch schedule list on mount and when dependencies change
   useEffect(() => {
-    dispatch(fetchScheduleList({ providerID: Number(sessionLoginProviderID), status: 1, searchQuery, currentPage }));
+    dispatch(setLoading(true)); // Ensure UI updates before fetching
+    dispatch(fetchScheduleList({ providerID: Number(sessionLoginProviderID), status: 1, searchQuery, currentPage })).catch((error) => {
+      console.error("Error fetching schedule list:", error);
+      dispatch(setError(error.message))
+    });
   }, [dispatch, searchQuery, currentPage]);
 
 
@@ -359,21 +363,21 @@ export const Schedule = () => {
 
 
   // if (loading) return <div>Loading...</div>;
-  if (loading) return <div>
-    <div>
-      <ShimmerTable
-        mode="light"
-        row={2}
-        col={4}
-        border={1}
-        borderColor={"#cbd5e1"}
-        rounded={0.25}
-        rowGap={16}
-        colPadding={[15, 5, 15, 5]}
-      />
-    </div>
-  </div>;
-  if (error) return <div>{error}</div>;
+  // if (loading) return <div>
+  //   <div>
+  //     <ShimmerTable
+  //       mode="light"
+  //       row={2}
+  //       col={4}
+  //       border={1}
+  //       borderColor={"#cbd5e1"}
+  //       rounded={0.25}
+  //       rowGap={16}
+  //       colPadding={[15, 5, 15, 5]}
+  //     />
+  //   </div>
+  // </div>;
+  // if (error) return <div>{error}</div>;
 
   // const [showEditServicePopup, setShowEditServicePopup] = useState(false);
 
@@ -413,154 +417,180 @@ export const Schedule = () => {
 
           <tbody>
             {/* Content */}
-            {scheduleListData.length > 0 ? (
-              scheduleListData.map((schedule) => (
-                <tr key={schedule.id} className="border-b-2">
-                  {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
-                  <td className="text-start px-2 py-5">{schedule.id}</td>
-                  <td className="text-start px-2 py-5">{schedule.date}</td>
-                  <td className="text-start px-2 py-5">{schedule.time}</td>
-                  <td className="text-start px-2 py-5">{schedule.location}</td>
-                  <td className="text-start px-2 py-5">{schedule.name}</td>
-                  <td className="text-start px-2 py-5">{schedule.phone}</td>
-                  {/* <td className="text-start px-2 py-5">{schedule.services}</td> */}
 
-                  <td className="text-start px-2 py-5">
-                    <ul>
-                      {schedule.services.map((service, index) => (
-                        <li key={index}>{service.name}</li>
-                      ))}
-                    </ul>
-                  </td>
+            {loading ? (
+              <tr>
+                <td colSpan={12} className="text-center px-2 py-5">
+                  <ShimmerTable
+                    mode="light"
+                    row={scheduleListData.length + 1} // Adjust based on expected staff rows
+                    col={11} // Matches table columns
+                    border={1}
+                    borderColor={"#cbd5e1"}
+                    rounded={0.25}
+                    rowGap={16}
+                    colPadding={[15, 5, 15, 5]}
+                  />
+                </td>
+              </tr>
+            ) : error ? (
+              /* Error State */
+              <tr>
+                <td colSpan={12} className="text-center text-red-600 py-5">
+                  Error: {error}
+                </td>
+              </tr>
+            ) : (
+              scheduleListData.length > 0 ? (
+                scheduleListData.map((schedule) => (
+                  <tr key={schedule.id} className="border-b-2">
+                    {/* <td className="text-start px-2 py-5">{index + 1}</td> */}
+                    <td className="text-start px-2 py-5">{schedule.id}</td>
+                    <td className="text-start px-2 py-5">{schedule.date}</td>
+                    <td className="text-start px-2 py-5">{schedule.time}</td>
+                    <td className="text-start px-2 py-5">{schedule.location}</td>
+                    <td className="text-start px-2 py-5">{schedule.name}</td>
+                    <td className="text-start px-2 py-5">{schedule.phone}</td>
+                    {/* <td className="text-start px-2 py-5">{schedule.services}</td> */}
 
-                  {/* <td className="text-start px-2 py-5">
-                    <ul>
-                      <li>Eyesbrows Threading</li>
-                      <li>Forehead Threading</li>
-                    </ul>
-                  </td> */}
+                    <td className="text-start px-2 py-5">
+                      <ul>
+                        {schedule.services.map((service, index) => (
+                          <li key={index}>{service.name}</li>
+                        ))}
+                      </ul>
+                    </td>
 
-                  <td className="text-start px-2 py-5">{schedule.amount}</td>
+                    {/* <td className="text-start px-2 py-5">
+                      <ul>
+                        <li>Eyesbrows Threading</li>
+                        <li>Forehead Threading</li>
+                      </ul>
+                    </td> */}
 
-                  <td className="text-start px-2 py-5">
-                    <div>
-                      {/* <Select
-                        placeholder="Select Option"
-                        value={selectedStylistOption}
-                        options={stylistData}
-                        onChange={handleStylistOption}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
+                    <td className="text-start px-2 py-5">{schedule.amount}</td>
+
+                    <td className="text-start px-2 py-5">
+                      <div>
+                        {/* <Select
+                          placeholder="Select Option"
+                          value={selectedStylistOption}
+                          options={stylistData}
+                          onChange={handleStylistOption}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+                        /> */}
+
+                        <Select
+                          placeholder="Select Option"
+                          // value={selectedStylistOption}
+                          // options={stylistData}
+                          options={beauticiansListData.map((beautician) => ({
+                            value: beautician.staff,
+                            text: beautician.name,
+                            // icon: beautician.profile_image,
+                            icon: stylist,
+                          }))}
+                          // onChange={handleStylistOption}
+                          onChange={(e) => handleStylistOption(e, schedule.id)}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+
+                          value={
+                            beauticiansListData
+                              .map((beautician) => ({
+                                value: beautician.staff,
+                                text: beautician.name,
+                                // icon: beautician.profile_image,
+                                icon: stylist,
+                              }))
+                              .find((option) => option.value === schedule.stylist_id) || null // Set default value
+                          }
+                        />
+                      </div>
+                    </td>
+
+                    <td>
+                      {/* <SelectField
+                        label={''}
+                        name="status"
+                        id="status"
+                        options={[
+                          { value: "scheduled", label: "Scheduled" },
+                          { value: "inprogress", label: "Inprogress" },
+                          { value: "completed", label: "Completed" },
+                        ]}
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                       /> */}
+                      <select
+                        // name=""
+                        // id=""
+                        id={`status-${schedule.id}`} // Unique ID for better handling
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                        // value={selectedBranch}
+                        // onChange={handleBranchChange} // Call on change
+                        value={schedule.status_id} // Set default value from the API response
+                        onChange={(e) => handleStatusChange(e, schedule.id)} // Handle status change
 
-                      <Select
-                        placeholder="Select Option"
-                        // value={selectedStylistOption}
-                        // options={stylistData}
-                        options={beauticiansListData.map((beautician) => ({
-                          value: beautician.staff,
-                          text: beautician.name,
-                          // icon: beautician.profile_image,
-                          icon: stylist,
-                        }))}
-                        // onChange={handleStylistOption}
-                        onChange={(e) => handleStylistOption(e, schedule.id)}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
+                      >
+                        {/* <option value="" disabled>
+                          Select Status
+                        </option> */}
 
-                        value={
-                          beauticiansListData
-                            .map((beautician) => ({
-                              value: beautician.staff,
-                              text: beautician.name,
-                              // icon: beautician.profile_image,
-                              icon: stylist,
-                            }))
-                            .find((option) => option.value === schedule.stylist_id) || null // Set default value
-                        }
-                      />
-                    </div>
-                  </td>
-
-                  <td>
-                    {/* <SelectField
-                      label={''}
-                      name="status"
-                      id="status"
-                      options={[
-                        { value: "scheduled", label: "Scheduled" },
-                        { value: "inprogress", label: "Inprogress" },
-                        { value: "completed", label: "Completed" },
-                      ]}
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    /> */}
-                    <select
-                      // name=""
-                      // id=""
-                      id={`status-${schedule.id}`} // Unique ID for better handling
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      // value={selectedBranch}
-                      // onChange={handleBranchChange} // Call on change
-                      value={schedule.status_id} // Set default value from the API response
-                      onChange={(e) => handleStatusChange(e, schedule.id)} // Handle status change
-
-                    >
-                      {/* <option value="" disabled>
-                        Select Status
-                      </option> */}
-
-                      {/* {statusListData.map((status) => (
-                        <option key={status.status_id} value={status.status_id}>
-                          {status.status_name}
-                        </option>
-                      ))} */}
-
-                      {statusListData
-                        .filter((status) => status.status_id !== 0) // Exclude the option with status_id = 3
-                        .map((status) => (
+                        {/* {statusListData.map((status) => (
                           <option key={status.status_id} value={status.status_id}>
                             {status.status_name}
                           </option>
-                        ))}
-                    </select>
-                  </td>
+                        ))} */}
 
-                  <td className="text-start px-2 py-5">
-                    {/* <Link
-                      to="/ServiceManagement/EditServices"
-                      aria-current="page"
-                      aria-label="Edit Services" // Accessibility improvement
-                    > */}
-                    <button
-                      // onClick={openEditService}
-                      onClick={openEditAppointmentPopup}
-                      type="button"
-                      className=""  // Optional: Add a class for better styling control
-                    >
-                      <img src={editButton} alt="editButton" />
-                    </button>
-                    {/* </Link> */}
+                        {statusListData
+                          .filter((status) => status.status_id !== 0) // Exclude the option with status_id = 3
+                          .map((status) => (
+                            <option key={status.status_id} value={status.status_id}>
+                              {status.status_name}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
+
+                    <td className="text-start px-2 py-5">
+                      {/* <Link
+                        to="/ServiceManagement/EditServices"
+                        aria-current="page"
+                        aria-label="Edit Services" // Accessibility improvement
+                      > */}
+                      <button
+                        // onClick={openEditService}
+                        onClick={() => openEditAppointmentPopup(schedule)}
+                        type="button"
+                        className=""  // Optional: Add a class for better styling control
+                      >
+                        <img src={editButton} alt="editButton" />
+                      </button>
+                      {/* </Link> */}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={11} className="text-center py-5">
+                    No Schedule Booking data available.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={11} className="text-center py-5">
-                  No Schedule Booking data available.
-                </td>
-              </tr>
+              )
+
             )}
 
 
@@ -824,7 +854,7 @@ export const Schedule = () => {
 
 
       {showEditAppointmentPopup &&
-        <EditAppointmentPopup
+        <EditAppSchedulePopup
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
         />}

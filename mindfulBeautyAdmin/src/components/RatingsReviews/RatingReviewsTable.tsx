@@ -116,21 +116,21 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
 
 
   // if (loading) return <div>Loading...</div>;
-  if (loading) return <div>
-    <div>
-      <ShimmerTable
-        mode="light"
-        row={2}
-        col={4}
-        border={1}
-        borderColor={"#cbd5e1"}
-        rounded={0.25}
-        rowGap={16}
-        colPadding={[15, 5, 15, 5]}
-      />
-    </div>
-  </div>;
-  if (error) return <div>{error}</div>;
+  // if (loading) return <div>
+  //   <div>
+  //     <ShimmerTable
+  //       mode="light"
+  //       row={2}
+  //       col={4}
+  //       border={1}
+  //       borderColor={"#cbd5e1"}
+  //       rounded={0.25}
+  //       rowGap={16}
+  //       colPadding={[15, 5, 15, 5]}
+  //     />
+  //   </div>
+  // </div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -223,68 +223,93 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
 
                   <tbody>
                     {/* Content */}
-                    {reviewsListData.length > 0 ? (
-                      reviewsListData.map((review) => (
-                        <tr key={review.review_id} className="border-b-2">
-                          <td className="text-start pl-8 ml-2 py-5">{review.review_id}</td>
-                          <td className="text-start pl-8 py-5">{review.created_at}</td>
-                          <td className="text-start pl-8 py-5">{review.order_id}</td>
-                          <td key={review.user_id} className="text-start pl-8 py-5">{review.customer_name}</td>
-                          {/* <td className="text-start pl-8 py-5">{review.service_names}</td> */}
-                          <td className="text-start pl-8 py-5">
-                            <ul>
-                              {review.service_objects.map((service) => (
-                                <li key={service.service_id}>{service.service_name}</li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td className="text-start pl-8 py-5">{review.rating}</td>
-                          <td className="text-start pl-8 py-5">{review.comment}</td>
-                          <td className="text-start pl-8 py-5">
-                            <div className="flex items-center space-x-2">
-
-                              {/* Approve Button */}
-
-                              <div
-                                onClick={() => {
-                                  if (review.status !== 1) {
-                                    handleReviewAction(Number(review.review_id), 1, Number(review.user_id));
-                                  }
-                                }}
-                                className={`border-[1px] rounded-md px-2 py-1.5 group transition-colors duration-200 ${review.status === 1
-                                  ? "border-mindfulgrey cursor-not-allowed bg-gray-200"
-                                  : "border-mindfulGreen cursor-pointer hover:bg-[#e5ffec]"
-                                  }`}
-                                title={review.status === 1 ? "Already Approved" : "Approve"}
-                              >
-                                <FaCheck className={`text-[20px] ${review.status === 1 ? "text-mindfulgrey" : "text-mindfulGreen group-hover:text-mindfulGreen"}`} />
-                              </div>
-
-                              {/* Decline Button */}
-                              <div
-                                onClick={() => {
-                                  if (review.status !== 0) {
-                                    handleReviewAction(Number(review.review_id), 0, Number(review.user_id));
-                                  }
-                                }}
-                                className={`border-[1px] rounded-md px-2 py-1.5 group transition-colors duration-200 ${review.status === 0
-                                  ? "border-mindfulgrey cursor-not-allowed bg-gray-200"
-                                  : "border-mindfulRed cursor-pointer hover:bg-[#ffe1e1]"
-                                  }`}
-                                title={review.status === 0 ? "Already Declined" : "Decline"}
-                              >
-                                <IoClose className={`text-[20px] ${review.status === 0 ? "text-mindfulgrey" : "text-mindfulRed group-hover:text-mindfulRed"}`} />
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      ))) : (
+                    {loading ? (
                       <tr>
-                        <td colSpan={6} className="text-center py-5">
-                          No ratings & reviews data available.
+                        <td colSpan={8} className="text-center px-2 py-5">
+                          <ShimmerTable
+                            mode="light"
+                            row={reviewsListData.length + 1} // Adjust based on expected staff rows
+                            col={11} // Matches table columns
+                            border={1}
+                            borderColor={"#cbd5e1"}
+                            rounded={0.25}
+                            rowGap={16}
+                            colPadding={[15, 5, 15, 5]}
+                          />
                         </td>
-                      </tr>)
-                    }
+                      </tr>
+                    ) : error ? (
+                      /* Error State */
+                      <tr>
+                        <td colSpan={8} className="text-center text-red-600 py-5">
+                          Error: {error}
+                        </td>
+                      </tr>
+                    ) : (
+                      reviewsListData.length > 0 ? (
+                        reviewsListData.map((review) => (
+                          <tr key={review.review_id} className="border-b-2">
+                            <td className="text-start pl-8 ml-2 py-5">{review.review_id}</td>
+                            <td className="text-start pl-8 py-5">{review.created_at}</td>
+                            <td className="text-start pl-8 py-5">{review.order_id}</td>
+                            <td key={review.user_id} className="text-start pl-8 py-5">{review.customer_name}</td>
+                            {/* <td className="text-start pl-8 py-5">{review.service_names}</td> */}
+                            <td className="text-start pl-8 py-5">
+                              <ul>
+                                {review.service_objects.map((service) => (
+                                  <li key={service.service_id}>{service.service_name}</li>
+                                ))}
+                              </ul>
+                            </td>
+                            <td className="text-start pl-8 py-5">{review.rating}</td>
+                            <td className="text-start pl-8 py-5">{review.comment}</td>
+                            <td className="text-start pl-8 py-5">
+                              <div className="flex items-center space-x-2">
+
+                                {/* Approve Button */}
+
+                                <div
+                                  onClick={() => {
+                                    if (review.status !== 1) {
+                                      handleReviewAction(Number(review.review_id), 1, Number(review.user_id));
+                                    }
+                                  }}
+                                  className={`border-[1px] rounded-md px-2 py-1.5 group transition-colors duration-200 ${review.status === 1
+                                    ? "border-mindfulgrey cursor-not-allowed bg-gray-200"
+                                    : "border-mindfulGreen cursor-pointer hover:bg-[#e5ffec]"
+                                    }`}
+                                  title={review.status === 1 ? "Already Approved" : "Approve"}
+                                >
+                                  <FaCheck className={`text-[20px] ${review.status === 1 ? "text-mindfulgrey" : "text-mindfulGreen group-hover:text-mindfulGreen"}`} />
+                                </div>
+
+                                {/* Decline Button */}
+                                <div
+                                  onClick={() => {
+                                    if (review.status !== 0) {
+                                      handleReviewAction(Number(review.review_id), 0, Number(review.user_id));
+                                    }
+                                  }}
+                                  className={`border-[1px] rounded-md px-2 py-1.5 group transition-colors duration-200 ${review.status === 0
+                                    ? "border-mindfulgrey cursor-not-allowed bg-gray-200"
+                                    : "border-mindfulRed cursor-pointer hover:bg-[#ffe1e1]"
+                                    }`}
+                                  title={review.status === 0 ? "Already Declined" : "Decline"}
+                                >
+                                  <IoClose className={`text-[20px] ${review.status === 0 ? "text-mindfulgrey" : "text-mindfulRed group-hover:text-mindfulRed"}`} />
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))) : (
+                        <tr>
+                          <td colSpan={6} className="text-center py-5">
+                            No ratings & reviews data available.
+                          </td>
+                        </tr>)
+
+                    )}
+
 
 
                     {/* <tr className="border-b-2">

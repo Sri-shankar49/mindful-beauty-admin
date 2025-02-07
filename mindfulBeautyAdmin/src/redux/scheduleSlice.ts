@@ -71,6 +71,13 @@ const scheduleSlice = createSlice({
         setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -90,5 +97,5 @@ const scheduleSlice = createSlice({
     },
 });
 
-export const { setSearchQuery, setCurrentPage } = scheduleSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading, setError } = scheduleSlice.actions;
 export default scheduleSlice.reducer;

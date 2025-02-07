@@ -465,20 +465,20 @@ export const DashBoardData = () => {
 
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
 
     // if (error) return <div>{error}</div>;
 
@@ -590,165 +590,190 @@ export const DashBoardData = () => {
                         </tr> */}
 
                                 {/* Content & Checkbox */}
-                                {dashboardBookingListData.length > 0 ? (
-                                    dashboardBookingListData.map((dashboardData) => (
-                                        <tr key={dashboardData.appointment_id} className="border-b-2 pb-2">
-                                            <td className="px-2 py-5">{dashboardData.appointment_id}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.appointment_date}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.appointment_time}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.branch_city}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.user_name}</td>
-                                            <td className="text-start px-2 py-5">{dashboardData.user_phone}</td>
-                                            {/* <td className="text-start px-2 py-5">{dashboardData.service_names}</td> */}
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={9} className="text-center px-2 py-5">
+                                            <ShimmerTable
+                                                mode="light"
+                                                row={dashboardBookingListData.length + 1} // Adjust based on expected staff rows
+                                                col={9} // Matches table columns
+                                                border={1}
+                                                borderColor={"#cbd5e1"}
+                                                rounded={0.25}
+                                                rowGap={16}
+                                                colPadding={[15, 5, 15, 5]}
+                                            />
+                                        </td>
+                                    </tr>
+                                ) : error ? (
+                                    /* Error State */
+                                    <tr>
+                                        <td colSpan={9} className="text-center text-red-600 py-5">
+                                            Error: {error}
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    dashboardBookingListData.length > 0 ? (
+                                        dashboardBookingListData.map((dashboardData) => (
+                                            <tr key={dashboardData.appointment_id} className="border-b-2 pb-2">
+                                                <td className="px-2 py-5">{dashboardData.appointment_id}</td>
+                                                <td className="text-start px-2 py-5">{dashboardData.appointment_date}</td>
+                                                <td className="text-start px-2 py-5">{dashboardData.appointment_time}</td>
+                                                <td className="text-start px-2 py-5">{dashboardData.branch_city}</td>
+                                                <td className="text-start px-2 py-5">{dashboardData.user_name}</td>
+                                                <td className="text-start px-2 py-5">{dashboardData.user_phone}</td>
+                                                {/* <td className="text-start px-2 py-5">{dashboardData.service_names}</td> */}
 
-                                            <td className="text-start px-2 py-5">
-                                                <ul>
-                                                    {dashboardData.service_names.map((service, index) => (
-                                                        <li key={index}>{service.service_name}</li>
-                                                    ))}
-                                                </ul>
-                                            </td>
-                                            {/* <td className="text-start px-2 py-5">
-                                                <ul>
-                                                    <li>Eyesbrows Threading</li>
-                                                    <li>Forehead Threading</li>
-                                                </ul>
-                                            </td> */}
+                                                <td className="text-start px-2 py-5">
+                                                    <ul>
+                                                        {dashboardData.service_names.map((service, index) => (
+                                                            <li key={index}>{service.service_name}</li>
+                                                        ))}
+                                                    </ul>
+                                                </td>
+                                                {/* <td className="text-start px-2 py-5">
+                                                    <ul>
+                                                        <li>Eyesbrows Threading</li>
+                                                        <li>Forehead Threading</li>
+                                                    </ul>
+                                                </td> */}
 
-                                            <td className="text-start px-2 py-5">
-                                                {/* Stylist Select Field */}
-                                                <div>
-                                                    <Select
-                                                        placeholder="Select Option"
-                                                        // value={selectedStylistOption}
-                                                        // options={stylistData}
-                                                        options={beauticiansListData.map((beautician) => ({
-                                                            value: beautician.staff,
-                                                            text: beautician.name,
-                                                            // icon: beautician.profile_image,
-                                                            icon: stylist,
-                                                        }))}
-                                                        // onChange={handleStylistOption}
-                                                        onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
-                                                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                        formatOptionLabel={(option) => (
-                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                                <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                            </div>
-                                                        )}
-                                                        getOptionValue={(option) => option.value.toString()}
-                                                        value={selectedStylists[dashboardData.appointment_id] ?
-                                                            {
-                                                                value: selectedStylists[dashboardData.appointment_id].staff,
-                                                                text: selectedStylists[dashboardData.appointment_id].name,
-                                                                icon: stylist
-                                                            }
-                                                            : null}
-                                                    />
-
-                                                    {/* Display the error message for the specific appointment */}
-                                                    {stylistError && stylistError[dashboardData.appointment_id] && (
-                                                        <div className="text-sm text-red-600">{stylistError[dashboardData.appointment_id]}</div>
-                                                    )}
-                                                </div>
-                                            </td>
-
-                                            <td className="text-center px-2 py-5">
-                                                <div className="space-y-3">
-
+                                                <td className="text-start px-2 py-5">
+                                                    {/* Stylist Select Field */}
                                                     <div>
-
-                                                        {/* <Button
-                                                            onClick={() =>
-                                                                !isAccepted &&
-                                                                handleActionSubmit(
-                                                                    Number(dashboardData.appointment_id),
-                                                                    1,
-                                                                    // setIsAccepted,
-                                                                    // setLoading,
-                                                                    // setError,
-                                                                    // navigate
-                                                                )
-                                                            }
-                                                            buttonType="button"
-                                                            buttonTitle={
-                                                                isAccepted
-                                                                    ? "Accepted" // Display "Accepted" if the action was successful
-                                                                    : loading
-                                                                        ? "Accepting..." // Show loading text while the request is being processed
-                                                                        : "Accept" // Default text
-                                                            }
-                                                            className={`w-24 text-md ${isAccepted ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"
-                                                                } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
-                                                                } rounded-[5px] px-3 py-1`}
-                                                            disabled={loading || isAccepted} // Disable button if loading or already accepted
-                                                        /> */}
-
-                                                        {/* <Button
-                                                            onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
-                                                            buttonType="button"
-                                                            buttonTitle={isAccepted ? "Accepted" : "Accept"}
-                                                            className="w-24 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                        /> */}
-
-                                                        <Button
-                                                            onClick={() =>
-                                                                !acceptedAppointments[dashboardData.appointment_id] &&
-                                                                // handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 1)
-                                                                handleActionSubmit(dashboardData.appointment_id, selectedStylist?.staff, 1)
-                                                            }
-                                                            buttonType="button"
-                                                            buttonTitle={acceptedAppointments[dashboardData.appointment_id] ? "Accepted" : loading ? "Accepting..." : "Accept"}
-                                                            className={`w-24 text-md ${acceptedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"} font-semibold border-[1px] ${acceptedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulGreen"} rounded-[5px] px-3 py-1`}
-                                                            disabled={loading || acceptedAppointments[dashboardData.appointment_id] || declinedAppointments[dashboardData.appointment_id]} // Disable if declined or already accepted
+                                                        <Select
+                                                            placeholder="Select Option"
+                                                            // value={selectedStylistOption}
+                                                            // options={stylistData}
+                                                            options={beauticiansListData.map((beautician) => ({
+                                                                value: beautician.staff,
+                                                                text: beautician.name,
+                                                                // icon: beautician.profile_image,
+                                                                icon: stylist,
+                                                            }))}
+                                                            // onChange={handleStylistOption}
+                                                            onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
+                                                            getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                                                            formatOptionLabel={(option) => (
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                                                    <span style={{ marginLeft: 5 }}>{option.text}</span>
+                                                                </div>
+                                                            )}
+                                                            getOptionValue={(option) => option.value.toString()}
+                                                            value={selectedStylists[dashboardData.appointment_id] ?
+                                                                {
+                                                                    value: selectedStylists[dashboardData.appointment_id].staff,
+                                                                    text: selectedStylists[dashboardData.appointment_id].name,
+                                                                    icon: stylist
+                                                                }
+                                                                : null}
                                                         />
 
-
+                                                        {/* Display the error message for the specific appointment */}
+                                                        {stylistError && stylistError[dashboardData.appointment_id] && (
+                                                            <div className="text-sm text-red-600">{stylistError[dashboardData.appointment_id]}</div>
+                                                        )}
                                                     </div>
+                                                </td>
 
-                                                    {/* <div>
-                                                        <Button
-                                                            onClick={openDenialPopup}
-                                                            buttonType="button"
-                                                            buttonTitle="Deny"
-                                                            className="w-24 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                        />
-                                                    </div> */}
-                                                    {!acceptedAppointments[dashboardData.appointment_id] && (
+                                                <td className="text-center px-2 py-5">
+                                                    <div className="space-y-3">
+
                                                         <div>
-                                                            <Button
-                                                                onClick={() => openDenialPopup(dashboardData.appointment_id)}
-                                                                buttonType="button"
-                                                                buttonTitle="Decline"
-                                                                className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                            />
 
                                                             {/* <Button
                                                                 onClick={() =>
-                                                                    !declinedAppointments[dashboardData.appointment_id] &&
-                                                                    handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
+                                                                    !isAccepted &&
+                                                                    handleActionSubmit(
+                                                                        Number(dashboardData.appointment_id),
+                                                                        1,
+                                                                        // setIsAccepted,
+                                                                        // setLoading,
+                                                                        // setError,
+                                                                        // navigate
+                                                                    )
                                                                 }
                                                                 buttonType="button"
-                                                                buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
-                                                                className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
-                                                                disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
+                                                                buttonTitle={
+                                                                    isAccepted
+                                                                        ? "Accepted" // Display "Accepted" if the action was successful
+                                                                        : loading
+                                                                            ? "Accepting..." // Show loading text while the request is being processed
+                                                                            : "Accept" // Default text
+                                                                }
+                                                                className={`w-24 text-md ${isAccepted ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"
+                                                                    } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
+                                                                    } rounded-[5px] px-3 py-1`}
+                                                                disabled={loading || isAccepted} // Disable button if loading or already accepted
                                                             /> */}
+
+                                                            {/* <Button
+                                                                onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
+                                                                buttonType="button"
+                                                                buttonTitle={isAccepted ? "Accepted" : "Accept"}
+                                                                className="w-24 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
+                                                            /> */}
+
+                                                            <Button
+                                                                onClick={() =>
+                                                                    !acceptedAppointments[dashboardData.appointment_id] &&
+                                                                    // handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 1)
+                                                                    handleActionSubmit(dashboardData.appointment_id, selectedStylist?.staff, 1)
+                                                                }
+                                                                buttonType="button"
+                                                                buttonTitle={acceptedAppointments[dashboardData.appointment_id] ? "Accepted" : loading ? "Accepting..." : "Accept"}
+                                                                className={`w-24 text-md ${acceptedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"} font-semibold border-[1px] ${acceptedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulGreen"} rounded-[5px] px-3 py-1`}
+                                                                disabled={loading || acceptedAppointments[dashboardData.appointment_id] || declinedAppointments[dashboardData.appointment_id]} // Disable if declined or already accepted
+                                                            />
+
+
                                                         </div>
-                                                    )}
 
-                                                </div>
+                                                        {/* <div>
+                                                            <Button
+                                                                onClick={openDenialPopup}
+                                                                buttonType="button"
+                                                                buttonTitle="Deny"
+                                                                className="w-24 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
+                                                            />
+                                                        </div> */}
+                                                        {!acceptedAppointments[dashboardData.appointment_id] && (
+                                                            <div>
+                                                                <Button
+                                                                    onClick={() => openDenialPopup(dashboardData.appointment_id)}
+                                                                    buttonType="button"
+                                                                    buttonTitle="Decline"
+                                                                    className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
+                                                                />
+
+                                                                {/* <Button
+                                                                    onClick={() =>
+                                                                        !declinedAppointments[dashboardData.appointment_id] &&
+                                                                        handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
+                                                                    }
+                                                                    buttonType="button"
+                                                                    buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
+                                                                    className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
+                                                                    disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
+                                                                /> */}
+                                                            </div>
+                                                        )}
+
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={9} className="text-center py-5">
+                                                No Bookings found.
                                             </td>
-
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={9} className="text-center py-5">
-                                            No Bookings found.
-                                        </td>
-                                    </tr>
+                                    )
                                 )}
+
 
 
 

@@ -71,6 +71,13 @@ const inprogressSlice = createSlice({
         setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+            state.loading = false; // Reset loading on error
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -90,5 +97,5 @@ const inprogressSlice = createSlice({
     },
 });
 
-export const { setSearchQuery, setCurrentPage } = inprogressSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading, setError } = inprogressSlice.actions;
 export default inprogressSlice.reducer;

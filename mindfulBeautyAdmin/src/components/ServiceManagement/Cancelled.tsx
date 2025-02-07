@@ -11,7 +11,7 @@ import { ShimmerTable } from "shimmer-effects-react";
 // import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchCancelledList, setCurrentPage } from '@/redux/cancelledSlice';
+import { fetchCancelledList, setCurrentPage, setError, setLoading } from '@/redux/cancelledSlice';
 import { useNavigate } from "react-router-dom";
 
 
@@ -222,9 +222,12 @@ export const Cancelled = () => {
   // Redux state
   const { cancelledListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.cancelled);
 
-  // Fetch inprogress list on mount and when dependencies change
+  // Fetch cancelled list on mount and when dependencies change
   useEffect(() => {
-    dispatch(fetchCancelledList({ providerID: Number(sessionLoginProviderID), status: 4, searchQuery, currentPage }));
+    dispatch(setLoading(true)); // Ensure UI updates before fetching
+    dispatch(fetchCancelledList({ providerID: Number(sessionLoginProviderID), status: 4, searchQuery, currentPage })).catch((error) => {
+      dispatch(setError(error.message));
+    });
   }, [dispatch, searchQuery, currentPage]);
 
 
@@ -352,21 +355,21 @@ export const Cancelled = () => {
 
 
   // if (loading) return <div>Loading...</div>;
-  if (loading) return <div>
-    <div>
-      <ShimmerTable
-        mode="light"
-        row={2}
-        col={4}
-        border={1}
-        borderColor={"#cbd5e1"}
-        rounded={0.25}
-        rowGap={16}
-        colPadding={[15, 5, 15, 5]}
-      />
-    </div>
-  </div>;
-  if (error) return <div>{error}</div>;
+  // if (loading) return <div>
+  //   <div>
+  //     <ShimmerTable
+  //       mode="light"
+  //       row={2}
+  //       col={4}
+  //       border={1}
+  //       borderColor={"#cbd5e1"}
+  //       rounded={0.25}
+  //       rowGap={16}
+  //       colPadding={[15, 5, 15, 5]}
+  //     />
+  //   </div>
+  // </div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -396,130 +399,155 @@ export const Cancelled = () => {
 
           <tbody>
             {/* Content */}
-            {cancelledListData.length > 0 ? (
-              cancelledListData.map((cancelled) => (
-                <tr key={cancelled.id} className="border-b-2">
-                  <td className="text-start px-2 py-5">{cancelled.id}</td>
-                  <td className="text-start px-2 py-5">{cancelled.date}</td>
-                  <td className="text-start px-2 py-5">{cancelled.time}</td>
-                  <td className="text-start px-2 py-5">{cancelled.location}</td>
-                  <td className="text-start px-2 py-5">{cancelled.name}</td>
-                  <td className="text-start px-2 py-5">{cancelled.phone}</td>
+            {loading ? (
+              <tr>
+                <td colSpan={11} className="text-center px-2 py-5">
+                  <ShimmerTable
+                    mode="light"
+                    row={cancelledListData.length + 1} // Adjust based on expected staff rows
+                    col={11} // Matches table columns
+                    border={1}
+                    borderColor={"#cbd5e1"}
+                    rounded={0.25}
+                    rowGap={16}
+                    colPadding={[15, 5, 15, 5]}
+                  />
+                </td>
+              </tr>
+            ) : error ? (
+              /* Error State */
+              <tr>
+                <td colSpan={11} className="text-center text-red-600 py-5">
+                  Error: {error}
+                </td>
+              </tr>
+            ) : (
+              cancelledListData.length > 0 ? (
+                cancelledListData.map((cancelled) => (
+                  <tr key={cancelled.id} className="border-b-2">
+                    <td className="text-start px-2 py-5">{cancelled.id}</td>
+                    <td className="text-start px-2 py-5">{cancelled.date}</td>
+                    <td className="text-start px-2 py-5">{cancelled.time}</td>
+                    <td className="text-start px-2 py-5">{cancelled.location}</td>
+                    <td className="text-start px-2 py-5">{cancelled.name}</td>
+                    <td className="text-start px-2 py-5">{cancelled.phone}</td>
 
-                  <td className="text-start px-2 py-5">
-                    <ul>
-                      {cancelled.services.map((service) => (
-                        <li>{service.name}</li>
-                      ))}
-                    </ul>
-                  </td>
+                    <td className="text-start px-2 py-5">
+                      <ul>
+                        {cancelled.services.map((service) => (
+                          <li>{service.name}</li>
+                        ))}
+                      </ul>
+                    </td>
 
-                  <td className="text-start px-2 py-5">{cancelled.amount}</td>
+                    <td className="text-start px-2 py-5">{cancelled.amount}</td>
 
-                  {/* <td className="text-start px-2 py-5">
-                    <div> */}
-                  {/* <Select
-                        placeholder="Select Option"
-                        value={selectedStylistOption}
-                        options={stylistData}
-                        onChange={handleStylistOption}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
+                    {/* <td className="text-start px-2 py-5">
+                      <div> */}
+                    {/* <Select
+                          placeholder="Select Option"
+                          value={selectedStylistOption}
+                          options={stylistData}
+                          onChange={handleStylistOption}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+                        /> */}
+
+
+                    {/* <Select
+                          placeholder="Select Option"
+                          // value={selectedStylistOption}
+                          // options={stylistData}
+                          options={beauticiansListData.map((beautician) => ({
+                            value: beautician.staff,
+                            text: beautician.name,
+                            // icon: beautician.profile_image,
+                            icon: stylist,
+                          }))}
+                          // onChange={handleStylistOption}
+                          onChange={(e) => handleStylistOption(e, cancelled.id)}
+                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                          formatOptionLabel={(option) => (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <span style={{ marginLeft: 5 }}>{option.text}</span>
+                            </div>
+                          )}
+                          getOptionValue={(option) => option.value.toString()}
+                          value={
+                            beauticiansListData
+                              .map((beautician) => ({
+                                value: beautician.staff,
+                                text: beautician.name,
+                                // icon: beautician.profile_image,
+                                icon: stylist,
+                              }))
+                              .find((option) => option.value === cancelled.stylist_id) || null // Set default value
+                          }
+                        /> */}
+
+
+                    {/* </div>
+                    </td> */}
+
+                    <td>
+                      {/* <SelectField
+                        label={''}
+                        name="status"
+                        id="status"
+                        options={[
+                          { value: "scheduled", label: "Scheduled" },
+                          { value: "inprogress", label: "Inprogress" },
+                          { value: "completed", label: "Completed" },
+                        ]}
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                       /> */}
+                      <select
+                        // name=""
+                        id=""
+                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                        // value={selectedBranch}
+                        // onChange={handleBranchChange} // Call on change
+                        value={cancelled.status_id} // Set default value from the API response
+                        onChange={(e) => handleStatusChange(e, cancelled.id)} // Handle status change
 
+                      >
+                        {/* <option value="" disabled>
+                          Select Status
+                        </option> */}
 
-                  {/* <Select
-                        placeholder="Select Option"
-                        // value={selectedStylistOption}
-                        // options={stylistData}
-                        options={beauticiansListData.map((beautician) => ({
-                          value: beautician.staff,
-                          text: beautician.name,
-                          // icon: beautician.profile_image,
-                          icon: stylist,
-                        }))}
-                        // onChange={handleStylistOption}
-                        onChange={(e) => handleStylistOption(e, cancelled.id)}
-                        getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                        formatOptionLabel={(option) => (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                            <span style={{ marginLeft: 5 }}>{option.text}</span>
-                          </div>
-                        )}
-                        getOptionValue={(option) => option.value.toString()}
-                        value={
-                          beauticiansListData
-                            .map((beautician) => ({
-                              value: beautician.staff,
-                              text: beautician.name,
-                              // icon: beautician.profile_image,
-                              icon: stylist,
-                            }))
-                            .find((option) => option.value === cancelled.stylist_id) || null // Set default value
-                        }
-                      /> */}
-
-
-                  {/* </div>
-                  </td> */}
-
-                  <td>
-                    {/* <SelectField
-                      label={''}
-                      name="status"
-                      id="status"
-                      options={[
-                        { value: "scheduled", label: "Scheduled" },
-                        { value: "inprogress", label: "Inprogress" },
-                        { value: "completed", label: "Completed" },
-                      ]}
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                    /> */}
-                    <select
-                      // name=""
-                      id=""
-                      className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                      // value={selectedBranch}
-                      // onChange={handleBranchChange} // Call on change
-                      value={cancelled.status_id} // Set default value from the API response
-                      onChange={(e) => handleStatusChange(e, cancelled.id)} // Handle status change
-
-                    >
-                      {/* <option value="" disabled>
-                        Select Status
-                      </option> */}
-
-                      {/* {statusListData.map((status) => (
-                        <option key={status.status_id} value={status.status_id}>
-                          {status.status_name}
-                        </option>
-                      ))} */}
-
-                      {statusListData
-                        .filter((status) => status.status_id !== 0 && status.status_id !== 1 && status.status_id !== 2 && status.status_id !== 3 && status.status_id !== 5)
-                        .map((status) => (
+                        {/* {statusListData.map((status) => (
                           <option key={status.status_id} value={status.status_id}>
                             {status.status_name}
                           </option>
-                        ))}
-                    </select>
+                        ))} */}
+
+                        {statusListData
+                          .filter((status) => status.status_id !== 0 && status.status_id !== 1 && status.status_id !== 2 && status.status_id !== 3 && status.status_id !== 5)
+                          .map((status) => (
+                            <option key={status.status_id} value={status.status_id}>
+                              {status.status_name}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className="text-center py-5">
+                    No Cancelled Booking data available.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={10} className="text-center py-5">
-                  No Cancelled Booking data available.
-                </td>
-              </tr>
+              )
             )}
+
 
 
             {/* <tr className="border-b-2">

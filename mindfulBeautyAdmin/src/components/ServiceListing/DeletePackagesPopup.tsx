@@ -39,8 +39,8 @@ export const DeletePackagesPopup: React.FC<DeletePackagesPopupProps> = ({ provid
         }
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -69,6 +69,8 @@ export const DeletePackagesPopup: React.FC<DeletePackagesPopupProps> = ({ provid
                                 {/* Content */}
                                 <div className="text-center">
                                     <p className="text-lg text-mindfulBlack">Are you sure you want to delete this package?</p>
+
+                                    {error && <p className="text-sm text-red-600">{error}</p>}
 
                                     {/* Buttons */}
                                     <div className="pt-5">

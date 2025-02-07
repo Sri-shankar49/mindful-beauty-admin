@@ -74,27 +74,27 @@ export const SalesTransactionsTable: React.FC = () => {
     }
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) {
-        return (
-            <div>
-                <div>
-                    <ShimmerTable
-                        mode="light"
-                        row={2}
-                        col={4}
-                        border={1}
-                        borderColor={"#cbd5e1"}
-                        rounded={0.25}
-                        rowGap={16}
-                        colPadding={[15, 5, 15, 5]}
-                    />
-                </div>
-            </div>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <div>
+    //             <div>
+    //                 <ShimmerTable
+    //                     mode="light"
+    //                     row={2}
+    //                     col={4}
+    //                     border={1}
+    //                     borderColor={"#cbd5e1"}
+    //                     rounded={0.25}
+    //                     rowGap={16}
+    //                     colPadding={[15, 5, 15, 5]}
+    //                 />
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
 
-    if (error) return <div>{error}</div>;
+    // if (error) return <div>{error}</div>;
 
     // Add the handleOnSubmit method
     const handleOnSubmit = async () => {
@@ -275,41 +275,52 @@ export const SalesTransactionsTable: React.FC = () => {
                         </div>
                     </div>
                     <div>
-                        {loading1 ? (
-                            <ShimmerTable
-                                mode="light"
-                                row={2}
-                                col={4}
-                                border={1}
-                                borderColor={"#cbd5e1"}
-                                rounded={0.25}
-                                rowGap={16}
-                                colPadding={[15, 5, 15, 5]}
-                            />
-                        ) : (
-                            <table className="w-full">
-                                <thead className="bg-mindfulLightgrey">
-                                    <tr className="">
-                                        {/* <th className="text-start px-2 py-3">#</th> */}
-                                        <th className="text-start px-2 py-3">Order ID</th>
-                                        <th className="text-start px-2 py-3">Date of Service</th>
-                                        <th className="text-start px-2 py-3">Branch</th>
-                                        <th className="text-start px-2 py-3">Customer</th>
-                                        <th className="text-start px-2 py-3">Phone</th>
-                                        <th className="text-start px-2 py-3">Service</th>
-                                        <th className="text-start px-2 py-3">Amount</th>
-                                        <th className="text-start px-2 py-3">SGST</th>
-                                        <th className="text-start px-2 py-3">CGST</th>
-                                        <th className="text-start px-2 py-3">Total</th>
-                                        <th className="text-start px-2 py-3">Pay Mode</th>
-                                        <th className="text-start px-2 py-3">Pay Status</th>
-                                        <th className="text-start px-2 py-3">Order Status</th>
-                                        <th className="text-start px-2 py-3">Action</th>
+                        <table className="w-full">
+                            <thead className="bg-mindfulLightgrey">
+                                <tr className="">
+                                    {/* <th className="text-start px-2 py-3">#</th> */}
+                                    <th className="text-start px-2 py-3">Order ID</th>
+                                    <th className="text-start px-2 py-3">Date of Service</th>
+                                    <th className="text-start px-2 py-3">Branch</th>
+                                    <th className="text-start px-2 py-3">Customer</th>
+                                    <th className="text-start px-2 py-3">Phone</th>
+                                    <th className="text-start px-2 py-3">Service</th>
+                                    <th className="text-start px-2 py-3">Amount</th>
+                                    <th className="text-start px-2 py-3">SGST</th>
+                                    <th className="text-start px-2 py-3">CGST</th>
+                                    <th className="text-start px-2 py-3">Total</th>
+                                    <th className="text-start px-2 py-3">Pay Mode</th>
+                                    <th className="text-start px-2 py-3">Pay Status</th>
+                                    <th className="text-start px-2 py-3">Order Status</th>
+                                    <th className="text-start px-2 py-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* Content */}
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={14} className="text-center px-2 py-5">
+                                            <ShimmerTable
+                                                mode="light"
+                                                row={salesTransactionsData.length + 1} // Adjust based on expected staff rows
+                                                col={11} // Matches table columns
+                                                border={1}
+                                                borderColor={"#cbd5e1"}
+                                                rounded={0.25}
+                                                rowGap={16}
+                                                colPadding={[15, 5, 15, 5]}
+                                            />
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {/* Content */}
-                                    {salesTransactionsData.length > 0 ? (
+                                ) : error ? (
+                                    /* Error State */
+                                    <tr>
+                                        <td colSpan={14} className="text-center text-red-600 py-5">
+                                            Error: {error}
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    salesTransactionsData.length > 0 ? (
                                         salesTransactionsData.map((transaction) => (
                                             <tr key={transaction.order_id} className="border-b-2">
                                                 {/* <td className="text-start px-2 py-5">1</td> */}
@@ -347,14 +358,16 @@ export const SalesTransactionsTable: React.FC = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={15} className="text-center py-5">
+                                            <td colSpan={14} className="text-center py-5">
                                                 No transactions available.
                                             </td>
                                         </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        )}
+                                    )
+                                )}
+
+                            </tbody>
+                        </table>
+
                     </div>
                     {/* Pagination */}
                     <div>

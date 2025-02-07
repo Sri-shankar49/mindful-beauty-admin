@@ -43,21 +43,21 @@ export const DeleteStaffPopup: React.FC<DeleteStaffPopupProps> = ({ closePopup, 
     };
 
     // if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
+    // if (error) return <div>{error}</div>;
 
 
     return (
@@ -86,6 +86,8 @@ export const DeleteStaffPopup: React.FC<DeleteStaffPopupProps> = ({ closePopup, 
                             {/* Content */}
                             <div className="text-center">
                                 <p className="text-lg text-mindfulBlack">Are you sure you want to delete this staff?</p>
+
+                                {error && <p className="text-sm text-red-600">{error}</p>}
 
                                 {/* Buttons */}
                                 <div className="pt-5">

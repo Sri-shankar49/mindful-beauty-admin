@@ -41,8 +41,8 @@ export const DeleteBranchPopup: React.FC<DeleteBranchPopupProps> = ({ closePopup
         }
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -71,6 +71,8 @@ export const DeleteBranchPopup: React.FC<DeleteBranchPopupProps> = ({ closePopup
                                 {/* Content */}
                                 <div className="text-center">
                                     <p className="text-lg text-mindfulBlack">Are you sure you want to delete this branch?</p>
+
+                                    {error && <p className="text-sm text-red-600">{error}</p>}
 
                                     {/* Buttons */}
                                     <div className="pt-5">

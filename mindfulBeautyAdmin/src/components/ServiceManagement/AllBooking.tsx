@@ -14,8 +14,8 @@ import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchBookingList, setCurrentPage } from '@/redux/allbookingSlice';
-import { EditAppointmentPopup } from "./EditAppointmentPopup";
+import { fetchBookingList, setCurrentPage, setError, setLoading } from '@/redux/allbookingSlice';
+import { EditAppAllBookingPopup } from "./EditAppAllBookingPopup";
 import { useNavigate } from "react-router-dom";
 
 
@@ -271,7 +271,10 @@ export const AllBooking = () => {
 
   // Fetch inprogress list on mount and when dependencies change
   useEffect(() => {
-    dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), searchQuery, currentPage }));
+    dispatch(setLoading(true)); // Ensure UI updates before fetching
+    dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), searchQuery, currentPage })).catch((error) => {
+      dispatch(setError(error.message));
+    });;
   }, [dispatch, searchQuery, currentPage]);
 
 
@@ -906,7 +909,7 @@ export const AllBooking = () => {
       )}
 
       {showEditAppointmentPopup &&
-        <EditAppointmentPopup
+        <EditAppAllBookingPopup
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
         />}
