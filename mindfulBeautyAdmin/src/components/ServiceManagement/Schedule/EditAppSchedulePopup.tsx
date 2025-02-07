@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5'
 import { InputField } from '@/common/InputField'
 // import { Button } from '@/common/Button'
-import { SelectField } from '@/common/SelectField';
 import { addServicesCheckbox, categories, subCategories } from '@/api/apiConfig';
 
 interface EditAppointmentPopupProps {
