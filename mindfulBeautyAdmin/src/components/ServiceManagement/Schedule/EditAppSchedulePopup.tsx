@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoCloseCircle } from 'react-icons/io5'
 import { InputField } from '@/common/InputField'
 // import { Button } from '@/common/Button'
@@ -53,6 +54,8 @@ interface checkboxDataProps {
 
 
 export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ closePopup, appointmentDetails }) => {
+
+    const navigate = useNavigate();
 
     // ✅ State for Category, Subcategory & Services
     const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
@@ -281,6 +284,8 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
                 setTimeout(() => {
                     closePopup(); // Close popup after success message is shown
                 }, 2000);
+
+                navigate(0);
 
                 // Revert back to default state after 3 seconds
                 setTimeout(() => {
@@ -553,8 +558,8 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
                                                                     // onChange={(e) => console.log("Clicked Service ID:", service.service_id, "Checked:", e.target.checked)}
                                                                     onChange={() => handleCheckboxClick(Number(service.service_id), service.service_name)}
                                                                     checked={selectedCheckboxIDs.includes(Number(service.service_id))}
-                                                                    // checked={selectedCheckboxIDs.includes(Number(service.service_id)) ||
-                                                                    //     appointmentDetails.services.some(s => s.service_id === service.service_id)}
+                                                                // checked={selectedCheckboxIDs.includes(Number(service.service_id)) ||
+                                                                //     appointmentDetails.services.some(s => s.service_id === service.service_id)}
                                                                 />
                                                                 <span className="checkmark"></span>{service.service_name}
                                                             </label>

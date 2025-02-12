@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoCloseCircle } from 'react-icons/io5'
 import { InputField } from '@/common/InputField'
 // import { Button } from '@/common/Button'
@@ -53,6 +54,8 @@ interface checkboxDataProps {
 
 
 export const EditAppInprogressPopup: React.FC<EditAppointmentPopupProps> = ({ closePopup, appointmentDetails }) => {
+
+    const navigate = useNavigate();
 
     // ✅ State for Category, Subcategory & Services
     const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
@@ -281,6 +284,8 @@ export const EditAppInprogressPopup: React.FC<EditAppointmentPopupProps> = ({ cl
                 setTimeout(() => {
                     closePopup(); // Close popup after success message is shown
                 }, 2000);
+
+                navigate(0);
 
                 // Revert back to default state after 3 seconds
                 setTimeout(() => {

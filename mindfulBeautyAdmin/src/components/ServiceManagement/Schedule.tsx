@@ -857,6 +857,7 @@ export const Schedule = () => {
         <EditAppSchedulePopup
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
+          // refreshData={fetchRefreshedScheduleListData}
         />}
 
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import editButton from "../../assets/icons/editButton.png";
+// import editButton from "../../assets/icons/editButton.png";
 // import deleteButton from "../../assets/icons/deleteButton.png";
 // import rectangleBlack from "../../assets/images/rectangleBlack.png";
 import Select, { SingleValue } from 'react-select';
@@ -14,7 +14,7 @@ import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchInprogressList, setCurrentPage, setError, setLoading } from '@/redux/inprogressSlice';
-import { EditAppInprogressPopup } from "./Inprogress/EditAppInprogressPopup";
+// import { EditAppInprogressPopup } from "./Inprogress/EditAppInprogressPopup";
 
 
 interface StatusListDataProps {
@@ -210,22 +210,21 @@ export const Inprogress = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // State Declaration for Edit Appointment Popup
-  const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
+  // const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
+  // const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
 
 
 
-  const openEditAppointmentPopup = (appointmentDetails: any) => {
-    setSelectedAppointment(appointmentDetails); // Store appointment details
-    setShowEditAppointmentPopup(true);
-    console.log("All Booking appointment ID:", appointmentDetails);
+  // const openEditAppointmentPopup = (appointmentDetails: any) => {
+  //   setSelectedAppointment(appointmentDetails); // Store appointment details
+  //   setShowEditAppointmentPopup(true);
+  //   console.log("All Booking appointment ID:", appointmentDetails);
+  // }
 
-  }
-
-  const closeEditAppointmentPopup = () => {
-    setShowEditAppointmentPopup(false);
-    setSelectedAppointment(null); // Clear the selected data when closing
-  }
+  // const closeEditAppointmentPopup = () => {
+  //   setShowEditAppointmentPopup(false);
+  //   setSelectedAppointment(null); // Clear the selected data when closing
+  // }
 
 
   // Login Provider ID
@@ -405,7 +404,7 @@ export const Inprogress = () => {
               <th className="text-start px-2 py-3">Amount</th>
               <th className="text-start px-2 py-3">Assign Stylist</th>
               <th className="text-start px-2 py-3">Modify Status</th>
-              <th className="text-start px-2 py-3">Action</th>
+              {/* <th className="text-start px-2 py-3">Action</th> */}
             </tr>
           </thead>
 
@@ -563,14 +562,14 @@ export const Inprogress = () => {
                           aria-current="page"
                           aria-label="Edit Services" // Accessibility improvement
                         > */}
-                      <button
+                      {/* <button
                         // onClick={openEditService}
                         onClick={() => openEditAppointmentPopup(inprogress)}
                         type="button"
                         className=""  // Optional: Add a class for better styling control
                       >
                         <img src={editButton} alt="editButton" />
-                      </button>
+                      </button> */}
                       {/* </Link> */}
                     </td>
 
@@ -855,11 +854,11 @@ export const Inprogress = () => {
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
 
-      {showEditAppointmentPopup &&
+      {/* {showEditAppointmentPopup &&
         <EditAppInprogressPopup
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
-        />}
+        />} */}
 
       {/* Pagination */}
       <div>
