@@ -83,8 +83,6 @@ export const AddPackages = () => {
         const loadCategoriesData = await categories();
         const branchesData = await staffBranchList();
 
-        const loadActivePackagesData = await activePackages(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
-
         console.log("Selected branch ==>", selectedBranch, loadCategoriesData);
         setcategoriesData(loadCategoriesData.data);
 
@@ -93,6 +91,8 @@ export const AddPackages = () => {
         if (branchesData.data && branchesData.data.length > 0) {
           setSelectedBranch(branchesData.data[0].branch_id);    // Set the first branch as default if needed
         }
+
+        const loadActivePackagesData = await activePackages(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
 
         setActivePackagesData(loadActivePackagesData.data || []);// Fallback to an empty array if data is null
 
@@ -734,7 +734,7 @@ export const AddPackages = () => {
                           onChange={handleCheckboxList} // Call on change
                         >
                           <option value="" disabled>
-                            Select Sub Category
+                            {selectedCategory ? "Select Sub Category" : "Please select a category first"}
                           </option>
 
                           {subCategoriesData.map((subCategory) => (

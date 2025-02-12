@@ -1673,6 +1673,35 @@ export const scheduleList = async (providerID: number, status: number, searchQue
 
 
 
+// Service Management Page -- --> Schedule List Edit Popup
+// POST Method from the API
+export const editServicesAppointment = async (formData: FormData): Promise<any> => {
+
+  try {
+    const response = await apiAxios.put(`/provider-api/edit-appointment/`, formData, {
+
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
+    });
+
+    console.log("Edit Selected Services Appointment PUT Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to edit selected services appointment");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error editing selected services appointment:", error.response?.data?.message || error);
+    throw new Error(error.response?.data?.message || "Unable to edit selected services appointment. Please try again later.");
+  }
+}
+
+
 
 // Service Management Page -- --> Inprogress List
 // GET Method from the API

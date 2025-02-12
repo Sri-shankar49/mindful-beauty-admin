@@ -123,10 +123,10 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
             {/* Members */}
             <div>
-                <p className="text-sm text-mindfulAsh">Members</p>
+                {/* <p className="text-sm text-mindfulAsh">Members</p> */}
 
-                <div className="flex items-center justify-between">
-                    <div className="profile-image-group">
+                <div className="flex items-center justify-end">
+                    {/* <div className="profile-image-group">
                         <div className="profile-image">
                             <img src={imgRounded} alt="Profile 1" />
                         </div>
@@ -139,7 +139,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
                         <div className="profile-image extra">
                             +3
                         </div>
-                    </div>
+                    </div> */}
 
                     <div
                         className="relative"

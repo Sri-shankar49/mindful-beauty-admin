@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // import { Link } from "react-router-dom";
-import editButton from "../../assets/icons/editButton.png"
+// import editButton from "../../assets/icons/editButton.png"
 // import deleteButton from "../../assets/icons/deleteButton.png"
 // import rectangleBlack from "../../assets/images/rectangleBlack.png"
 import { Button } from "@/common/Button";
@@ -15,7 +15,7 @@ import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchBookingList, setCurrentPage, setError, setLoading } from '@/redux/allbookingSlice';
-import { EditAppAllBookingPopup } from "./EditAppAllBookingPopup";
+// import { EditAppAllBookingPopup } from "./EditAppAllBookingPopup";
 import { useNavigate } from "react-router-dom";
 
 
@@ -244,20 +244,20 @@ export const AllBooking = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // State Declaration for Edit Appointment Popup
-  const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
+  // const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
+  // const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
 
-  const openEditAppointmentPopup = (appointmentDetails: any) => {
-    setSelectedAppointment(appointmentDetails); // Store appointment details
-    setShowEditAppointmentPopup(true);
-    console.log("All Booking appointment ID:", appointmentDetails);
+  // const openEditAppointmentPopup = (appointmentDetails: any) => {
+  //   setSelectedAppointment(appointmentDetails); // Store appointment details
+  //   setShowEditAppointmentPopup(true);
+  //   console.log("All Booking appointment ID:", appointmentDetails);
 
-  }
+  // }
 
-  const closeEditAppointmentPopup = () => {
-    setShowEditAppointmentPopup(false);
-    setSelectedAppointment(null); // Clear the selected data when closing
-  }
+  // const closeEditAppointmentPopup = () => {
+  //   setShowEditAppointmentPopup(false);
+  //   setSelectedAppointment(null); // Clear the selected data when closing
+  // }
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -440,7 +440,7 @@ export const AllBooking = () => {
               <th className="text-start px-2 py-3">Status</th>
               <th className="text-start px-2 py-3">Assign Stylist</th>
               <th className="text-start px-2 py-3">Modify Status</th>
-              <th className="text-start px-2 py-3">Action</th>
+              {/* <th className="text-start px-2 py-3">Action</th> */}
             </tr>
           </thead>
 
@@ -636,7 +636,8 @@ export const AllBooking = () => {
                       to="/ServiceManagement/EditServices"
                       aria-current="page"
                     > */}
-                      <button
+
+                      {/* <button
                         // onClick={openEditService}
                         onClick={() => openEditAppointmentPopup(bookingData)}
                         type="button"
@@ -644,7 +645,7 @@ export const AllBooking = () => {
                         className="edit-button"  // Optional: Add a class for better styling control
                       >
                         <img src={editButton} alt="editButton" />
-                      </button>
+                      </button> */}
 
                       {/* </Link> */}
                     </td>
@@ -908,11 +909,11 @@ export const AllBooking = () => {
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
 
-      {showEditAppointmentPopup &&
+      {/* {showEditAppointmentPopup &&
         <EditAppAllBookingPopup
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
-        />}
+        />} */}
 
 
       {/* Pagination */}
