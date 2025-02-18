@@ -2193,3 +2193,86 @@ export const updateGeneralInfo = async (data: any) => {
 
 
 
+export const createOrder = async (amount: number, receipt: string, provider_id: number,) => {
+  try {
+    // Sending the POST request with the required params
+    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/create-order/', {
+      amount,
+      receipt,
+      provider_id
+    });
+
+    // Log the response data
+    console.log("Create Order response:", response.data);
+
+    // Check if the response is successful (status code 200 or 201)
+    if (!response.data || (response.status !== 200 && response.status !== 201)) {
+      throw new Error("Failed to create order. Unexpected response.");
+    }
+
+    // If successful, return the order details (response.data)
+    return response.data;
+
+  } catch (error: any) {
+    console.error("Error creating order:", error.message || error);
+
+    // Provide a user-friendly message only for actual errors
+    throw new Error(error.response?.data?.message || "Unable to create order. Please try again later.");
+  }
+};
+
+
+
+
+export const verifyPayment = async (razorpayOrderId: string, razorpayPaymentId: string, razorpaySignature: string, providerID: number) => {
+  try {
+    // Sending the POST request with the required params
+    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/verify-payment/', {
+      razorpay_order_id: razorpayOrderId,
+      razorpay_payment_id: razorpayPaymentId,
+      razorpay_signature: razorpaySignature,
+      provider_id: providerID,
+    });
+
+    // Log the response data
+    console.log("Verify Payment response:", response.data);
+
+    // Check if the response is successful (status code 200 or 201)
+    if (!response.data || (response.status !== 200 && response.status !== 201)) {
+      throw new Error("Failed to verify payment. Unexpected response.");
+    }
+
+    // If successful, return the verification result (response.data)
+    return response.data;
+
+  } catch (error: any) {
+    console.error("Error verifying payment:", error.message || error);
+    // Provide a user-friendly message only for actual errors
+    throw new Error(error.response?.data?.message || "Unable to verify payment. Please try again later.");
+  }
+};
+
+
+
+
+export const cancelPayment = async (orderId: string, providerID: number) => {
+  try {
+    // Sending the POST request with the required params
+    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/cancel-payment/', {
+      order_id: orderId,
+      provider_id: providerID,
+    });
+
+    console.log("Cancel Payment response:", response.data);
+
+    if (!response.data || (response.status !== 200 && response.status !== 201)) {
+      throw new Error("Failed to cancel payment. Unexpected response.");
+    }
+
+    // If successful, return the result
+    return response.data;
+  } catch (error: any) {
+    console.error("Error canceling payment:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to cancel payment. Please try again later.");
+  }
+};

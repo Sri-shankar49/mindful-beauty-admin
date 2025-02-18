@@ -1,5 +1,5 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { InputField } from '@/common/InputField'
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { InputField } from '@/common/InputField';
 // import { MdSearch } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';

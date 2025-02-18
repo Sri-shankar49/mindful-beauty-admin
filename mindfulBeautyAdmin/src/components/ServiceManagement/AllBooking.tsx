@@ -269,7 +269,7 @@ export const AllBooking = () => {
   // Redux state
   const { bookingListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.allbooking);
 
-  // Fetch inprogress list on mount and when dependencies change
+  // Fetch allbooking list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
     dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), searchQuery, currentPage })).catch((error) => {

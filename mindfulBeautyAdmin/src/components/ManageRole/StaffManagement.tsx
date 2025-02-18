@@ -329,6 +329,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                     editStaffData={staffData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
                 />
             )}
+            
             {showDeleteStaffPopup && <DeleteStaffPopup
                 closePopup={closeDeleteStaffPopup}
                 staffID={Number(selectedStaffID)}
