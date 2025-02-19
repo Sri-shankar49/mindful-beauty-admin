@@ -2196,7 +2196,8 @@ export const updateGeneralInfo = async (data: any) => {
 export const createOrder = async (amount: number, receipt: string, provider_id: number,) => {
   try {
     // Sending the POST request with the required params
-    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/create-order/', {
+    // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/create-order/', {
+    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/create-order/', {
       amount,
       receipt,
       provider_id
@@ -2227,7 +2228,8 @@ export const createOrder = async (amount: number, receipt: string, provider_id: 
 export const verifyPayment = async (razorpayOrderId: string, razorpayPaymentId: string, razorpaySignature: string, providerID: number) => {
   try {
     // Sending the POST request with the required params
-    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/verify-payment/', {
+    // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/verify-payment/', {
+    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/verify-payment/', {
       razorpay_order_id: razorpayOrderId,
       razorpay_payment_id: razorpayPaymentId,
       razorpay_signature: razorpaySignature,
@@ -2258,7 +2260,8 @@ export const verifyPayment = async (razorpayOrderId: string, razorpayPaymentId: 
 export const cancelPayment = async (orderId: string, providerID: number) => {
   try {
     // Sending the POST request with the required params
-    const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/cancel-payment/', {
+    // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/cancel-payment/', {
+    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/cancel-payment/', {
       order_id: orderId,
       provider_id: providerID,
     });
