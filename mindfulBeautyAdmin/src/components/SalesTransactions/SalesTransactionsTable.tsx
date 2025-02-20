@@ -4,7 +4,7 @@ import { FiDownload } from "react-icons/fi";
 import { InvoicePopup } from '../ServiceManagement/Completed/InvoicePopup';
 import { Button } from '@/common/Button';
 import { InputField } from '@/common/InputField';
-import { salesTransactionsList, fetchSalesTransactionsByFilters } from "@/api/apiConfig";
+import { salesTransactionsList, fetchSalesTransactionsByFilters, salesTransactionsInvoice, salesTransactionsCSV } from "@/api/apiConfig";
 import { Pagination } from "@/common/Pagination";
 import { ShimmerTable } from "shimmer-effects-react";
 
@@ -41,6 +41,7 @@ export const SalesTransactionsTable: React.FC = () => {
     const [providerName, setProviderName] = useState<string>("");
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
+
     // Login Provider ID
     const sessionLoginProviderID = sessionStorage.getItem("loginProviderID") as string | null;
     console.log("Login Provider ID from session storage", sessionLoginProviderID);
@@ -134,6 +135,69 @@ export const SalesTransactionsTable: React.FC = () => {
             setLoading(false);
         }
     };
+
+
+
+    // Function Handler for downloading the sales transactions CSV
+    const handleDownloadCSV = async () => {
+
+        try {
+            const blob = await salesTransactionsCSV(Number(sessionLoginProviderID));
+
+            // Create a link and trigger the download
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "sales_transactions.csv");
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            console.log("CSV file downloaded successfully.");
+
+        }
+        catch (error: any) {
+            setError(error.message || "Failed to download CSV file.");
+        }
+        finally {
+            setLoading(false);// Reset the loading state
+        }
+    }
+
+
+
+    // Function Handler for downloading the sales transactions invoice
+    const handleDownloadInvoice = async (appointmentID: number) => {
+
+        try {
+            // setLoading(true);
+            const blob = await salesTransactionsInvoice(appointmentID);
+
+            // Create a link element and trigger download
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `invoice_${appointmentID}.pdf`); // Assuming it's a PDF
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            console.log("Sales & transactions invoice downloaded successfully.");
+
+        }
+        catch (error: any) {
+            setError(error.message || "Failed to download sales & transactions Invoice.");
+        }
+        finally {
+            setLoading(false);// Reset the loading state
+        }
+    }
 
     return (
         <div>
@@ -267,9 +331,10 @@ export const SalesTransactionsTable: React.FC = () => {
                             {/* Download CSV Button */}
                             <div>
                                 <Button
+                                    onClick={() => handleDownloadCSV()}
                                     buttonType="button"
                                     buttonTitle="Download CSV"
-                                    className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
+                                    className="bg-main text-lg text-mindfulWhite border-[1px] rounded-sm px-8 py-2 cursor-pointer hover:bg-mindfulWhite hover:text-main hover:border-main"
                                 />
                             </div>
                         </div>
@@ -342,15 +407,19 @@ export const SalesTransactionsTable: React.FC = () => {
 
                                                 <td className="text-start px-2 py-5">
                                                     <div className="flex items-center space-x-2">
+
                                                         {/* Eye Button */}
                                                         <div
                                                             onClick={() => openInvoicePopup(transaction.order_id)}
                                                             className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                                                             <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                                                         </div>
+
                                                         {/* Download Button */}
-                                                        <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
-                                                            <FiDownload className="text-[18px] text-mindfulGreen" />
+                                                        <div
+                                                            onClick={() => handleDownloadInvoice(transaction.order_id)}
+                                                            className="group border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer hover:bg-mindfulGreen transition-all duration-200">
+                                                            <FiDownload className="text-[18px] text-mindfulGreen group-hover:text-mindfulWhite transition-all duration-200" />
                                                         </div>
                                                     </div>
                                                 </td>

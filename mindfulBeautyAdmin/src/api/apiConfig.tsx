@@ -1973,6 +1973,65 @@ export const fetchSalesTransactionsByFilters = async (
 
 
 
+// Sales & Transactions Page
+// GET Method from the API
+export const salesTransactionsCSV = async (providerID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/download-user-transactions/`, {
+      params: { provider_id: providerID }, // Ensure providerID is passed correctly
+      responseType: 'blob', // Important for file downloads
+    });
+
+    console.log("Sales & Transactions CSV GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to download CSV");
+    }
+
+    return response.data;     // Returning the Blob response
+
+  }
+  catch (error: any) {
+    console.error("Error downloading CSV:", error.response?.data?.message || error);
+    throw new Error(error.response?.data?.message || "Unable to download CSV. Please try again later.");
+  }
+}
+
+
+
+
+
+// Sales & Transactions Page
+// GET Method from the API
+export const salesTransactionsInvoice = async (appointmentID: number) => {
+
+  try {
+    const response = await apiAxios.get(`/provider-api/generate-invoice-pdf/`, {
+      params: { appointment_id: appointmentID }, // Ensure appointmentID is passed correctly
+      responseType: 'blob', // Important for file downloads (PDF, CSV, etc.)
+    });
+
+    console.log("Sales & Transactions Invoice GET Method response", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to download sales & transactions Invoice");
+    }
+
+    return response.data;
+
+  }
+  catch (error: any) {
+    console.error("Error fetching sales & transactions invoice:", error.response?.data?.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch sales & transactions invoice. Please try again later.");
+  }
+}
+
+
+
+
+
+
 // Ratings & Reviews Page
 // GET Method from the API
 export const reviewsList = async (providerID: number, pageNumber: number) => {
@@ -2197,7 +2256,7 @@ export const createOrder = async (amount: number, receipt: string, provider_id: 
   try {
     // Sending the POST request with the required params
     // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/create-order/', {
-    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/create-order/', {
+    const response = await apiAxios.post('/provider-api/create-order/', {
       amount,
       receipt,
       provider_id
@@ -2229,7 +2288,7 @@ export const verifyPayment = async (razorpayOrderId: string, razorpayPaymentId: 
   try {
     // Sending the POST request with the required params
     // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/verify-payment/', {
-    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/verify-payment/', {
+    const response = await apiAxios.post('/provider-api/verify-payment/', {
       razorpay_order_id: razorpayOrderId,
       razorpay_payment_id: razorpayPaymentId,
       razorpay_signature: razorpaySignature,
@@ -2261,7 +2320,7 @@ export const cancelPayment = async (orderId: string, providerID: number) => {
   try {
     // Sending the POST request with the required params
     // const response = await apiAxios.post('http://192.168.1.3:8000/provider-api/cancel-payment/', {
-    const response = await apiAxios.post('https://mbrestapi-f8cphtgaf7fjdyb0.westcentralus-01.azurewebsites.net/provider-api/cancel-payment/', {
+    const response = await apiAxios.post('/provider-api/cancel-payment/', {
       order_id: orderId,
       provider_id: providerID,
     });
