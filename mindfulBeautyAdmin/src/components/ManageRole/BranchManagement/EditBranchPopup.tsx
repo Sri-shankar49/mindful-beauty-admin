@@ -154,7 +154,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
             // formData.append('branchManager', data.branchManager);
             formData.append('branch_address', data.branchAddress);
             // formData.append('location', data.branchLocation);
-            formData.append('location', selectedLocation);
+            formData.append('location', String(selectedLocation));
 
             // if (file) {
             //     formData.append('logo', file); // Append file if uploaded

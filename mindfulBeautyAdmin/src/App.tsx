@@ -128,7 +128,7 @@ function App() {
               fullName={''}
               emailAddress={''}
               contactNumber={''}
-            />
+              yearsOfExperience={''} />
           } />
           <Route path="/BankAccInfoFreelanceForm" element={<BankAccInfoFreelanceForm />} />
           <Route path="/TaxInfoFreelanceForm" element={<TaxInfoFreelanceForm />} />
