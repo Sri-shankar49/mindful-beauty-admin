@@ -105,126 +105,130 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
             // Reset the form after successful submission
 
             // Reset button text and color after 3 seconds
-            setTimeout(() => {
-                setButtonState({ buttonText: "Buy Credits", isSubmitted: true });
+            // setTimeout(() => {
+            // setButtonState({ buttonText: "Buy Credits", isSubmitted: true });
 
-                // Now trigger Razorpay
-                if (window.Razorpay) {
-                    const options = {
-                        key: "rzp_live_W6lWHSfydSDFbE", // Your Razorpay Key ID
-                        amount: Number(data.requiredCredit) * 100, // Convert to paise
-                        currency: "INR",
-                        name: "Dhivya P",
-                        description: "Purchase Credits",
-                        order_id: response.order.id, // Order ID from the response
-                        // provider_id:
-                        // handler: function (response: { razorpay_payment_id: any; razorpay_order_id: any; razorpay_signature: any; }) {
-                        //   alert(JSON.stringify(response));
+            // Now trigger Razorpay
+            if (window.Razorpay) {
+                const options = {
+                    key: "rzp_live_W6lWHSfydSDFbE", // Your Razorpay Key ID
+                    amount: Number(data.requiredCredit) * 100, // Convert to paise
+                    currency: "INR",
+                    name: "Dhivya P",
+                    description: "Purchase Credits",
+                    order_id: response.order.id, // Order ID from the response
+                    // provider_id:
+                    // handler: function (response: { razorpay_payment_id: any; razorpay_order_id: any; razorpay_signature: any; }) {
+                    //   alert(JSON.stringify(response));
 
-                        // },
-                        handler: async function (response: {
-                            razorpay_payment_id: any;
-                            razorpay_order_id: any;
-                            razorpay_signature: any;
-                        }) {
-                            console.log("Payment Response:", response);
+                    // },
+                    handler: async function (response: {
+                        razorpay_payment_id: any;
+                        razorpay_order_id: any;
+                        razorpay_signature: any;
+                    }) {
+                        console.log("Payment Response:", response);
 
-                            // Now call verifyPayment API after successful Razorpay payment
-                            try {
-                                const verificationResponse = await verifyPayment(
-                                    response.razorpay_order_id, // Razorpay Order ID
-                                    response.razorpay_payment_id, // Razorpay Payment ID
-                                    response.razorpay_signature, // Razorpay Signature
-                                    Number(sessionLoginProviderID)
-                                );
+                        // Now call verifyPayment API after successful Razorpay payment
+                        try {
+                            const verificationResponse = await verifyPayment(
+                                response.razorpay_order_id, // Razorpay Order ID
+                                response.razorpay_payment_id, // Razorpay Payment ID
+                                response.razorpay_signature, // Razorpay Signature
+                                Number(sessionLoginProviderID)
+                            );
 
-                                console.log(
-                                    "Payment Verification Response:",
-                                    verificationResponse
-                                );
-                                console.log("razorpay_order_id", response.razorpay_order_id);
-                                console.log(
-                                    "razorpay_payment_id",
-                                    response.razorpay_payment_id
-                                );
-                                console.log("razorpay_signature", response.razorpay_signature);
+                            console.log(
+                                "Payment Verification Response:",
+                                verificationResponse
+                            );
+                            console.log("razorpay_order_id", response.razorpay_order_id);
+                            console.log(
+                                "razorpay_payment_id",
+                                response.razorpay_payment_id
+                            );
+                            console.log("razorpay_signature", response.razorpay_signature);
 
-                                // Handle the verification response here
-                                if (verificationResponse.status === "success") {
-                                    alert("Payment verified successfully!");
-                                    // Proceed with further actions (e.g., updating wallet or UI)
-                                } else {
-                                    alert("Payment verification failed!");
-                                }
-                            } catch (error: any) {
-                                console.error(
-                                    "Error during payment verification:",
-                                    error.message
-                                );
-                                console.log("Error during payment verification. Please try again.");
+                            // Handle the verification response here
+                            if (verificationResponse.status === "success") {
+                                console.log("Payment verified successfully!");
+                                // Proceed with further actions (e.g., updating wallet or UI)
+
+                                refreshWalletData();
+
+                            } else {
+                                console.log("Payment verification failed!");
                             }
-                        },
-
-                        prefill: {
-                            name: "User",
-                            email: "user@example.com",
-                            contact: "9000090000",
-                        },
-                        notes: {
-                            address: "Razorpay Corporate Office",
-                        },
-                        theme: {
-                            color: "#3399cc",
-                        },
-                    };
-
-                    //var rzp1 = new window.Razorpay(options);
-                    const rzp1 = new window.Razorpay(options);
-                    // Listen for payment failure
-                    rzp1.on(
-                        "payment.failed",
-                        async function (response: {
-                            error: { metadata: any; reason: any };
-                        }) {
-                            console.log("Payment Failed:", response);
-                            try {
-                                const cancelResponse = await cancelPayment(
-                                    response.error.metadata.order_id,
-                                    Number(sessionLoginProviderID)
-                                );
-                                console.log("Cancel Response:", cancelResponse);
-
-                                if (cancelResponse.status === "success") {
-                                    alert(
-                                        `Payment canceled successfully! Order ID: ${cancelResponse.order_id}`
-                                    );
-                                } else {
-                                    console.error("Failed to cancel payment", cancelResponse);
-                                    alert("Payment cancellation failed. Please try again later.");
-                                }
-                            } catch (error: any) {
-                                console.error(
-                                    "Error during payment cancellation:",
-                                    error.message || error
-                                );
-                                console.log("Error during payment cancellation. Please try again.");
-                            }
+                        } catch (error: any) {
+                            setButtonState({ buttonText: "Payment Failed", isSubmitted: true });
+                            console.error("Error during payment verification:", error.message);
+                            console.log("Error during payment verification. Please try again.");
                         }
-                    );
+                    },
 
-                    rzp1.open();
+                    prefill: {
+                        name: "User",
+                        email: "user@example.com",
+                        contact: "9000090000",
+                    },
+                    notes: {
+                        address: "Razorpay Corporate Office",
+                    },
+                    theme: {
+                        color: "#3399cc",
+                    },
+                };
 
-                    // Reset form and state after successful payment
-                    reset();
-                    setTimeout(() => {
-                        setButtonState({ buttonText: "Buy Credits", isSubmitted: false });
-                        refreshWalletData();
-                        closePopup();
-                    }, 3000);
-                } else {
-                    console.error("Razorpay script not loaded properly!");
-                }
-            }, 3000); // <-- This is where you close the first setTimeout
+                //var rzp1 = new window.Razorpay(options);
+                const rzp1 = new window.Razorpay(options);
+                // Listen for payment failure
+                rzp1.on(
+                    "payment.failed",
+                    async function (response: {
+                        error: { metadata: any; reason: any };
+                    }) {
+                        console.log("Payment Failed:", response);
+                        try {
+                            const cancelResponse = await cancelPayment(
+                                response.error.metadata.order_id,
+                                Number(sessionLoginProviderID)
+                            );
+                            console.log("Cancel Response:", cancelResponse);
+
+                            if (cancelResponse.status === "success") {
+                                console.log(
+                                    `Payment canceled successfully! Order ID: ${cancelResponse.order_id}`
+                                );
+                            } else {
+                                console.error("Failed to cancel payment", cancelResponse);
+                                console.log("Payment cancellation failed. Please try again later.");
+                            }
+                        } catch (error: any) {
+                            console.error("Error during payment cancellation:", error.message || error);
+                            console.log("Error during payment cancellation. Please try again.");
+                        }
+                    }
+                );
+
+                rzp1.open();
+
+                // Reset form and state after successful payment
+                reset();
+
+
+                setButtonState({ buttonText: "Credits purchased successfully!", isSubmitted: true });
+
+                closePopup();  // Close the Popup after Successful Payment
+                
+                // setTimeout(() => {
+                //     setButtonState({ buttonText: "Credits purchased successfully!", isSubmitted: true });
+                //     refreshWalletData();
+                //     closePopup();
+                // }, 3000);
+            } else {
+                console.error("Razorpay script not loaded properly!");
+            }
+            // }, 3000); // <-- This is where you close the first setTimeout
         } catch (error: any) {
             setError(error.message || "Something went wrong. Please try again.");
         } finally {
@@ -233,7 +237,7 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
     };
 
     // if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -309,7 +313,8 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                                             disabled={loading}
                                         >
                                             {/* Submit */}
-                                            {loading ? "Submitting..." : buttonState.buttonText}{" "}
+                                            {loading ? "Opening Razorpay..." : buttonState.buttonText}{" "}
+
                                             {/* Use buttonText state */}
                                             {/* <HiArrowSmRight className="text-[22px] text-mindfulWhite ml-1" /> */}
                                         </button>

@@ -48,7 +48,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
 
 
     const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-    const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const [selectedLocation, setSelectedLocation] = useState<string>();
 
     const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
 
@@ -123,7 +123,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
             branchName: branchData.branchName,
             branchPhoneNumber: branchData.phone,
             // branchManager: '',
-            // branchAddress: '',
+            branchAddress: branchData.location,
             branchLocation: branchData.location,
         },
     });

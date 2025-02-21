@@ -24,7 +24,7 @@ export const ManageRole = () => {
   };
 
   // Add this to check if we're on the RolesManagement page
-  // const showSearch = !location.pathname.includes('RolesManagement');
+  const showSearch = location.pathname.includes('RolesManagement');
 
   return (
     <div className="bg-mindfulLightPink px-5 py-5" >
@@ -54,7 +54,7 @@ export const ManageRole = () => {
               >
                 <li>Roles Management</li>
               </NavLink>
-              
+
               <NavLink
                 to="StaffManagement"
                 className={({ isActive }) =>
@@ -79,17 +79,17 @@ export const ManageRole = () => {
 
             {/* Only show search input if not on RolesManagement */}
             {/* {showSearch && ( */}
-              <div>
-                <div className="">
-                  <InputField
-                    label={''}
-                    placeholder="Search"
-                    className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                  />
-                </div>
+            <div>
+              <div className="">
+                <InputField
+                  label={''}
+                  placeholder="Search"
+                  className={`${showSearch ? "invisible" : ""} w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none`}
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
               </div>
+            </div>
             {/* )} */}
           </div>
         </div>

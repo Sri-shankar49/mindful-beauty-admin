@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
 import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
@@ -6,7 +6,7 @@ import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { generalInfo } from "@/api/apiConfig";
+import { generalInfo, googleMapApi } from "@/api/apiConfig";
 
 
 // Define Zod schema for validation
@@ -58,9 +58,82 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
             salonName: sessionStorage.getItem("providerName") || '',
             contactNumber: sessionStorage.getItem("phoneNumber") || '',
             emailAddress: sessionStorage.getItem("providerEmail") || '',
+            salonLocation: sessionStorage.getItem("providerLocation") || '',
         },
     });
 
+
+
+    const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string>("");
+
+    const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
+
+    console.log(locationCoordinates, "Just logging the co-ordinates");
+
+    // Load Google Maps API
+    useEffect(() => {
+
+        googleMapApi(() => {
+            console.log("Google Maps API loaded");
+        });
+    }, []);
+
+    // Function to handle location input and get suggestions
+    const handleLocationInput = (input: string) => {
+        if (input.length > 1) {
+            // Trigger after 3 characters
+            const autocomplete = new window.google.maps.places.AutocompleteService();
+            autocomplete.getPlacePredictions({ input }, (predictions, status) => {
+                if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK &&
+                    predictions
+                ) {
+                    setLocationSuggestions(
+                        predictions.map((prediction) => prediction.description)
+                    );
+                } else {
+                    setLocationSuggestions([]);
+                }
+            });
+        } else {
+            setLocationSuggestions([]);
+        }
+    };
+
+    // Handle input changes in location field
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        console.log("inputvalue", inputValue);
+        setSelectedLocation(inputValue); // Update the input value
+        handleLocationInput(inputValue); // Fetch location suggestions
+    };
+
+    const handleLocationSelect = (location: string) => {
+        setSelectedLocation(location);
+        setLocationSuggestions([]); // Clear suggestions after selection
+
+        // Use Google Maps Geocoding API to get the latitude and longitude
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: location }, (results, status) => {
+            if (status === window.google.maps.GeocoderStatus.OK && results?.[0]) {
+                const { lat, lng } = results[0].geometry.location;
+                const fullAddress = results[0].formatted_address; // Full address
+
+                // Store latitude and longitude in state (you can use these values for submission)
+                setLocationCoordinates({
+                    lat: lat(),
+                    lng: lng(),
+                });
+
+                // Optionally, store the full address in a separate state if needed
+                setSelectedLocation(fullAddress); // Store the full address instead of the description
+                console.log("Latitude:", lat(), "Longitude:", lng());
+            } else {
+                console.error("Geocoding failed:", status);
+            }
+        });
+    };
 
     const onSubmit = async (data: GeneralInfoFormData) => {
         setLoading(true);
@@ -99,7 +172,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
     }
 
     // if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -255,7 +328,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                             </div>
 
                                             {/* Salon Location */}
-                                            <div>
+                                            <div className="relative">
                                                 <label
                                                     htmlFor="salonLocation"
                                                     className="text-lg text-mindfulBlack">
@@ -268,8 +341,25 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                     placeholder=""
                                                     className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                                     {...register("salonLocation")}
-
+                                                    value={selectedLocation}
+                                                    onChange={handleLocationChange} // Handle input change
                                                 />
+
+                                                {/* Location Suggestions Dropdown */}
+                                                {locationSuggestions.length > 0 && (
+                                                    <ul className="absolute left-0 top-[-10] w-full border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-[9999]">
+
+                                                        {locationSuggestions.map((location, index) => (
+                                                            <li
+                                                                key={index}
+                                                                className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                                                                onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                                                            >
+                                                                {location}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
                                             </div>
 
                                             {/* Established On */}
@@ -420,6 +510,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
                                         </div>
 
+                                        {/* Error Response from the API */}
+                                        {error && <p className="text-sm text-red-600">{error}</p>}
 
                                         {/* Buttons */}
                                         <div className="text-center py-10">

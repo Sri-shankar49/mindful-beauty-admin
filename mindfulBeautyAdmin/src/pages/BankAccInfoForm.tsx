@@ -97,7 +97,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
 
     // if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    // if (error) return <div>{error}</div>;
 
     return (
 
@@ -285,6 +285,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
                                         </div>
 
+                                        {error && <p className="text-sm text-red-600">{error}</p>}
 
                                         {/* Buttons */}
                                         <div className="text-center pt-60 pb-10">

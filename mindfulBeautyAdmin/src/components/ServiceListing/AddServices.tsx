@@ -506,7 +506,7 @@ export const AddServices: React.FC = () => {
                                             />
 
                                             {/* {error.city && (
-                                                        <p className="text-sm text-red-500">{error.city}</p>
+                                                        <p className="text-sm text-red-600">{error.city}</p>
                                                     )} */}
                                         </div>
 
@@ -539,7 +539,7 @@ export const AddServices: React.FC = () => {
                                             </select>
 
                                             {/* {error.category && (
-                                                        <p className="text-sm text-red-500">{error.category}</p>
+                                                        <p className="text-sm text-red-600">{error.category}</p>
                                                     )} */}
                                         </div>
                                     </div>
@@ -595,7 +595,7 @@ export const AddServices: React.FC = () => {
                                             </select>
 
                                             {/* {error.branch && (
-                                                        <p className="text-sm text-red-500">{error.branch}</p>
+                                                        <p className="text-sm text-red-600">{error.branch}</p>
                                                     )} */}
                                         </div>
 
@@ -627,7 +627,7 @@ export const AddServices: React.FC = () => {
                                             </select>
 
                                             {/* {error.subCategory && (
-                                                        <p className="text-sm text-red-500">{error.subCategory}</p>
+                                                        <p className="text-sm text-red-600">{error.subCategory}</p>
                                                     )} */}
                                         </div>
                                     </div>
@@ -678,7 +678,7 @@ export const AddServices: React.FC = () => {
                                         )}
 
                                         {/* {error.checkbox && (
-                                                    <p className="text-sm text-red-500">{error.checkbox}</p>
+                                                    <p className="text-sm text-red-600">{error.checkbox}</p>
                                                 )} */}
 
                                     </div>

@@ -24,6 +24,7 @@ interface RatingReviewsTableProps {
 
   comment: string;
   created_at: string;
+  created_at_formatted: string;
   customer_name: string;
   order_id: string;
   rating: string;
@@ -58,23 +59,63 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
     const fetchReviewsList = async () => {
       setLoading(true); // Set loading to true before fetching
       try {
-        const data = await reviewsList(Number(sessionLoginProviderID), currentPage);
+        const data = await reviewsList(Number(sessionLoginProviderID), "", currentPage);
 
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
         setTotalItems(data.count);
 
         console.log("Reviews list data log:", data);
-        console.log("Fetched Booking List pagination count data log :", data.count);
+        console.log("Fetched Reviews List pagination count data log :", data.count);
 
       } catch (error: any) {
-        setError(error.message || 'Failed to fetch staff list');
+        setError(error.message || 'Failed to fetch Reviews list');
       } finally {
         setLoading(false); // Ensure loading is false after fetching
       }
     };
 
     fetchReviewsList();
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage]); // Remove `itemsPerPage` if it's not used
+
+
+  // Filter the Ratings & Reviews Data by Search
+  const [searchQuery, setSearchQuery] = useState<string>(""); // Default to ""
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    setCurrentPage(1); // Reset page to 1 when searching
+  };
+
+
+  // Function after handling the Search
+  useEffect(() => {
+
+    if (!sessionLoginProviderID) return;
+
+    const fetchFilteredData = async () => {
+      setLoading(true);
+
+      try {
+        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage);
+
+        setReviewsListData(data.results || []); // Fallback to an empty array if data is null
+        setTotalItems(data.count);
+
+        console.log("Reviews list data log:", data);
+        console.log("Fetched Reviews List pagination count data log :", data.count);
+
+      } catch (error: any) {
+        setError(error.message || "Unable to fetch Reviews data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchFilteredData();      // Always fetch, even if searchQuery is empty
+
+  }, [searchQuery, currentPage]);
+
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -101,7 +142,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
       console.log("Review Action data log:", response);
 
       if (response?.status === "success") {
-        const data = await reviewsList(Number(sessionLoginProviderID), currentPage);
+        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage);
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
         setTotalItems(data.count);
         console.log("Refreshed the reviews list data log:", data);
@@ -153,6 +194,8 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
                   <div className="flex items-center ">
                     <InputField
                       label={''}
+                      value={searchQuery}
+                      onChange={handleSearch}
                       placeholder="Search"
                       className="w-72 rounded-[5px] border-2 border-mindfulgrey px-2 py-1 focus-within:outline-none"
                     />
@@ -250,9 +293,9 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
                         reviewsListData.map((review) => (
                           <tr key={review.review_id} className="border-b-2">
                             <td className="text-start pl-8 ml-2 py-5">{review.review_id}</td>
-                            <td className="text-start pl-8 py-5">{review.created_at}</td>
+                            <td className="text-start pl-8 py-5">{review.created_at_formatted}</td>
                             <td className="text-start pl-8 py-5">{review.order_id}</td>
-                            <td key={review.user_id} className="text-start pl-8 py-5">{review.customer_name}</td>
+                            <td key={review.user_id} className="text-start pl-8 py-5">{review.customer_name || "N/A"}</td>
                             {/* <td className="text-start pl-8 py-5">{review.service_names}</td> */}
                             <td className="text-start pl-8 py-5">
                               <ul>
@@ -303,7 +346,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
                           </tr>
                         ))) : (
                         <tr>
-                          <td colSpan={6} className="text-center py-5">
+                          <td colSpan={8} className="text-center py-5">
                             No ratings & reviews data available.
                           </td>
                         </tr>)

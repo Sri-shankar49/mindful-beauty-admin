@@ -2034,12 +2034,13 @@ export const salesTransactionsInvoice = async (appointmentID: number) => {
 
 // Ratings & Reviews Page
 // GET Method from the API
-export const reviewsList = async (providerID: number, pageNumber: number) => {
+export const reviewsList = async (providerID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/reviews/`, {
       params: {
         provider_id: providerID,
+        search: searchQuery,
         page: pageNumber,
       },
     });
