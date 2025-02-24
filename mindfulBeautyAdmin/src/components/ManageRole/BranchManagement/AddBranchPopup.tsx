@@ -33,12 +33,14 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
     const [logo, setLogo] = useState<{ [key: string]: File | null }>({
         logo: null,
     }); // Initially set to the default logo
+    const [preview, setPreview] = useState<string | null>(null); // Store preview URL
 
     // Handle file change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
         const file = event.target.files?.[0];
         if (file) {
             setLogo((prev) => ({ ...prev, [fileKey]: file }));
+            setPreview(URL.createObjectURL(file)); // Create a preview URL
         }
     };
 
@@ -255,7 +257,7 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
                             </div>) : (
                                 <div>
                                     <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="grid grid-cols-2 items-center">
+                                        <div className="grid grid-cols-2 items-center gap-5">
                                             <div>
                                                 {/* <div className="w-fit mx-auto">
                                      <img src={ashtamudiLogo} alt="ashtamudi logo" />
@@ -296,7 +298,14 @@ export const AddBranchPopup: React.FC<AddBranchPopupProps> = ({ closePopup, refr
                                                 <div>
                                                     {/* Logo Display Area */}
                                                     <div className="w-fit mx-auto pb-5">
-                                                        <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
+                                                        {/* <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" /> */}
+                                                        {preview && (
+                                                            <img
+                                                                src={preview}
+                                                                alt="Uploaded Logo"
+                                                                className="w-full h-full rounded-md object-cover"
+                                                            />
+                                                        )}
                                                     </div>
 
                                                     {/* File Upload Area */}

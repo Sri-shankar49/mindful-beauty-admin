@@ -96,6 +96,11 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
             );
             console.log("Order created successfully:", response);
 
+            const providerName = response.provider_name; // "Sarah"
+            const providerMobileNumber = response.mobile_number; // "5678901234"
+            console.log("providerMobileNumber", providerMobileNumber);
+            console.log("providerName", providerName);
+
             // Update button text and color on success
             //   setButtonState({
             //     buttonText: "Credits purchased successfully!",
@@ -114,7 +119,7 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                     key: "rzp_live_W6lWHSfydSDFbE", // Your Razorpay Key ID
                     amount: Number(data.requiredCredit) * 100, // Convert to paise
                     currency: "INR",
-                    name: "Dhivya P",
+                    name: providerName,
                     description: "Purchase Credits",
                     order_id: response.order.id, // Order ID from the response
                     // provider_id:
@@ -167,9 +172,9 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                     },
 
                     prefill: {
-                        name: "User",
+                        name: providerName,
                         email: "user@example.com",
-                        contact: "9000090000",
+                        contact: providerMobileNumber,
                     },
                     notes: {
                         address: "Razorpay Corporate Office",
@@ -219,7 +224,7 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                 setButtonState({ buttonText: "Credits purchased successfully!", isSubmitted: true });
 
                 closePopup();  // Close the Popup after Successful Payment
-                
+
                 // setTimeout(() => {
                 //     setButtonState({ buttonText: "Credits purchased successfully!", isSubmitted: true });
                 //     refreshWalletData();

@@ -174,75 +174,82 @@ export const AddServices: React.FC = () => {
 
     // Function to handle category change and fetch subcategories
     const handleCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedCategoryId = event.target.value; // Get the selected categoryId
-        setSelectedCategory(selectedCategoryId); // Update state
+        const selectedCategoryId = event.target.value;
+        setSelectedCategory(selectedCategoryId);
+
+        // Clear subcategory selection and checkbox data when category changes
+        setSelectedSubCategory("");
+        setCheckboxData([]);
+        setSubCategoriesData([]);
+        setError(null); // Clear any previous errors
 
         try {
-            // setLoading(true);
             setAddServicesLoading(true);
-            const loadSubCategoriesData = await subCategories(selectedCategoryId); // Pass categoryId to API
-            setSubCategoriesData(loadSubCategoriesData.data); // Update subcategories
-            console.log("Sub Category list data log:", loadSubCategoriesData);
+
+            if (selectedCategoryId) {
+                const loadSubCategoriesData = await subCategories(selectedCategoryId);
+
+                if (loadSubCategoriesData?.status === "success" && loadSubCategoriesData.data?.length > 0) {
+                    setSubCategoriesData(loadSubCategoriesData.data);
+                    setError(null);
+                } else {
+                    setError("No subcategories available for this category");
+                }
+            }
         } catch (error: any) {
-            setError(error.message);
+            setError(error.message || "Failed to load subcategories");
+            setSubCategoriesData([]);
         } finally {
-            // setLoading(false);
             setAddServicesLoading(false);
         }
-    }
+    };
 
 
     const handleBranchChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedBranchId = event.target.value; // Get the selected branch ID
-        setSelectedBranch(selectedBranchId); // Update branch selection state
-
-        console.log("Hello Branch ID", selectedBranchId);
-
-
+        const selectedBranchId = event.target.value;
+        setSelectedBranch(selectedBranchId);
+        setError(null); // Clear any previous errors
 
         try {
-            // setLoading(true);
             setAddServicesLoading(true);
-
-
-            // Fetch active services for the selected branch and category
-            // const activeServicesListData = await activeServices(Number(selectedCategory), Number(selectedBranchId));
             const activeServicesListData = await activeServices(Number(sessionProviderID), Number(selectedBranchId));
 
-            // Update the active services data
-            setActiveServicesData(activeServicesListData);
-
-            console.log("Updated Active Services Data for Branch:", activeServicesListData);
+            if (activeServicesListData && activeServicesListData.length > 0) {
+                setActiveServicesData(activeServicesListData);
+                setError(null);
+            } else {
+                setError("No active services found for this branch");
+            }
         } catch (error: any) {
             setError(error.message || "Failed to fetch active services for the selected branch");
+            setActiveServicesData([]);
         } finally {
-            // setLoading(false);
             setAddServicesLoading(false);
-
         }
     };
 
 
     // Function to handle sub category change and fetch handle Check box List
     const handleCheckboxList = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-
-        const selectedSubCategoryId = event.target.value; // Get the selected categoryId
-        setSelectedSubCategory(selectedSubCategoryId); // Update state
+        const selectedSubCategoryId = event.target.value;
+        setSelectedSubCategory(selectedSubCategoryId);
+        setError(null); // Clear any previous errors
 
         try {
-            // setLoading(true);
             setAddServicesLoading(true);
+            const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId);
 
-            const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId); // Pass categoryId to API
-            setCheckboxData(loadCheckboxData.data); // Update subcategories
-            console.log("Checkbox list data log:", loadCheckboxData);
-
+            if (loadCheckboxData?.status === "success" && loadCheckboxData.data?.length > 0) {
+                setCheckboxData(loadCheckboxData.data);
+                setError(null);
+            } else {
+                setError("No services available for this subcategory");
+            }
         } catch (error: any) {
-            setError(error.message);
+            // setError(error.message || "Failed to load services");
+            setCheckboxData([]);
         } finally {
-            // setLoading(false);
             setAddServicesLoading(false);
-
         }
     }
 

@@ -62,10 +62,10 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
     // File states
     const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File | null }>({
-        taxFile: null,
-        gstFile: null,
-        identityFile: null,
-        addressFile: null,
+        tax_file: null,
+        gst_file: null,
+        identity_file: null,
+        address_file: null,
     });
 
 
@@ -362,7 +362,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                             </div> */}
                                                             <span className="text-md text-mindfulBlack">
-                                                                {selectedFiles["taxFile"]?.name || 'Upload tax file here'}
+                                                                {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
                                                             </span>
                                                         </label>
 
@@ -370,7 +370,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             id="taxFile"
                                                             type="file"
                                                             accept="image/*"
-                                                            onChange={(e) => handleFileChange(e, "taxFile")}
+                                                            onChange={(e) => handleFileChange(e, "tax_file")}
                                                             className="hidden"
                                                         />
                                                     </div>
@@ -400,7 +400,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                             </div> */}
                                                             <span className="text-md text-mindfulBlack">
-                                                                {selectedFiles["gstFile"]?.name || 'Upload GST file here'}
+                                                                {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
                                                             </span>
                                                         </label>
 
@@ -408,7 +408,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             id="gstFile"
                                                             type="file"
                                                             accept="image/*"
-                                                            onChange={(e) => handleFileChange(e, "gstFile")}
+                                                            onChange={(e) => handleFileChange(e, "gst_file")}
                                                             className="hidden"
                                                         />
                                                     </div>
@@ -537,7 +537,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                     <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                 </div> */}
                                                                 <span className="text-md text-mindfulBlack">
-                                                                    {selectedFiles["addressFile"]?.name || 'Upload a clear scan or photo of the document'}
+                                                                    {selectedFiles["address_file"]?.name || 'Upload a clear scan or photo of the document'}
                                                                 </span>
                                                             </label>
 
@@ -545,7 +545,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                 id="addressFile"
                                                                 type="file"
                                                                 accept="image/*"
-                                                                onChange={(e) => handleFileChange(e, "addressFile")}
+                                                                onChange={(e) => handleFileChange(e, "address_file")}
                                                                 className="hidden"
                                                             />
                                                         </div>
@@ -575,7 +575,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                     <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                 </div> */}
                                                                 <span className="text-md text-mindfulBlack">
-                                                                    {selectedFiles["identityFile"]?.name || 'Upload a clear scan or photo of the ID'}
+                                                                    {selectedFiles["identity_file"]?.name || 'Upload a clear scan or photo of the ID'}
                                                                 </span>
                                                             </label>
 
@@ -583,7 +583,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                                 id="identityFile"
                                                                 type="file"
                                                                 accept="image/*"
-                                                                onChange={(e) => handleFileChange(e, "identityFile")}
+                                                                onChange={(e) => handleFileChange(e, "identity_file")}
                                                                 className="hidden"
                                                             />
                                                         </div>

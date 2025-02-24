@@ -85,29 +85,18 @@ export const AddPackages = () => {
 
         console.log("Selected branch ==>", selectedBranch, loadCategoriesData);
         setcategoriesData(loadCategoriesData.data);
-
-        setStaffBranchListData(branchesData.data || []);        // Fallback to an empty array if data is null
+        setStaffBranchListData(branchesData.data || []);
 
         if (branchesData.data && branchesData.data.length > 0) {
-          setSelectedBranch(branchesData.data[0].branch_id);    // Set the first branch as default if needed
+          setSelectedBranch(branchesData.data[0].branch_id);
         }
 
         const loadActivePackagesData = await activePackages(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
+        setActivePackagesData(loadActivePackagesData.data || []);
 
-        setActivePackagesData(loadActivePackagesData.data || []);// Fallback to an empty array if data is null
-
-        console.log("Category list data log:", loadCategoriesData);
-
-        console.log("Staff branch list data log for select field:", branchesData);
-
-        console.log("Active Packages list data log:", loadActivePackagesData);
-
-      }
-
-      catch (error: any) {
+      } catch (error: any) {
         setError(error.message);
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     }
@@ -170,10 +159,13 @@ export const AddPackages = () => {
 
   // Function to handle category change and fetch subcategories
   const handleCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategoryId = event.target.value; // Get the selected categoryId
-    setSelectedCategory(selectedCategoryId); // Update state
+    const selectedCategoryId = event.target.value;
+    setSelectedCategory(selectedCategoryId);
+    setSelectedSubCategory("");
+    setCheckboxData([]);
+    setSubCategoriesData([]);
+    setError(null); // Clear any previous errors
 
-    // Clear the error if a category is selected
     if (selectedCategoryId) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
@@ -183,9 +175,9 @@ export const AddPackages = () => {
 
     try {
       setLoading(true);
-      const loadSubCategoriesData = await subCategories(selectedCategoryId); // Pass categoryId to API
-      setSubCategoriesData(loadSubCategoriesData.data); // Update subcategories
-      console.log("Sub Category list data log:", loadSubCategoriesData);
+      const loadSubCategoriesData = await subCategories(selectedCategoryId);
+      setSubCategoriesData(loadSubCategoriesData.data);
+      setError(null);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -195,11 +187,10 @@ export const AddPackages = () => {
 
   // Function to handle sub category change and fetch handle Check box List
   const handleCheckboxList = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSubCategoryId = event.target.value;
+    setSelectedSubCategory(selectedSubCategoryId);
+    setError(null); // Clear any existing errors
 
-    const selectedSubCategoryId = event.target.value; // Get the selected categoryId
-    setSelectedSubCategory(selectedSubCategoryId); // Update state
-
-    // Clear the error if a sub-category is selected
     if (selectedSubCategoryId) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
@@ -209,13 +200,11 @@ export const AddPackages = () => {
 
     try {
       setLoading(true);
-
-      const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId); // Pass categoryId to API
-      setCheckboxData(loadCheckboxData.data); // Update subcategories
-      console.log("Checkbox list data log:", loadCheckboxData);
-
+      const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId);
+      setCheckboxData(loadCheckboxData.data);
+      setError(null);
     } catch (error: any) {
-      setError(error.message);
+      // setError(error.message);
     } finally {
       setLoading(false);
     }

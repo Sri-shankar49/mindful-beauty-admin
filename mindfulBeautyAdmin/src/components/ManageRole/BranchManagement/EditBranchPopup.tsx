@@ -48,7 +48,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
 
 
     const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-    const [selectedLocation, setSelectedLocation] = useState<string>();
+    const [selectedLocation, setSelectedLocation] = useState<string>(branchData.location || '');;
 
     const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
 
@@ -166,6 +166,13 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                 formData.append("longitude", String(locationCoordinates.lng));
             }
 
+            if (logo && logo !== ashtamudiLogo) {
+                const fileInput = document.querySelector('#upload-photo') as HTMLInputElement;
+                if (fileInput?.files?.[0]) {
+                    formData.append('logo', fileInput.files[0]);
+                }
+            }
+
             const editBranchData = await editBranch(formData); // Assuming editBranch can handle FormData
             console.log(editBranchData, "Branch edited successfully");
 
@@ -205,7 +212,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                                 <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                             </div>
 
-                            <div className="grid grid-cols-2 items-center">
+                            <div className="grid grid-cols-2 items-center gap-5">
                                 <div>
                                     {/* <div className="w-fit mx-auto">
                                         <img src={ashtamudiLogo} alt="ashtamudi logo" />
@@ -246,7 +253,7 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                                     <div>
                                         {/* Logo Display Area */}
                                         <div className="w-fit mx-auto pb-5">
-                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
+                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-full rounded-md object-cover" />
                                         </div>
 
                                         {/* File Upload Area */}

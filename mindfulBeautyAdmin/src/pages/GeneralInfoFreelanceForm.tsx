@@ -40,7 +40,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
     const [willingToWork, setWillingToWork] = useState<number>(1);
 
-    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certificationsFile: null });
+    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certifications: null });
 
     // File change handler
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
@@ -527,7 +527,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                             </div> */}
                                                                 <span className="text-md text-mindfulBlack">
-                                                                    {selectedFile["certificationsFile"]?.name || 'Upload certification files here'}
+                                                                    {selectedFile["certifications"]?.name || 'Upload certification files here'}
                                                                 </span>
                                                             </label>
 
@@ -535,7 +535,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                                 id="upload-photo1"
                                                                 type="file"
                                                                 accept="image/*"
-                                                                onChange={(e) => handleFileChange(e, "certificationsFile")}
+                                                                onChange={(e) => handleFileChange(e, "certifications")}
                                                                 className="hidden"
                                                             />
                                                         </div>

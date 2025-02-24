@@ -217,6 +217,10 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
     const handleCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedCategoryId = event.target.value; // Get the selected categoryId
         setSelectedCategory(selectedCategoryId); // Update state
+        setSelectedSubCategory("");
+        setCheckboxData([]);
+        setSubCategoriesData([]);
+        setError(null); // Clear any previous errors
 
         // Clear the error if a category is selected
         if (selectedCategoryId) {
@@ -230,6 +234,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
             // setLoading(true);
             const loadSubCategoriesData = await subCategories(selectedCategoryId); // Pass categoryId to API
             setSubCategoriesData(loadSubCategoriesData.data); // Update subcategories
+            setError(null);
             console.log("Sub Category list data log:", loadSubCategoriesData);
         } catch (error: any) {
             setError(error.message);
@@ -243,7 +248,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
         const selectedSubCategoryId = event.target.value; // Get the selected categoryId
         setSelectedSubCategory(selectedSubCategoryId); // Update state
-
+        setError(null);
         // Clear the error if a sub-category is selected
         if (selectedSubCategoryId) {
             setValidationErrors((prevErrors) => ({
@@ -257,6 +262,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
             const loadCheckboxData = await addServicesCheckbox(selectedCategory, selectedSubCategoryId); // Pass categoryId to API
             setCheckboxData(loadCheckboxData.data); // Update subcategories
+            setError(null);
             console.log("Checkbox list data log:", loadCheckboxData);
 
         } catch (error: any) {
@@ -266,45 +272,6 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         }
     }
 
-    // const handleCheckboxClick = (service_id: number, service_name: string) => {
-    //   setSelectedCheckboxIDs((prevSelected) => {
-    //     const serviceIdStr = service_id.toString(); // Ensure it's a string
-
-    //     const updatedSelected = prevSelected.includes(serviceIdStr)
-    //       ? prevSelected.filter((id) => id !== serviceIdStr) // Remove if already selected
-    //       : [...prevSelected, serviceIdStr]; // Add if not already selected
-
-    //     // Clear the error if at least one service is selected
-    //     if (updatedSelected.length > 0) {
-    //       setValidationErrors((prevErrors) => ({
-    //         ...prevErrors,
-    //         services: "",
-    //       }));
-    //     }
-
-    //     return updatedSelected;
-    //   });
-
-    //   // Update selected service names
-    //   setSelectedCheckboxNames((prevNames) => {
-    //     const updatedNames = prevNames.includes(service_name)
-    //       ? prevNames.filter((name) => name !== service_name) // Remove if already selected
-    //       : [...prevNames, service_name]; // Add if not already selected
-
-    //     return updatedNames;
-    //   });
-
-    //   console.log("Updated Selected IDs: ", selectedCheckboxIDs);
-    // };
-
-    // const handleCheckboxClick = (service_id: number, service_name: string) => {
-    //   // setSelectedCheckboxIDs((prevSelected) => {
-    //   //   const serviceIdStr = service_id.toString();
-
-    //   const updatedSelected = prevSelected.includes(serviceIdStr)
-    //     ? prevSelected.filter((id) => id !== serviceIdStr) // Remove if already selected
-    //     : [...prevSelected, serviceIdStr]; // Add if not already selected
-
     const handleCheckboxClick = (service_id: number, service_name: string) => {
         setSelectedCheckboxIDs((prevSelected) => {
             if (prevSelected.includes(service_id)) {
@@ -313,17 +280,6 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                 return [...prevSelected, service_id]; // Add number if not selected
             }
         });
-
-
-        //   if (updatedSelected.length > 0) {
-        //     setValidationErrors((prevErrors) => ({
-        //       ...prevErrors,
-        //       services: "",
-        //     }));
-        //   }
-
-        //   return updatedSelected;
-        // });
 
         setSelectedCheckboxNames((prevNames) => {
             return prevNames.includes(service_name)
