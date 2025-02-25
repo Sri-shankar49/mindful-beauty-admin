@@ -1124,6 +1124,30 @@ export const deleteService = async (providerServiceID: number) => {
 
 
 
+
+export const getProviderCities = async (providerID: number) => {
+  try {
+    const response = await apiAxios.get(`/provider-api/provider_cities/`, {
+      params: { provider_id: providerID },
+    });
+
+    console.log("Provider Cities response:", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to retrieve provider cities. Unexpected response.");
+    }
+
+    return response.data.data; // Returning only the data array
+  } catch (error: any) {
+    console.error("Error fetching provider cities:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to fetch provider cities. Please try again later.");
+  }
+};
+
+
+
+
+
 // Service Listing Page -> Category List
 export const categories = async () => {
   try {

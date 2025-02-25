@@ -22,6 +22,7 @@ interface StylistPopupProps {
         role_id: string;
         branch_id: string;
         phone: string;
+        photo: string;
     }
 }
 
@@ -62,7 +63,11 @@ export const StylistPopup: React.FC<StylistPopupProps> = ({ closePopup, stylistD
                                         <div>
                                             {/* <img src={stylist} alt="" /> */}
                                             {/* <img src={stylistDetails.profile_image} alt={stylistDetails.name} /> */}
-                                            <img src={stylist} alt={stylistDetails.name} />
+                                            <img
+                                                src={stylistDetails.photo || stylist}
+                                                alt={stylistDetails.name}
+                                                className="w-28 h-28 rounded-full object-contain"
+                                            />
                                         </div>
                                         <div className="text-center">
                                             <h2 key={stylistDetails.staff} className="text-2xl text-mindfulBlack font-semibold">

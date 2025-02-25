@@ -5,12 +5,19 @@ import { SelectField } from '@/common/SelectField'
 // import { PiCopySimpleLight } from "react-icons/pi";
 import { IoCloseCircle } from 'react-icons/io5'
 // import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
-import { activeServices, addServices, addServicesCheckbox, categories, staffBranchList, subCategories, updateActiveServices } from '@/api/apiConfig';
+import { activeServices, addServices, addServicesCheckbox, categories, getProviderCities, staffBranchList, subCategories, updateActiveServices } from '@/api/apiConfig';
 import "./ServiceListing.css";
 import { ShimmerTable } from "shimmer-effects-react";
 import { PiCopySimpleLight } from 'react-icons/pi';
 import { Button } from '@/common/Button';
 import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
+
+interface CityDataProps {
+    branch_id?: string;
+    branch_name: string;
+    city: string;
+    location_id: number;
+}
 
 interface categoriesDataProps {
     category_id?: string;
@@ -39,7 +46,7 @@ interface StaffBranchListDataProps {
 interface Subcategories {
     subcategory_id?: string;
     subcategory: string;
-    services: Services[]
+    services: Services[];
 }
 
 interface Services {
@@ -83,6 +90,9 @@ export const AddServices: React.FC = () => {
     const [staffBranchListData, setStaffBranchListData] = useState<StaffBranchListDataProps[]>([]);
     const [activeServicesData, setActiveServicesData] = useState<ActiveServicesListDataProps[]>([]);
 
+    const [cities, setCities] = useState<CityDataProps[]>([]); // State to store cities data
+    const [selectedCity, setSelectedCity] = useState<string>(""); // State to store selected city
+
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
@@ -113,6 +123,8 @@ export const AddServices: React.FC = () => {
             try {
                 const loadCategoriesData = await categories();
                 const branchesData = await staffBranchList();
+
+                const city = await getProviderCities(Number(sessionProviderID)); // Get cities using the provider ID
                 // if (branchesData.data && branchesData.data.length > 0) {
                 //     setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
                 // }
@@ -130,11 +142,17 @@ export const AddServices: React.FC = () => {
 
                 setActiveServicesData(activeServicesListData || []);// Fallback to an empty array if data is null
 
+                setCities(city); // Set the cities data
+
+                setSelectedCity(city[0].city);
+
                 console.log("Category list data log:", loadCategoriesData);
 
                 console.log("Staff branch list data log for select field:", branchesData);
 
                 console.log("Active Services list data log:", activeServicesListData);
+
+                console.log("City data log:", city);
 
 
 
@@ -171,6 +189,11 @@ export const AddServices: React.FC = () => {
         setServicesData(JSON.parse(JSON.stringify(activeServicesData)));
     }, [activeServicesData]); // Only re-run when `activeServicesData` changes
 
+
+    // Function handler for city
+    const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCity(e.target.value);
+    };
 
     // Function to handle category change and fetch subcategories
     const handleCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -289,6 +312,9 @@ export const AddServices: React.FC = () => {
         try {
             const formData = new FormData();
             formData.append("provider_id", sessionProviderID || "");
+
+            formData.append("city", selectedCity); // Pass selected city
+
             formData.append("branch_id", selectedBranch);
             // formData.append("category_id", data.category);
             formData.append("category_id", selectedCategory);
@@ -503,13 +529,13 @@ export const AddServices: React.FC = () => {
                                                 label={''}
                                                 // name="city"
                                                 id="city"
-                                                options={[
-                                                    { value: "kochi", label: "Kochi" },
-                                                    { value: "trivandrum", label: "Trivandrum" },
-                                                    { value: "kollam", label: "Kollam" },
-                                                    { value: "thrissur", label: "Thrissur" },
-                                                ]}
+                                                options={cities.map((city) => ({
+                                                    value: city.city, // Set the city name as the value
+                                                    label: city.city, // Set the city name as the label
+                                                }))}
                                                 className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={selectedCity}
+                                                onChange={handleCityChange}
                                             />
 
                                             {/* {error.city && (

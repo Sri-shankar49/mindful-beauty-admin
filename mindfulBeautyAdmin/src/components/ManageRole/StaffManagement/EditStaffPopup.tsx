@@ -23,6 +23,7 @@ interface EditStaffPopupProps {
         branch_name: string;
         status: string;
         phone: string;
+        photo: string;
 
     };
 
@@ -63,6 +64,11 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
     const [loading, setLoading] = useState(false); // Start with true as data needs to be fetched
     const [error, setError] = useState<string | null>(null);
 
+    const [photo, setPhoto] = useState<File | null>(null);
+    const [photoName, setPhotoName] = useState<string>(editStaffData.photo ? editStaffData.photo.split('/').pop() || '' : ''); // Extract file name if it's a path
+
+    console.log("photoName", photoName)
+
     const { register, handleSubmit, formState: { errors } } = useForm<EditStaffFormData>({
         resolver: zodResolver(editStaffSchema),
         defaultValues: {
@@ -101,6 +107,15 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
         fetchStaffBranchRoleList();
     }, []);
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            // setPhoto(event.target.files[0]);
+            const file = event.target.files[0];
+            setPhoto(file); // Update the photo state with the new file
+            setPhotoName(file.name); // Update the photo name state with the new file name
+
+        }
+    };
 
     const onSubmit = async (data: EditStaffFormData) => {
         console.log("Updated Staff Data:", data);
@@ -116,6 +131,10 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
             // formData.append('branchAddress', data.branchAddress);
             // formData.append('location', data.branch);
             formData.append('phone', data.staffPhoneNumber);
+
+            if (photo) {
+                formData.append('photo', photo);
+            }
 
             // if (file) {
             //     formData.append('logo', file); // Append file if uploaded
@@ -332,17 +351,17 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                                                             <div className="">
                                                                 <label
                                                                     htmlFor="upload-photo"
-                                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                                    className="w-72 mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
                                                                 >
 
                                                                     <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                                    Upload Files
+                                                                    {photoName || 'Upload Files'}
                                                                 </label>
                                                                 <input
                                                                     id="upload-photo"
                                                                     type="file"
                                                                     accept="image/*"
-                                                                    // onChange={handleFileChange}
+                                                                    onChange={handleFileChange}
                                                                     className="hidden"
                                                                 />
                                                             </div>

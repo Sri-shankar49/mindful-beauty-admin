@@ -26,7 +26,7 @@ interface StatusListDataProps {
 interface StylistOption {
   value: number;
   text: string;
-  icon: string; // URL or path to the image
+  icon: any; // URL or path to the image
 }
 
 // interface Service {
@@ -67,6 +67,7 @@ interface BeauticiansDataProps {
   role_id: string;
   branch_id: string;
   phone: string;
+  photo: any;
 }
 
 export const Inprogress = () => {
@@ -487,14 +488,14 @@ export const Inprogress = () => {
                             value: beautician.staff,
                             text: beautician.name,
                             // icon: beautician.profile_image,
-                            icon: stylist,
+                            icon: beautician.photo || stylist,
                           }))}
                           // onChange={handleStylistOption}
                           onChange={(e) => handleStylistOption(e, inprogress.id)}
                           getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                           formatOptionLabel={(option) => (
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                              <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
                               <span style={{ marginLeft: 5 }}>{option.text}</span>
                             </div>
                           )}
@@ -505,7 +506,7 @@ export const Inprogress = () => {
                                 value: beautician.staff,
                                 text: beautician.name,
                                 // icon: beautician.profile_image,
-                                icon: stylist,
+                                icon: beautician.photo || stylist,
                               }))
                               .find((option) => option.value === inprogress.stylist_id) || null // Set default value
                           }

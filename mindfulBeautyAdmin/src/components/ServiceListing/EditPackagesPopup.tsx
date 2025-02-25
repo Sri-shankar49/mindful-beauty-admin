@@ -4,8 +4,16 @@ import { IoCloseCircle } from 'react-icons/io5';
 import { Button } from '@/common/Button'
 import { InputField } from '@/common/InputField'
 import { SelectField } from '@/common/SelectField';
-import { addServicesCheckbox, categories, staffBranchList, subCategories, editPackage, editPackageUpdate } from '@/api/apiConfig';
+import { addServicesCheckbox, categories, staffBranchList, subCategories, editPackage, editPackageUpdate, getProviderCities } from '@/api/apiConfig';
 import { ShimmerTable } from 'shimmer-effects-react';
+
+
+interface CityDataProps {
+    branch_id?: string;
+    branch_name: string;
+    city: string;
+    location_id: number;
+}
 
 interface EditPackagesPopupProps {
     providerPackageID: number
@@ -52,6 +60,9 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
     const [checkboxData, setCheckboxData] = useState<checkboxDataProps[]>([]);
 
+    const [cities, setCities] = useState<CityDataProps[]>([]); // State to store cities data
+    const [selectedCity, setSelectedCity] = useState<string>(""); // State to store selected city
+
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
@@ -97,12 +108,19 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
             try {
                 const loadCategoriesData = await categories();
                 const branchesData = await staffBranchList();
+
+                const city = await getProviderCities(Number(sessionProviderID)); // Get cities using the provider ID
+
                 console.log("branchesData GET Method response", branchesData);
 
                 console.log("Selected branch ==>", selectedBranch, loadCategoriesData);
                 setcategoriesData(loadCategoriesData.data);
 
                 setStaffBranchListData(branchesData.data || []);        // Fallback to an empty array if data is null
+
+                setCities(city); // Set the cities data
+
+                setSelectedCity(city[0].city);
 
                 // if (branchesData.data && branchesData.data.length > 0) {
                 //   setSelectedBranch(branchesData.data[0].branch_id);    // Set the first branch as default if needed
@@ -111,6 +129,8 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                 console.log("Category list data log:", loadCategoriesData);
 
                 console.log("Staff branch list data log for select field:", branchesData);
+
+                console.log("City data log:", city);
 
             }
 
@@ -124,6 +144,8 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         loadCategorySelect();
 
     }, []);
+
+
 
     useEffect(() => {
         const loadPackageData = async () => {
@@ -212,6 +234,11 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
             setLoading(false);
         }
     }
+
+    // Function handler for city
+    const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCity(e.target.value);
+    };
 
     // Function to handle category change and fetch subcategories
     const handleCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -376,13 +403,13 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                 label={''}
                                                                 // name="city"
                                                                 id="city"
-                                                                options={[
-                                                                    { value: "kochi", label: "Kochi" },
-                                                                    { value: "trivandrum", label: "Trivandrum" },
-                                                                    { value: "kollam", label: "Kollam" },
-                                                                    { value: "thrissur", label: "Thrissur" },
-                                                                ]}
+                                                                options={cities.map((city) => ({
+                                                                    value: city.city, // Set the city name as the value
+                                                                    label: city.city, // Set the city name as the label
+                                                                }))}
                                                                 className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                                value={selectedCity}
+                                                                onChange={handleCityChange}
                                                             />
 
                                                         </div>

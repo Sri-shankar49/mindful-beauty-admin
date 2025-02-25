@@ -20,7 +20,8 @@ interface ViewBranchPopupProps {
 export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup, branchData }) => {
 
 
-    const [logo, setLogo] = useState<string | null>(ashtamudiLogo); // Initially set to the default logo
+    // const [logo, setLogo] = useState<string | null>(ashtamudiLogo); // Initially set to the default logo
+    const [logo, setLogo] = useState<string | null>(branchData.logo || ashtamudiLogo); // Initially set to the default logo
 
     // Handle file change event
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,25 +94,27 @@ export const ViewBranchPopup: React.FC<ViewBranchPopupProps> = ({ closePopup, br
                                     <div>
                                         {/* Logo Display Area */}
                                         <div className="w-fit mx-auto pb-5">
-                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-24 object-cover" />
+                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-full object-cover" />
                                         </div>
 
                                         {/* File Upload Area */}
                                         <div>
                                             <div className="">
-                                                <label
+                                                {/* <label
                                                     htmlFor="upload-photo"
                                                     // className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-5 cursor-pointer hover:border-mindfulGreyTypeThree"
                                                     className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2 cursor-pointer"
                                                 >
-                                                    {/* Upload Button */}
-                                                    {/* <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
+                                                    Upload Button
+                                                    <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
                                                         <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
                                                         <button className="text-sm text-mindfulWhite uppercase">Upload Logo</button>
-                                                    </div> */}
+                                                    </div>
+
+                                                    
                                                     <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
                                                     Upload Logo
-                                                </label>
+                                                </label> */}
                                                 <input
                                                     id="upload-photo"
                                                     type="file"

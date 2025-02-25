@@ -16,6 +16,7 @@ import { NavLink } from "react-router-dom"
 import { DenialPopup } from "./DashBoardData/DenialPopup"
 import stylist from "../../assets/images/stylist.png"
 import { WalletPopup } from "./WalletPopup";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 
@@ -23,7 +24,7 @@ import { WalletPopup } from "./WalletPopup";
 interface StylistOption {
     value: number;
     text: string;
-    icon: string; // URL or path to the image
+    icon: any; // URL or path to the image
 }
 
 interface Service {
@@ -61,6 +62,7 @@ interface BeauticiansDataProps {
     role_id: string;
     branch_id: string;
     phone: string;
+    photo: any;
 }
 
 
@@ -110,7 +112,7 @@ export const DashBoardData = () => {
     // const [sortOrder, setSortOrder] = useState<string>("desc");
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     // const [isAccepted, setIsAccepted] = useState(false);
     const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
     const [declinedAppointments, setDeclinedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
@@ -237,7 +239,7 @@ export const DashBoardData = () => {
     useEffect(() => {
         const loadBookingList = async () => {
             setLoading(true);
-            setError(null);
+            // setError(null);
 
             // Login Provider ID
             const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -260,7 +262,8 @@ export const DashBoardData = () => {
 
 
             } catch (error: any) {
-                setError(error.message || 'Failed to fetch staff list');
+                // setError(error.message || 'Failed to fetch staff list');
+                NotifyError(error.message || 'Failed to fetch staff list');
             } finally {
                 setLoading(false); // Ensure loading is false after fetching
             }
@@ -326,7 +329,7 @@ export const DashBoardData = () => {
 
 
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         try {
             const data = await bookingAction(appointmentID, stylistID, actionID);
@@ -395,7 +398,8 @@ export const DashBoardData = () => {
             //     return newState;
             // });
 
-            setError(error.message || 'An error occurred while processing your request.');
+            // setError(error.message || 'An error occurred while processing your request.');
+            NotifyError(error.message || 'An error occurred while processing your request.');
             console.error("Error in handle Action Submit:", error);
 
             if (error.response?.status === 403) {
@@ -605,13 +609,13 @@ export const DashBoardData = () => {
                                             />
                                         </td>
                                     </tr>
-                                ) : error ? (
-                                    /* Error State */
-                                    <tr>
-                                        <td colSpan={9} className="text-center text-red-600 py-5">
-                                            Error: {error}
-                                        </td>
-                                    </tr>
+                                    // ) : error ? (
+                                    //     /* Error State */
+                                    //     <tr>
+                                    //         <td colSpan={9} className="text-center text-red-600 py-5">
+                                    //             Error: {error}
+                                    //         </td>
+                                    //     </tr>
                                 ) : (
                                     dashboardBookingListData.length > 0 ? (
                                         dashboardBookingListData.map((dashboardData) => (
@@ -648,15 +652,14 @@ export const DashBoardData = () => {
                                                             options={beauticiansListData.map((beautician) => ({
                                                                 value: beautician.staff,
                                                                 text: beautician.name,
-                                                                // icon: beautician.profile_image,
-                                                                icon: stylist,
+                                                                icon: beautician.photo || stylist,
                                                             }))}
                                                             // onChange={handleStylistOption}
                                                             onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
                                                             getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
                                                             formatOptionLabel={(option) => (
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                    <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
+                                                                    <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
                                                                     <span style={{ marginLeft: 5 }}>{option.text}</span>
                                                                 </div>
                                                             )}
@@ -665,7 +668,7 @@ export const DashBoardData = () => {
                                                                 {
                                                                     value: selectedStylists[dashboardData.appointment_id].staff,
                                                                     text: selectedStylists[dashboardData.appointment_id].name,
-                                                                    icon: stylist
+                                                                    icon: selectedStylists[dashboardData.appointment_id].photo || stylist,
                                                                 }
                                                                 : null}
                                                         />

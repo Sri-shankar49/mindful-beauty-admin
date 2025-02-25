@@ -83,7 +83,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             {/* Branch Name */}
             <div className="flex items-center space-x-2 mb-5">
                 <div>
-                    <img src={userAdmin || logo} alt="" />
+                    <img src={userAdmin} alt="" />
                 </div>
 
                 {/* <h5 className="text-lg text-mindfulBlack font-semibold">Ashtamudi Wellness</h5> */}
@@ -94,7 +94,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             <div className="flex items-center space-x-5 mb-5">
                 {/* Manager Image */}
                 <div>
-                    <img src={managerImg || logo} alt="manager image" />
+                    <img src={logo || managerImg} alt="manager image" />
                 </div>
 
                 <div>

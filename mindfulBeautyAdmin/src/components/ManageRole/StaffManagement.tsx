@@ -23,6 +23,7 @@ interface StaffManagementProps {
     branch_name: string;
     status: string;
     phone: string;
+    photo: string;
 }
 
 

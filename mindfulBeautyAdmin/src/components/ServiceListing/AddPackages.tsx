@@ -3,8 +3,15 @@ import { InputField } from "@/common/InputField"
 import { SelectField } from "@/common/SelectField"
 import { Button } from "@/common/Button"
 import { IoCloseCircle } from "react-icons/io5"
-import { activePackages, addPackages, addServicesCheckbox, categories, staffBranchList, subCategories, updateActivePackages } from "@/api/apiConfig";
+import { activePackages, addPackages, addServicesCheckbox, categories, getProviderCities, staffBranchList, subCategories, updateActivePackages } from "@/api/apiConfig";
 
+
+interface CityDataProps {
+  branch_id?: string;
+  branch_name: string;
+  city: string;
+  location_id: number;
+}
 
 interface StaffBranchListDataProps {
   branch_id?: number;
@@ -47,6 +54,10 @@ export const AddPackages = () => {
   const [subCategoriesData, setSubCategoriesData] = useState<SubCategoriesDataProps[]>([]);
   const [checkboxData, setCheckboxData] = useState<checkboxDataProps[]>([]);
 
+  const [cities, setCities] = useState<CityDataProps[]>([]); // State to store cities data
+  const [selectedCity, setSelectedCity] = useState<string>(""); // State to store selected city
+
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
@@ -83,6 +94,8 @@ export const AddPackages = () => {
         const loadCategoriesData = await categories();
         const branchesData = await staffBranchList();
 
+        const city = await getProviderCities(Number(sessionProviderID)); // Get cities using the provider ID
+
         console.log("Selected branch ==>", selectedBranch, loadCategoriesData);
         setcategoriesData(loadCategoriesData.data);
         setStaffBranchListData(branchesData.data || []);
@@ -93,6 +106,12 @@ export const AddPackages = () => {
 
         const loadActivePackagesData = await activePackages(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
         setActivePackagesData(loadActivePackagesData.data || []);
+
+        console.log("City data log:", city);
+
+        setCities(city); // Set the cities data
+
+        setSelectedCity(city[0].city);
 
       } catch (error: any) {
         setError(error.message);
@@ -122,6 +141,12 @@ export const AddPackages = () => {
     // Initialize `servicesData` with a deep copy of `activeServicesData`
     setCopyPackagesData(JSON.parse(JSON.stringify(activePackagesData)));
   }, [activePackagesData]); // Only re-run when `activeServicesData` changes
+
+
+  // Function handler for city
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCity(e.target.value);
+  };
 
 
   // Handle Branch Change
@@ -320,6 +345,9 @@ export const AddPackages = () => {
     try {
       const formData = new FormData();
       formData.append("provider", sessionProviderID || "");
+
+      formData.append("city", selectedCity); // Pass selected city
+
       formData.append("branch_id", selectedBranch);
 
       // formData.append("category_id", selectedCategory);
@@ -507,13 +535,13 @@ export const AddPackages = () => {
                             label={''}
                             name="city"
                             id="city"
-                            options={[
-                              { value: "kochi", label: "Kochi" },
-                              { value: "trivandrum", label: "Trivandrum" },
-                              { value: "kollam", label: "Kollam" },
-                              { value: "thrissur", label: "Thrissur" },
-                            ]}
+                            options={cities.map((city) => ({
+                              value: city.city, // Set the city name as the value
+                              label: city.city, // Set the city name as the label
+                            }))}
                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                            value={selectedCity}
+                            onChange={handleCityChange}
                           />
                         </div>
 
