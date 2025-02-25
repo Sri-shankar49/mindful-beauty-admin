@@ -6,7 +6,6 @@ import { Zoom } from 'react-toastify';
 interface ToastMessageProps {
     // Explicitly stating that it takes no props
     children?: never;
-    
 }
 
 const defaultOptions: ToastOptions = {
@@ -42,5 +41,5 @@ export const NotifyInfo = (message: string, options?: ToastOptions) => {
 
 // Toast Container Component
 export const ToastMessage: React.FC<ToastMessageProps> = () => {
-    return <ToastContainer />;
+    return <ToastContainer {...(defaultOptions as any)} />;
 };
