@@ -13,7 +13,13 @@ export const Header = () => {
 
     const [profileHover, setProfileHover] = useState(false);
 
-    const [isActive, setIsActive] = useState(false); // State to track the toggle status
+    // const [isActive, setIsActive] = useState(false); // State to track the toggle status
+
+    const [isActive, setIsActive] = useState<boolean>(() => {
+        const savedStatus = sessionStorage.getItem("isActiveStatus"); // Check stored status
+        return savedStatus ? JSON.parse(savedStatus) : false; // Convert from string to boolean
+    });
+
 
     // const handleToggle = () => {
     //     setIsActive(!isActive); // Toggle the state on click
@@ -77,6 +83,7 @@ export const Header = () => {
 
             setIsActive(!isActive); // Update UI only after successful API call
             console.log("Online Status updated successfully", response);
+            sessionStorage.setItem("isActiveStatus", JSON.stringify(!isActive)); // Store new state
 
         } catch (error: any) {
             console.error("Error updating online status:", error.message);
