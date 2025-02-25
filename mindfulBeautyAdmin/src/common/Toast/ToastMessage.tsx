@@ -6,6 +6,7 @@ import { Zoom } from 'react-toastify';
 interface ToastMessageProps {
     // Explicitly stating that it takes no props
     children?: never;
+    
 }
 
 const defaultOptions: ToastOptions = {
