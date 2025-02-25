@@ -58,6 +58,7 @@ import { Wallet } from './components/MyAccount/Wallet';
 
 
 import AuthWatcher from './common/AuthWatcher';
+import { ToastMessage } from './common/Toast/ToastMessage';
 
 
 
@@ -96,6 +97,9 @@ function App() {
 
         {/* ScrollToTop component */}
         <ScrollToTop />
+
+        {/* Toast Message */}
+        <ToastMessage />      {/* Keep this in the root of your app */}
 
         <Routes>
           {/* Public Routes */}
