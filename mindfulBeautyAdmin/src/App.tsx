@@ -163,7 +163,7 @@ function App() {
 
               {/* Sub-routes */}
               <Route path="RolesManagement" element={<RolesManagement />} />
-              <Route path="StaffManagement" element={<StaffManagement staff={0} name={''} role_name={''} branch_name={''} status={''} phone={''} />} />
+              <Route path="StaffManagement" element={<StaffManagement staff={0} name={''} role_name={''} branch_name={''} status={''} phone={''} photo={''} />} />
               <Route path="BranchManagement" element={<BranchManagement branch_id={''} branch_name={''} phone={''} location={''} logo={''} />} />
             </Route>
 

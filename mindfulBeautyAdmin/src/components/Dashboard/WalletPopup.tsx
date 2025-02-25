@@ -4,10 +4,10 @@ import { IoCloseCircle } from "react-icons/io5";
 
 interface WalletPopupProps {
   closePopup: () => void;
-  errorMessage: string | null;
+  // errorMessage: string | null;
 }
 
-export const WalletPopup: React.FC<WalletPopupProps> = ({ errorMessage, closePopup }) => {
+export const WalletPopup: React.FC<WalletPopupProps> = ({ closePopup }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg w-1/3 p-6 relative shadow-lg">
@@ -29,9 +29,9 @@ export const WalletPopup: React.FC<WalletPopupProps> = ({ errorMessage, closePop
         </div>
 
         {/* Error Message (if any) from API Response */}
-        {errorMessage && (
+        {/* {errorMessage && (
           <p className="text-center text-red-600 font-semibold mt-2">{errorMessage}</p>
-        )}
+        )} */}
 
         {/* Buttons */}
         <div className="flex justify-center space-x-4 mt-6">

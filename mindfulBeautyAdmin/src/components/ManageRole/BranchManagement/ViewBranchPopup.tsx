@@ -4,7 +4,7 @@ import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png"
 import { InputField } from '@/common/InputField';
 // import { SelectField } from '@/common/SelectField';W
 // import { Button } from '@/common/Button';
-import { MdCloudUpload } from "react-icons/md";
+// import { MdCloudUpload } from "react-icons/md";
 
 interface ViewBranchPopupProps {
     closePopup: () => void;

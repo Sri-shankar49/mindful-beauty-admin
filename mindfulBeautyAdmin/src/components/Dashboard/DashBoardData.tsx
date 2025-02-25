@@ -1004,7 +1004,10 @@ export const DashBoardData = () => {
             )}
 
 
-            {showWalletPopup && <WalletPopup closePopup={closeWalletPopup} errorMessage={error} />}
+            {showWalletPopup && <WalletPopup
+                closePopup={closeWalletPopup}
+                // errorMessage={error}
+            />}
 
         </div>
 
