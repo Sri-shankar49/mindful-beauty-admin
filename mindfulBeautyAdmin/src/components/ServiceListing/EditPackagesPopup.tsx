@@ -329,9 +329,9 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         <div>
             <div>
                 <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="container mx-auto">
+                    {/* <div className="container mx-auto"> */}
 
-                        <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10">
+                        <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10 my-5 overflow-y-scroll h-[80%]">
 
                             {/* {loading ? (
                                 // <div className="text-center py-10">
@@ -677,7 +677,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
                     </div>
                 </div>
-            </div>
+            {/* </div> */}
         </div>
     )
 }

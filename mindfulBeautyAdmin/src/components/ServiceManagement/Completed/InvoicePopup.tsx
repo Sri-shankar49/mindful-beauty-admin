@@ -94,8 +94,8 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
 
     return (
         <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
-            <div className="container mx-auto">
-                <div className="relative bg-white rounded-[5px] w-6/12 mx-auto px-20 py-10">
+            {/* <div className="container mx-auto"> */}
+                <div className="relative bg-white rounded-[5px] w-6/12 mx-auto px-20 py-10 my-5overflow-y-auto h-[90%]">
                     {/* Close Button */}
                     <div onClick={closePopup} className="absolute top-5 right-5 w-fit cursor-pointer">
                         <IoCloseCircle className="text-mindfulGrey text-[32px]" />
@@ -263,7 +263,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                         </div>
                     )}
                 </div>
-            </div>
+            {/* </div> */}
         </div >
     )
 }

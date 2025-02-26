@@ -146,8 +146,8 @@ export const RolesManagement = () => {
     return (
         <div>
             <h5 className="text-3xl font-semibold py-5">User Role Manager</h5>
-
-            <table className="w-full">
+            <div className="max-xl:overflow-x-scroll">
+            <table className="w-full ">
                 <thead className="border-y-2 border-mindfulgrey">
                     <tr>
                         <th className="w-[80%] text-start px-2 py-3">Actions</th>
@@ -460,6 +460,7 @@ export const RolesManagement = () => {
 
                 </tbody>
             </table>
+            </div>
         </div>
     );
 }

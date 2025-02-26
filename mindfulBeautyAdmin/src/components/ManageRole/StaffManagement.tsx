@@ -188,7 +188,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                 </div>
             </div>
 
-            <div>
+            <div className="max-xl:overflow-x-scroll">
                 <table className="w-full">
                     <thead className="bg-mindfulLightgrey">
                         <tr className="">

@@ -398,7 +398,7 @@ export const Schedule = () => {
         <h5 className="text-3xl font-semibold py-5">Schedule</h5>
       </div>
 
-      <div>
+      <div className="max-xl:overflow-x-scroll">
         <table className="w-full">
           <thead className="bg-mindfulLightgrey">
             <tr className="">

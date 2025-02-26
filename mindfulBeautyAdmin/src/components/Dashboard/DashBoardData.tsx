@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react"
-// import { SelectField } from "@/common/SelectField"
 import { Button } from "@/common/Button"
-// import { AreaChart } from "@/components/Dashboard/DashBoardData/AreaChart"
-// import { BarChart } from "@/components/Dashboard/DashBoardData/BarChart"
-// import { RangeChart } from "@/components/Dashboard/DashBoardData/RangeChart"
-// import { DenialPopup } from "@/components/Dashboard/DashBoardData/DenialPopup"
 import { StylistPopup } from "@/components/Dashboard/DashBoardData/StylistPopup"
 import Select, { SingleValue } from 'react-select';
-// import stylist from "../../assets/images/stylist.png"
 import { beauticiansList, bookingAction, dashBoardBookingList } from "@/api/apiConfig"
-// import { useNavigate } from "react-router-dom"
 import "./DashBoardData.css";
 import { ShimmerTable } from "shimmer-effects-react"
 import { NavLink } from "react-router-dom"
@@ -17,8 +10,6 @@ import { DenialPopup } from "./DashBoardData/DenialPopup"
 import stylist from "../../assets/images/stylist.png"
 import { WalletPopup } from "./WalletPopup";
 import { NotifyError } from "@/common/Toast/ToastMessage";
-
-
 
 // Define the type for each option
 interface StylistOption {
@@ -46,14 +37,6 @@ interface DashBoardDataProps {
 }
 
 interface BeauticiansDataProps {
-    // id?: any;
-    // name: string;
-    // role: string;
-    // years_of_experience?: string;
-    // rating: string;
-    // profile_image: string;
-    // provider: string;
-
     staff?: any;
     name: string;
     role_name: string;
@@ -64,63 +47,21 @@ interface BeauticiansDataProps {
     phone: string;
     photo: any;
 }
-
-
 export const DashBoardData = () => {
-
-    // const navigate = useNavigate();
-
-    // const stylistData: StylistOption[] = [
-    //     {
-    //         value: 1,
-    //         text: 'Swetha',
-    //         icon: `${stylist}`
-    //     },
-    //     {
-    //         value: 2,
-    //         text: 'Swetha',
-    //         icon: `${stylist}`
-    //     },
-    //     {
-    //         value: 3,
-    //         text: 'Swetha',
-    //         icon: `${stylist}`
-    //     },
-    //     {
-    //         value: 4,
-    //         text: 'Swetha',
-    //         icon: `${stylist}`
-    //     }
-    // ];
-
-
-    // const [selectedStylistOption, setSelectedStylistOption] = useState<SingleValue<StylistOption>>(null);
-
     // State declaration for Denial Popup
     const [showDenialPopup, setShowDenialPopup] = useState(false);
     // State declaration for Stylist Popup
     const [showStylistPopup, setShowStylistPopup] = useState(false);
-
     const [selectedAppointmentID, setSelectedAppointmentID] = useState<string | null>(null);
-
     const [dashboardBookingListData, setDashboardBookingListData] = useState<DashBoardDataProps[]>([]);
     const [beauticiansListData, setBeauticiansListData] = useState<BeauticiansDataProps[]>([]);
     const [selectedStylist, setSelectedStylist] = useState<BeauticiansDataProps | null>(null);
     const [selectedStylists, setSelectedStylists] = useState<{ [key: number]: any }>({});
-
-
-    // const [sortOrder, setSortOrder] = useState<string>("desc");
-
     const [loading, setLoading] = useState<boolean>(false);
-    // const [error, setError] = useState<string | null>(null);
-    // const [isAccepted, setIsAccepted] = useState(false);
     const [acceptedAppointments, setAcceptedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
     const [declinedAppointments, setDeclinedAppointments] = useState<{ [key: number]: boolean }>({}); // Track accepted states by ID
-
     const [stylistError, setStylistError] = useState<{ [key: number]: string; }>({});  // Key is appointment ID, value is the error message
-
     const [showWalletPopup, setShowWalletPopup] = useState<boolean>(false);
-
     const openWalletPopup = () => {
         setShowWalletPopup(true);
     }
@@ -129,65 +70,21 @@ export const DashBoardData = () => {
         setShowWalletPopup(false);
     }
 
-    // handle onChange event of the dropdown
-    // const handleStylistOption = (option: SingleValue<StylistOption>) => {
-    //     setSelectedStylistOption(option);
-
-    //     // Open Stylist Popup
-    //     setShowStylistPopup(true);
-    // };
-    // const handleStylistOption = (selectedOption: { value: number; text: string; icon: string }) => {
-    //     // setSelectedStylistOption(); // Optional: Save selected option in state
-
-    //     // Open Stylist Popup
-    //     // setShowStylistPopup(true); 
-
-    //     // Access the beautician ID
-    //     const selectedBeauticianId = selectedOption.value;
-
-    //     console.log("Selected Beautician ID:", selectedBeauticianId);
-
-    // };
-
-
-    // Handle change events for the Select component
-    // const handleStylistOption = (newValue: SingleValue<StylistOption>) => {
-    //     if (newValue) {
-    //         // Access the beautician ID
-    //         const selectedBeauticianId = newValue.value;
-
-    //         console.log("Selected Beautician ID:", selectedBeauticianId);
-
-    //         // Perform additional actions, e.g., opening a popup or saving the state
-    //         // setShowStylistPopup(true); // Example
-    //     } else {
-    //         console.log("No option selected.");
-    //     }
-    // };
-
     const handleStylistOption = (newValue: SingleValue<StylistOption>, appointmentID: number) => {
         if (newValue) {
             const selectedBeautician = beauticiansListData.find(
                 (beautician) => beautician.staff === newValue.value
             );
-
-            console.log("Selected Beautician Data log:", selectedBeautician);
-            console.log("Selected Beautician ID:", selectedBeautician?.staff);
-
-
             if (selectedBeautician) {
                 setSelectedStylist(selectedBeautician);
                 setShowStylistPopup(true);
-
                 // Setting Stylist value to the selected beautician
                 setSelectedStylists((prevState) => ({
                     ...prevState,
                     [appointmentID]: selectedBeautician,
                 }));
-
                 // Save the selected stylist in sessionStorage
                 sessionStorage.setItem(`selectedStylist_${appointmentID}`, JSON.stringify(selectedBeautician));
-
                 // Clear the error for the selected appointment
                 setStylistError((prevState) => {
                     const newState = { ...prevState };
@@ -203,17 +100,14 @@ export const DashBoardData = () => {
     // Function handler for storing the stylist data in the session storage
     useEffect(() => {
         const updatedStylists = { ...selectedStylists };
-
         dashboardBookingListData.forEach((dashboardData) => {
             const storedStylist = sessionStorage.getItem(`selectedStylist_${dashboardData.appointment_id}`);
             if (storedStylist) {
                 updatedStylists[dashboardData.appointment_id] = JSON.parse(storedStylist);
             }
         });
-
         setSelectedStylists(updatedStylists);
     }, [dashboardBookingListData]);
-
 
     const openDenialPopup = (appointmentID: string) => {
         setSelectedAppointmentID(appointmentID);
@@ -224,82 +118,56 @@ export const DashBoardData = () => {
         setShowDenialPopup(false);
         setSelectedAppointmentID(null);
     };
-
-
-    // const openStylistPopup = () => {
-    //   setShowStylistPopup(true);
-    // }
-
     const closeStylistPopup = () => {
         setShowStylistPopup(false);
     }
 
-
     // Function Handler for loading appointment data
     useEffect(() => {
-        const loadBookingList = async () => {
-            setLoading(true);
-            // setError(null);
+        getData();
+    }, []);
 
-            // Login Provider ID
-            const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-            console.log("Login Provider ID from session storage", sessionLoginProviderID);
+    const getData = async () => {
+        await Promise.all([
+            loadBookingList(),
+            loadStylistList()
+        ]);
+    }
 
-            try {
-                const data = await dashBoardBookingList(
-                    Number(sessionLoginProviderID),
-                    //  sortOrder
-                );
-
-                const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
-
-                // const data = await dashBoardBookingList(Number(3));
-                setDashboardBookingListData(data.bookings || []);    // Fallback to an empty array if data is null
-                setBeauticiansListData(beauticiansData.data);
-
-                console.log("Booking list data log:", data);
-                console.log("Beauticians list data log:", beauticiansData.data);
-
-
-            } catch (error: any) {
-                // setError(error.message || 'Failed to fetch staff list');
-                NotifyError(error.message || 'Failed to fetch staff list');
-            } finally {
-                setLoading(false); // Ensure loading is false after fetching
-            }
+    const loadBookingList = async () => {
+        setLoading(true);
+        // Login Provider ID
+        const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+        try {
+            const data = await dashBoardBookingList(
+                Number(sessionLoginProviderID),
+            );
+            // const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+            setDashboardBookingListData(data.bookings || []);    // Fallback to an empty array if data is null
+            // setBeauticiansListData(beauticiansData.data);
+        } catch (error: any) {
+            // setError(error.message || 'Failed to fetch staff list');
+            NotifyError(error.message || 'Failed to fetch staff list');
+        } finally {
+            setLoading(false); // Ensure loading is false after fetching
         }
-        loadBookingList();
-    }, [
-        // sortOrder
-    ]);
+    }
 
+    const loadStylistList = async () => {
+        setLoading(true);
+        // Login Provider ID
+        const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+        try {
+            const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+            setBeauticiansListData(beauticiansData.data);
+        } catch (error: any) {
+            // setError(error.message || 'Failed to fetch staff list');
+            NotifyError(error.message || 'Failed to fetch staff list');
+        } finally {
+            setLoading(false); // Ensure loading is false after fetching
+        }
 
-    // Handle Sort Change
-    // const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     setSortOrder(event.target.value); // Update sort order based on dropdown value
-    // };
-
-    // Local Sorting Function
-    // const sortBookings = (data: any[], order: string) => {
-    //     return [...data].sort((a, b) => {
-    //         if (order === "asc") {
-    //             return a.user_name.localeCompare(b.user_name);
-    //         }
-    //         return b.user_name.localeCompare(a.user_name);
-    //     });
-    // };
-
-    // Apply Local Sorting on Data Change
-    // useEffect(() => {
-    //     const sortedData = sortBookings(dashboardBookingListData, sortOrder);
-    //     setDashboardBookingListData(sortedData); // Update with sorted data
-    // }, [sortOrder]); // Only sort when sortOrder changes
-
-
-    // Available Credits
-    // const sessionWalletPoints = Number(sessionStorage.getItem("walletPoints"));
-    // console.log("Wallet Points from session storage", sessionWalletPoints);
-
+    }
     const handleActionSubmit = async (appointmentID: number, stylistID: number, actionID: number,) => {
 
         // Check if stylist is selected
@@ -311,40 +179,9 @@ export const DashBoardData = () => {
             }));
             return; // Prevent further execution if no stylist is selected
         }
-
-        // Check if wallet points are below the minimum threshold
-        // if (sessionWalletPoints <= 1000) {
-        //     openWalletPopup(); // Trigger wallet popup
-        //     return; // Stop further execution
-        // }
-
-        // Fetch updated wallet points dynamically from session storage
-        // const updatedWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
-
-        // Validate wallet points for this specific appointment
-        // if (updatedWalletPoints < 1000) {
-        //     openWalletPopup(); // Trigger wallet popup
-        //     return; // Stop execution
-        // }
-
-
         setLoading(true);
-        // setError(null);
-
         try {
             const data = await bookingAction(appointmentID, stylistID, actionID);
-            // if (data.status === "success") {
-            //     // alert("Appointment accepted successfully");
-            //     // setIsAccepted(true);
-            //     setAcceptedAppointments((prevState) => ({
-            //         ...prevState,
-            //         [appointmentID]: true, // Mark this appointment as accepted
-            //     }));
-
-            //     setDeclinedAppointments()
-            //     // navigate(0);
-            // }
-
             if (data.status === "success") {
                 if (actionID === 1) { // Action for Accept
                     setAcceptedAppointments((prevState) => ({
@@ -374,118 +211,16 @@ export const DashBoardData = () => {
                     }));
                 }
             }
-
-            console.log("Booking Action data log:", data);
-
-            // Re-check wallet balance after booking action
-            // const newWalletPoints = Number(sessionStorage.getItem("walletPoints")) || 1000;
-            // if (newWalletPoints < 1000) {
-            //     openWalletPopup(); // Trigger wallet popup if balance drops below 1000
-            // }
-
         } catch (error: any) {
-            // console.error("Error in handle Action Submit:", error);
-            // setError(error.message || 'An error occurred while processing your request.');
-
-            // alert(error.message || "Something went wrong. Please try again.");
-
-            // openWalletPopup(); // Trigger wallet popup if balance drops below 1000
-
-            // **Clear the stylist from the state after acceptance**
-            // setSelectedStylists((prevState) => {
-            //     const newState = { ...prevState };
-            //     delete newState[appointmentID];
-            //     return newState;
-            // });
-
             // setError(error.message || 'An error occurred while processing your request.');
             NotifyError(error.message || 'An error occurred while processing your request.');
-            console.error("Error in handle Action Submit:", error);
-
-            if (error.response?.status === 403) {
-                // Handle 403 Forbidden error
-                // For example, you can redirect the user to a login page or display an error message
+            if (error.message === "You don't have the minimum amount in your wallet to perform this action.") {
                 openWalletPopup();
             }
-
-            // alert(error.message || "Something went wrong. Please try again.");
-
-            // openWalletPopup(); // Trigger wallet popup if balance drops below 1000
-
-            // **Clear the stylist from the state after acceptance**
-            // setSelectedStylists((prevState) => {
-            //     const newState = { ...prevState };
-            //     delete newState[appointmentID];
-            //     return newState;
-            // });
-
-            // **Trigger wallet popup only for insufficient balance errors**
-            // if (error.response?.status === 403 || error.message.includes("minimum")) {
-            //     openWalletPopup();
-            // }
-
-            // // **Clear the stylist selection from the state**
-            // setSelectedStylists((prevState) => {
-            //     const newState = { ...prevState };
-            //     delete newState[appointmentID];
-            //     return newState;
-            // });
-
-            // // Clear the stylist error in case it was previously set
-            // setStylistError((prevState) => {
-            //     const newState = { ...prevState };
-            //     delete newState[appointmentID];
-            //     return newState;
-            // });
-
-
         } finally {
             setLoading(false); // Ensure loading is false after fetching
         }
     }
-
-    // const handleActionSubmit = async (appointmentID: number, actionID: number) => {
-    //     setLoading(true);
-    //     setError(null);
-
-    //     try {
-    //         const data = await bookingAction(appointmentID, actionID); // Await the API call
-    //         console.log("Booking Action data log:", data);
-
-    //         if (data.status === "success") {
-    //             console.log("Booking action succeeded:", data.message);
-    //             navigate(0); // Reload the page or trigger desired behavior
-    //         } else {
-    //             console.error("Booking action failed:", data.message || "Unknown error.");
-    //             setError(data.message || "Action failed. Please try again.");
-    //         }
-    //     } catch (error: any) {
-    //         setError(error.message || "An error occurred while performing the action.");
-    //         console.error("Error in handleActionSubmit:", error.message);
-    //     } finally {
-    //         setLoading(false); // Ensure loading is false after the process
-    //     }
-    // };
-
-
-    // if (loading) return <div>Loading...</div>;
-    // if (loading) return <div>
-    //     <div>
-    //         <ShimmerTable
-    //             mode="light"
-    //             row={2}
-    //             col={4}
-    //             border={1}
-    //             borderColor={"#cbd5e1"}
-    //             rounded={0.25}
-    //             rowGap={16}
-    //             colPadding={[15, 5, 15, 5]}
-    //         />
-    //     </div>
-    // </div>;
-
-    // if (error) return <div>{error}</div>;
-
 
     return (
         <div>
@@ -495,70 +230,17 @@ export const DashBoardData = () => {
                     <div>
                         <h5 className="text-3xl font-semibold">Dashboard</h5>
                     </div>
-
                     <div>
                         {/* Sort */}
                         <div>
-                            {/* <label
-                                htmlFor="sort"
-                                className="text-md text-mindfulBlack font-semibold mb-1"
-                            >
-                                Sort
-                            </label> */}
-
-
                         </div>
-                        {/* <select
-                            id="sort"
-                            value={sortOrder}
-                            onChange={handleSortChange} // Trigger sort logic
-                            className="w-72 rounded-sm border-2 border-mindfulgrey px-2 py-1.5 focus:outline-none"
-                        >
-                            <option value="asc">A-Z</option>
-                            <option value="desc">Z-A</option>
-                        </select> */}
                     </div>
                 </div>
             </div>
-
-
-
             {/* Charts & Booking Table */}
-            {/* <div className="grid grid-cols-3 gap-5"> */}
             <div className="grid grid-cols-1 gap-5">
-
-                {/* Grid Column One -- --> Charts  */}
-                {/* <div>
-                    <div>
-                        <h5 className="text-lg font-semibold py-5">Overview</h5>
-                    </div>
-
-
-                    <div>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-2 py-2">
-                                <AreaChart />
-                            </div>
-
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-2 py-2">
-                                <BarChart />
-                            </div>
-
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-2 py-2">
-                                <RangeChart />
-                            </div>
-
-                            <div className="border-[1px] border-mindfulgrey rounded-md px-2 py-2">
-                                <BarChart />
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
-
                 {/* Grid Column Two -- --> Booking Table  */}
                 <div className="col-span-2">
-
                     <div className="flex items-center justify-between">
                         <div>
                             <h5 className="text-lg text-mindfulBlack font-semibold py-5">Bookings</h5>
@@ -571,7 +253,7 @@ export const DashBoardData = () => {
                         </div>
                     </div>
 
-                    <div>
+                    <div className="max-xl:overflow-x-scroll">
                         <table className="w-full border-[1px] rounded-lg px-2 py-2">
                             <thead className="bg-mindfulLightgrey border-b-[1px]">
                                 <tr className="">
@@ -589,10 +271,6 @@ export const DashBoardData = () => {
 
                             <tbody>
                                 {/* Heading */}
-                                {/* <tr>
-                            <th colSpan={4} className="bg-mindfulLightgrey text-start px-2 py-4">Heading 1</th>
-                        </tr> */}
-
                                 {/* Content & Checkbox */}
                                 {loading ? (
                                     <tr>
@@ -609,13 +287,6 @@ export const DashBoardData = () => {
                                             />
                                         </td>
                                     </tr>
-                                    // ) : error ? (
-                                    //     /* Error State */
-                                    //     <tr>
-                                    //         <td colSpan={9} className="text-center text-red-600 py-5">
-                                    //             Error: {error}
-                                    //         </td>
-                                    //     </tr>
                                 ) : (
                                     dashboardBookingListData.length > 0 ? (
                                         dashboardBookingListData.map((dashboardData) => (
@@ -635,13 +306,6 @@ export const DashBoardData = () => {
                                                         ))}
                                                     </ul>
                                                 </td>
-                                                {/* <td className="text-start px-2 py-5">
-                                                    <ul>
-                                                        <li>Eyesbrows Threading</li>
-                                                        <li>Forehead Threading</li>
-                                                    </ul>
-                                                </td> */}
-
                                                 <td className="text-start px-2 py-5">
                                                     {/* Stylist Select Field */}
                                                     <div>
@@ -684,40 +348,6 @@ export const DashBoardData = () => {
                                                     <div className="space-y-3">
 
                                                         <div>
-
-                                                            {/* <Button
-                                                                onClick={() =>
-                                                                    !isAccepted &&
-                                                                    handleActionSubmit(
-                                                                        Number(dashboardData.appointment_id),
-                                                                        1,
-                                                                        // setIsAccepted,
-                                                                        // setLoading,
-                                                                        // setError,
-                                                                        // navigate
-                                                                    )
-                                                                }
-                                                                buttonType="button"
-                                                                buttonTitle={
-                                                                    isAccepted
-                                                                        ? "Accepted" // Display "Accepted" if the action was successful
-                                                                        : loading
-                                                                            ? "Accepting..." // Show loading text while the request is being processed
-                                                                            : "Accept" // Default text
-                                                                }
-                                                                className={`w-24 text-md ${isAccepted ? "text-gray-400 cursor-not-allowed" : "text-mindfulGreen"
-                                                                    } font-semibold border-[1px] ${isAccepted ? "border-gray-400" : "border-mindfulGreen"
-                                                                    } rounded-[5px] px-3 py-1`}
-                                                                disabled={loading || isAccepted} // Disable button if loading or already accepted
-                                                            /> */}
-
-                                                            {/* <Button
-                                                                onClick={() => handleActionSubmit(Number(dashboardData.appointment_id), 1)}
-                                                                buttonType="button"
-                                                                buttonTitle={isAccepted ? "Accepted" : "Accept"}
-                                                                className="w-24 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                            /> */}
-
                                                             <Button
                                                                 onClick={() =>
                                                                     !acceptedAppointments[dashboardData.appointment_id] &&
@@ -732,15 +362,6 @@ export const DashBoardData = () => {
 
 
                                                         </div>
-
-                                                        {/* <div>
-                                                            <Button
-                                                                onClick={openDenialPopup}
-                                                                buttonType="button"
-                                                                buttonTitle="Deny"
-                                                                className="w-24 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                            />
-                                                        </div> */}
                                                         {!acceptedAppointments[dashboardData.appointment_id] && (
                                                             <div>
                                                                 <Button
@@ -749,17 +370,6 @@ export const DashBoardData = () => {
                                                                     buttonTitle="Decline"
                                                                     className="w-24 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
                                                                 />
-
-                                                                {/* <Button
-                                                                    onClick={() =>
-                                                                        !declinedAppointments[dashboardData.appointment_id] &&
-                                                                        handleActionSubmit(dashboardData.appointment_id, dashboardData.stylist_id, 2)
-                                                                    }
-                                                                    buttonType="button"
-                                                                    buttonTitle={declinedAppointments[dashboardData.appointment_id] ? "Declined" : loading ? "Declining..." : "Decline"}
-                                                                    className={`w-24 text-md ${declinedAppointments[dashboardData.appointment_id] ? "text-gray-400 cursor-not-allowed" : "text-mindfulRed"} font-semibold border-[1px] ${declinedAppointments[dashboardData.appointment_id] ? "border-gray-400" : "border-mindfulRed"} rounded-[5px] px-3 py-1`}
-                                                                    disabled={loading || declinedAppointments[dashboardData.appointment_id] || acceptedAppointments[dashboardData.appointment_id]} // Disable if accepted or already declined
-                                                                /> */}
                                                             </div>
                                                         )}
 
@@ -776,218 +386,6 @@ export const DashBoardData = () => {
                                         </tr>
                                     )
                                 )}
-
-
-
-
-                                {/* <tr className="border-b-2 pb-2">
-                                    <td className="px-2 py-5">BK023</td>
-                                    <td className="text-start px-2 py-5">18-08-2024</td>
-                                    <td className="text-start px-2 py-5">10.00</td>
-                                    <td className="text-start px-2 py-5">Shenoys</td>
-                                    <td className="text-start px-2 py-5">Ramya</td>
-                                    <td className="text-start px-2 py-5">1234567890</td>
-                                    <td className="text-start px-2 py-5">
-                                        <ul>
-                                            <li>Eyesbrows Threading</li>
-                                            <li>Forehead Threading</li>
-                                        </ul>
-                                    </td>
-
-                                    <td className="text-start px-2 py-5">
-                                        Branch Select Field
-                                        <div>
-                                            <SelectField
-                                                onChange={openStylistPopup}
-                                                label=""
-                                                name="branch"
-                                                // required
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                options={[
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                ]}
-                                            // error="This field is required."
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                formatOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            {selectedStylistOption && (
-                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                                                    <b>Selected Option:</b> {selectedStylistOption.text}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td className="text-center px-2 py-5">
-                                        <div className="space-y-3">
-
-                                            <div>
-                                                <Button
-                                                    buttonType="button"
-                                                    buttonTitle="Accept"
-                                                    className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Deny"
-                                                    className="w-20 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Decline"
-                                                    className="w-20 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-                                        </div>
-                                    </td>
-
-
-                                </tr> */}
-
-
-                                {/* Content & Checkbox */}
-                                {/* <tr className="border-b-2 pb-2">
-                                    <td className="px-2 py-5">BK023</td>
-                                    <td className="text-start px-2 py-5">18-08-2024</td>
-                                    <td className="text-start px-2 py-5">10.00</td>
-                                    <td className="text-start px-2 py-5">Shenoys</td>
-                                    <td className="text-start px-2 py-5">Ramya</td>
-                                    <td className="text-start px-2 py-5">1234567890</td>
-                                    <td className="text-start px-2 py-5">
-                                        <ul>
-                                            <li>Eyesbrows Threading</li>
-                                            <li>Forehead Threading</li>
-                                        </ul>
-                                    </td>
-
-                                    <td className="text-start px-2 py-5">
-                                        Branch Select Field
-                                        <div>
-                                            <SelectField
-                                                onChange={openStylistPopup}
-                                                label=""
-                                                name="branch"
-                                                // required
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                options={[
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                    { value: "swetha", label: "Swetha" },
-                                                ]}
-                                            // error="This field is required."
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            <Select
-                                                placeholder="Select Option"
-                                                value={selectedStylistOption}
-                                                options={stylistData}
-                                                onChange={handleStylistOption}
-                                                getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                formatOptionLabel={(option) => (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <img src={option.icon} alt={option.text} style={{ width: 16, height: 16 }} />
-                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                    </div>
-                                                )}
-                                                getOptionValue={(option) => option.value.toString()}
-                                            />
-
-                                            {selectedStylistOption && (
-                                                <div style={{ marginTop: 20, lineHeight: '25px' }}>
-                                                    <b>Selected Option:</b> {selectedStylistOption.text}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td className="text-center px-2 py-5">
-                                        <div className="space-y-3">
-
-                                            <div>
-                                                <Button
-                                                    buttonType="button"
-                                                    buttonTitle="Accept"
-                                                    className="w-20 text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Deny"
-                                                    className="w-20 text-md text-mindfulBlue font-semibold border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Button
-                                                    onClick={openDenialPopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Decline"
-                                                    className="w-20 text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-[5px] px-3 py-1"
-                                                />
-                                            </div>
-                                        </div>
-                                    </td>
-
-
-                                </tr> */}
-
                             </tbody>
                         </table>
                     </div>
@@ -1004,9 +402,8 @@ export const DashBoardData = () => {
             )}
 
 
-            {showWalletPopup && <WalletPopup
-                closePopup={closeWalletPopup}
-                // errorMessage={error}
+            {showWalletPopup && <WalletPopup closePopup={closeWalletPopup}
+            // errorMessage={error}
             />}
 
         </div>

@@ -181,9 +181,9 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
         <div>
             <div>
                 <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="container mx-auto">
+                    {/* <div className="container mx-auto"> */}
 
-                        <div className="relative bg-white rounded-[5px] w-4/12 mx-auto px-5 py-5">
+                        <div className="relative bg-white rounded-[5px] w-4/12 mx-auto px-5 py-5 my-5 max-2xl:overflow-y-auto max-2xl:h-[75%]">
 
 
                             <div className="relative mb-10">
@@ -324,7 +324,7 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
 
 
                                                 {/* Upload Photo */}
-                                                <div className="flex items-end justify-between">
+                                                <div className="flex items-end justify-between max-2xl:flex-wrap max-2xl:gap-2">
 
                                                     <div>
 
@@ -351,7 +351,7 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                                                             <div className="">
                                                                 <label
                                                                     htmlFor="upload-photo"
-                                                                    className="w-72 mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                                    className="w-72 mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer max-2xl:w-auto"
                                                                 >
 
                                                                     <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
@@ -402,7 +402,7 @@ export const EditStaffPopup: React.FC<EditStaffPopupProps> = ({ closePopup, edit
                         </div>
                     </div>
                 </div>
-            </div>
+            {/* </div> */}
         </div>
     )
 }

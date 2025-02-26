@@ -6,7 +6,8 @@ import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { generalInfo, googleMapApi } from "@/api/apiConfig";
+import { googleMapApi } from "@/api/apiConfig";
+import { MdCloudUpload } from "react-icons/md";
 
 
 // Define Zod schema for validation
@@ -44,6 +45,17 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
     const sessionProviderID = sessionStorage.getItem("providerID");
     console.log("Selected Provider ID from session storage", sessionProviderID);
 
+
+
+    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certifications: null });
+
+    // File change handler
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
+        const file = event.target.files?.[0];         // Optional chaining to check if files exist
+        if (file) {
+            setSelectedFile((prev => ({ ...prev, [fileKey]: file })))
+        }
+    }
 
 
     // React Hook Form setup with Zod validation
@@ -506,6 +518,55 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                     {...register("cancellationPolicy")}
 
                                                 ></textarea>
+                                            </div>
+
+                                            {/* File Upload Area */}
+                                            <div>
+                                                <label
+                                                    htmlFor="upload-photo1"
+                                                    className="text-lg text-mindfulBlack">
+                                                    Provider Image
+                                                </label>
+
+                                                <div className="flex items-center space-x-5">
+
+                                                    <div>
+                                                        <div className="w-64">
+
+                                                            <label
+                                                                htmlFor="upload-photo1"
+                                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                            >
+                                                                {/* File Upload Icon */}
+                                                                {/* <div>
+                                                                                                            <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                                                        </div> */}
+                                                                <span className="text-md text-mindfulBlack">
+                                                                    {selectedFile["certifications"]?.name || 'Upload certification files here'}
+                                                                </span>
+                                                            </label>
+
+                                                            <input
+                                                                id="upload-photo1"
+                                                                type="file"
+                                                                accept="image/*"
+                                                                onChange={(e) => handleFileChange(e, "certifications")}
+                                                                className="hidden"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            htmlFor="upload-photo1"
+                                                            className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                        >
+                                                            <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                            Upload Files
+                                                        </label>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                         </div>

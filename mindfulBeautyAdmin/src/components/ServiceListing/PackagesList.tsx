@@ -251,7 +251,7 @@ export const PackagesList = () => {
                         </div>
 
                         {/* Select, Add Service & Search */}
-                        <div className="flex items-center space-x-5">
+                        <div className="flex items-center space-x-5 ">
 
                             {/* Branch Select Field */}
                             <div>
@@ -324,7 +324,7 @@ export const PackagesList = () => {
 
                     </div>
 
-                    <div>
+                    <div className="my-5 2xl:overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-mindfulLightgrey">
                                 <tr className="">
@@ -483,12 +483,16 @@ export const PackagesList = () => {
                                                 <td className="text-start px-2 py-5">
                                                     <div className="flex items-center space-x-5">
                                                         <button
+                                                        className="flex-shrink-0"
                                                             onClick={() => openEditPackagesPopup(packageData.service_id)}
                                                         // onClick={openEditPackagesPopup}
                                                         >
                                                             <img src={editButton} alt="Edit" />
                                                         </button>
-                                                        <button onClick={() => openDeletePackagePopup(packageData.service_id)}>
+                                                        <button
+                                                        className="flex-shrink-0"
+                                                        
+                                                        onClick={() => openDeletePackagePopup(packageData.service_id)}>
                                                             <img src={deleteButton} alt="Delete" />
                                                         </button>
                                                     </div>

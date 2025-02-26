@@ -210,7 +210,7 @@ export const SalesTransactionsTable: React.FC = () => {
                                 <fieldset className="border-2 border-main rounded-[5px] px-5 py-5">
                                     <legend className="text-lg text-main font-semibold px-2">Search</legend>
                                     {/* <div className="border-2 border-main rounded-[5px] px-5 py-5"> */}
-                                    <div className="flex items-end space-x-10">
+                                    <div className="flex items-end space-x-10 2xl:flex-wrap 2xl:gap-4 2xl:space-x-0">
                                         {/* Order ID */}
                                         <div>
                                             <label

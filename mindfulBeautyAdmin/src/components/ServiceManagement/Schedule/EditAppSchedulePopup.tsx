@@ -309,9 +309,9 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
         <div>
             <div>
                 <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="container mx-auto">
+                    {/* <div className="container mx-auto"> */}
 
-                        <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10">
+                        <div className="relative bg-white rounded-[5px] w-7/12  mx-auto px-10 py-10 my-5 max-2xl:overflow-y-auto max-2xl:h-[75%]">
 
 
                             <div className="relative mb-10">
@@ -625,7 +625,7 @@ export const EditAppSchedulePopup: React.FC<EditAppointmentPopupProps> = ({ clos
                         </div>
                     </div>
                 </div>
-            </div>
+            {/* </div> */}
         </div>
     )
 }

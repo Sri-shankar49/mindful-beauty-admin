@@ -141,7 +141,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
             </div> */}
 
 
-            <div className="grid grid-cols-4 gap-5">
+            <div className="grid grid-cols-4 gap-5 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
                 {/* Show loading shimmer when data is being fetched */}
                 {loading && (
                     <div className="col-span-4">

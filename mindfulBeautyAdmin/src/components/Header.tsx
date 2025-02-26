@@ -94,13 +94,13 @@ export const Header = () => {
         <header>
 
             <div className="backdrop-blur-lg bg-opacity-100 shadow-md px-10 py-5">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center max-2xl:flex-wrap max-2xl:gap-x-10 max-2xl:justify-between">
                     {/* Admin Logo */}
-                    <div className="flex justify-center items-center space-x-3">
+                    <div className="flex justify-center items-center space-x-3 max-2xl:order-1">
                         {/* Mindful Beauty Logo */}
                         <Link to="/Dashboard">
                             <div>
-                                <img src={mindfulBeautyLogoSmall} alt="mindful beauty logo" />
+                                <img src={mindfulBeautyLogoSmall} alt="mindful beauty logo" className="object-contain w-20 max-2xl:w-32 max-2xl:h-20 " />
                             </div>
                         </Link>
 
@@ -109,21 +109,21 @@ export const Header = () => {
 
                         {/* Astamudi Wellness Logo */}
                         <div>
-                            <img src={ashtamudiLogo} alt="ashtamudi logo" />
+                            <img src={ashtamudiLogo} alt="ashtamudi logo" className="object-contain w-20 max-2xl:w-32 max-2xl:h-20 " />
                         </div>
                     </div>
 
                     {/* Navbar Menu */}
-                    <div>
+                    <div className="max-2xl:order-3 max-2xl:mx-auto">
                         <nav className="">
-                            <ul className="flex items-center space-x-10">
+                            <ul className="flex items-center space-x-10 2xl:space-x-5 max-2xl:space-x-5">
 
                                 {/* Dashboard */}
 
                                 {permissions?.dashboard == true && (
                                     <NavLink
                                         to="/Dashboard"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5 "
                                         aria-current="page"
                                     >
                                         <li className="text-md">Dashboard</li>
@@ -133,7 +133,7 @@ export const Header = () => {
                                 {permissions?.manage_role == true && (
                                     <NavLink
                                         to="/ManageRole"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5 "
                                         aria-current="page"
                                     >
                                         <li className="text-md">Manage Role</li>
@@ -144,7 +144,7 @@ export const Header = () => {
                                 {permissions?.service_listing == true && (
                                     <NavLink
                                         to="/ServiceListing"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         aria-current="page"
                                     >
                                         <li className="text-md">Service Listing</li>
@@ -155,7 +155,7 @@ export const Header = () => {
                                 {permissions?.service_management == true && (
                                     <NavLink
                                         to="/ServiceManagement"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         aria-current="page"
                                     >
                                         <li className="text-md">Service Management</li>
@@ -166,7 +166,7 @@ export const Header = () => {
                                 {permissions?.sales_transactions == true && (
                                     <NavLink
                                         to="/SalesTransactions"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         aria-current="page"
                                     >
                                         <li className="text-md">Sales & Transactions</li>
@@ -177,7 +177,7 @@ export const Header = () => {
                                 {permissions?.ratings_reviews == true && (
                                     <NavLink
                                         to="/RatingsReviews"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         aria-current="page"
                                     >
                                         <li className="text-md">Ratings & Reviews</li>
@@ -188,7 +188,7 @@ export const Header = () => {
                                 {permissions?.reports == true && (
                                     <NavLink
                                         to="/Reports"
-                                        className="active-nav"
+                                        className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         aria-current="page"
                                     >
                                         <li className="text-md">Reports</li>
@@ -199,7 +199,7 @@ export const Header = () => {
                         </nav>
                     </div>
 
-                    <div className="flex items-center space-x-10">
+                    <div className="flex items-center space-x-10 2xl:space-x-5 max-2xl:order-2">
 
                         <div className="flex items-center">
                             {/* Service Online */}
@@ -257,7 +257,7 @@ export const Header = () => {
                                         <Link
                                             to="/MyAccount"
                                             aria-current="page"
-                                        // className="active-nav"
+                                        // className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         >
                                             <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
                                                 My Account
