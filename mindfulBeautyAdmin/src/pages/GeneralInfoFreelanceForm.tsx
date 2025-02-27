@@ -26,6 +26,15 @@ const generalInfoFreelanceSchema = zod.object({
     certifications: zod.string().optional(),
     slots: zod.string().optional(),
     willingToWork: zod.string().optional(),
+    providerImage: zod.preprocess((val) => {
+        if (typeof val === "string" && val.trim() === "") return undefined;
+        return val;
+    },
+        zod.union([
+            zod.instanceof(File, { message: "Provider image is required" }),
+            zod.string().url({ message: "Provider image is required" })
+        ])
+    )
 });
 
 type GeneralInfoFreelanceFormData = zod.infer<typeof generalInfoFreelanceSchema>;
@@ -38,26 +47,110 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
     // const location = useLocation();
     // const registartionFormData = location.state; // Access the passed data
 
+    const navigate = useNavigate();
+
     const [willingToWork, setWillingToWork] = useState<number>(1);
 
-    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certifications: null });
+    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({
+        certifications: null,
+        image_url: null
+    });
+
+    const [imageName, setImageName] = useState<string | null>(null);
+    // const [certificationsName, setcertificationsName] = useState<string | null>(null);
+
 
     // File change handler
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
-        const file = event.target.files?.[0];         // Optional chaining to check if files exist
-        if (file) {
-            setSelectedFile((prev => ({ ...prev, [fileKey]: file })))
-        }
-    }
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
+    //     const file = event.target.files?.[0];         // Optional chaining to check if files exist
+    //     if (file) {
+    //         setSelectedFile((prev => ({ ...prev, [fileKey]: file })))
+    //     }
+    // }
 
-    const navigate = useNavigate();
+
+
+    // Retrieve the Provider Image file
+    useEffect(() => {
+        const storedImageName = sessionStorage.getItem("providerImage");
+        if (storedImageName) {
+            setImageName(storedImageName);
+
+            // Retrieve the Blob URL and create a new File object
+            const storedImageBase64 = sessionStorage.getItem("providerImageBase64");
+
+            if (storedImageName && storedImageBase64) {
+                setImageName(storedImageName);
+                // Convert the Base64 string back into a File object
+                fetch(storedImageBase64)
+                    .then((response) => response.blob())
+                    .then((blob) => {
+                        const file = new File([blob], storedImageName, { type: blob.type });
+                        setSelectedFile({ image_url: file });
+                        setValue("providerImage", file);
+                    })
+                    .catch((error) => {
+                        console.error("Error converting Base64 to File:", error);
+                    });
+            }
+        }
+        // Retrieve the certifications file
+        const storedCertificationName = sessionStorage.getItem("certifications");
+        if (storedCertificationName) {
+            const storedCertificationBlobUrl = sessionStorage.getItem(
+                "certificationFileUrl"
+            );
+            if (storedCertificationBlobUrl) {
+                fetch(storedCertificationBlobUrl)
+                    .then((response) => response.blob())
+                    .then((blob) => {
+                        const file = new File([blob], storedCertificationName); // Create a new File object
+                        setSelectedFile((prev) => ({ ...prev, certifications: file }));
+                    });
+            }
+        }
+    }, []);
+
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
+        const file = event.target.files?.[0]; // Optional chaining to check if files exist
+        if (file) {
+            setSelectedFile((prev) => ({ ...prev, [fileKey]: file }));
+            if (fileKey === "image_url") {
+                sessionStorage.setItem("providerImage", file.name);
+                const blobUrl = URL.createObjectURL(file);
+                sessionStorage.setItem("selectedFile", blobUrl); // Store the Blob URL
+                // Convert the file to a Base64 string and store it in sessionStorage
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64data = reader.result;
+                    if (typeof base64data === "string") {
+                        sessionStorage.setItem("providerImageBase64", base64data);
+                    }
+                };
+                reader.readAsDataURL(file);
+                setImageName(file.name); // Update the image name in state
+                setValue("providerImage", file);
+                clearErrors("providerImage"); // Clear validation error for providerImage
+            } else if (fileKey === "certifications") {
+                sessionStorage.setItem("certifications", file.name); // Store certification file name
+                const certificationBlobUrl = URL.createObjectURL(file);
+                sessionStorage.setItem("certificationFileUrl", certificationBlobUrl); // Store the certification Blob URL
+                // setcertificationsName(file.name); // Update the image name in state
+
+            }
+        }
+    };
+
+
+    // const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFreelanceFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<GeneralInfoFreelanceFormData>({
         resolver: zodResolver(generalInfoFreelanceSchema),
         defaultValues: {
             // fullName: registartionFormData.name || '',
@@ -74,7 +167,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
 
     const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-    const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const [selectedLocation, setSelectedLocation] = useState<string>();
 
     const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
     console.log(locationCoordinates, "Just logging the co-ordinates");
@@ -135,6 +228,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
                 // Optionally, store the full address in a separate state if needed
                 setSelectedLocation(fullAddress); // Store the full address instead of the description
+                setValue("location", fullAddress); // ✅ Update form field value
                 console.log("Latitude:", lat(), "Longitude:", lng());
             } else {
                 console.error("Geocoding failed:", status);
@@ -177,6 +271,12 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             formData.append("available_slots", data.slots || "");
             formData.append("willing_to_work_holidays", willingToWork.toString());
 
+            // Append latitude and longitude if available
+            if (locationCoordinates.lat !== null && locationCoordinates.lng !== null) {
+                formData.append("latitude", locationCoordinates.lat.toString());
+                formData.append("longitude", locationCoordinates.lng.toString());
+            }
+
             // Append optional fields if they exist
             // if (data.certifications) {
             //     formData.append("certifications", data.certifications);
@@ -202,7 +302,9 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             console.log("General Info Freelance Data:", generalInfoFreelanceData);
 
             // Navigate to the next step
-            navigate("/BankAccInfoForm");
+            // navigate("/BankAccInfoForm");
+            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+
         }
 
         catch (error: any) {
@@ -513,7 +615,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                     Certifications
                                                 </label>
 
-                                                <div className="flex items-center space-x-5">
+                                                <div className="flex items-start space-x-5">
 
                                                     <div>
                                                         <div className="w-64">
@@ -552,12 +654,6 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                     </div>
                                                 </div>
 
-                                                <div>
-                                                    <p className="text-sm text-mindfulgrey pt-2">
-                                                        <span className="text-main">* </span>
-                                                        Fields are mandatory
-                                                    </p>
-                                                </div>
                                             </div>
 
                                             {/* How many slots are you willing to take per month? */}
@@ -631,6 +727,69 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                 </div>
                                             </div>
 
+                                            {/* File Upload Area */}
+                                            <div>
+                                                <label
+                                                    htmlFor="providerImage"
+                                                    className="text-lg text-mindfulBlack">
+                                                    Provider Image <span className="text-main">*</span>
+                                                </label>
+
+                                                <div className="flex items-start space-x-5">
+
+                                                    <div>
+                                                        <div className="w-64">
+
+                                                            <label
+                                                                htmlFor="providerImage"
+                                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                            >
+                                                                {/* File Upload Icon */}
+                                                                {/* <div>
+                                                                        <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                    </div> */}
+                                                                <span className="text-md text-mindfulBlack">
+                                                                    {/* {selectedFile["certifications"]?.name || 'Upload certification files here'} */}
+                                                                    {imageName || "Upload Salon logo here"}
+
+                                                                </span>
+                                                            </label>
+
+                                                            <input
+                                                                id="providerImage"
+                                                                type="file"
+                                                                accept="image/*"
+                                                                className="hidden"
+                                                                {...register("providerImage")}
+                                                                onChange={(e) => handleFileChange(e, "image_url")}
+                                                            />
+
+                                                            {errors.providerImage && (
+                                                                <p className="text-sm text-red-600">{errors.providerImage.message}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            htmlFor="providerImage"
+                                                            className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                        >
+                                                            <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                            Upload Files
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+
+                                                <div>
+                                                    <p className="text-sm text-mindfulgrey pt-2">
+                                                        <span className="text-main">* </span>
+                                                        Fields are mandatory
+                                                    </p>
+                                                </div>
+
+                                            </div>
                                         </div>
 
 

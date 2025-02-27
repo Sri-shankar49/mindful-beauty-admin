@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
@@ -23,14 +23,27 @@ type BankAccInfoFormData = zod.infer<typeof bankAccInfoSchema>;
 
 export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
+    const navigate = useNavigate();
+
+    const location = useLocation();
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const navigate = useNavigate();
+
+    // const handleBackButton = () => {
+    //     navigate("/GeneralInfoForm");
+    // }
 
     const handleBackButton = () => {
-        navigate("/GeneralInfoForm");
-    }
+        console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
+
+        if (location.state?.from === "GeneralInfoFreelanceForm") {
+            navigate("/GeneralInfoFreelanceForm");
+        } else {
+            navigate("/GeneralInfoForm");
+        }
+    };
 
 
 

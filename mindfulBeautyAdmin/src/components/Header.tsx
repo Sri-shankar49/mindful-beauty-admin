@@ -279,7 +279,7 @@ export const Header = () => {
                             {/* More Options */}
                             <div>
                                 {profileHover && (
-                                    <div className="absolute bottom-[-9.5rem] right-0 mt-2 w-48 bg-mindfulWhite rounded-md shadow-lg py-1 z-20">
+                                    <div className="absolute bottom-[-6.5rem] right-0 mt-2 w-48 bg-mindfulWhite rounded-md shadow-lg py-1 z-20">
                                         <Link
                                             to="/MyAccount"
                                             aria-current="page"
@@ -291,9 +291,9 @@ export const Header = () => {
                                         </Link>
 
                                         {/* <Link to=""> */}
-                                        <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
+                                        {/* <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
                                             Password Reset
-                                        </div>
+                                        </div> */}
                                         {/* </Link> */}
 
                                         {/* <Link to=""> */}

@@ -18,6 +18,7 @@ import { fetchBookingList, setCurrentPage, setLoading } from '@/redux/allbooking
 // import { EditAppAllBookingPopup } from "./EditAppAllBookingPopup";
 import { useNavigate } from "react-router-dom";
 import { NotifyError } from "@/common/Toast/ToastMessage";
+import { DenialPopup } from "../Dashboard/DashBoardData/DenialPopup";
 
 
 
@@ -107,6 +108,19 @@ export const AllBooking = () => {
   // State declaration for Stylist Popup
   const [showStylistPopup, setShowStylistPopup] = useState(false);
 
+  const [showDenialPopup, setShowDenialPopup] = useState(false);
+  const [selectedAppointmentID, setSelectedAppointmentID] = useState<string | null>(null);
+
+
+  const openDenialPopup = (appointmentID: string) => {
+    setSelectedAppointmentID(appointmentID);
+    setShowDenialPopup(true);
+  };
+
+  const closeDenialPopup = () => {
+    setShowDenialPopup(false);
+    setSelectedAppointmentID(null);
+  };
 
   // const openStylistPopup = () => {
   //   setShowStylistPopup(true);
@@ -367,6 +381,14 @@ export const AllBooking = () => {
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
+
+    // If the new status is "Cancelled", open the denial popup before proceeding
+    if (newStatusId === "4") {  // Assuming status_id "4" corresponds to "Cancelled"
+      openDenialPopup(appointmentID);
+      return; // Stop further execution until user confirms denial
+    }
+
+
     try {
       // setLoading(true);
 
@@ -915,6 +937,11 @@ export const AllBooking = () => {
       {showStylistPopup && selectedStylist && (
         <StylistPopup closePopup={closeStylistPopup} stylistDetails={selectedStylist} />
       )}
+
+      {showDenialPopup && selectedAppointmentID !== null && (
+        <DenialPopup closePopup={closeDenialPopup} appointmentID={selectedAppointmentID} />
+      )}
+
 
       {/* {showEditAppointmentPopup &&
         <EditAppAllBookingPopup

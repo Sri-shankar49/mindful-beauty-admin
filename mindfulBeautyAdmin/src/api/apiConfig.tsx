@@ -121,57 +121,99 @@ export const loginRegister = async (
 
 
 // General Information Form Page
-export const generalInfo = async (
-  ownerName: string,
-  salonName: string,
-  contactNumber: number,
-  emailAddress: string,
-  salonLocation: string,
-  establishedOn: string,
-  salonAddress: string,
-  servicesOffered: string,
-  businessHours: string,
-  staffInformation: string,
-  salonFacilities: string,
-  cancellationPolicy: string
-) => {
+// export const generalInfo = async (
+//   ownerName: string,
+//   salonName: string,
+//   contactNumber: number,
+//   emailAddress: string,
+//   salonLocation: string,
+//   establishedOn: string,
+//   salonAddress: string,
+//   servicesOffered: string,
+//   businessHours: string,
+//   staffInformation: string,
+//   salonFacilities: string,
+//   cancellationPolicy: string
+// ) => {
+//   try {
+
+//     // Registration Provider ID
+//     const sessionProviderID = sessionStorage.getItem("providerID");
+//     console.log("Selected Provider ID from session storage", sessionProviderID);
+
+//     const response = await apiAxios.post(`/provider-api/register_general_info/${sessionProviderID}/`, {
+
+//       // Add the required fields here
+//       owner_name: ownerName,
+//       salon_name: salonName,
+//       phone: contactNumber,
+//       email: emailAddress,
+//       saloon_location: salonLocation,
+//       established_on: establishedOn,
+//       saloon_address: salonAddress,
+//       services_offered: servicesOffered,
+//       working_hours: businessHours,
+//       staff_information: staffInformation,
+//       salon_facilities: salonFacilities,
+//       cancellation_policy: cancellationPolicy,
+//     });
+
+//     console.log("General Information response", response.data);
+
+//     if (!response.data || response.status !== 200) {
+//       throw new Error("Failed to register general information");
+//     }
+//     return response.data; // Adjust based on the actual response structure
+//   }
+
+//   catch (error: any) {
+//     console.error("Error registering general information:", error.message || error);
+//     throw new Error("Unable to register general information. Please try again later.");
+//   }
+
+// }
+
+
+
+
+// General Information Form Page
+export const generalInfo = async (formData: FormData) => {
+
   try {
+    // Debugging: Log the FormData contents
+    console.log("Sending the following FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
 
     // Registration Provider ID
     const sessionProviderID = sessionStorage.getItem("providerID");
     console.log("Selected Provider ID from session storage", sessionProviderID);
 
-    const response = await apiAxios.post(`/provider-api/register_general_info/${sessionProviderID}/`, {
+    const response = await apiAxios.post(`/provider-api/register_general_info/${sessionProviderID}/`, formData, {
 
-      // Add the required fields here
-      owner_name: ownerName,
-      salon_name: salonName,
-      phone: contactNumber,
-      email: emailAddress,
-      saloon_location: salonLocation,
-      established_on: establishedOn,
-      saloon_address: salonAddress,
-      services_offered: servicesOffered,
-      working_hours: businessHours,
-      staff_information: staffInformation,
-      salon_facilities: salonFacilities,
-      cancellation_policy: cancellationPolicy,
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensures the server recognizes file uploads
+      },
+
     });
 
-    console.log("General Information response", response.data);
+    console.log("General Information Salon response", response.data);
 
     if (!response.data || response.status !== 200) {
-      throw new Error("Failed to register general information");
+      throw new Error("Failed to register general Salon information");
     }
     return response.data; // Adjust based on the actual response structure
   }
 
   catch (error: any) {
-    console.error("Error registering general information:", error.message || error);
-    throw new Error("Unable to register general information. Please try again later.");
+    console.error("Error registering general Salon information:", error.message || error);
+    throw new Error("Unable to register general Salon information. Please try again later.");
   }
 
 }
+
+
 
 
 

@@ -24,6 +24,15 @@ const generalInfoSchema = zod.object({
     staffInformation: zod.string().optional(),
     salonFacilities: zod.string().optional(),
     cancellationPolicy: zod.string().optional(),
+    providerImage: zod.preprocess((val) => {
+        if (typeof val === "string" && val.trim() === "") return undefined;
+        return val;
+    },
+        zod.union([
+            zod.instanceof(File, { message: "Provider image is required" }),
+            zod.string().url({ message: "Provider image is required" })
+        ])
+    )
 });
 
 type GeneralInfoFormData = zod.infer<typeof generalInfoSchema>;
@@ -38,6 +47,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
     const navigate = useNavigate();
 
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -47,19 +57,66 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
 
 
-    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ certifications: null });
+    const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ image_url: null });
+
+    const [imageName, setImageName] = useState<string | null>(null);
+
 
     // File change handler
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
+    //     const file = event.target.files?.[0];         // Optional chaining to check if files exist
+    //     if (file) {
+    //         setSelectedFile((prev => ({ ...prev, [fileKey]: file })))
+    //     }
+    // }
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
-        const file = event.target.files?.[0];         // Optional chaining to check if files exist
+        const file = event.target.files?.[0]; // Check if a file exists
         if (file) {
-            setSelectedFile((prev => ({ ...prev, [fileKey]: file })))
+            // Update state with the selected file
+            setSelectedFile((prev) => ({ ...prev, [fileKey]: file }));
+            sessionStorage.setItem("providerImage", file.name);
+
+            // Convert the file to a Base64 string and store it in sessionStorage
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64data = reader.result;
+                if (typeof base64data === "string") {
+                    sessionStorage.setItem("providerImageBase64", base64data);
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Update form value and clear any existing errors
+            setImageName(file.name);
+            setValue("providerImage", file);
+            clearErrors("providerImage");
         }
-    }
+    };
+
+    useEffect(() => {
+        const storedImageName = sessionStorage.getItem("providerImage");
+        const storedImageBase64 = sessionStorage.getItem("providerImageBase64");
+
+        if (storedImageName && storedImageBase64) {
+            setImageName(storedImageName);
+            // Convert the Base64 string back into a File object
+            fetch(storedImageBase64)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    const file = new File([blob], storedImageName, { type: blob.type });
+                    setSelectedFile({ image_url: file });
+                    setValue("providerImage", file);
+                })
+                .catch((error) => {
+                    console.error("Error converting Base64 to File:", error);
+                });
+        }
+    }, []);
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors } } = useForm<GeneralInfoFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<GeneralInfoFormData>({
         resolver: zodResolver(generalInfoSchema),
         defaultValues: {
             // ownersName: registartionFormData.name || '',
@@ -77,7 +134,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
 
     const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-    const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const [selectedLocation, setSelectedLocation] = useState<string>();
 
     const [locationCoordinates, setLocationCoordinates] = useState<{ lat: number | null; lng: number | null; }>({ lat: null, lng: null });
 
@@ -139,7 +196,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                 });
 
                 // Optionally, store the full address in a separate state if needed
-                setSelectedLocation(fullAddress); // Store the full address instead of the description
+                setSelectedLocation(fullAddress);       // Store the full address instead of the description
+                setValue("salonLocation", fullAddress); // ✅ Update form field value
                 console.log("Latitude:", lat(), "Longitude:", lng());
             } else {
                 console.error("Geocoding failed:", status);
@@ -147,32 +205,112 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
         });
     };
 
+    // const onSubmit = async (data: GeneralInfoFormData) => {
+    //     setLoading(true);
+    //     setError(null);
+
+    //     console.log("General Info Form Submitted Data:", data);
+
+    //     try {
+    //         // Simulate API call
+    //         const generalInfoData = await generalInfo(
+    //             data.ownersName,
+    //             data.salonName,
+    //             parseInt(data.contactNumber),
+    //             data.emailAddress,
+    //             data.salonLocation || "", // Provide default value
+    //             data.establishedOn || "", // Provide default value
+    //             data.salonAddress || "", // Provide default value
+    //             data.servicesOffered || "", // Provide default value
+    //             data.businessHours || "", // Provide default value
+    //             data.staffInformation || "", // Provide default value
+    //             data.salonFacilities || "", // Provide default value
+    //             data.cancellationPolicy || "" // Provide default value
+    //         );
+    //         console.log("General Info Data:", generalInfoData);
+
+    //         // Navigate to the next step
+    //         navigate("/BankAccInfoForm");
+    //     }
+
+    //     catch (error: any) {
+    //         setError(error.message || "Something went wrong");
+    //     }
+    //     finally {
+    //         setLoading(false);
+    //     }
+    // }
+
+    // if (loading) return <div>Loading...</div>;
+    // if (error) return <div>{error}</div>;
+
     const onSubmit = async (data: GeneralInfoFormData) => {
         setLoading(true);
         setError(null);
 
-        console.log("General Info Form Submitted Data:", data);
+        console.log("General Info Freelance Form Submitted Data:", data);
 
         try {
-            // Simulate API call
-            const generalInfoData = await generalInfo(
-                data.ownersName,
-                data.salonName,
-                parseInt(data.contactNumber),
-                data.emailAddress,
-                data.salonLocation || "", // Provide default value
-                data.establishedOn || "", // Provide default value
-                data.salonAddress || "", // Provide default value
-                data.servicesOffered || "", // Provide default value
-                data.businessHours || "", // Provide default value
-                data.staffInformation || "", // Provide default value
-                data.salonFacilities || "", // Provide default value
-                data.cancellationPolicy || "" // Provide default value
-            );
-            console.log("General Info Data:", generalInfoData);
+
+            // Getting the ProviderID from session storage
+            const sessionProviderID = sessionStorage.getItem("providerID");
+            if (!sessionProviderID) {
+                throw new Error("Provider ID is missing from session storage.");
+            }
+
+            // Prepare form data
+            const formData = new FormData();
+
+            // Append mandatory fields
+            formData.append("provider", sessionProviderID);
+            formData.append("owner_name", data.ownersName || "");
+            formData.append("salon_name", data.salonName || "");
+            formData.append("email", data.emailAddress || "");
+            formData.append("phone", data.contactNumber || "");
+            formData.append("saloon_location", data.salonLocation || "");
+            formData.append("established_on", data.establishedOn || "");
+            formData.append("saloon_address", data.salonAddress || "");
+            formData.append("services_offered", data.servicesOffered || "");
+            formData.append("working_hours", data.businessHours || "");
+            formData.append("staff_information", data.staffInformation || "");
+            // formData.append("certifications", data.certifications || "");
+            formData.append("salon_facilities", data.salonFacilities || "");
+            formData.append("cancellation_policy", data.cancellationPolicy || "");
+
+            // Append latitude and longitude if available
+            if (locationCoordinates.lat !== null && locationCoordinates.lng !== null) {
+                formData.append('latitude', locationCoordinates.lat.toString());
+                formData.append('longitude', locationCoordinates.lng.toString());
+            }
+
+            // Append optional fields if they exist
+            // if (data.certifications) {
+            //     formData.append("certifications", data.certifications);
+            // }
+
+            // Append selected files
+            Object.keys(selectedFile).forEach((key) => {
+                const file = selectedFile[key];
+                if (file) {
+                    formData.append(key, file);
+                }
+            });
+
+            // Debugging: Log the FormData contents
+            console.log("FormData Contents:");
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
+
+            // Prepare form data
+            const generalInfoFreelanceData = await generalInfo(formData);
+
+            console.log("General Info Freelance Data:", generalInfoFreelanceData);
 
             // Navigate to the next step
-            navigate("/BankAccInfoForm");
+            // navigate("/BankAccInfoForm");
+            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoForm" } });
+
         }
 
         catch (error: any) {
@@ -181,10 +319,9 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
         finally {
             setLoading(false);
         }
+
     }
 
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>{error}</div>;
 
     return (
         <div>
@@ -525,10 +662,10 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                 <label
                                                     htmlFor="upload-photo1"
                                                     className="text-lg text-mindfulBlack">
-                                                    Provider Image
+                                                    Provider Image <span className="text-main">*</span>
                                                 </label>
 
-                                                <div className="flex items-center space-x-5">
+                                                <div className="flex items-start space-x-5">
 
                                                     <div>
                                                         <div className="w-64">
@@ -539,10 +676,12 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                             >
                                                                 {/* File Upload Icon */}
                                                                 {/* <div>
-                                                                                                            <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
-                                                                                                        </div> */}
+                                                                        <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                    </div> */}
                                                                 <span className="text-md text-mindfulBlack">
-                                                                    {selectedFile["certifications"]?.name || 'Upload certification files here'}
+                                                                    {/* {selectedFile["certifications"]?.name || 'Upload certification files here'} */}
+                                                                    {imageName || "Upload Salon logo here"}
+
                                                                 </span>
                                                             </label>
 
@@ -550,9 +689,14 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                                                 id="upload-photo1"
                                                                 type="file"
                                                                 accept="image/*"
-                                                                onChange={(e) => handleFileChange(e, "certifications")}
                                                                 className="hidden"
+                                                                {...register("providerImage")}
+                                                                onChange={(e) => handleFileChange(e, "image_url")}
                                                             />
+
+                                                            {errors.providerImage && (
+                                                                <p className="text-sm text-red-600">{errors.providerImage.message}</p>
+                                                            )}
                                                         </div>
                                                     </div>
 

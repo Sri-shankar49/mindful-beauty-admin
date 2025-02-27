@@ -29,6 +29,12 @@ const generalInfoSchema = z.object({
     cancellationPolicy: z.string().optional(),
     staffInformation: z.string().optional(),
 
+    providerImage: z.string().optional(),
+    taxFile: z.string().optional(),
+    gstFile: z.string().optional(),
+    identityFile: z.string().optional(),
+    addressFile: z.string().optional(),
+
     accHolderName: z.string().min(3, "Bank Account Holder Name is required"),
     bankName: z.string().min(3, "Bank Name is required"),
     bankNumber: z.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
@@ -53,10 +59,11 @@ export const GeneralInfo = () => {
 
     // File states
     const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File | null }>({
-        taxFile: null,
-        gstFile: null,
-        identityFile: null,
-        addressFile: null,
+        tax_file: null,
+        gst_file: null,
+        identity_file: null,
+        address_file: null,
+        image_url: null,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
@@ -165,6 +172,33 @@ export const GeneralInfo = () => {
                 setValue('salonFacilities', response.data.salon_facilities || '');
                 setValue('cancellationPolicy', response.data.cancellation_policy || '');
                 setValue('staffInformation', response.data.staff_information || '');
+
+                // Set image URL
+                setValue("providerImage", response.data.image_url || "");
+                setValue("taxFile", response.data.tax_details[0].tax_file || "");
+                setValue("gstFile", response.data.tax_details[0].gst_file || "");
+                setValue("identityFile", response.data.tax_details[0].identity_file || "");
+                setValue("addressFile", response.data.tax_details[0].address_file || "");
+
+                // Set image URL in selectedFiles state
+                setSelectedFiles((prev) => ({
+                    ...prev,
+                    image_url: response.data.image_url
+                        ? new File([], response.data.image_url.split("/").pop() || "")
+                        : null,
+                    tax_file: response.data.tax_details[0].tax_file
+                        ? new File([], response.data.tax_details[0].tax_file.split("/").pop() || "")
+                        : null,
+                    gst_file: response.data.tax_details[0].gst_file
+                        ? new File([], response.data.tax_details[0].gst_file.split("/").pop() || "")
+                        : null,
+                    identity_file: response.data.tax_details[0].identity_file
+                        ? new File([], response.data.tax_details[0].identity_file.split("/").pop() || "")
+                        : null,
+                    address_file: response.data.tax_details[0].address_file
+                        ? new File([], response.data.tax_details[0].address_file.split("/").pop() || "")
+                        : null,
+                }));
 
                 setValue('accHolderName', response.data.bank_details[0].account_holder_name || '');
                 setValue('bankName', response.data.bank_details[0].bank_name || '');
@@ -472,6 +506,67 @@ export const GeneralInfo = () => {
                                     ></textarea>
                                 </div>
 
+                                {/* File Upload Area */}
+                                <div>
+                                    <label
+                                        htmlFor="providerImage"
+                                        className="text-lg text-mindfulBlack">
+                                        Provider Image <span className="text-main">*</span>
+                                    </label>
+
+                                    <div className="flex items-center space-x-5">
+
+                                        <div>
+                                            <div className="w-64">
+
+                                                <label
+                                                    htmlFor="providerImage"
+                                                    className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                >
+                                                    {/* File Upload Icon */}
+                                                    {/* <div>
+                                                                                                        <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                                                    </div> */}
+                                                    <span className="text-md text-mindfulBlack">
+                                                        {/* {selectedFile["certifications"]?.name || 'Upload certification files here'} */}
+                                                        {selectedFiles["image_url"]?.name || "Upload Salon logo here"}
+
+                                                    </span>
+                                                </label>
+
+                                                <input
+                                                    id="providerImage"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    {...register("providerImage")}
+                                                    onChange={(e) => handleFileChange(e, "image_url")}
+                                                />
+
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="upload-photo1"
+                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                            >
+                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                Upload Files
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <p className="text-sm text-mindfulgrey pt-2">
+                                            <span className="text-main">* </span>
+                                            Fields are mandatory
+                                        </p>
+                                    </div>
+
+                                </div>
+
                             </div>
                         )}
                     </div>
@@ -652,7 +747,7 @@ export const GeneralInfo = () => {
                                                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                             </div> */}
                                                 <span className="text-md text-mindfulBlack">
-                                                    {selectedFiles["taxFile"]?.name || 'Upload tax file here'}
+                                                    {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
                                                 </span>
                                             </label>
 
@@ -660,7 +755,7 @@ export const GeneralInfo = () => {
                                                 id="taxFile"
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "taxFile")}
+                                                onChange={(e) => handleFileChange(e, "tax_file")}
                                                 className="hidden"
                                             />
                                         </div>
@@ -690,7 +785,7 @@ export const GeneralInfo = () => {
                                                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                             </div> */}
                                                 <span className="text-md text-mindfulBlack">
-                                                    {selectedFiles["gstFile"]?.name || 'Upload GST file here'}
+                                                    {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
                                                 </span>
                                             </label>
 
@@ -698,7 +793,7 @@ export const GeneralInfo = () => {
                                                 id="gstFile"
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "gstFile")}
+                                                onChange={(e) => handleFileChange(e, "gst_file")}
                                                 className="hidden"
                                             />
                                         </div>
@@ -819,7 +914,7 @@ export const GeneralInfo = () => {
                                                                                                     <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                                 </div> */}
                                                 <span className="text-md text-mindfulBlack">
-                                                    {selectedFiles["addressFile"]?.name || 'Upload a clear scan or photo of the document'}
+                                                    {selectedFiles["address_file"]?.name || 'Upload a clear scan or photo of the document'}
                                                 </span>
                                             </label>
 
@@ -827,7 +922,7 @@ export const GeneralInfo = () => {
                                                 id="addressFile"
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "addressFile")}
+                                                onChange={(e) => handleFileChange(e, "address_file")}
                                                 className="hidden"
                                             />
                                         </div>
@@ -857,7 +952,7 @@ export const GeneralInfo = () => {
                                                         <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                     </div> */}
                                                 <span className="text-md text-mindfulBlack">
-                                                    {selectedFiles["identityFile"]?.name || 'Upload a clear scan or photo of the ID'}
+                                                    {selectedFiles["identity_file"]?.name || 'Upload a clear scan or photo of the ID'}
                                                 </span>
                                             </label>
 
@@ -865,7 +960,7 @@ export const GeneralInfo = () => {
                                                 id="identityFile"
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "identityFile")}
+                                                onChange={(e) => handleFileChange(e, "identity_file")}
                                                 className="hidden"
                                             />
                                         </div>

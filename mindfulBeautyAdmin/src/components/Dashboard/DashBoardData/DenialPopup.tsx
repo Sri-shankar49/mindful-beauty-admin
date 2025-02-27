@@ -80,22 +80,23 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
     };
 
 
-    if (loading) return <div>Loading...</div>;
-    if (loading) return <div>
-        <div>
-            <ShimmerTable
-                mode="light"
-                row={2}
-                col={4}
-                border={1}
-                borderColor={"#cbd5e1"}
-                rounded={0.25}
-                rowGap={16}
-                colPadding={[15, 5, 15, 5]}
-            />
-        </div>
-    </div>;
-    if (error) return <div>Error: {error}</div>;
+    // if (loading) return <div>Loading...</div>;
+    // if (loading) return <div>
+    //     <div>
+    //         <ShimmerTable
+    //             mode="light"
+    //             row={2}
+    //             col={4}
+    //             border={1}
+    //             borderColor={"#cbd5e1"}
+    //             rounded={0.25}
+    //             rowGap={16}
+    //             colPadding={[15, 5, 15, 5]}
+    //         />
+    //     </div>
+    // </div>;
+
+    // if (error) return <div>Error: {error}</div>;
     return (
         <div>
             <div>
@@ -123,57 +124,74 @@ export const DenialPopup: React.FC<DenialPopupProps> = ({ closePopup, appointmen
                                     <IoCloseCircle className="text-mindfulGrey text-[32px]" />
                                 </div>
 
-                                <form onSubmit={handleSubmit(onSubmit)} method="post">
+                                {loading ? (
                                     <div>
-                                        {/* Branch Select Field */}
+                                        <ShimmerTable
+                                            mode="light"
+                                            row={2}
+                                            col={4}
+                                            border={1}
+                                            borderColor={"#cbd5e1"}
+                                            rounded={0.25}
+                                            rowGap={16}
+                                            colPadding={[15, 5, 15, 5]}
+                                        />
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmit(onSubmit)} method="post">
                                         <div>
-                                            <SelectField
-                                                label=""
-                                                id="reason"
-                                                className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                options={
-                                                    declineListData.length
-                                                        ? declineListData.map((branch) => ({
-                                                            key: branch.message_id,
-                                                            value: branch.message_id ? String(branch.message_id) : "",
-                                                            label: branch.text,
-                                                        }))
-                                                        : [{ value: "", label: "No reason available" }]
-                                                }
-                                                defaultValue={declineListData.length > 0 ? String(declineListData[0].message_id) : ""}
-                                                {...register("reason")}
-                                            />
-                                            {errors.reason && (
-                                                <p className="text-sm text-red-600">{errors.reason.message}</p>
-                                            )}
-                                        </div>
-
-                                        {/* Buttons */}
-                                        <div className="pt-5">
-                                            <div className="flex items-center justify-center space-x-5">
-                                                {/* Cancel Button */}
-                                                <Button
-                                                    onClick={closePopup}
-                                                    buttonType="button"
-                                                    buttonTitle="Cancel"
-                                                    className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                            {/* Branch Select Field */}
+                                            <div>
+                                                <SelectField
+                                                    label=""
+                                                    id="reason"
+                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    options={
+                                                        declineListData.length
+                                                            ? declineListData.map((branch) => ({
+                                                                key: branch.message_id,
+                                                                value: branch.message_id ? String(branch.message_id) : "",
+                                                                label: branch.text,
+                                                            }))
+                                                            : [{ value: "", label: "No reason available" }]
+                                                    }
+                                                    defaultValue={declineListData.length > 0 ? String(declineListData[0].message_id) : ""}
+                                                    {...register("reason")}
                                                 />
+                                                {errors.reason && (
+                                                    <p className="text-sm text-red-600">{errors.reason.message}</p>
+                                                )}
 
-                                                {/* Submit Button */}
-                                                <Button
-                                                    buttonType="submit"
-                                                    buttonTitle="Confirm"
-                                                    className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                                />
+                                                {error && <p className="text-sm text-red-600">{error}</p>}
+                                            </div>
+
+                                            {/* Buttons */}
+                                            <div className="pt-5">
+                                                <div className="flex items-center justify-center space-x-5">
+                                                    {/* Cancel Button */}
+                                                    <Button
+                                                        onClick={closePopup}
+                                                        buttonType="button"
+                                                        buttonTitle="Cancel"
+                                                        className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                    />
+
+                                                    {/* Submit Button */}
+                                                    <Button
+                                                        buttonType="submit"
+                                                        buttonTitle="Confirm"
+                                                        className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
