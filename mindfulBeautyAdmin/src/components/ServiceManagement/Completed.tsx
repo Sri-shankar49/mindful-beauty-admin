@@ -16,7 +16,8 @@ import { SelectField } from "@/common/SelectField";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchCompletedList, setCurrentPage, setError, setLoading } from '@/redux/completedSlice';
+import { fetchCompletedList, setCurrentPage, setLoading } from '@/redux/completedSlice';
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 // interface StatusListDataProps {
@@ -183,7 +184,9 @@ export const Completed = () => {
         // await fetchRefreshedInprogressListData();
 
       } catch (error: any) {
-        console.error("Failed to update stylist:", error.message);
+        // console.error("Failed to update stylist:", error.message);
+        NotifyError("Failed to update stylist:", error.message);
+
       } finally {
         // dispatch(setLoading(false)); // Reset loading state
       }
@@ -238,13 +241,15 @@ export const Completed = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Redux state
-  const { completedListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.completed);
+  const { completedListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.completed);
 
   // Fetch completed list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
     dispatch(fetchCompletedList({ providerID: Number(sessionLoginProviderID), status: 3, searchQuery, currentPage })).catch((error) => {
-      dispatch(setError(error.message));
+      // dispatch(setError(error.message));
+      NotifyError(error.message || "Failed to fetch completed list. Please try again."); // ✅ Show error via toast
+
     });
   }, [dispatch, searchQuery, currentPage]);
 
@@ -278,6 +283,8 @@ export const Completed = () => {
       }
       catch (error: any) {
         // setError(error.message || 'Failed to fetch completed list');
+        // NotifyError(error.message);
+
       } finally {
         // setLoading(false); // Ensure loading is false after fetching
       }
@@ -318,6 +325,7 @@ export const Completed = () => {
     } catch (error: any) {
       // setError(error.message || "Failed to update payment status");
       console.error("Failed to update payment status:", error);
+      NotifyError("Failed to update payment status:", error);
     }
     finally {
       // setLoading(false);
@@ -398,13 +406,13 @@ export const Completed = () => {
                   />
                 </td>
               </tr>
-            ) : error ? (
-              /* Error State */
-              <tr>
-                <td colSpan={12} className="text-center text-red-600 py-5">
-                  Error: {error}
-                </td>
-              </tr>
+              // ) : error ? (
+              //   /* Error State */
+              //   <tr>
+              //     <td colSpan={12} className="text-center text-red-600 py-5">
+              //       Error: {error}
+              //     </td>
+              //   </tr>
             ) : (
               completedListData.length > 0 ? (
                 completedListData.map((completed) => (

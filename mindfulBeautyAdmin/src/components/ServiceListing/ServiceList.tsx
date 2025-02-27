@@ -14,7 +14,8 @@ import { DeleteServicesPopup } from "./DeleteServicesPopup";
 import { ShimmerTable } from "shimmer-effects-react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchServicesList, setError, setLoading, setSearchQuery } from "@/redux/servicesListSlice";
+import { fetchServicesList, setLoading, setSearchQuery } from "@/redux/servicesListSlice";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 
@@ -63,7 +64,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
 
     // const [loading, setLoading] = useState(false);
-    const [errorr, setErrorr] = useState<string | null>(null);
+    // const [errorr, setErrorr] = useState<string | null>(null);
     const [selectedServiceID, setSelectedServiceID] = useState<number | null>(null);
     // const [totalItems, setTotalItems] = useState(0);
 
@@ -120,7 +121,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                 currentPage
             })).catch((error) => {
                 console.error("Error fetching services list:", error);
-                dispatch(setError(error.message));
+                // dispatch(setError(error.message));
+                NotifyError(error.message || "Failed to fetch services list. Please try again."); // ✅ Show error via toast
             });
         }, 300); // 300ms delay
 
@@ -141,7 +143,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                 console.log("Fetched Booking List pagination count data log :", data.count);
 
             } catch (error: any) {
-                setErrorr(error.message || "Failed to fetch service list data.");
+                // setErrorr(error.message || "Failed to fetch service list data.");
+                NotifyError(error.message || "Failed to fetch service list data.");
             } finally {
                 // setLoading(false);
             }
@@ -341,13 +344,13 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                         />
                                     </td>
                                 </tr>
-                            ) : errorr ? (
-                                /* Error State */
-                                <tr>
-                                    <td colSpan={8} className="text-center text-red-600 py-4">
-                                        Error: {errorr}
-                                    </td>
-                                </tr>
+                                // ) : errorr ? (
+                                //     /* Error State */
+                                //     <tr>
+                                //         <td colSpan={8} className="text-center text-red-600 py-4">
+                                //             Error: {errorr}
+                                //         </td>
+                                //     </tr>
                             ) : serviceListData.length > 0 ? (
                                 serviceListData.map((service) => (
                                     <tr key={service.service_id} className="border-b-2">

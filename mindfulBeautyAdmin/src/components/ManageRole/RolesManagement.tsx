@@ -3,6 +3,7 @@ import { roleList, addPermissions, getProviderPermissions } from "@/api/apiConfi
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ShimmerTable } from "shimmer-effects-react";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 interface RolesManagementProps {
     role_id?: number;
@@ -13,14 +14,14 @@ interface RolesManagementProps {
 export const RolesManagement = () => {
     const [roleListData, setRoleListData] = useState<RolesManagementProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [permissions, setPermissions] = useState<Record<number, Record<string, boolean>>>({});
     const loginProviderID = useSelector((state: RootState) => state.login.loginProviderID);
 
     useEffect(() => {
         const fetchRoles = async () => {
             setLoading(true);
-            setError(null);
+            // setError(null);
 
             if (!loginProviderID) {
                 setLoading(false);
@@ -67,7 +68,8 @@ export const RolesManagement = () => {
 
                 setPermissions(initialPermissions);
             } catch (error: any) {
-                setError(error.message || "Failed to fetch role list");
+                // setError(error.message || "Failed to fetch role list");
+                NotifyError(error.message || "Failed to fetch role list");
             } finally {
                 setLoading(false);
             }
@@ -147,120 +149,217 @@ export const RolesManagement = () => {
         <div>
             <h5 className="text-3xl font-semibold py-5">User Role Manager</h5>
             <div className="max-xl:overflow-x-scroll">
-            <table className="w-full ">
-                <thead className="border-y-2 border-mindfulgrey">
-                    <tr>
-                        <th className="w-[80%] text-start px-2 py-3">Actions</th>
+                <table className="w-full ">
+                    <thead className="border-y-2 border-mindfulgrey">
+                        <tr>
+                            <th className="w-[80%] text-start px-2 py-3">Actions</th>
 
-                        {/* {roleListData.map((role) => (
+                            {/* {roleListData.map((role) => (
                             <th key={role.role_id} className="w-[10%] px-2 py-3">
                                 {role.role_name}
                             </th>
                         ))} */}
 
-                        {loading ? (
-                            <th colSpan={roleListData.length} className="text-center px-2 py-3">
-                                Loading...
-                            </th>
-                        ) : error ? (
-                            <th colSpan={roleListData.length} className="text-center px-2 py-3 text-red-600">
-                                Error: {error}
-                            </th>
-                        ) : (
-                            roleListData.map((role) => (
-                                <th key={role.role_id} className="w-[10%] px-2 py-3">
-                                    {role.role_name}
+                            {loading ? (
+                                <th colSpan={roleListData.length} className="text-center px-2 py-3">
+                                    Loading...
                                 </th>
-                            ))
-                        )}
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {/* Render permission rows here, similar to original code */}
-                    {/* Example for Dashboard Permission */}
-
-                    {loading ? (
-                        <tr>
-                            <td colSpan={roleListData.length + 1} className="text-center px-2 py-4">
-                                <ShimmerTable
-                                    mode="light"
-                                    row={5} // Adjust rows based on expected data
-                                    col={roleListData.length + 1}
-                                    border={1}
-                                    borderColor={"#cbd5e1"}
-                                    rounded={0.25}
-                                    rowGap={16}
-                                    colPadding={[15, 5, 15, 5]}
-                                />
-                            </td>
+                                // ) : error ? (
+                                //     <th colSpan={roleListData.length} className="text-center px-2 py-3 text-red-600">
+                                //         Error: {error}
+                                //     </th>
+                            ) : (
+                                roleListData.map((role) => (
+                                    <th key={role.role_id} className="w-[10%] px-2 py-3">
+                                        {role.role_name}
+                                    </th>
+                                ))
+                            )}
                         </tr>
-                    ) : error ? (
-                        // Error State
-                        <tr>
-                            <td colSpan={roleListData.length + 1} className="text-red-600 text-center px-2 py-4">
-                                Error: {error}
-                            </td>
-                        </tr>
-                    ) : (
-                        // Render permissions data here, similar to original code
-                        <>
+                    </thead>
+
+                    <tbody>
+                        {/* Render permission rows here, similar to original code */}
+                        {/* Example for Dashboard Permission */}
+
+                        {loading ? (
                             <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">DASHBOARD</th>
-
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={permissions[role.role_id!]?.dashboard || false}
-                                                onChange={() => handleCheckboxChange(role.role_id!, "dashboard", role.role_name)}
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                ))}
+                                <td colSpan={roleListData.length + 1} className="text-center px-2 py-4">
+                                    <ShimmerTable
+                                        mode="light"
+                                        row={5} // Adjust rows based on expected data
+                                        col={roleListData.length + 1}
+                                        border={1}
+                                        borderColor={"#cbd5e1"}
+                                        rounded={0.25}
+                                        rowGap={16}
+                                        colPadding={[15, 5, 15, 5]}
+                                    />
+                                </td>
                             </tr>
+                            // ) : error ? (
+                            //     // Error State
+                            //     <tr>
+                            //         <td colSpan={roleListData.length + 1} className="text-red-600 text-center px-2 py-4">
+                            //             Error: {error}
+                            //         </td>
+                            //     </tr>
+                        ) : (
+                            // Render permissions data here, similar to original code
+                            <>
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">DASHBOARD</th>
 
-                            {/* Manage Role Permissions */}
-                            <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">
-                                    MANAGE ROLE
-                                </th>{" "}
-                                {/* Align with other permission rows */}
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={permissions[role.role_id!]?.manage_role || false}
-                                                onChange={() =>
-                                                    handleCheckboxChange(role.role_id!, "manage_role", role.role_name)
+                                    {roleListData.map((role) => (
+                                        <td key={role.role_id} className="text-center px-2 py-2">
+                                            <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissions[role.role_id!]?.dashboard || false}
+                                                    onChange={() => handleCheckboxChange(role.role_id!, "dashboard", role.role_name)}
+                                                    disabled={role.role_name === "Admin"}
+                                                />
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    ))}
+                                </tr>
+
+                                {/* Manage Role Permissions */}
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">
+                                        MANAGE ROLE
+                                    </th>{" "}
+                                    {/* Align with other permission rows */}
+                                    {roleListData.map((role) => (
+                                        <td key={role.role_id} className="text-center px-2 py-2">
+                                            <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissions[role.role_id!]?.manage_role || false}
+                                                    onChange={() =>
+                                                        handleCheckboxChange(role.role_id!, "manage_role", role.role_name)
+                                                    }
+                                                    disabled={role.role_name === "Admin"}
+                                                />
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    ))}
+                                </tr>
+                                {/* Other Permissions (Roles, Staff, Branch) */}
+
+
+                                {["roles_management", "staff_management", "branch_management"].map(
+                                    (permissionKey) => (
+                                        <tr key={permissionKey}>
+                                            <td className="px-2 py-2">
+                                                {
+                                                    // Providing a label for each permission key
+                                                    permissionKey === "roles_management"
+                                                        ? "ROLES MANAGEMENT"
+                                                        : permissionKey === "staff_management"
+                                                            ? "STAFF MANAGEMENT"
+                                                            : permissionKey === "branch_management"
+                                                                ? "BRANCH MANAGEMENT"
+                                                                : ""
                                                 }
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                ))}
-                            </tr>
-                            {/* Other Permissions (Roles, Staff, Branch) */}
+                                            </td>
+                                            {roleListData.map((role) => (
+                                                <td key={role.role_id} className="text-center px-2 py-2">
+                                                    <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={
+                                                                permissions[role.role_id!]?.[permissionKey] || false
+                                                            }
+                                                            onChange={() =>
+                                                                handleCheckboxChange(role.role_id!, permissionKey, role.role_name)
+                                                            }
+                                                            disabled={role.role_name === "Admin"}
+                                                        />
+                                                        <span></span>
+                                                    </label>
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    )
+                                )}
 
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">
+                                        SERVICE LISTING
+                                    </th>{" "}
+                                    {/* Align with other permission rows */}
+                                    {roleListData.map((role) => (
+                                        <td key={role.role_id} className="text-center px-2 py-2">
+                                            <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        permissions[role.role_id!]?.service_listing || false
+                                                    }
+                                                    onChange={() =>
+                                                        handleCheckboxChange(role.role_id!, "service_listing", role.role_name)
+                                                    }
+                                                    disabled={role.role_name === "Admin"}
+                                                />
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    ))}
+                                </tr>
 
-                            {["roles_management", "staff_management", "branch_management"].map(
-                                (permissionKey) => (
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">
+                                        SERVICE MANAGEMENT
+                                    </th>{" "}
+                                    {/* Align with other permission rows */}
+                                    {roleListData.map((role) => (
+                                        <td key={role.role_id} className="text-center px-2 py-2">
+                                            <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        permissions[role.role_id!]?.service_management || false
+                                                    }
+                                                    onChange={() =>
+                                                        handleCheckboxChange(
+                                                            role.role_id!,
+                                                            "service_management",
+                                                            role.role_name
+                                                        )
+                                                    }
+                                                    disabled={role.role_name === "Admin"}
+                                                />
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    ))}
+                                </tr>
+
+                                {[
+                                    "all_booking",
+                                    "schedule",
+                                    "inprogress",
+                                    "completed",
+                                    "cancelled",
+                                ].map((permissionKey) => (
                                     <tr key={permissionKey}>
                                         <td className="px-2 py-2">
                                             {
                                                 // Providing a label for each permission key
-                                                permissionKey === "roles_management"
-                                                    ? "ROLES MANAGEMENT"
-                                                    : permissionKey === "staff_management"
-                                                        ? "STAFF MANAGEMENT"
-                                                        : permissionKey === "branch_management"
-                                                            ? "BRANCH MANAGEMENT"
-                                                            : ""
+                                                permissionKey === "all_booking"
+                                                    ? "ALL BOOKING"
+                                                    : permissionKey === "schedule"
+                                                        ? "SCHEDULE"
+                                                        : permissionKey === "inprogress"
+                                                            ? "INPROGRESS"
+                                                            : permissionKey === "completed"
+                                                                ? "COMPLETED"
+                                                                : permissionKey === "cancelled"
+                                                                    ? "CANCELLED"
+                                                                    : ""
                                             }
                                         </td>
                                         {roleListData.map((role) => (
@@ -281,95 +380,26 @@ export const RolesManagement = () => {
                                             </td>
                                         ))}
                                     </tr>
-                                )
-                            )}
-
-                            <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">
-                                    SERVICE LISTING
-                                </th>{" "}
-                                {/* Align with other permission rows */}
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    permissions[role.role_id!]?.service_listing || false
-                                                }
-                                                onChange={() =>
-                                                    handleCheckboxChange(role.role_id!, "service_listing", role.role_name)
-                                                }
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
                                 ))}
-                            </tr>
-
-                            <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">
-                                    SERVICE MANAGEMENT
-                                </th>{" "}
-                                {/* Align with other permission rows */}
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    permissions[role.role_id!]?.service_management || false
-                                                }
-                                                onChange={() =>
-                                                    handleCheckboxChange(
-                                                        role.role_id!,
-                                                        "service_management",
-                                                        role.role_name
-                                                    )
-                                                }
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                ))}
-                            </tr>
-
-                            {[
-                                "all_booking",
-                                "schedule",
-                                "inprogress",
-                                "completed",
-                                "cancelled",
-                            ].map((permissionKey) => (
-                                <tr key={permissionKey}>
-                                    <td className="px-2 py-2">
-                                        {
-                                            // Providing a label for each permission key
-                                            permissionKey === "all_booking"
-                                                ? "ALL BOOKING"
-                                                : permissionKey === "schedule"
-                                                    ? "SCHEDULE"
-                                                    : permissionKey === "inprogress"
-                                                        ? "INPROGRESS"
-                                                        : permissionKey === "completed"
-                                                            ? "COMPLETED"
-                                                            : permissionKey === "cancelled"
-                                                                ? "CANCELLED"
-                                                                : ""
-                                        }
-                                    </td>
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">
+                                        SALES & TRANSACTIONS
+                                    </th>{" "}
+                                    {/* Align with other permission rows */}
                                     {roleListData.map((role) => (
                                         <td key={role.role_id} className="text-center px-2 py-2">
                                             <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
                                                 <input
                                                     type="checkbox"
                                                     checked={
-                                                        permissions[role.role_id!]?.[permissionKey] || false
+                                                        permissions[role.role_id!]?.sales_transactions || false
                                                     }
                                                     onChange={() =>
-                                                        handleCheckboxChange(role.role_id!, permissionKey, role.role_name)
+                                                        handleCheckboxChange(
+                                                            role.role_id!,
+                                                            "sales_transactions",
+                                                            role.role_name
+                                                        )
                                                     }
                                                     disabled={role.role_name === "Admin"}
                                                 />
@@ -378,63 +408,35 @@ export const RolesManagement = () => {
                                         </td>
                                     ))}
                                 </tr>
-                            ))}
-                            <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">
-                                    SALES & TRANSACTIONS
-                                </th>{" "}
-                                {/* Align with other permission rows */}
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    permissions[role.role_id!]?.sales_transactions || false
-                                                }
-                                                onChange={() =>
-                                                    handleCheckboxChange(
-                                                        role.role_id!,
-                                                        "sales_transactions",
-                                                        role.role_name
-                                                    )
-                                                }
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr>
-                                <th className="bg-mindfulLightgrey text-start px-2 py-4">
-                                    RATINGS & REVIEWS
-                                </th>{" "}
-                                {/* Align with other permission rows */}
-                                {roleListData.map((role) => (
-                                    <td key={role.role_id} className="text-center px-2 py-2">
-                                        <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    permissions[role.role_id!]?.ratings_reviews || false
-                                                }
-                                                onChange={() =>
-                                                    handleCheckboxChange(role.role_id!, "ratings_reviews", role.role_name)
-                                                }
-                                                disabled={role.role_name === "Admin"}
-                                            />
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                ))}
-                            </tr>
-                            {/* <tr>
+                                <tr>
+                                    <th className="bg-mindfulLightgrey text-start px-2 py-4">
+                                        RATINGS & REVIEWS
+                                    </th>{" "}
+                                    {/* Align with other permission rows */}
+                                    {roleListData.map((role) => (
+                                        <td key={role.role_id} className="text-center px-2 py-2">
+                                            <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        permissions[role.role_id!]?.ratings_reviews || false
+                                                    }
+                                                    onChange={() =>
+                                                        handleCheckboxChange(role.role_id!, "ratings_reviews", role.role_name)
+                                                    }
+                                                    disabled={role.role_name === "Admin"}
+                                                />
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                    ))}
+                                </tr>
+                                {/* <tr>
                             <th className="bg-mindfulLightgrey text-start px-2 py-4">
                                 REPORTS
                             </th>{" "} */}
-                            {/* Align with other permission rows */}
-                            {/* {roleListData.map((role) => (
+                                {/* Align with other permission rows */}
+                                {/* {roleListData.map((role) => (
                                 <td key={role.role_id} className="text-center px-2 py-2">
                                     <label className={`cl-checkbox ${role.role_name === "Admin" ? "cursor-not-allowed" : ""}`}>
                                         <input
@@ -451,15 +453,15 @@ export const RolesManagement = () => {
                                     </label>
                                 </td>
                             ))} */}
-                            {/* </tr> */}
+                                {/* </tr> */}
 
 
-                        </>
-                    )}
+                            </>
+                        )}
 
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </div>
         </div>
     );

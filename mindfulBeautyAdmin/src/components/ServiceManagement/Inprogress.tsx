@@ -13,7 +13,8 @@ import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchInprogressList, setCurrentPage, setError, setLoading } from '@/redux/inprogressSlice';
+import { fetchInprogressList, setCurrentPage, setLoading } from '@/redux/inprogressSlice';
+import { NotifyError } from "@/common/Toast/ToastMessage";
 // import { EditAppInprogressPopup } from "./Inprogress/EditAppInprogressPopup";
 
 
@@ -178,7 +179,8 @@ export const Inprogress = () => {
         // Refresh the inprogress list after the update
         await fetchRefreshedInprogressListData();
       } catch (error: any) {
-        console.error("Failed to update stylist:", error.message);
+        // console.error("Failed to update stylist:", error.message);
+        NotifyError("Failed to update stylist:", error.message);
       } finally {
         // dispatch(setLoading(false)); // Reset loading state
       }
@@ -236,13 +238,14 @@ export const Inprogress = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Redux state
-  const { inprogressListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.inprogress);
+  const { inprogressListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.inprogress);
 
   // Fetch inprogress list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
     dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, searchQuery, currentPage })).catch((error) => {
-      dispatch(setError(error.message))
+      // dispatch(setError(error.message));
+      NotifyError(error.message || "Failed to fetch inprogress list. Please try again."); // ✅ Show error via toast
     });
   }, [dispatch, searchQuery, currentPage]);
 
@@ -274,6 +277,7 @@ export const Inprogress = () => {
       }
       catch (error: any) {
         // setError(error.message || 'Failed to fetch inprogress list');
+        // NotifyError(error.message);
       } finally {
         // setLoading(false); // Ensure loading is false after fetching
       }
@@ -304,6 +308,8 @@ export const Inprogress = () => {
 
     } catch (error: any) {
       // setError(error.message || "Failed to fetch inprogress list");
+      // NotifyError(error.message);
+
     } finally {
       // setLoading(false);
     }
@@ -346,6 +352,7 @@ export const Inprogress = () => {
 
     } catch (error: any) {
       // setError(error.message || "Failed to fetch inprogress list for the selected status");
+      NotifyError(error.message || "Failed to fetch inprogress list for the selected status");
     }
     finally {
       // setLoading(false);
@@ -426,13 +433,13 @@ export const Inprogress = () => {
                   />
                 </td>
               </tr>
-            ) : error ? (
-              /* Error State */
-              <tr>
-                <td colSpan={12} className="text-center text-red-600 py-5">
-                  Error: {error}
-                </td>
-              </tr>
+              // ) : error ? (
+              //   /* Error State */
+              //   <tr>
+              //     <td colSpan={12} className="text-center text-red-600 py-5">
+              //       Error: {error}
+              //     </td>
+              //   </tr>
             ) : (
               inprogressListData.length > 0 ? (
                 inprogressListData.map((inprogress) => (

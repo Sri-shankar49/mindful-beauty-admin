@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { packagesList } from '@/api/apiConfig';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 // Define initial state
 interface PackagesState {
     packageListData: any[];
     loading: boolean;
-    error: string | null;
+    // error: string | null;
     searchQuery: string;
     currentPage: number;
     totalItems: number;
@@ -14,7 +15,7 @@ interface PackagesState {
 const initialState: PackagesState = {
     packageListData: [],
     loading: false,
-    error: null,
+    // error: null,
     searchQuery: '',
     currentPage: 1,
     totalItems: 0,
@@ -26,13 +27,15 @@ export const fetchPackagesList = createAsyncThunk(
     async (
         { providerID, branchID, searchQuery, currentPage }:
             { providerID: number; branchID: string; searchQuery: string; currentPage: number },
-        { rejectWithValue }
+        // { rejectWithValue }
     ) => {
         try {
             const response = await packagesList(providerID, branchID, searchQuery, currentPage);
             return response;
         } catch (error: any) {
-            return rejectWithValue(error.message || 'Failed to fetch packages list');
+            // return rejectWithValue(error.message || 'Failed to fetch packages list');
+            NotifyError(error.message || "Failed to fetch packages list"); // Show error via toast
+            throw error; // Throw error so it doesn't modify Redux state
         }
     }
 );
@@ -46,6 +49,9 @@ const packagesListSlice = createSlice({
             state.searchQuery = action.payload;
             state.currentPage = 1; // Reset to first page on search
         },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
         setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
@@ -54,19 +60,22 @@ const packagesListSlice = createSlice({
         builder
             .addCase(fetchPackagesList.pending, (state) => {
                 state.loading = true;
-                state.error = null;
+                // state.error = null;
             })
             .addCase(fetchPackagesList.fulfilled, (state, action) => {
                 state.loading = false;
                 state.packageListData = action.payload.results.data || [];
                 state.totalItems = action.payload.count || 0;
             })
-            .addCase(fetchPackagesList.rejected, (state, action) => {
+            // .addCase(fetchPackagesList.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload as string;
+            // });
+            .addCase(fetchPackagesList.rejected, (state) => {
                 state.loading = false;
-                state.error = action.payload as string;
             });
     },
 });
 
-export const { setSearchQuery, setCurrentPage } = packagesListSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading } = packagesListSlice.actions;
 export default packagesListSlice.reducer;

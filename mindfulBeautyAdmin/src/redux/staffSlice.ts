@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { staffList } from '@/api/apiConfig';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 // Define initial state
 interface StaffState {
     staffData: any[];
     loading: boolean;
-    error: string | null;
+    // error: string | null;
     searchQuery: string;
     totalItems: number;
 }
@@ -13,7 +14,7 @@ interface StaffState {
 const initialState: StaffState = {
     staffData: [],
     loading: false,
-    error: null,
+    // error: null,
     searchQuery: '',
     totalItems: 0,
 };
@@ -31,13 +32,16 @@ const initialState: StaffState = {
 export const fetchStaffList = createAsyncThunk(
     'staff/fetchStaffList',
     async ({ searchQuery, currentPage }: { searchQuery: string; currentPage: number; },
-        { rejectWithValue }) => {
+        // { rejectWithValue }
+    ) => {
         try {
             // const response = await staffList(searchQuery, currentPage, itemsPerPage);
             const response = await staffList(searchQuery, currentPage);
             return response;
         } catch (error: any) {
-            return rejectWithValue(error.message || 'Failed to fetch staff list');
+            // return rejectWithValue(error.message || 'Failed to fetch staff list');
+            NotifyError(error.message || "Failed to fetch staff list"); // Show error via toast
+            throw error; // Throw error so it doesn't modify Redux state
         }
     }
 );
@@ -53,28 +57,31 @@ const staffSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-        setError: (state, action) => {
-            state.error = action.payload;
-            state.loading = false; // Reset loading on error
-        }
+        // setError: (state, action) => {
+        //     state.error = action.payload;
+        //     state.loading = false; // Reset loading on error
+        // }
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchStaffList.pending, (state) => {
                 state.loading = true;
-                state.error = null;
+                // state.error = null;
             })
             .addCase(fetchStaffList.fulfilled, (state, action) => {
                 state.loading = false;
                 state.staffData = action.payload.results.data || [];
                 state.totalItems = action.payload.count;
             })
-            .addCase(fetchStaffList.rejected, (state, action) => {
+            // .addCase(fetchStaffList.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload as string;
+            // });
+            .addCase(fetchStaffList.rejected, (state) => {
                 state.loading = false;
-                state.error = action.payload as string;
             });
     },
 });
 
-export const { setSearchQuery, setLoading, setError } = staffSlice.actions;
+export const { setSearchQuery, setLoading } = staffSlice.actions;
 export default staffSlice.reducer;

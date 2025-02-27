@@ -16,7 +16,8 @@ import { DeletePackagesPopup } from './DeletePackagesPopup';
 import { ShimmerTable } from 'shimmer-effects-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { fetchPackagesList, setCurrentPage, setSearchQuery } from '@/redux/packagesListSlice';
+import { fetchPackagesList, setCurrentPage, setLoading, setSearchQuery } from '@/redux/packagesListSlice';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 interface StaffBranchListDataProps {
     branch_id?: number;
@@ -116,13 +117,19 @@ export const PackagesList = () => {
 
     const dispatch = useDispatch();
 
-    const { packageListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.package);
+    const { packageListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.package);
 
     // Fetch package data
     useEffect(() => {
+        dispatch(setLoading(true)); // Ensure UI updates before fetching
         dispatch(fetchPackagesList({
             providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage
-        }) as any);
+        }) as any)
+            .catch((error: any) => {
+                // console.error("Error fetching package list:", error.message);
+                // dispatch(setError(error.message));
+                NotifyError(error.message || "Failed to fetch package list. Please try again."); // ✅ Show error via toast
+            });
     }, [dispatch, searchQuery, currentPage, sessionLoginProviderID, selectedBranch]);
 
 
@@ -166,6 +173,8 @@ export const PackagesList = () => {
                 setStaffBranchListData(branchData.data || []);
             } catch (error: any) {
                 console.error("Error fetching branches:", error);
+                NotifyError(error.message); // ✅ Show error via toast
+
             }
         };
         fetchBranches();
@@ -211,17 +220,23 @@ export const PackagesList = () => {
     // };
 
     // ✅ Redux-based refresh function
-    const refreshPackagesListData = () => {
-        dispatch(
-            fetchPackagesList({
-                providerID: Number(sessionLoginProviderID),
-                branchID: selectedBranch,
-                searchQuery,
-                currentPage,
-            }) as any
-        );
-    };
+    // const refreshPackagesListData = () => {
+    //     dispatch(fetchPackagesList({ providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage }) as any);
+    // };
 
+    const refreshPackagesListData = async () => {
+        try {
+            dispatch(setLoading(true)); // ✅ Show loading state before fetching
+
+            await dispatch(fetchPackagesList({ providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage }) as any);
+
+            console.log("Packages data refreshed.");
+        } catch (error: any) {
+            console.error("Error refreshing Packages data:", error.message);
+            // dispatch(setError(error.message)); // ✅ Handle errors correctly
+            NotifyError("Failed to refresh data. Please try again."); // ✅ Show error via toast
+        }
+    };
     // if (loading) return <div>Loading...</div>;
     // if (loading) return <div>
     //     <div>
@@ -422,10 +437,10 @@ export const PackagesList = () => {
                                             />
                                         </td>
                                     </tr>
-                                ) : error ? (
-                                    <tr>
-                                        <td colSpan={5} className="text-center py-5">Error: {error}</td>
-                                    </tr>
+                                    // ) : error ? (
+                                    //     <tr>
+                                    //         <td colSpan={5} className="text-center py-5">Error: {error}</td>
+                                    //     </tr>
                                 ) : packageListData.length > 0 ? (
                                     packageListData.map((packageData) => {
 
@@ -483,16 +498,16 @@ export const PackagesList = () => {
                                                 <td className="text-start px-2 py-5">
                                                     <div className="flex items-center space-x-5">
                                                         <button
-                                                        className="flex-shrink-0"
+                                                            className="flex-shrink-0"
                                                             onClick={() => openEditPackagesPopup(packageData.service_id)}
                                                         // onClick={openEditPackagesPopup}
                                                         >
                                                             <img src={editButton} alt="Edit" />
                                                         </button>
                                                         <button
-                                                        className="flex-shrink-0"
-                                                        
-                                                        onClick={() => openDeletePackagePopup(packageData.service_id)}>
+                                                            className="flex-shrink-0"
+
+                                                            onClick={() => openDeletePackagePopup(packageData.service_id)}>
                                                             <img src={deleteButton} alt="Delete" />
                                                         </button>
                                                     </div>
@@ -526,7 +541,7 @@ export const PackagesList = () => {
 
                 {showEditPackagesPopup && <EditPackagesPopup
                     closePopup={closeEditPackagesPopup}
-                    providerPackageID={Number(selectedPackageID)}     
+                    providerPackageID={Number(selectedPackageID)}
                 />}
 
                 {showDeletePackagePopup && <DeletePackagesPopup

@@ -11,25 +11,41 @@ import { onlineAction } from "@/api/apiConfig";
 
 export const Header = () => {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const { token, phoneNumber, permissions, providerLogo, providerOnlineStatus } = useSelector((state: RootState) => state.login);
+    console.log("Permission check ==>", permissions, token, phoneNumber, providerLogo, providerOnlineStatus);
+
+    // ** Check session storage first, otherwise use providerOnlineStatus **
+    const storedStatus = sessionStorage.getItem("isActiveStatus");
+    const initialStatus = storedStatus !== null ? JSON.parse(storedStatus) : providerOnlineStatus === 1;
+
+    const [isActive, setIsActive] = useState(initialStatus);
+
+    useEffect(() => {
+        // On refresh, reset isActive based on providerOnlineStatus if there's no session data
+        if (storedStatus === null) {
+            setIsActive(providerOnlineStatus === 1);
+        }
+    }, [providerOnlineStatus]);
+
+
     const [profileHover, setProfileHover] = useState(false);
 
     // const [isActive, setIsActive] = useState(false); // State to track the toggle status
 
-    const [isActive, setIsActive] = useState<boolean>(() => {
-        const savedStatus = sessionStorage.getItem("isActiveStatus"); // Check stored status
-        return savedStatus ? JSON.parse(savedStatus) : false; // Convert from string to boolean
-    });
+    // const [isActive, setIsActive] = useState<boolean>(() => {
+    //     const savedStatus = sessionStorage.getItem("isActiveStatus"); // Check stored status
+    //     return savedStatus ? JSON.parse(savedStatus) : false; // Convert from string to boolean
+    // });
 
 
     // const handleToggle = () => {
     //     setIsActive(!isActive); // Toggle the state on click
     // };
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
-    const { token, phoneNumber, permissions } = useSelector((state: RootState) => state.login);
-    console.log("Permission check ==>", permissions, token, phoneNumber)
 
     // Debugging: Check permissions in the header
     useEffect(() => {
@@ -100,7 +116,12 @@ export const Header = () => {
                         {/* Mindful Beauty Logo */}
                         <Link to="/Dashboard">
                             <div>
-                                <img src={mindfulBeautyLogoSmall} alt="mindful beauty logo" className="object-contain w-20 max-2xl:w-32 max-2xl:h-20 " />
+                                <img
+                                    src={mindfulBeautyLogoSmall}
+                                    alt="mindful beauty logo"
+                                    className="object-contain w-28 max-2xl:w-32 max-2xl:h-20"
+                                    loading="lazy"
+                                />
                             </div>
                         </Link>
 
@@ -109,7 +130,12 @@ export const Header = () => {
 
                         {/* Astamudi Wellness Logo */}
                         <div>
-                            <img src={ashtamudiLogo} alt="ashtamudi logo" className="object-contain w-20 max-2xl:w-32 max-2xl:h-20 " />
+                            <img
+                                src={`${providerLogo || ashtamudiLogo}`}
+                                alt="ashtamudi logo"
+                                className="object-contain w-28 max-2xl:w-32 max-2xl:h-20"
+                                loading="lazy"
+                            />
                         </div>
                     </div>
 

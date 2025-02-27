@@ -13,9 +13,9 @@ import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchScheduleList, setCurrentPage, setError, setLoading } from '@/redux/scheduleSlice';
+import { fetchScheduleList, setCurrentPage, setLoading } from '@/redux/scheduleSlice';
 import { EditAppSchedulePopup } from "./Schedule/EditAppSchedulePopup";
-
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 interface StatusListDataProps {
@@ -179,7 +179,8 @@ export const Schedule = () => {
         // Refresh the schedule list after the update
         await fetchRefreshedScheduleListData();
       } catch (error: any) {
-        console.error("Failed to update stylist:", error.message);
+        // console.error("Failed to update stylist:", error.message);
+        NotifyError("Failed to update stylist:", error.message);
       } finally {
         // dispatch(setLoading(false)); // Reset loading state
       }
@@ -228,14 +229,16 @@ export const Schedule = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Redux state
-  const { scheduleListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.schedule);
+  const { scheduleListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.schedule);
 
   // Fetch schedule list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
     dispatch(fetchScheduleList({ providerID: Number(sessionLoginProviderID), status: 1, searchQuery, currentPage })).catch((error) => {
       console.error("Error fetching schedule list:", error);
-      dispatch(setError(error.message))
+      // dispatch(setError(error.message));
+      NotifyError(error.message || "Failed to fetch schedule list. Please try again."); // ✅ Show error via toast
+
     });
   }, [dispatch, searchQuery, currentPage]);
 
@@ -270,6 +273,7 @@ export const Schedule = () => {
       }
       catch (error: any) {
         // setError(error.message || 'Failed to fetch schedule list');
+        // NotifyError(error.message);
       } finally {
         // setLoading(false); // Ensure loading is false after fetching
       }
@@ -299,6 +303,7 @@ export const Schedule = () => {
       // console.log("Fetched Refreshed Schedule List pagination count data log :", data.count);
     } catch (error: any) {
       // setError(error.message || "Failed to fetch schedule list");
+      // NotifyError(error.message);
     } finally {
       // setLoading(false);
     }
@@ -342,6 +347,7 @@ export const Schedule = () => {
 
     } catch (error: any) {
       // setError(error.message || "Failed to fetch schedule list for the selected status");
+      NotifyError(error.message || "Failed to fetch schedule list for the selected status");
     }
     finally {
       // setLoading(false);
@@ -434,13 +440,13 @@ export const Schedule = () => {
                   />
                 </td>
               </tr>
-            ) : error ? (
-              /* Error State */
-              <tr>
-                <td colSpan={12} className="text-center text-red-600 py-5">
-                  Error: {error}
-                </td>
-              </tr>
+              // ) : error ? (
+              //   /* Error State */
+              //   <tr>
+              //     <td colSpan={12} className="text-center text-red-600 py-5">
+              //       Error: {error}
+              //     </td>
+              //   </tr>
             ) : (
               scheduleListData.length > 0 ? (
                 scheduleListData.map((schedule) => (

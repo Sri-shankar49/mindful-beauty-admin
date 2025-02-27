@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { scheduleList } from '@/api/apiConfig';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 // Define TypeScript types
 interface ScheduleItem {
@@ -27,7 +28,7 @@ interface Service {
 interface ScheduleState {
     scheduleListData: ScheduleItem[];
     loading: boolean;
-    error: string | null;
+    // error: string | null;
     searchQuery: string;
     currentPage: number;
     totalItems: number;
@@ -36,7 +37,7 @@ interface ScheduleState {
 const initialState: ScheduleState = {
     scheduleListData: [],
     loading: false,
-    error: null,
+    // error: null,
     searchQuery: '',
     currentPage: 1,
     totalItems: 0,
@@ -48,13 +49,15 @@ export const fetchScheduleList = createAsyncThunk(
     async (
         { providerID, status, searchQuery, currentPage }:
             { providerID: number; status: number; searchQuery: string; currentPage: number },
-        { rejectWithValue }
+        // { rejectWithValue }
     ) => {
         try {
             const response = await scheduleList(providerID, status, searchQuery, currentPage);
             return response;
         } catch (error: any) {
-            return rejectWithValue(error.message || 'Failed to fetch schedule list');
+            // return rejectWithValue(error.message || 'Failed to fetch schedule list');
+            NotifyError(error.message || "Failed to fetch schedule list"); // Show error via toast
+            throw error; // Throw error so it doesn't modify Redux state
         }
     }
 );
@@ -74,28 +77,31 @@ const scheduleSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-        setError: (state, action) => {
-            state.error = action.payload;
-            state.loading = false; // Reset loading on error
-        }
+        // setError: (state, action) => {
+        //     state.error = action.payload;
+        //     state.loading = false; // Reset loading on error
+        // }
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchScheduleList.pending, (state) => {
                 state.loading = true;
-                state.error = null;
+                // state.error = null;
             })
             .addCase(fetchScheduleList.fulfilled, (state, action) => {
                 state.loading = false;
                 state.scheduleListData = action.payload.results || [];
                 state.totalItems = action.payload.count || 0;
             })
-            .addCase(fetchScheduleList.rejected, (state, action) => {
+            // .addCase(fetchScheduleList.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload as string;
+            // });
+            .addCase(fetchScheduleList.rejected, (state) => {
                 state.loading = false;
-                state.error = action.payload as string;
             });
     },
 });
 
-export const { setSearchQuery, setCurrentPage, setLoading, setError } = scheduleSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading } = scheduleSlice.actions;
 export default scheduleSlice.reducer;

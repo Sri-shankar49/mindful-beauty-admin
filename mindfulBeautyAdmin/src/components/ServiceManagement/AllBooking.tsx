@@ -14,9 +14,10 @@ import { ShimmerTable } from "shimmer-effects-react";
 import stylist from "../../assets/images/stylist.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchBookingList, setCurrentPage, setError, setLoading } from '@/redux/allbookingSlice';
+import { fetchBookingList, setCurrentPage, setLoading } from '@/redux/allbookingSlice';
 // import { EditAppAllBookingPopup } from "./EditAppAllBookingPopup";
 import { useNavigate } from "react-router-dom";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 
@@ -197,7 +198,8 @@ export const AllBooking = () => {
         // Refresh the booking list after the update
         await fetchRefreshedBookingListData();
       } catch (error: any) {
-        console.error("Failed to update stylist:", error.message);
+        // console.error("Failed to update stylist:", error.message);
+        NotifyError("Failed to update stylist:", error.message);
       } finally {
         // dispatch(setLoading(false)); // Reset loading state
       }
@@ -268,13 +270,15 @@ export const AllBooking = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Redux state
-  const { bookingListData, loading, error, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.allbooking);
+  const { bookingListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.allbooking);
 
   // Fetch allbooking list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
     dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), searchQuery, currentPage })).catch((error) => {
-      dispatch(setError(error.message));
+      // dispatch(setError(error.message));
+      NotifyError(error.message || "Failed to fetch all booking list. Please try again."); // ✅ Show error via toast
+
     });;
   }, [dispatch, searchQuery, currentPage]);
 
@@ -314,6 +318,7 @@ export const AllBooking = () => {
       }
       catch (error: any) {
         // setError(error.message || 'Failed to fetch booking list');
+        // NotifyError(error.message);
       } finally {
         // setLoading(false); // Ensure loading is false after fetching
       }
@@ -344,6 +349,7 @@ export const AllBooking = () => {
       // console.log("Fetched Refreshed Booking List pagination count data log :", data.count);
     } catch (error: any) {
       // setError(error.message || "Failed to fetch booking list");
+      // NotifyError(error.message || "Failed to fetch booking list");
     } finally {
       // setLoading(false);
     }
@@ -381,6 +387,7 @@ export const AllBooking = () => {
 
     } catch (error: any) {
       // setError(error.message || "Failed to fetch booking list for the selected status");
+      NotifyError(error.message || "Failed to fetch booking list for the selected status");
     }
     finally {
       // setLoading(false);
@@ -462,13 +469,13 @@ export const AllBooking = () => {
                   />
                 </td>
               </tr>
-            ) : error ? (
-              /* Error State */
-              <tr>
-                <td colSpan={12} className="text-center text-red-600 py-5">
-                  Error: {error}
-                </td>
-              </tr>
+              // ) : error ? (
+              //   /* Error State */
+              //   <tr>
+              //     <td colSpan={12} className="text-center text-red-600 py-5">
+              //       Error: {error}
+              //     </td>
+              //   </tr>
             ) :
               bookingListData.length > 0 ? (
                 bookingListData.map((bookingData) => (

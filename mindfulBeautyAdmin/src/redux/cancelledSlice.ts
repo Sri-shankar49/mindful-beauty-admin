@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { cancelledList } from '@/api/apiConfig';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 // Define TypeScript types
 interface CancelledItem {
@@ -27,7 +28,7 @@ interface Service {
 interface CancelledState {
     cancelledListData: CancelledItem[];
     loading: boolean;
-    error: string | null;
+    // error: string | null;
     searchQuery: string;
     currentPage: number;
     totalItems: number;
@@ -36,7 +37,7 @@ interface CancelledState {
 const initialState: CancelledState = {
     cancelledListData: [],
     loading: false,
-    error: null,
+    // error: null,
     searchQuery: '',
     currentPage: 1,
     totalItems: 0,
@@ -48,13 +49,15 @@ export const fetchCancelledList = createAsyncThunk(
     async (
         { providerID, status, searchQuery, currentPage }:
             { providerID: number; status: number; searchQuery: string; currentPage: number },
-        { rejectWithValue }
+        // { rejectWithValue }
     ) => {
         try {
             const response = await cancelledList(providerID, status, searchQuery, currentPage);
             return response;
         } catch (error: any) {
-            return rejectWithValue(error.message || 'Failed to fetch cancelled list');
+            // return rejectWithValue(error.message || 'Failed to fetch cancelled list');
+            NotifyError(error.message || "Failed to fetch cancelled list"); // Show error via toast
+            throw error; // Throw error so it doesn't modify Redux state
         }
     }
 );
@@ -74,28 +77,31 @@ const cancelledSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-        setError: (state, action) => {
-            state.error = action.payload;
-            state.loading = false; // Reset loading on error
-        }
+        // setError: (state, action) => {
+        //     state.error = action.payload;
+        //     state.loading = false; // Reset loading on error
+        // }
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchCancelledList.pending, (state) => {
                 state.loading = true;
-                state.error = null;
+                // state.error = null;
             })
             .addCase(fetchCancelledList.fulfilled, (state, action) => {
                 state.loading = false;
                 state.cancelledListData = action.payload.results || [];
                 state.totalItems = action.payload.count || 0;
             })
-            .addCase(fetchCancelledList.rejected, (state, action) => {
+            // .addCase(fetchCancelledList.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload as string;
+            // });
+            .addCase(fetchCancelledList.rejected, (state) => {
                 state.loading = false;
-                state.error = action.payload as string;
             });
     },
 });
 
-export const { setSearchQuery, setCurrentPage, setLoading, setError } = cancelledSlice.actions;
+export const { setSearchQuery, setCurrentPage, setLoading } = cancelledSlice.actions;
 export default cancelledSlice.reducer;

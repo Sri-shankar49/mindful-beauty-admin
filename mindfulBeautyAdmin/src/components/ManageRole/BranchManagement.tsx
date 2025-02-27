@@ -7,7 +7,8 @@ import { AddBranchPopup } from "./BranchManagement/AddBranchPopup"
 import { ShimmerTable } from "shimmer-effects-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchBranchList, setError, setLoading } from '@/redux/branchSlice';
+import { fetchBranchList, setLoading } from '@/redux/branchSlice';
+import { NotifyError } from "@/common/Toast/ToastMessage";
 // Define the type for BranchCardProps if it's not imported
 interface BranchCardProps {
     branch_id: string;
@@ -36,12 +37,13 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
 
 
     const dispatch = useDispatch<AppDispatch>();
-    const { branchData, loading, error, searchQuery } = useSelector((state: RootState) => state.branch);
+    const { branchData, loading, searchQuery } = useSelector((state: RootState) => state.branch);
 
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
         dispatch(fetchBranchList({ searchQuery })).catch((error) => {
-            dispatch(setError(error.message));
+            // dispatch(setError(error.message));
+            NotifyError(error.message || "Failed to fetch branch list. Please try again."); // ✅ Show error via toast
         });
     }, [dispatch, searchQuery]);
 
@@ -159,10 +161,10 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                 )}
 
                 {/* Show error message if there's an error */}
-                {error && <div className="text-red-600 col-span-4">{error}</div>}
+                {/* {error && <div className="text-red-600 col-span-4">{error}</div>} */}
 
                 {/* Show branches if data is available */}
-                {!loading && !error && branchData.length > 0 ? (
+                {!loading && branchData.length > 0 ? (
                     branchData.map((branch) => (
                         <BranchCard
                             key={branch.branch_id}
@@ -174,8 +176,8 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                         />
                     ))
                 ) : (
-                    !loading && !error && (
-                        <div className="text-gray-500 col-span-4">No branches available.</div>
+                    !loading && (
+                        <div className="text-gray-500 col-span-4 text-center py-5">No branches available.</div>
                     )
                 )}
             </div>

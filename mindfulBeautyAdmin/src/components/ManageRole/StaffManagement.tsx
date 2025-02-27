@@ -12,7 +12,8 @@ import { DeleteStaffPopup } from './StaffManagement/DeleteStaffPopup';
 import { ShimmerTable } from 'shimmer-effects-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { fetchStaffList, setError, setLoading } from '@/redux/staffSlice';
+import { fetchStaffList, setLoading } from '@/redux/staffSlice';
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 interface StaffManagementProps {
     staff?: number;
@@ -125,14 +126,15 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
     // };
 
     const dispatch = useDispatch<AppDispatch>();
-    const { staffData, loading, error, totalItems, searchQuery } = useSelector((state: RootState) => state.staff);
 
+    const { staffData, loading, totalItems, searchQuery } = useSelector((state: RootState) => state.staff);
 
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
         dispatch(fetchStaffList({ searchQuery, currentPage })).catch((error) => {
             console.error("Error fetching staff list:", error);
-            dispatch(setError(error.message));
+            // dispatch(setError(error.message));
+            NotifyError(error.message || "Failed to fetch staff list. Please try again."); // ✅ Show error via toast
         });
     }, [dispatch, searchQuery, currentPage, itemsPerPage]);
 
@@ -229,13 +231,13 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                     />
                                 </td>
                             </tr>
-                        ) : error ? (
-                            /* Error State */
-                            <tr>
-                                <td colSpan={6} className="text-center text-red-600 py-4">
-                                    Error: {error}
-                                </td>
-                            </tr>
+                            // ) : error ? (
+                            //     /* Error State */
+                            //     <tr>
+                            //         <td colSpan={6} className="text-center text-red-600 py-4">
+                            //             Error: {error}
+                            //         </td>
+                            //     </tr>
                         ) : staffData.length > 0 ? (
                             staffData.map((staff) => (
                                 <tr key={staff.staff} className="border-b-2">
@@ -330,7 +332,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                     editStaffData={staffData.find((staff) => staff.staff === selectedStaffID) || defaultEditStaffData}
                 />
             )}
-            
+
             {showDeleteStaffPopup && <DeleteStaffPopup
                 closePopup={closeDeleteStaffPopup}
                 staffID={Number(selectedStaffID)}

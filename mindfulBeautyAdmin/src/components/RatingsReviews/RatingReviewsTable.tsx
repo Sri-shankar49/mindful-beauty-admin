@@ -10,6 +10,7 @@ import { ShimmerTable } from 'shimmer-effects-react';
 // import { RiDeleteBinLine } from "react-icons/ri";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
+import { NotifyError } from '@/common/Toast/ToastMessage';
 
 interface RatingReviewsTableProps {
   // review_id?: string;
@@ -43,7 +44,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
 
   const [reviewsListData, setReviewsListData] = useState<RatingReviewsTableProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
 
   // Pagination state
@@ -68,7 +69,8 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
         console.log("Fetched Reviews List pagination count data log :", data.count);
 
       } catch (error: any) {
-        setError(error.message || 'Failed to fetch Reviews list');
+        // setError(error.message || 'Failed to fetch Reviews list');
+        NotifyError(error.message || 'Failed to fetch Reviews list');
       } finally {
         setLoading(false); // Ensure loading is false after fetching
       }
@@ -106,7 +108,8 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
         console.log("Fetched Reviews List pagination count data log :", data.count);
 
       } catch (error: any) {
-        setError(error.message || "Unable to fetch Reviews data. Please try again later.");
+        // setError(error.message || "Unable to fetch Reviews data. Please try again later.");
+        NotifyError(error.message || "Unable to fetch Reviews data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -130,7 +133,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
   const handleReviewAction = async (reviewID: number, statusID: number, userID: number) => {
 
     setLoading(true);
-    setError(null);
+    // setError(null);
 
     console.log("Review ID: ", reviewID);
     console.log("Status ID: ", statusID);
@@ -149,7 +152,8 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
 
       }
     } catch (error: any) {
-      setError(error.message || 'Failed to do review action');
+      // setError(error.message || 'Failed to do review action');
+      NotifyError(error.message || 'Failed to do review action');
     } finally {
       setLoading(false); // Ensure loading is false after fetching
     }
@@ -281,13 +285,13 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
                           />
                         </td>
                       </tr>
-                    ) : error ? (
-                      /* Error State */
-                      <tr>
-                        <td colSpan={8} className="text-center text-red-600 py-5">
-                          Error: {error}
-                        </td>
-                      </tr>
+                      // ) : error ? (
+                      //   /* Error State */
+                      //   <tr>
+                      //     <td colSpan={8} className="text-center text-red-600 py-5">
+                      //       Error: {error}
+                      //     </td>
+                      //   </tr>
                     ) : (
                       reviewsListData.length > 0 ? (
                         reviewsListData.map((review) => (

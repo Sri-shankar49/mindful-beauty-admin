@@ -7,6 +7,7 @@ import { InputField } from '@/common/InputField';
 import { salesTransactionsList, fetchSalesTransactionsByFilters, salesTransactionsInvoice, salesTransactionsCSV } from "@/api/apiConfig";
 import { Pagination } from "@/common/Pagination";
 import { ShimmerTable } from "shimmer-effects-react";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 interface SalesTransactionProps {
     amount: number;
@@ -29,7 +30,7 @@ export const SalesTransactionsTable: React.FC = () => {
     const [showInvoicePopup, setShowInvoicePopup] = useState(false);
     const [loading, setLoading] = useState(false);
     // const [loading1, setLoading1] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [salesTransactionsData, setSalesTransactionsData] = useState<SalesTransactionProps[]>([]);
     // Pagination state
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -56,7 +57,8 @@ export const SalesTransactionsTable: React.FC = () => {
                 console.log("Fetched Service List data log:", data);
                 console.log("Fetched Booking List pagination count data log :", data.count);
             } catch (error: any) {
-                setError(error.message || "Failed to fetch service list data.");
+                // setError(error.message || "Failed to fetch service list data.");
+                NotifyError(error.message || "Failed to fetch service list data.");
             } finally {
                 setLoading(false);
             }
@@ -112,7 +114,8 @@ export const SalesTransactionsTable: React.FC = () => {
             console.log("Filtered Sales Transactions:", response);
             setSalesTransactionsData(response.results || []);
         } catch (error: any) {
-            setError(error.message || "Failed to fetch filtered sales transactions.");
+            // setError(error.message || "Failed to fetch filtered sales transactions.");
+            NotifyError(error.message || "Failed to fetch filtered sales transactions.");
         } finally {
             setLoading(false);
         }
@@ -130,7 +133,8 @@ export const SalesTransactionsTable: React.FC = () => {
             const response = await salesTransactionsList(Number(sessionLoginProviderID), currentPage);
             setSalesTransactionsData(response.results || []);
         } catch (error: any) {
-            setError(error.message || "Failed to fetch default sales transactions.");
+            // setError(error.message || "Failed to fetch default sales transactions.");
+            NotifyError(error.message || "Failed to fetch default sales transactions.");
         } finally {
             setLoading(false);
         }
@@ -160,7 +164,8 @@ export const SalesTransactionsTable: React.FC = () => {
 
         }
         catch (error: any) {
-            setError(error.message || "Failed to download CSV file.");
+            // setError(error.message || "Failed to download CSV file.");
+            NotifyError(error.message || "Failed to download CSV file.");
         }
         finally {
             setLoading(false);// Reset the loading state
@@ -192,7 +197,8 @@ export const SalesTransactionsTable: React.FC = () => {
 
         }
         catch (error: any) {
-            setError(error.message || "Failed to download sales & transactions Invoice.");
+            // setError(error.message || "Failed to download sales & transactions Invoice.");
+            NotifyError(error.message || "Failed to download sales & transactions Invoice.");
         }
         finally {
             setLoading(false);// Reset the loading state
@@ -377,13 +383,13 @@ export const SalesTransactionsTable: React.FC = () => {
                                             />
                                         </td>
                                     </tr>
-                                ) : error ? (
-                                    /* Error State */
-                                    <tr>
-                                        <td colSpan={14} className="text-center text-red-600 py-5">
-                                            Error: {error}
-                                        </td>
-                                    </tr>
+                                    // ) : error ? (
+                                    //     /* Error State */
+                                    //     <tr>
+                                    //         <td colSpan={14} className="text-center text-red-600 py-5">
+                                    //             Error: {error}
+                                    //         </td>
+                                    //     </tr>
                                 ) : (
                                     salesTransactionsData.length > 0 ? (
                                         salesTransactionsData.map((transaction) => (
