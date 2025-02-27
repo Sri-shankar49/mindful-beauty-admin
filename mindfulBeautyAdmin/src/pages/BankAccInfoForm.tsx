@@ -305,7 +305,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Reset Button */}
                                                 <Button
-                                                    onClick={() => location.reload()}
+                                                    onClick={() => window.location.reload()}
                                                     buttonType="button"
                                                     buttonTitle="Reset"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"

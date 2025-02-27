@@ -110,7 +110,7 @@ function App() {
               contactNumber={''}
               ownersName={''}
               salonName={''}
-            />
+              providerImage={''} />
           } />
           <Route path="/BankAccInfoForm" element={
             <BankAccInfoForm
@@ -132,7 +132,7 @@ function App() {
               fullName={''}
               emailAddress={''}
               contactNumber={''}
-              yearsOfExperience={''} />
+              yearsOfExperience={''} providerImage={''} />
           } />
           <Route path="/BankAccInfoFreelanceForm" element={<BankAccInfoFreelanceForm />} />
           <Route path="/TaxInfoFreelanceForm" element={<TaxInfoFreelanceForm />} />
