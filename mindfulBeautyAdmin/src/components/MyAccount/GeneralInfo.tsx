@@ -1,7 +1,7 @@
 // import { Button } from "@/common/Button";
 import { useState, useEffect } from "react";
 import { MdCloudUpload } from "react-icons/md";
-import { fetchGeneralInfoDetails, googleMapApi, updateGeneralInfo } from "@/api/apiConfig";
+import { fetchGeneralInfoDetails, googleMapApi, updateGeneralInfo, uploadTaxFiles } from "@/api/apiConfig";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -136,6 +136,7 @@ export const GeneralInfo = () => {
 
                 // Optionally, store the full address in a separate state if needed
                 setSelectedLocation(fullAddress); // Store the full address instead of the description
+                setValue('salonLocation', fullAddress);
                 console.log("Latitude:", lat(), "Longitude:", lng());
             } else {
                 console.error("Geocoding failed:", status);
@@ -287,6 +288,41 @@ export const GeneralInfo = () => {
             });
             setSubmitSuccess("Profile updated successfully!");
             console.log("Profile data saved", profileDataSave);
+
+            // Prepare the FormData for file uploads
+            const formData = new FormData();
+            formData.append('provider_id', String(sessionProviderID));
+
+            if (taxId) {
+                formData.append('tax_id', String(taxId)); // Pass the tax_id from the state here
+            }
+
+            if (selectedFiles["image_url"]) {
+                formData.append('image_url', selectedFiles["image_url"]);
+            }
+
+            if (selectedFiles["tax_file"]) {
+                formData.append('tax_file', selectedFiles["tax_file"]);
+            }
+
+            if (selectedFiles["gst_file"]) {
+                formData.append('gst_file', selectedFiles["gst_file"]);
+            }
+
+            if (selectedFiles["identity_file"]) {
+                formData.append('identity_file', selectedFiles["identity_file"]);
+            }
+
+            if (selectedFiles["address_file"]) {
+                formData.append('address_file', selectedFiles["address_file"]);
+            }
+
+            // Now, upload the files using the uploadTaxFiles API
+            const fileUploadResponse = await uploadTaxFiles(formData);
+            console.log("Tax files uploaded successfully:", fileUploadResponse);
+
+            setSubmitSuccess("Profile updated and files uploaded successfully!");
+
         } catch (error) {
             setSubmitError(error instanceof Error ? error.message : "Failed to update profile");
         } finally {
@@ -548,7 +584,7 @@ export const GeneralInfo = () => {
 
                                         <div>
                                             <label
-                                                htmlFor="upload-photo1"
+                                                htmlFor="providerImage"
                                                 className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
                                             >
                                                 <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />

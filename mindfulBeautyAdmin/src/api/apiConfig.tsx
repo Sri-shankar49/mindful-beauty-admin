@@ -1946,7 +1946,7 @@ export const paymentStatus = async (appointmentID: number, paymentStatus: string
 // GET Method from the API
 export const invoiceDetails = async (appointmentId: number) => {
   try {
-    const response = await apiAxios.get(`provider-api/invoice/?appointment_id=${appointmentId}`);
+    const response = await apiAxios.get(`/provider-api/invoice/?appointment_id=${appointmentId}`);
 
     console.log("Sales & Transactions list GET Method response", response.data);
 
@@ -2274,6 +2274,29 @@ export const updateGeneralInfo = async (data: any) => {
 };
 
 
+
+export const uploadTaxFiles = async (formData: FormData): Promise<any> => {
+  try {
+    // Sending the PUT request with FormData 
+    const response = await apiAxios.put(`/provider-api/upload-tax-files/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Indicating that we're sending form data
+      },
+    });
+
+    console.log("Upload Tax Files response:", response.data);
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to upload tax files. Unexpected response.");
+    }
+
+    // If successful, return the result
+    return response.data;
+  } catch (error: any) {
+    console.error("Error uploading tax files:", error.message || error);
+    throw new Error(error.response?.data?.message || "Unable to upload tax files. Please try again later.");
+  }
+};
 
 
 // Fetch Messages

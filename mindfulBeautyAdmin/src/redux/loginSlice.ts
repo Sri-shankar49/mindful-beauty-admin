@@ -10,6 +10,7 @@ interface loginState {
     loginBranchID: number | null;
     providerLogo: string | null;
     providerOnlineStatus: number | null;
+    freelancer: boolean | null;
 }
 
 const initialState: loginState = {
@@ -21,6 +22,7 @@ const initialState: loginState = {
     loginBranchID: null,
     providerLogo: null,
     providerOnlineStatus: null,
+    freelancer: null,
 }
 
 // Thunk for OTP Validation
@@ -39,6 +41,7 @@ export const verifyOTPThunk = createAsyncThunk('login/verifyOTP', async ({ phone
                 loginBranchID: response.branch_id,
                 providerLogo: response.image_url,
                 providerOnlineStatus: response.branch_online_status,
+                freelancer: response.freelancer,
                 // permissions: {
                 //     "dashboard": true,
                 //     "manage_role": true,
@@ -86,6 +89,7 @@ export const loginSlice = createSlice({
             state.loginBranchID = null;
             state.providerLogo = null;
             state.providerOnlineStatus = null;
+            state.freelancer = null;
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('EnteredPhoneNumber');
             sessionStorage.removeItem('loginProviderID');
@@ -93,23 +97,26 @@ export const loginSlice = createSlice({
             sessionStorage.removeItem('loginBranchID');
             sessionStorage.removeItem('providerLogo');
             sessionStorage.removeItem('providerOnlineStatus');
+            sessionStorage.removeItem('freelancer');
         },
     },
     extraReducers: builder => {
         builder
-            .addCase(verifyOTPThunk.fulfilled, (state, action: PayloadAction<{ token: string; loginProviderID: number; loginBranchID: number; providerLogo: string; providerOnlineStatus: number; permissions: { [key: string]: boolean }; }>) => {
+            .addCase(verifyOTPThunk.fulfilled, (state, action: PayloadAction<{ token: string; loginProviderID: number; loginBranchID: number; providerLogo: string; providerOnlineStatus: number; freelancer: boolean; permissions: { [key: string]: boolean }; }>) => {
                 state.token = action.payload.token;
                 state.loginProviderID = action.payload.loginProviderID;
                 state.permissions = action.payload.permissions;        // Update permissions dynamically
                 state.loginBranchID = action.payload.loginBranchID;
                 state.providerLogo = action.payload.providerLogo;
                 state.providerOnlineStatus = action.payload.providerOnlineStatus;
+                state.freelancer = action.payload.freelancer;
                 sessionStorage.setItem('token', action.payload.token); // Sync token with session storage
                 sessionStorage.setItem('loginProviderID', String(action.payload.loginProviderID)); // Sync loginProviderID with session storage
                 sessionStorage.setItem('permissions', JSON.stringify(action.payload.permissions));
                 sessionStorage.setItem('loginBranchID', String(action.payload.loginBranchID)); // Sync loginBranchID with session storage
                 sessionStorage.setItem('providerLogo', String(action.payload.providerLogo)); // Sync providerLogo with session storage
                 sessionStorage.setItem('providerOnlineStatus', String(action.payload.providerOnlineStatus)); // Sync providerOnlineStatus with session storage
+                sessionStorage.setItem('freelancer', String(action.payload.freelancer)); // Sync freelancer with session storage
                 state.otpError = null; // Clear OTP error on success
             })
             .addCase(verifyOTPThunk.rejected, (state, action) => {

@@ -1,6 +1,6 @@
 import { IoCloseCircle } from 'react-icons/io5'
 import { Button } from '@/common/Button'
-import { invoiceDetails } from '@/api/apiConfig';
+import { invoiceDetails, salesTransactionsInvoice } from '@/api/apiConfig';
 import { useEffect, useState } from 'react';
 import { ShimmerTable } from 'shimmer-effects-react';
 
@@ -79,8 +79,8 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                 } else {
                     setError("Failed to fetch invoice details");
                 }
-            } catch (error) {
-                setError("Error fetching invoice data");
+            } catch (error: any) {
+                setError(error.message || "Error fetching invoice data");
             } finally {
                 setLoading(false);
             }
@@ -89,180 +89,214 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
         fetchInvoiceDetails();
     }, [appointmentId]);
 
+
+    // Function Handler for downloading the sales transactions invoice
+    const handleDownloadInvoice = async (appointmentID: number) => {
+
+        try {
+            // setLoading(true);
+            const blob = await salesTransactionsInvoice(appointmentID);
+
+            // Create a link element and trigger download
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `invoice_${appointmentID}.pdf`); // Assuming it's a PDF
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            console.log("Sales & transactions invoice downloaded successfully.");
+
+        }
+        catch (error: any) {
+            // setError(error.message || "Failed to download sales & transactions Invoice.");
+            NotifyError(error.message || "Failed to download sales & transactions Invoice.");
+        }
+        finally {
+            setLoading(false);// Reset the loading state
+        }
+    }
+
+
     // if (loading) return <div>Loading...</div>;
     // if (error) return <div>{error}</div>
 
     return (
         <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
             {/* <div className="container mx-auto"> */}
-                <div className="relative bg-white rounded-[5px] w-6/12 mx-auto px-20 py-10 my-5overflow-y-auto h-[90%]">
-                    {/* Close Button */}
-                    <div onClick={closePopup} className="absolute top-5 right-5 w-fit cursor-pointer">
-                        <IoCloseCircle className="text-mindfulGrey text-[32px]" />
+            <div className="relative bg-white rounded-[5px] w-6/12 mx-auto px-20 py-10 my-5overflow-y-auto h-[90%]">
+                {/* Close Button */}
+                <div onClick={closePopup} className="absolute top-5 right-5 w-fit cursor-pointer">
+                    <IoCloseCircle className="text-mindfulGrey text-[32px]" />
+                </div>
+
+                {loading ? (
+                    <div>
+                        <ShimmerTable
+                            mode="light"
+                            row={8}
+                            col={2}
+                            border={1}
+                            borderColor={"#cbd5e1"}
+                            rounded={0.25}
+                            rowGap={16}
+                            colPadding={[15, 5, 15, 5]}
+                        />
                     </div>
-
-                    {loading ? (
-                        <div>
-                            <ShimmerTable
-                                mode="light"
-                                row={8}
-                                col={2}
-                                border={1}
-                                borderColor={"#cbd5e1"}
-                                rounded={0.25}
-                                rowGap={16}
-                                colPadding={[15, 5, 15, 5]}
-                            />
-                        </div>
-                    ) : error ? (
-                        <p className="text-sm text-red-600">{error}</p>
-                    ) : (
-                        <div className="">
-                            {/* Invoice to & Payment Details */}
-                            <div className="grid grid-cols-2 gap-x-5 items-center mb-10">
-                                {/* Grid Column One */}
-                                <div className="space-y-5">
-                                    {/* Invoice to: */}
-                                    <div className="">
-                                        <h5 className="text-md text-mindfulBlack font-semibold mb-5">
-                                            Invoice to:
-                                        </h5>
-                                        <p className="text-md text-mindfulBlack">
-                                            {invoiceData?.user.name} | {invoiceData?.user.phone}
-                                        </p>
-                                        <p className="text-md text-mindfulBlack">
-                                            {invoiceData?.user.address}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Grid Column two */}
-                                <div className="space-y-5">
-                                    {/* Payment Details: */}
-                                    <div className="">
-                                        <h5 className="text-md text-mindfulBlack font-semibold mb-5">
-                                            Payment Details:
-                                        </h5>
-                                        <table className="w-full">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Total Due:</td>
-                                                    <td>
-                                                        <span className="text-md text-mindfulBlack font-bold text-end">
-                                                            Rs. {invoiceData?.payment.grand_total}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Payment Mode:</td>
-                                                    <td>
-                                                        <span className="text-md text-mindfulBlack uppercase text-end">
-                                                            {invoiceData?.payment.payment_mode}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Payment Status:</td>
-                                                    <td>
-                                                        <span className="text-md text-mindfulBlack uppercase text-end">
-                                                            {invoiceData?.payment.payment_status}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Coupon:</td>
-                                                    <td>
-                                                        <span className="text-md text-mindfulBlack uppercase text-end">
-                                                            {invoiceData?.payment.coupon_code || 'NIL'}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Description & Charges */}
-                            <div>
-                                <div className="w-3/4 mx-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="bg-mindfulLightgrey">
-                                                <th className="text-lg text-mindfulBlack font-normal text-start px-2 py-2">Description</th>
-                                                <th className="text-lg text-mindfulBlack font-normal text-start px-2 py-2">Charges</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody className="border-b-2">
-                                            {invoiceData?.services.map((service, index) => (
-                                                <tr key={index}>
-                                                    <td className="font-semibold px-2 py-2">{service.name}</td>
-                                                    <td>
-                                                        <span className="text-md text-mindfulBlack font-semibold text-end px-2 py-2">
-                                                            Rs. {service.price}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-
-                                    <div className="w-3/4 mx-auto">
-                                        <table className="w-full">
-                                            <tr className="border-b-2">
-                                                <td className="text-lg text-mindfulBlack font-semibold px-2 py-2">Sub total:</td>
-                                            </tr>
-                                            <tbody>
-                                                <tr className="border-b-2">
-                                                    <td className="px-2 py-3">SGST Tax:</td>
-                                                    <td className="px-2 py-3">Rs. {invoiceData?.payment.sgst}</td>
-                                                </tr>
-                                                <tr className="border-b-2">
-                                                    <td className="px-2 py-3">CGST Tax:</td>
-                                                    <td className="px-2 py-3">Rs. {invoiceData?.payment.cgst}</td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td className="text-md text-mindfulBlack font-semibold uppercase px-2 py-5">Total:</td>
-                                                    <td className="text-md text-mindfulBlack font-semibold px-2 py-5">
-                                                        Rs. {invoiceData?.payment.grand_total}
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-
-                                    {/* Download Button */}
-                                    <div className="text-center py-5">
-                                        <Button
-                                            buttonType="button"
-                                            buttonTitle="Download"
-                                            className="bg-main text-lg text-mindfulWhite rounded-sm px-8 py-2"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='pb-5'>
-                                {/* Rupees in words */}
-                                <div className="grid grid-cols-4">
-                                    <p>Rupees in words:</p>
-                                    <p className="col-span-3 text-md text-mindfulBlack font-semibold">
-                                        {invoiceData?.payment.grand_total ? numberToWords(invoiceData.payment.grand_total) : 'ZERO'}
+                ) : error ? (
+                    <p className="text-sm text-red-600">{error}</p>
+                ) : (
+                    <div className="">
+                        {/* Invoice to & Payment Details */}
+                        <div className="grid grid-cols-2 gap-x-5 items-center mb-10">
+                            {/* Grid Column One */}
+                            <div className="space-y-5">
+                                {/* Invoice to: */}
+                                <div className="">
+                                    <h5 className="text-md text-mindfulBlack font-semibold mb-5">
+                                        Invoice to:
+                                    </h5>
+                                    <p className="text-md text-mindfulBlack">
+                                        {invoiceData?.user.name} | {invoiceData?.user.phone}
+                                    </p>
+                                    <p className="text-md text-mindfulBlack">
+                                        {invoiceData?.user.address}
                                     </p>
                                 </div>
                             </div>
 
-                            <div>
-                                <p>1. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                {/* <p>2. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
-                                {/* <p>3. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
+                            {/* Grid Column two */}
+                            <div className="space-y-5">
+                                {/* Payment Details: */}
+                                <div className="">
+                                    <h5 className="text-md text-mindfulBlack font-semibold mb-5">
+                                        Payment Details:
+                                    </h5>
+                                    <table className="w-full">
+                                        <tbody>
+                                            <tr>
+                                                <td>Total Due:</td>
+                                                <td>
+                                                    <span className="text-md text-mindfulBlack font-bold text-end">
+                                                        Rs. {invoiceData?.payment.grand_total}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Payment Mode:</td>
+                                                <td>
+                                                    <span className="text-md text-mindfulBlack uppercase text-end">
+                                                        {invoiceData?.payment.payment_mode}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Payment Status:</td>
+                                                <td>
+                                                    <span className="text-md text-mindfulBlack uppercase text-end">
+                                                        {invoiceData?.payment.payment_status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Coupon:</td>
+                                                <td>
+                                                    <span className="text-md text-mindfulBlack uppercase text-end">
+                                                        {invoiceData?.payment.coupon_code || 'NIL'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    )}
-                </div>
+
+                        {/* Description & Charges */}
+                        <div>
+                            <div className="w-3/4 mx-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="bg-mindfulLightgrey">
+                                            <th className="text-lg text-mindfulBlack font-normal text-start px-2 py-2">Description</th>
+                                            <th className="text-lg text-mindfulBlack font-normal text-start px-2 py-2">Charges</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody className="border-b-2">
+                                        {invoiceData?.services.map((service, index) => (
+                                            <tr key={index}>
+                                                <td className="font-semibold px-2 py-2">{service.name}</td>
+                                                <td>
+                                                    <span className="text-md text-mindfulBlack font-semibold text-end px-2 py-2">
+                                                        Rs. {service.price}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="w-3/4 mx-auto">
+                                    <table className="w-full">
+                                        <tr className="border-b-2">
+                                            <td className="text-lg text-mindfulBlack font-semibold px-2 py-2">Sub total:</td>
+                                        </tr>
+                                        <tbody>
+                                            <tr className="border-b-2">
+                                                <td className="px-2 py-3">SGST Tax:</td>
+                                                <td className="px-2 py-3">Rs. {invoiceData?.payment.sgst}</td>
+                                            </tr>
+                                            <tr className="border-b-2">
+                                                <td className="px-2 py-3">CGST Tax:</td>
+                                                <td className="px-2 py-3">Rs. {invoiceData?.payment.cgst}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td className="text-md text-mindfulBlack font-semibold uppercase px-2 py-5">Total:</td>
+                                                <td className="text-md text-mindfulBlack font-semibold px-2 py-5">
+                                                    Rs. {invoiceData?.payment.grand_total}
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                                {/* Download Button */}
+                                <div className="text-center py-5">
+                                    <Button
+                                        onClick={() => handleDownloadInvoice(appointmentId)}
+                                        buttonType="button"
+                                        buttonTitle="Download"
+                                        className="bg-main text-lg text-mindfulWhite border-[1px] rounded-sm px-8 py-2 cursor-pointer hover:bg-mindfulWhite hover:text-main hover:border-main"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='pb-5'>
+                            {/* Rupees in words */}
+                            <div className="grid grid-cols-4">
+                                <p>Rupees in words:</p>
+                                <p className="col-span-3 text-md text-mindfulBlack font-semibold">
+                                    {invoiceData?.payment.grand_total ? numberToWords(invoiceData.payment.grand_total) : 'ZERO'}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div>
+                            {/* <p>1. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
+                            {/* <p>2. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
+                            {/* <p>3. Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> */}
+                        </div>
+                    </div>
+                )}
+            </div>
             {/* </div> */}
         </div >
     )

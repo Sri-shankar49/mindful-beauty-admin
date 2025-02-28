@@ -10,6 +10,8 @@ import { DenialPopup } from "./DashBoardData/DenialPopup"
 import stylist from "../../assets/images/stylist.png"
 import { WalletPopup } from "./WalletPopup";
 import { NotifyError } from "@/common/Toast/ToastMessage";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 // Define the type for each option
 interface StylistOption {
@@ -48,6 +50,12 @@ interface BeauticiansDataProps {
     photo: any;
 }
 export const DashBoardData = () => {
+
+    // Getting Freelancer state from Redux
+    const { freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status", freelancer);
+
+
     // State declaration for Denial Popup
     const [showDenialPopup, setShowDenialPopup] = useState(false);
     // State declaration for Stylist Popup
@@ -168,10 +176,12 @@ export const DashBoardData = () => {
         }
 
     }
+
+
     const handleActionSubmit = async (appointmentID: number, stylistID: number, actionID: number,) => {
 
-        // Check if stylist is selected
-        if (!selectedStylist) {
+        // ✅ If NOT a freelancer, check if a stylist is selected
+        if (!freelancer && !selectedStylist) {
             // Set error message for the specific appointment
             setStylistError((prevState) => ({
                 ...prevState,
@@ -196,7 +206,10 @@ export const DashBoardData = () => {
                     }));
 
                     // Clear selected stylist after accepting the appointment
-                    setSelectedStylist(null);
+                    // setSelectedStylist(null);
+                    
+                    // ✅ If NOT a freelancer, clear selected stylist after accepting
+                    if (!freelancer) setSelectedStylist(null);
 
                 } else if (actionID === 2) { // Action for Decline
                     setDeclinedAppointments((prevState) => ({
@@ -257,15 +270,15 @@ export const DashBoardData = () => {
                         <table className="w-full border-[1px] rounded-lg px-2 py-2">
                             <thead className="bg-mindfulLightgrey border-b-[1px]">
                                 <tr className="">
-                                    <th className="w- text-start px-2 py-3">Booking ID</th>
-                                    <th className="w- px-2 py-3">Date</th>
-                                    <th className="w- px-2 py-3">Time</th>
-                                    <th className="w- px-2 py-3">Branch</th>
-                                    <th className="w- text-start px-2 py-3">Cust. Name</th>
-                                    <th className="w- text-start px-2 py-3">Cust. Mobile</th>
-                                    <th className="w- text-start px-2 py-3">Service</th>
-                                    <th className="w- text-start px-2 py-3">Assign Stylist</th>
-                                    <th className="w- text-start px-2 py-3">Action</th>
+                                    <th className="text-start px-2 py-3">Booking ID</th>
+                                    <th className="text-start px-2 py-3">Date</th>
+                                    <th className="text-start px-2 py-3">Time</th>
+                                    <th className="text-start px-2 py-3">Branch</th>
+                                    <th className="text-start px-2 py-3">Cust. Name</th>
+                                    <th className="text-start px-2 py-3">Cust. Mobile</th>
+                                    <th className="text-start px-2 py-3">Service</th>
+                                    {freelancer !== true && <th className="text-start px-2 py-3">Assign Stylist</th>}
+                                    <th className="text-start px-2 py-3">Action</th>
                                 </tr>
                             </thead>
 
@@ -306,43 +319,48 @@ export const DashBoardData = () => {
                                                         ))}
                                                     </ul>
                                                 </td>
-                                                <td className="text-start px-2 py-5">
-                                                    {/* Stylist Select Field */}
-                                                    <div>
-                                                        <Select
-                                                            placeholder="Select Option"
-                                                            // value={selectedStylistOption}
-                                                            // options={stylistData}
-                                                            options={beauticiansListData.map((beautician) => ({
-                                                                value: beautician.staff,
-                                                                text: beautician.name,
-                                                                icon: beautician.photo || stylist,
-                                                            }))}
-                                                            // onChange={handleStylistOption}
-                                                            onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
-                                                            getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                                                            formatOptionLabel={(option) => (
-                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                    <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
-                                                                    <span style={{ marginLeft: 5 }}>{option.text}</span>
-                                                                </div>
-                                                            )}
-                                                            getOptionValue={(option) => option.value.toString()}
-                                                            value={selectedStylists[dashboardData.appointment_id] ?
-                                                                {
-                                                                    value: selectedStylists[dashboardData.appointment_id].staff,
-                                                                    text: selectedStylists[dashboardData.appointment_id].name,
-                                                                    icon: selectedStylists[dashboardData.appointment_id].photo || stylist,
-                                                                }
-                                                                : null}
-                                                        />
 
-                                                        {/* Display the error message for the specific appointment */}
-                                                        {stylistError && stylistError[dashboardData.appointment_id] && (
-                                                            <div className="text-sm text-red-600">{stylistError[dashboardData.appointment_id]}</div>
-                                                        )}
-                                                    </div>
-                                                </td>
+
+                                                {freelancer !== true &&
+                                                    <td className="text-start px-2 py-5">
+                                                        {/* Stylist Select Field */}
+                                                        <div>
+                                                            <Select
+                                                                placeholder="Select Option"
+                                                                // value={selectedStylistOption}
+                                                                // options={stylistData}
+                                                                options={beauticiansListData.map((beautician) => ({
+                                                                    value: beautician.staff,
+                                                                    text: beautician.name,
+                                                                    icon: beautician.photo || stylist,
+                                                                }))}
+                                                                // onChange={handleStylistOption}
+                                                                onChange={(newValue) => handleStylistOption(newValue, dashboardData.appointment_id)} // Pass appointmentID here
+                                                                getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                                                                formatOptionLabel={(option) => (
+                                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                        <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
+                                                                        <span style={{ marginLeft: 5 }}>{option.text}</span>
+                                                                    </div>
+                                                                )}
+                                                                getOptionValue={(option) => option.value.toString()}
+                                                                value={selectedStylists[dashboardData.appointment_id] ?
+                                                                    {
+                                                                        value: selectedStylists[dashboardData.appointment_id].staff,
+                                                                        text: selectedStylists[dashboardData.appointment_id].name,
+                                                                        icon: selectedStylists[dashboardData.appointment_id].photo || stylist,
+                                                                    }
+                                                                    : null}
+                                                            />
+
+                                                            {/* Display the error message for the specific appointment */}
+                                                            {stylistError && stylistError[dashboardData.appointment_id] && (
+                                                                <div className="text-sm text-red-600">{stylistError[dashboardData.appointment_id]}</div>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                }
+
 
                                                 <td className="text-center px-2 py-5">
                                                     <div className="space-y-3">

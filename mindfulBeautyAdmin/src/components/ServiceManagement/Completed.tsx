@@ -10,7 +10,7 @@ import { FiDownload } from "react-icons/fi";
 import { PaymentDetailsPopup } from "./Completed/PaymentDetailsPopup";
 import { InvoicePopup } from "./Completed/InvoicePopup";
 import { Pagination } from "@/common/Pagination";
-import { beauticiansList, modifyStatus, paymentStatus } from "@/api/apiConfig";
+import { beauticiansList, modifyStatus, paymentStatus, salesTransactionsInvoice } from "@/api/apiConfig";
 import { ShimmerTable } from "shimmer-effects-react";
 import { SelectField } from "@/common/SelectField";
 import stylist from "../../assets/images/stylist.png"
@@ -197,6 +197,8 @@ export const Completed = () => {
   const [showPaymentDetailsPopup, setShowPaymentDetailsPopup] = useState(false);
   const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<any>(null); // Store entire completed object
 
+  const [selectedAppointmentID, setSelectedAppointmentID] = useState<any>(null); // Store entire completed object
+
   const openPaymentDetailsPopup = (completedData: any) => {
     setSelectedPaymentDetails(completedData); // Store full appointment data
     setShowPaymentDetailsPopup(true);
@@ -210,7 +212,8 @@ export const Completed = () => {
   // State Declaration for Invoice Popup
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
-  const openInvoicePopup = () => {
+  const openInvoicePopup = (appointmentID: any) => {
+    setSelectedAppointmentID(appointmentID);
     setShowInvoicePopup(!showInvoicePopup)
   }
 
@@ -332,6 +335,38 @@ export const Completed = () => {
 
     }
   };
+
+
+  // Function Handler for downloading the sales transactions invoice
+  const handleDownloadInvoice = async (appointmentID: number) => {
+
+    try {
+      // setLoading(true);
+      const blob = await salesTransactionsInvoice(appointmentID);
+
+      // Create a link element and trigger download
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `invoice_${appointmentID}.pdf`); // Assuming it's a PDF
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      console.log("Sales & transactions invoice downloaded successfully.");
+
+    }
+    catch (error: any) {
+      // setError(error.message || "Failed to download sales & transactions Invoice.");
+      NotifyError(error.message || "Failed to download sales & transactions Invoice.");
+    }
+    finally {
+      setLoading(false);// Reset the loading state
+    }
+  }
 
 
   const handlePageChange = (page: number) => {
@@ -532,14 +567,17 @@ export const Completed = () => {
                       <div className="flex items-center space-x-2">
                         {/* Eye Button */}
                         <div
-                          onClick={openInvoicePopup}
+                          onClick={() => openInvoicePopup(completed.id)}
                           className="border-[1px] border-mindfulBlack rounded-sm px-2 py-1.5 cursor-pointer">
                           <MdOutlineRemoveRedEye className="text-[20px] text-mindfulBlack" />
                         </div>
 
                         {/* Download Button */}
-                        <div className="border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer">
-                          <FiDownload className="text-[18px] text-mindfulGreen" />
+                        <div
+                          onClick={() => handleDownloadInvoice(Number(completed.id))}
+                          className="group border-[1px] border-mindfulGreen rounded-sm px-2 py-1.5 cursor-pointer hover:bg-mindfulGreen transition-all duration-200"
+                        >
+                          <FiDownload className="text-[18px] text-mindfulGreen group-hover:text-mindfulWhite transition-all duration-200" />
                         </div>
                       </div>
                     </td>
@@ -836,7 +874,7 @@ export const Completed = () => {
         />
       )}
 
-      {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} appointmentId={0} />}
+      {showInvoicePopup && <InvoicePopup closePopup={closeInvoicePopup} appointmentId={selectedAppointmentID} />}
 
 
       {/* Pagination */}

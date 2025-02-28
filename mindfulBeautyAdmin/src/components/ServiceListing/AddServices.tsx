@@ -11,6 +11,8 @@ import { ShimmerTable } from "shimmer-effects-react";
 import { PiCopySimpleLight } from 'react-icons/pi';
 import { Button } from '@/common/Button';
 import { CopyServicesPopup } from './AddServices/CopyServicesPopup';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 interface CityDataProps {
     branch_id?: string;
@@ -74,6 +76,12 @@ interface ActiveServicesListDataProps {
 
 export const AddServices: React.FC = () => {
 
+
+    // Getting Freelancer state from Redux
+    const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Branch ID", loginBranchID, freelancer);
+
+
     const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
 
     const openCopyServicesPopup = () => {
@@ -116,62 +124,126 @@ export const AddServices: React.FC = () => {
     console.log("Selected Provider ID from session storage", sessionProviderID);
 
 
+    // useEffect(() => {
+    //     const loadCategorySelect = async () => {
+    //         setLoading(true);
+
+    //         try {
+    //             const loadCategoriesData = await categories();
+    //             const branchesData = await staffBranchList();
+
+    //             const city = await getProviderCities(Number(sessionProviderID)); // Get cities using the provider ID
+    //             // if (branchesData.data && branchesData.data.length > 0) {
+    //             //     setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
+    //             // }
+    //             // setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
+    //             // const activeServicesListData = await activeServices(Number(sessionProviderID), 1);
+    //             const activeServicesListData = await activeServices(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
+    //             console.log("Selected branch ==>", selectedBranch, loadCategoriesData)
+    //             setcategoriesData(loadCategoriesData.data);
+
+    //             setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
+
+    //             if (branchesData.data && branchesData.data.length > 0) {
+    //                 setSelectedBranch(branchesData.data[0].branch_id); // Set the first branch as default if needed
+    //             }
+
+    //             setActiveServicesData(activeServicesListData || []);// Fallback to an empty array if data is null
+
+    //             setCities(city); // Set the cities data
+
+    //             setSelectedCity(city[0].city);
+
+    //             console.log("Category list data log:", loadCategoriesData);
+
+    //             console.log("Staff branch list data log for select field:", branchesData);
+
+    //             console.log("Active Services list data log:", activeServicesListData);
+
+    //             console.log("City data log:", city);
+
+
+
+    //             // if (loadCategoriesData.status == "success") {
+    //             //     // sessionStorage.setItem("categoryID", loadCategoriesData.data[0].category_id);
+    //             //     sessionStorage.setItem("categoryID", loadCategoriesData.data.map((category: any) => (category.category_id)));
+    //             // }
+    //         }
+
+    //         catch (error: any) {
+    //             setError(error.message);
+    //         }
+    //         finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     loadCategorySelect();
+
+    // }, []);
+
+
     useEffect(() => {
         const loadCategorySelect = async () => {
             setLoading(true);
+            setError(null);
 
             try {
                 const loadCategoriesData = await categories();
                 const branchesData = await staffBranchList();
+                const city = await getProviderCities(Number(sessionProviderID));
 
-                const city = await getProviderCities(Number(sessionProviderID)); // Get cities using the provider ID
-                // if (branchesData.data && branchesData.data.length > 0) {
-                //     setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
-                // }
-                // setSelectedBranch(branchesData.length > 0 ? branchesData[0].branch_id : '');
-                // const activeServicesListData = await activeServices(Number(sessionProviderID), 1);
-                const activeServicesListData = await activeServices(Number(sessionProviderID), Number(branchesData.data[0].branch_id));
-                console.log("Selected branch ==>", selectedBranch, loadCategoriesData)
+                console.log("Freelancer:", freelancer, "Login Branch ID:", loginBranchID);
+
                 setcategoriesData(loadCategoriesData.data);
+                setStaffBranchListData(branchesData.data || []);
 
-                setStaffBranchListData(branchesData.data || []); // Fallback to an empty array if data is null
-
-                if (branchesData.data && branchesData.data.length > 0) {
-                    setSelectedBranch(branchesData.data[0].branch_id); // Set the first branch as default if needed
+                // ✅ Handle branch selection based on freelancer status
+                let defaultBranchID = null;
+                if (freelancer) {
+                    defaultBranchID = loginBranchID || null; // ✅ Use loginBranchID if freelancer
+                } else if (branchesData.data && branchesData.data.length > 0) {
+                    defaultBranchID = branchesData.data[0].branch_id; // ✅ Non-freelancer: Use first branch
                 }
 
-                setActiveServicesData(activeServicesListData || []);// Fallback to an empty array if data is null
+                console.log("Default Branch ID Set:", defaultBranchID);
 
-                setCities(city); // Set the cities data
+                setSelectedBranch(defaultBranchID);
 
-                setSelectedCity(city[0].city);
+                if (defaultBranchID) {
+                    const activeServicesListData = await activeServices(
+                        Number(sessionProviderID),
+                        Number(defaultBranchID)
+                    );
+
+                    setActiveServicesData(activeServicesListData || []);
+                    
+                    console.log("Active Services list data log:", activeServicesListData);
+
+                }
+
+                setCities(city);
+                if (city.length > 0) {
+                    setSelectedCity(city[0].city);
+                }
 
                 console.log("Category list data log:", loadCategoriesData);
-
                 console.log("Staff branch list data log for select field:", branchesData);
-
-                console.log("Active Services list data log:", activeServicesListData);
-
                 console.log("City data log:", city);
 
-
-
-                // if (loadCategoriesData.status == "success") {
-                //     // sessionStorage.setItem("categoryID", loadCategoriesData.data[0].category_id);
-                //     sessionStorage.setItem("categoryID", loadCategoriesData.data.map((category: any) => (category.category_id)));
-                // }
-            }
-
-            catch (error: any) {
+            } catch (error: any) {
                 setError(error.message);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
-        }
-        loadCategorySelect();
+        };
 
-    }, []);
+        // ✅ Ensure useEffect runs when freelancer or loginBranchID changes
+        if (freelancer === false || (freelancer === true && loginBranchID !== null)) {
+            loadCategorySelect();
+        }
+    }, [freelancer, loginBranchID]); // ✅ Dependencies updated
+
+
 
     const refreshActiveServices = async () => {
         try {
@@ -315,7 +387,14 @@ export const AddServices: React.FC = () => {
 
             formData.append("city", selectedCity); // Pass selected city
 
-            formData.append("branch_id", selectedBranch);
+            // formData.append("branch_id", selectedBranch);
+            // ✅ Conditional branch_id logic
+            if (freelancer) {
+                formData.append("branch_id", String(loginBranchID || ""));
+            } else {
+                formData.append("branch_id", String(selectedBranch || ""));
+            }
+
             // formData.append("category_id", data.category);
             formData.append("category_id", selectedCategory);
             formData.append("subcategory_id", selectedSubCategory);
@@ -516,32 +595,36 @@ export const AddServices: React.FC = () => {
 
                                     {/* Grid Column One */}
                                     <div className="space-y-5">
-                                        {/* City */}
-                                        <div>
-                                            <label
-                                                htmlFor="city"
-                                                className="text-md text-mindfulBlack font-semibold mb-1"
-                                            >
-                                                City
-                                            </label>
 
-                                            <SelectField
-                                                label={''}
-                                                // name="city"
-                                                id="city"
-                                                options={cities.map((city) => ({
-                                                    value: city.city, // Set the city name as the value
-                                                    label: city.city, // Set the city name as the label
-                                                }))}
-                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                value={selectedCity}
-                                                onChange={handleCityChange}
-                                            />
+                                        {freelancer !== true &&
+                                            //  {/* City */}
+                                            <div>
+                                                <label
+                                                    htmlFor="city"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    City
+                                                </label>
 
-                                            {/* {error.city && (
-                                                        <p className="text-sm text-red-600">{error.city}</p>
-                                                    )} */}
-                                        </div>
+                                                <SelectField
+                                                    label={''}
+                                                    // name="city"
+                                                    id="city"
+                                                    options={cities.map((city) => ({
+                                                        value: city.city, // Set the city name as the value
+                                                        label: city.city, // Set the city name as the label
+                                                    }))}
+                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    value={selectedCity}
+                                                    onChange={handleCityChange}
+                                                />
+
+                                                {/* {error.city && (
+                                                     <p className="text-sm text-red-600">{error.city}</p>
+                                                 )} */}
+                                            </div>
+                                        }
+
 
                                         {/* Category */}
                                         <div>
@@ -580,57 +663,38 @@ export const AddServices: React.FC = () => {
                                     {/* Grid Column Two */}
                                     <div className="space-y-5">
 
-                                        {/* Branch */}
-                                        <div>
-                                            <label
-                                                htmlFor="branch"
-                                                className="text-md text-mindfulBlack font-semibold mb-1"
-                                            >
-                                                Branch
-                                            </label>
-                                            {/* <SelectField
-                                                        label=""
-                                                        name="branch"
-                                                        // required
-                                                        className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                        {freelancer !== true &&
+                                            //    {/* Branch */}
+                                            <div>
+                                                <label
+                                                    htmlFor="branch"
+                                                    className="text-md text-mindfulBlack font-semibold mb-1"
+                                                >
+                                                    Branch
+                                                </label>
 
-                                                        options={
-                                                            staffBranchListData.length
-                                                                ? staffBranchListData.map((branch) => ({
-                                                                    key: branch.branch_id,
-                                                                    value: branch.branch_id ? String(branch.branch_id) : "",
-                                                                    label: branch.branch_name,
-                                                                }))
-                                                                : [{ value: "", label: "No branch available" }]
-                                                        }
-                                                        value={selectedBranch}
-                                                        onChange={handleBranchChange} // Call on change
-                                                    // error="This field is required."
-                                                    /> */}
+                                                <select
+                                                    // name=""
+                                                    id=""
+                                                    className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                    value={selectedBranch}
+                                                    onChange={handleBranchChange} // Call on change
 
-                                            <select
-                                                // name=""
-                                                id=""
-                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                value={selectedBranch}
-                                                onChange={handleBranchChange} // Call on change
-
-                                            >
-                                                <option value="" disabled>
-                                                    Select Branch
-                                                </option>
-
-                                                {staffBranchListData.map((branch) => (
-                                                    <option key={branch.branch_id} value={branch.branch_id}>
-                                                        {branch.branch_name}
+                                                >
+                                                    <option value="" disabled>
+                                                        Select Branch
                                                     </option>
-                                                ))}
-                                            </select>
 
-                                            {/* {error.branch && (
-                                                        <p className="text-sm text-red-600">{error.branch}</p>
-                                                    )} */}
-                                        </div>
+                                                    {staffBranchListData.map((branch) => (
+                                                        <option key={branch.branch_id} value={branch.branch_id}>
+                                                            {branch.branch_name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                            </div>
+                                        }
+
 
                                         {/* Sub Category */}
                                         <div>
@@ -760,65 +824,69 @@ export const AddServices: React.FC = () => {
                                     <h5 className="text-2xl font-semibold py-3">Active Services</h5>
                                 </div>
 
-                                <div className="flex items-center space-x-5">
+                                {freelancer !== true &&
+                                    <div className="flex items-center space-x-5">
 
-                                    {/* Copy Services */}
-                                    <div
-                                        onClick={openCopyServicesPopup}
-                                        className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
-                                    >
-                                        <div>
-                                            <PiCopySimpleLight className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
+                                        {/* Copy Services */}
+                                        <div
+                                            onClick={openCopyServicesPopup}
+                                            className="flex items-center bg-mindfulBlue border-[1px] border-mindfulBlue rounded-[5px] px-3 py-1.5 cursor-pointer hover:bg-mindfulWhite hover:border-mindfulBlue group"
+                                        >
+                                            <div>
+                                                <PiCopySimpleLight className="text-[18px] text-mindfulWhite group-hover:text-mindfulBlue" />
+                                            </div>
+
+                                            <Button
+                                                buttonType="button"
+                                                buttonTitle="Copy Services"
+                                                className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
+                                            />
                                         </div>
 
-                                        <Button
-                                            buttonType="button"
-                                            buttonTitle="Copy Services"
-                                            className="bg-mindfulBlue text-mindfulWhite pl-2 group-hover:bg-mindfulWhite group-hover:text-mindfulBlue"
-                                        />
-                                    </div>
+                                        {/* Branch Select Field */}
+                                        <div>
+                                            {/* <SelectField
+                                                 label=""
+                                                 name="branch"
+                                                 // required
+                                                 className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                 value={selectedBranch}
+                                                 onChange={handleBranchChange} // Call on change
+                                                 options={
+                                                     staffBranchListData.length
+                                                         ? staffBranchListData.map((branch) => ({
+                                                             key: branch.branch_id,
+                                                             value: branch.branch_id ? String(branch.branch_id) : "",
+                                                             label: branch.branch_name,
+                                                         }))
+                                                         : [{ value: "", label: "No branch available" }]
+                                                 }
+                                             // error="This field is required."
+                                             /> */}
 
-                                    {/* Branch Select Field */}
-                                    <div>
-                                        {/* <SelectField
-                                                    label=""
-                                                    name="branch"
-                                                    // required
-                                                    className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                                    value={selectedBranch}
-                                                    onChange={handleBranchChange} // Call on change
-                                                    options={
-                                                        staffBranchListData.length
-                                                            ? staffBranchListData.map((branch) => ({
-                                                                key: branch.branch_id,
-                                                                value: branch.branch_id ? String(branch.branch_id) : "",
-                                                                label: branch.branch_name,
-                                                            }))
-                                                            : [{ value: "", label: "No branch available" }]
-                                                    }
-                                                // error="This field is required."
-                                                /> */}
+                                            <select
+                                                // name=""
+                                                id=""
+                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                value={selectedBranch}
+                                                onChange={handleBranchChange} // Call on change
 
-                                        <select
-                                            // name=""
-                                            id=""
-                                            className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                            value={selectedBranch}
-                                            onChange={handleBranchChange} // Call on change
-
-                                        >
-                                            <option value="" disabled>
-                                                Select Branch
-                                            </option>
-
-                                            {staffBranchListData.map((branch) => (
-                                                <option key={branch.branch_id} value={branch.branch_id}>
-                                                    {branch.branch_name}
+                                            >
+                                                <option value="" disabled>
+                                                    Select Branch
                                                 </option>
-                                            ))}
-                                        </select>
+
+                                                {staffBranchListData.map((branch) => (
+                                                    <option key={branch.branch_id} value={branch.branch_id}>
+                                                        {branch.branch_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+
+
                             </div>
                         </div>
 

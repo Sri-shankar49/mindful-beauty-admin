@@ -231,6 +231,11 @@ export const Schedule = () => {
   // Redux state
   const { scheduleListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.schedule);
 
+  // Getting Freelancer state from Redux
+  const { freelancer } = useSelector((state: RootState) => state.login);
+  console.log("Freelancer boolean Status", freelancer);
+
+
   // Fetch schedule list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
@@ -416,7 +421,7 @@ export const Schedule = () => {
               <th className="text-start px-2 py-3">Customer Mobile</th>
               <th className="text-start px-2 py-3">Service</th>
               <th className="text-start px-2 py-3">Amount</th>
-              <th className="text-start px-2 py-3">Assign Stylist</th>
+              {freelancer !== true && <th className="text-start px-2 py-3">Assign Stylist</th>}
               <th className="text-start px-2 py-3">Modify Status</th>
               <th className="text-start px-2 py-3">Action</th>
             </tr>
@@ -477,9 +482,10 @@ export const Schedule = () => {
 
                     <td className="text-start px-2 py-5">{schedule.amount}</td>
 
-                    <td className="text-start px-2 py-5">
-                      <div>
-                        {/* <Select
+                    {freelancer !== true &&
+                      <td className="text-start px-2 py-5">
+                        <div>
+                          {/* <Select
                           placeholder="Select Option"
                           value={selectedStylistOption}
                           options={stylistData}
@@ -494,40 +500,42 @@ export const Schedule = () => {
                           getOptionValue={(option) => option.value.toString()}
                         /> */}
 
-                        <Select
-                          placeholder="Select Option"
-                          // value={selectedStylistOption}
-                          // options={stylistData}
-                          options={beauticiansListData.map((beautician) => ({
-                            value: beautician.staff,
-                            text: beautician.name,
-                            // icon: beautician.profile_image,
-                            icon: beautician.photo || stylist,
-                          }))}
-                          // onChange={handleStylistOption}
-                          onChange={(e) => handleStylistOption(e, schedule.id)}
-                          getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
-                          formatOptionLabel={(option) => (
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
-                              <span style={{ marginLeft: 5 }}>{option.text}</span>
-                            </div>
-                          )}
-                          getOptionValue={(option) => option.value.toString()}
+                          <Select
+                            placeholder="Select Option"
+                            // value={selectedStylistOption}
+                            // options={stylistData}
+                            options={beauticiansListData.map((beautician) => ({
+                              value: beautician.staff,
+                              text: beautician.name,
+                              // icon: beautician.profile_image,
+                              icon: beautician.photo || stylist,
+                            }))}
+                            // onChange={handleStylistOption}
+                            onChange={(e) => handleStylistOption(e, schedule.id)}
+                            getOptionLabel={(option) => option.text} // Use `text` as the string label for accessibility and filtering
+                            formatOptionLabel={(option) => (
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <img src={option.icon} alt={option.text} style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover' }} />
+                                <span style={{ marginLeft: 5 }}>{option.text}</span>
+                              </div>
+                            )}
+                            getOptionValue={(option) => option.value.toString()}
 
-                          value={
-                            beauticiansListData
-                              .map((beautician) => ({
-                                value: beautician.staff,
-                                text: beautician.name,
-                                // icon: beautician.profile_image,
-                                icon: beautician.photo || stylist,
-                              }))
-                              .find((option) => option.value === schedule.stylist_id) || null // Set default value
-                          }
-                        />
-                      </div>
-                    </td>
+                            value={
+                              beauticiansListData
+                                .map((beautician) => ({
+                                  value: beautician.staff,
+                                  text: beautician.name,
+                                  // icon: beautician.profile_image,
+                                  icon: beautician.photo || stylist,
+                                }))
+                                .find((option) => option.value === schedule.stylist_id) || null // Set default value
+                            }
+                          />
+                        </div>
+                      </td>
+                    }
+
 
                     <td>
                       {/* <SelectField

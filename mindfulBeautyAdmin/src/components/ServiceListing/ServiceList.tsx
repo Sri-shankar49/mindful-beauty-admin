@@ -102,6 +102,13 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { serviceListData, loading, totalItems, searchQuery } = useSelector((state: RootState) => state.service);
 
+
+    // Getting Freelancer state from Redux
+    const { freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status", freelancer);
+
+
+
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setCurrentPage(1);
@@ -242,40 +249,43 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                         <div className="flex items-center space-x-5">
 
                             {/* Branch Select Field */}
-                            <div>
-                                {/* <SelectField
-                                            label=""
-                                            name="branch"
-                                            // required
-                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                            options={[
-                                                { value: "kochi", label: "Kochi" },
-                                                { value: "trivandrum", label: "Trivandrum" },
-                                                { value: "kollam", label: "Kollam" },
-                                                { value: "thrissur", label: "Thrissur" },
-                                            ]}
-                                        // error="This field is required."
-                                        /> */}
+                            {freelancer !== true &&
+                                <div>
+                                    {/* <SelectField
+                                        label=""
+                                        name="branch"
+                                        // required
+                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                        options={[
+                                            { value: "kochi", label: "Kochi" },
+                                            { value: "trivandrum", label: "Trivandrum" },
+                                            { value: "kollam", label: "Kollam" },
+                                            { value: "thrissur", label: "Thrissur" },
+                                        ]}
+                                    // error="This field is required."
+                                    /> */}
 
-                                <select
-                                    // name=""
-                                    id=""
-                                    className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                    value={selectedBranch}
-                                    onChange={handleBranchChange} // Call on change
+                                    <select
+                                        // name=""
+                                        id=""
+                                        className="w-full rounded-[5px] border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                        value={selectedBranch}
+                                        onChange={handleBranchChange} // Call on change
 
-                                >
-                                    <option value="" disabled>
-                                        Select Branch
-                                    </option>
-
-                                    {staffBranchListData.map((branch) => (
-                                        <option key={branch.branch_id} value={branch.branch_id}>
-                                            {branch.branch_name}
+                                    >
+                                        <option value="" disabled>
+                                            Select Branch
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
+
+                                        {staffBranchListData.map((branch) => (
+                                            <option key={branch.branch_id} value={branch.branch_id}>
+                                                {branch.branch_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            }
+
 
                             {/* Add Service */}
                             <Link to="/ServiceListing/ServiceList/AddServices">
