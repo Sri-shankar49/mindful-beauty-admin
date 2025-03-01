@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import userAdmin from "../../../assets/icons/userAdmin.svg"
-import managerImg from "../../../assets/images/managerImg.png"
+// import managerImg from "../../../assets/images/managerImg.png"
 import profileThumbnail from "../../../assets/images/profileThumbail.webp"
 // import imgRounded from "../../../assets/images/imgRounded.png"
 import { MdMoreVert } from "react-icons/md";
