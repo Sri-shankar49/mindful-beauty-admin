@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
@@ -48,7 +48,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors } } = useForm<BankAccInfoFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<BankAccInfoFormData>({
         resolver: zodResolver(bankAccInfoSchema),
         defaultValues: {
             // ownersName: registartionFormData.name || '',
@@ -59,8 +59,20 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
             bankName: sessionStorage.getItem("bankName") || '',
             bankAccountNumber: sessionStorage.getItem("bankAccountNumber") || '',
             accountType: sessionStorage.getItem("accountType") || '',
+            bankBranch: sessionStorage.getItem("bankBranch") || "",
+            ifscCode: sessionStorage.getItem("ifscCode") || "",
         },
     });
+
+
+    // Sync form fields with sessionStorage on change
+    useEffect(() => {
+        const fields = ["bankAccHolderName", "bankName", "bankAccountNumber", "accountType", "bankBranch", "ifscCode"];
+        fields.forEach(field => {
+            const storedValue = sessionStorage.getItem(field);
+            if (storedValue) setValue(field as keyof BankAccInfoFormData, storedValue);
+        });
+    }, [setValue]);
 
 
     const onSubmit = async (data: BankAccInfoFormData) => {
@@ -94,6 +106,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
             sessionStorage.setItem("bankName", bankAccInfoData.data.bank_name);
             sessionStorage.setItem("bankAccountNumber", bankAccInfoData.data.bank_account_number);
             sessionStorage.setItem("accountType", bankAccInfoData.data.account_type);
+            sessionStorage.setItem("bankBranch", data.bankBranch || "");
+            sessionStorage.setItem("ifscCode", data.ifscCode || "");
 
             // Navigate to the next step
             navigate("/TaxInfoForm");
@@ -187,7 +201,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="accHolderName"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Account Holder Name
+                                                    Bank Account Holder Name <span className="text-main"> *</span>
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -206,7 +220,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="bankName"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Name
+                                                    Bank Name <span className="text-main"> *</span>
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -225,7 +239,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="bankAccountNumber"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Account Number
+                                                    Bank Account Number <span className="text-main"> *</span>
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -246,7 +260,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="accountType"
                                                     className="text-lg text-mindfulBlack">
-                                                    Account Type
+                                                    Account Type <span className="text-main"> *</span>
                                                 </label>
                                                 <InputField
                                                     label={''}

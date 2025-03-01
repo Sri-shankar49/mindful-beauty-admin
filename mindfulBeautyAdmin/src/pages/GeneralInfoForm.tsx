@@ -24,15 +24,24 @@ const generalInfoSchema = zod.object({
     staffInformation: zod.string().optional(),
     salonFacilities: zod.string().optional(),
     cancellationPolicy: zod.string().optional(),
+    // providerImage: zod.preprocess((val) => {
+    //     if (typeof val === "string" && val.trim() === "") return undefined;
+    //     return val;
+    // },
+    //     zod.union([
+    //         zod.instanceof(File, { message: "Provider image is required" }),
+    //         zod.string().url({ message: "Provider image is required" })
+    //     ])
+    // )
+
     providerImage: zod.preprocess((val) => {
-        if (typeof val === "string" && val.trim() === "") return undefined;
-        return val;
-    },
-        zod.union([
-            zod.instanceof(File, { message: "Provider image is required" }),
-            zod.string().url({ message: "Provider image is required" })
-        ])
-    )
+        if (val instanceof File) return val;  // ✅ Keep File as is
+        if (typeof val === "string" && val.trim() !== "") return val;  // ✅ Keep URL
+        return undefined;  // ✅ Handle empty string properly
+    }, zod.union([
+        zod.instanceof(File, { message: "Provider image is required" }),
+        zod.string().url({ message: "Invalid image URL" })
+    ]))
 });
 
 type GeneralInfoFormData = zod.infer<typeof generalInfoSchema>;
@@ -59,7 +68,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
     const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({ image_url: null });
 
-    const [imageName, setImageName] = useState<string | null>(null);
+    // const [imageName, setImageName] = useState<string | null>(null);
+    const [imageName, setImageName] = useState<string | null>(sessionStorage.getItem("providerImageName") || null);
 
 
     // File change handler
@@ -75,7 +85,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
         if (file) {
             // Update state with the selected file
             setSelectedFile((prev) => ({ ...prev, [fileKey]: file }));
-            sessionStorage.setItem("providerImage", file.name);
+            sessionStorage.setItem("providerImageName", file.name);
 
             // Convert the file to a Base64 string and store it in sessionStorage
             const reader = new FileReader();
@@ -95,7 +105,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
     };
 
     useEffect(() => {
-        const storedImageName = sessionStorage.getItem("providerImage");
+        const storedImageName = sessionStorage.getItem("providerImageName");
         const storedImageBase64 = sessionStorage.getItem("providerImageBase64");
 
         if (storedImageName && storedImageBase64) {
@@ -116,7 +126,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<GeneralInfoFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, watch } = useForm<GeneralInfoFormData>({
         resolver: zodResolver(generalInfoSchema),
         defaultValues: {
             // ownersName: registartionFormData.name || '',
@@ -124,12 +134,120 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
             // contactNumber: registartionFormData.phone || '',
             // emailAddress: registartionFormData.email || '',
             ownersName: sessionStorage.getItem("providerName") || '',
-            salonName: sessionStorage.getItem("providerName") || '',
+            salonName: sessionStorage.getItem("providerName") || '',  // ✅ Fixed duplicate providerName
             contactNumber: sessionStorage.getItem("phoneNumber") || '',
             emailAddress: sessionStorage.getItem("providerEmail") || '',
             salonLocation: sessionStorage.getItem("providerLocation") || '',
+
+            establishedOn: sessionStorage.getItem("establishedOn") || '',
+            salonAddress: sessionStorage.getItem("salonAddress") || '',
+            servicesOffered: sessionStorage.getItem("servicesOffered") || '',
+            businessHours: sessionStorage.getItem("businessHours") || '',
+            staffInformation: sessionStorage.getItem("staffInformation") || '',
+            salonFacilities: sessionStorage.getItem("salonFacilities") || '',
+            cancellationPolicy: sessionStorage.getItem("cancellationPolicy") || '',
         },
     });
+
+    // Watch form values and update sessionStorage on change
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         sessionStorage.setItem("providerName", values.ownersName || '');
+    //         sessionStorage.setItem("providerName", values.salonName || '');
+    //         sessionStorage.setItem("phoneNumber", values.contactNumber || '');
+    //         sessionStorage.setItem("providerEmail", values.emailAddress || '');
+    //         sessionStorage.setItem("providerLocation", values.salonLocation || '');
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch]);
+
+    // Watch form values and update sessionStorage on change
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         Object.keys(values).forEach((key) => {
+    //             const typedKey = key as keyof GeneralInfoFormData; // Ensure type safety
+    //             const value = values[typedKey];
+
+    //             // Store only if the value is defined
+    //             if (value !== undefined) {
+    //                 sessionStorage.setItem(typedKey, String(value));
+    //             }
+    //         });
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch]);
+
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         Object.entries(values).forEach(([key, value]) => {
+    //             if (value !== undefined) {
+    //                 sessionStorage.setItem(key, String(value));
+    //             }
+    //         });
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch]);
+
+    // 🔄 Sync Form Values with sessionStorage
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         Object.entries(values).forEach(([key, value]) => {
+    //             if (value !== undefined) {
+    //                 sessionStorage.setItem(key, String(value));
+    //                 setValue(key as keyof GeneralInfoFormData, value);  // 👈 Dynamically update the form values
+    //             }
+    //         });
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch, setValue]);  // 👈 Ensure useEffect runs when values change
+
+    // ✅ Sync form fields with sessionStorage when form loads
+    useEffect(() => {
+        const fields: (keyof GeneralInfoFormData)[] = [
+            "ownersName", "salonName", "contactNumber", "emailAddress", "salonLocation",
+            "establishedOn", "salonAddress", "servicesOffered", "businessHours",
+            "staffInformation", "salonFacilities", "cancellationPolicy"
+        ];
+
+        fields.forEach(field => {
+            const storedValue = sessionStorage.getItem(field);
+            if (storedValue) {
+                setValue(field, storedValue);
+            }
+        });
+    }, [setValue]);
+
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         Object.entries(values).forEach(([key, value]) => {
+    //             const storedValue = sessionStorage.getItem(key);
+    //             if (storedValue !== String(value)) {  // ✅ Only update when value changes
+    //                 sessionStorage.setItem(key, String(value));
+    //                 setValue(key as keyof GeneralInfoFormData, value);
+    //             }
+    //         });
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch, setValue]);
+
+
+    // ✅ Watch form changes and update sessionStorage
+    useEffect(() => {
+        const subscription = watch((values) => {
+            Object.entries(values).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    sessionStorage.setItem(key, String(value));
+                }
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
 
 
@@ -252,6 +370,20 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
         try {
 
+            Object.entries(data).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    sessionStorage.setItem(key, String(value));
+                }
+            });
+
+            // ✅ Store values in sessionStorage before submitting
+            // Object.entries(data).forEach(([key, value]) => {
+            //     if (value !== undefined) {
+            //         sessionStorage.setItem(key, String(value));
+            //         setValue(key as keyof GeneralInfoFormData, value); // 👈 Ensure form updates dynamically
+            //     }
+            // });
+
             // Getting the ProviderID from session storage
             const sessionProviderID = sessionStorage.getItem("providerID");
             if (!sessionProviderID) {
@@ -268,6 +400,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
             formData.append("email", data.emailAddress || "");
             formData.append("phone", data.contactNumber || "");
             formData.append("saloon_location", data.salonLocation || "");
+
+
             formData.append("established_on", data.establishedOn || "");
             formData.append("saloon_address", data.salonAddress || "");
             formData.append("services_offered", data.servicesOffered || "");

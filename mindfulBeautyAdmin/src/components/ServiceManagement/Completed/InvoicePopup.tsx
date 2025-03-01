@@ -129,7 +129,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
     return (
         <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
             {/* <div className="container mx-auto"> */}
-            <div className="relative bg-white rounded-[5px] w-6/12 mx-auto px-20 py-10 my-5overflow-y-auto h-[90%]">
+            <div className="relative bg-white rounded-[5px] w-[40%] mx-auto px-10 py-10 my-5 overflow-y-auto h-[90%]">
                 {/* Close Button */}
                 <div onClick={closePopup} className="absolute top-5 right-5 w-fit cursor-pointer">
                     <IoCloseCircle className="text-mindfulGrey text-[32px]" />
@@ -153,7 +153,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                 ) : (
                     <div className="">
                         {/* Invoice to & Payment Details */}
-                        <div className="grid grid-cols-2 gap-x-5 items-center mb-10">
+                        <div className="grid grid-cols-2 gap-x-5 items-start mt-5 mb-10">
                             {/* Grid Column One */}
                             <div className="space-y-5">
                                 {/* Invoice to: */}
@@ -173,7 +173,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                             {/* Grid Column two */}
                             <div className="space-y-5">
                                 {/* Payment Details: */}
-                                <div className="">
+                                <div className="text-end">
                                     <h5 className="text-md text-mindfulBlack font-semibold mb-5">
                                         Payment Details:
                                     </h5>
@@ -219,7 +219,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
 
                         {/* Description & Charges */}
                         <div>
-                            <div className="w-3/4 mx-auto">
+                            <div className="w-full mx-auto">
                                 <table className="w-full">
                                     <thead>
                                         <tr className="bg-mindfulLightgrey">
@@ -228,10 +228,10 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                                         </tr>
                                     </thead>
 
-                                    <tbody className="border-b-2">
+                                    <tbody className="border-b-2 border-mindfulgrey">
                                         {invoiceData?.services.map((service, index) => (
                                             <tr key={index}>
-                                                <td className="font-semibold px-2 py-2">{service.name}</td>
+                                                <td className="font-semibold px-2 py-4">{service.name}</td>
                                                 <td>
                                                     <span className="text-md text-mindfulBlack font-semibold text-end px-2 py-2">
                                                         Rs. {service.price}
@@ -242,23 +242,23 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
                                     </tbody>
                                 </table>
 
-                                <div className="w-3/4 mx-auto">
-                                    <table className="w-full">
-                                        <tr className="border-b-2">
+                                <div className="w-2/4 ml-auto">
+                                    <table className="w-full ">
+                                        <tr className="border-b-2 border-mindfulgrey">
                                             <td className="text-lg text-mindfulBlack font-semibold px-2 py-2">Sub total:</td>
                                         </tr>
                                         <tbody>
-                                            <tr className="border-b-2">
+                                            <tr className="">
                                                 <td className="px-2 py-3">SGST Tax:</td>
                                                 <td className="px-2 py-3">Rs. {invoiceData?.payment.sgst}</td>
                                             </tr>
-                                            <tr className="border-b-2">
+                                            <tr className="">
                                                 <td className="px-2 py-3">CGST Tax:</td>
                                                 <td className="px-2 py-3">Rs. {invoiceData?.payment.cgst}</td>
                                             </tr>
                                         </tbody>
                                         <tfoot>
-                                            <tr>
+                                            <tr className="border-t-2 border-mindfulgrey">
                                                 <td className="text-md text-mindfulBlack font-semibold uppercase px-2 py-5">Total:</td>
                                                 <td className="text-md text-mindfulBlack font-semibold px-2 py-5">
                                                     Rs. {invoiceData?.payment.grand_total}
@@ -282,7 +282,7 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
 
                         <div className='pb-5'>
                             {/* Rupees in words */}
-                            <div className="grid grid-cols-4">
+                            <div className="flex items-center justify-center">
                                 <p>Rupees in words:</p>
                                 <p className="col-span-3 text-md text-mindfulBlack font-semibold">
                                     {invoiceData?.payment.grand_total ? numberToWords(invoiceData.payment.grand_total) : 'ZERO'}

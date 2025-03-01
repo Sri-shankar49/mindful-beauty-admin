@@ -457,10 +457,10 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             // name="typeOfId"
                                                             id="typeOfId"
                                                             options={[
-                                                                { value: "id1", label: "ID 1" },
-                                                                { value: "id2", label: "ID 2" },
-                                                                { value: "id3", label: "ID 3" },
-                                                                { value: "id4", label: "ID 4" },
+                                                                { value: "id1", label: "Aadhar ID" },
+                                                                { value: "id2", label: "Voter ID" },
+                                                                { value: "id3", label: "Driving license" },
+                                                                // { value: "id4", label: "ID 4" },
                                                             ]}
                                                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             {...register("proofOfIdentityType")}
@@ -489,10 +489,11 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             // name="proofOfAddress"
                                                             id="proofOfAddress"
                                                             options={[
-                                                                { value: "doctype1", label: "Document type 1" },
-                                                                { value: "doctype2", label: "Document type 2" },
-                                                                { value: "doctype3", label: "Document type 3" },
-                                                                { value: "doctype4", label: "Document type 4" },
+                                                                { value: "doctype1", label: "Aadhaar Card" },
+                                                                { value: "doctype2", label: "Voter ID (EPIC Card)" },
+                                                                { value: "doctype3", label: "Passport" },
+                                                                { value: "doctype4", label: "Driving License" },
+                                                                { value: "doctype4", label: "Ration Card" },
                                                             ]}
                                                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             {...register("proofOfAddressType")}

@@ -50,13 +50,16 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
     const navigate = useNavigate();
 
     const [willingToWork, setWillingToWork] = useState<number>(1);
+    const [distance, setDistance] = useState(33); // Default value of 33
 
     const [selectedFile, setSelectedFile] = useState<{ [key: string]: File | null }>({
         certifications: null,
         image_url: null
     });
 
-    const [imageName, setImageName] = useState<string | null>(null);
+    // const [imageName, setImageName] = useState<string | null>(null);
+    const [imageName, setImageName] = useState<string | null>(sessionStorage.getItem("providerImageName") || null);
+
     // const [certificationsName, setcertificationsName] = useState<string | null>(null);
 
 
@@ -72,7 +75,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
     // Retrieve the Provider Image file
     useEffect(() => {
-        const storedImageName = sessionStorage.getItem("providerImage");
+        const storedImageName = sessionStorage.getItem("providerImageName");
         if (storedImageName) {
             setImageName(storedImageName);
 
@@ -117,7 +120,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
         if (file) {
             setSelectedFile((prev) => ({ ...prev, [fileKey]: file }));
             if (fileKey === "image_url") {
-                sessionStorage.setItem("providerImage", file.name);
+                sessionStorage.setItem("providerImageName", file.name);
                 const blobUrl = URL.createObjectURL(file);
                 sessionStorage.setItem("selectedFile", blobUrl); // Store the Blob URL
                 // Convert the file to a Base64 string and store it in sessionStorage
@@ -150,7 +153,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<GeneralInfoFreelanceFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, watch } = useForm<GeneralInfoFreelanceFormData>({
         resolver: zodResolver(generalInfoFreelanceSchema),
         defaultValues: {
             // fullName: registartionFormData.name || '',
@@ -161,8 +164,59 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             contactNumber: sessionStorage.getItem("phoneNumber") || '',
             emailAddress: sessionStorage.getItem("providerEmail") || '',
             location: sessionStorage.getItem("providerLocation") || '',
+            homeAddress: sessionStorage.getItem("homeAddress") || '',
+            servicesProvided: sessionStorage.getItem("servicesProvided") || '',
+            yearsOfExperience: sessionStorage.getItem("yearsOfExperience") || '',
+            languagesSpoken: sessionStorage.getItem("languagesSpoken") || '',
+            travelCapability: sessionStorage.getItem("travelCapability") || '',
+            certifications: sessionStorage.getItem("certifications") || '',
+            slots: sessionStorage.getItem("slots") || '',
+            willingToWork: sessionStorage.getItem("willingToWork") || '',
         },
     });
+
+
+    // Watch form values and update sessionStorage on change
+    // useEffect(() => {
+    //     const subscription = watch((values) => {
+    //         sessionStorage.setItem("providerName", values.fullName || '');
+    //         sessionStorage.setItem("phoneNumber", values.contactNumber || '');
+    //         sessionStorage.setItem("providerEmail", values.emailAddress || '');
+    //         sessionStorage.setItem("providerLocation", values.location || '');
+    //     });
+
+    //     return () => subscription.unsubscribe();
+    // }, [watch]);
+
+    // ✅ Sync form fields with sessionStorage when form loads
+    useEffect(() => {
+        const fields: (keyof GeneralInfoFreelanceFormData)[] = [
+            "fullName", "contactNumber", "emailAddress", "location", "homeAddress",
+            "servicesProvided", "yearsOfExperience", "languagesSpoken", "travelCapability",
+            "certifications", "slots", "willingToWork"
+        ];
+
+        fields.forEach(field => {
+            const storedValue = sessionStorage.getItem(field);
+            if (storedValue) {
+                setValue(field, storedValue);
+            }
+        });
+    }, [setValue]);
+
+
+    // ✅ Watch form changes and update sessionStorage dynamically
+    useEffect(() => {
+        const subscription = watch((values) => {
+            Object.entries(values).forEach(([key, value]) => {
+                if (value !== undefined && value !== sessionStorage.getItem(key)) {  // ✅ Only update if changed
+                    sessionStorage.setItem(key, String(value));
+                }
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
 
 
@@ -246,6 +300,17 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
         console.log("General Info Freelance Form Submitted Data:", data);
 
         try {
+
+            // Save latest values in sessionStorage before submitting
+            // sessionStorage.setItem("providerName", data.fullName);
+            // sessionStorage.setItem("phoneNumber", data.contactNumber);
+            // sessionStorage.setItem("providerEmail", data.emailAddress);
+            // sessionStorage.setItem("providerLocation", data.location || '');
+
+            // ✅ Save latest values in sessionStorage before submitting
+            Object.entries(data).forEach(([key, value]) => {
+                sessionStorage.setItem(key, String(value));
+            });
 
             // Getting the ProviderID from session storage
             const sessionProviderID = sessionStorage.getItem("providerID");
@@ -589,12 +654,20 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                 {/* Slider */}
                                                 <div>
                                                     <div>
-                                                        <Slider defaultValue={[33]} max={100} step={1} />
+                                                        <Slider
+                                                            defaultValue={[33]}
+                                                            max={50}
+                                                            step={1}
+                                                            onValueChange={(value) => setDistance(value[0])}
+                                                        />
                                                     </div>
 
                                                     <div className="flex items-center justify-between pt-2">
                                                         <p className="text-lg text-mindfulBlack">0 Kms</p>
-                                                        <p className="text-lg text-mindfulBlack">50 Kms</p>
+                                                        <p className="text-lg text-mindfulBlack">
+                                                            {distance} Kms
+                                                            {/* {register("travelCapability").value || 33} Kms */}
+                                                        </p>
                                                     </div>
                                                 </div>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import userAdmin from "../../../assets/icons/userAdmin.svg"
 import managerImg from "../../../assets/images/managerImg.png"
+import profileThumbnail from "../../../assets/images/profileThumbail.webp"
 // import imgRounded from "../../../assets/images/imgRounded.png"
 import { MdMoreVert } from "react-icons/md";
 // import { Link } from 'react-router-dom';
@@ -94,7 +95,11 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             <div className="flex items-center space-x-5 mb-5">
                 {/* Manager Image */}
                 <div>
-                    <img src={logo || managerImg} alt="manager image" />
+                    <img
+                        src={logo || profileThumbnail}
+                        alt="manager image"
+                        className="w-12 h-12 rounded-full"
+                    />
                 </div>
 
                 <div>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa';
 import { Button } from '@/common/Button'; // Assuming you have a reusable Button component
+import { useEffect } from 'react';
 
 export const Thankyou = () => {
 
@@ -11,9 +12,22 @@ export const Thankyou = () => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        // Clear history state to prevent back button from working
+        window.history.pushState({}, "", window.location.href);
+        window.onpopstate = () => {
+            window.history.go(1);
+        };
+    }, []);
+
     const handleLogin = () => {
-        navigate('/'); // Navigate to the login page
+        // navigate('/'); // Navigate to the login page
+        // sessionStorage.clear();
         sessionStorage.clear();
+        navigate('/', { replace: true }); // Navigate and replace history
+        setTimeout(() => {
+            window.history.pushState({}, "", window.location.href);
+        }, 0);
     };
 
     return (
