@@ -100,6 +100,27 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                 const { lat, lng } = results[0].geometry.location;
                 const fullAddress = results[0].formatted_address; // Full address
 
+                let city = "";
+                let state = ""; // Declare state variable
+                const addressComponents = results[0].address_components;
+
+                // Look for the 'locality' component (the city)
+                addressComponents.forEach((component) => {
+                    if (component.types.includes("locality")) {
+                        city = component.long_name; // The city
+                    }
+                    if (component.types.includes("administrative_area_level_1")) {
+                        state = component.long_name; // The state
+                    }
+                });
+
+                // If no city found, fallback to the state as city
+                if (!city) {
+                    city = state; // Use state as city
+                }
+
+                console.log("city", city);
+
                 // Store latitude and longitude in state (you can use these values for submission)
                 setLocationCoordinates({
                     lat: lat(),
@@ -141,6 +162,22 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
         }
     };
 
+    // A helper function to extract the city if not already available
+    const extractCityFromLocation = (location: string): string => {
+        // You can implement a custom way to extract the city from the location string
+        // For example, split the address and check if the last part is a city
+        // (Adjust this based on your location format)
+        const parts = location.split(",");
+        return parts.length > 1 ? parts[parts.length - 3] : ""; // Assumes the city is second to last in the address
+    };
+
+    // A helper function to extract the state if not already available
+    const extractStateFromLocation = (location: string): string => {
+        const parts = location.split(",");
+        // Assuming the state is the second-to-last part of the address
+        return parts.length > 1 ? parts[parts.length - 2].trim() : "";
+    };
+
     // Form submission handler
     const onSubmit = async (data: EditBranchFormData) => {
         setLoading(true);
@@ -155,6 +192,16 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
             formData.append('branch_address', data.branchAddress);
             // formData.append('location', data.branchLocation);
             formData.append('location', String(selectedLocation));
+
+            // Extract city from selectedLocation if not already available
+            let city = extractCityFromLocation(selectedLocation); // Check if city exists
+            if (!city) {
+                // If city is not available, fallback to using the state name
+                const state = extractStateFromLocation(selectedLocation); // You can implement a function to extract the state
+                city = state; // Use the state as city
+            }
+
+            formData.append("city", city);
 
             // if (file) {
             //     formData.append('logo', file); // Append file if uploaded

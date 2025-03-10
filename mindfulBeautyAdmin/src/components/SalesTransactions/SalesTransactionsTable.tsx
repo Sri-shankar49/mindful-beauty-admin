@@ -8,6 +8,8 @@ import { salesTransactionsList, fetchSalesTransactionsByFilters, salesTransactio
 import { Pagination } from "@/common/Pagination";
 import { ShimmerTable } from "shimmer-effects-react";
 import { NotifyError } from "@/common/Toast/ToastMessage";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface SalesTransactionProps {
     amount: number;
@@ -47,12 +49,16 @@ export const SalesTransactionsTable: React.FC = () => {
     const sessionLoginProviderID = sessionStorage.getItem("loginProviderID") as string | null;
     console.log("Login Provider ID from session storage", sessionLoginProviderID);
 
+    // Getting Freelancer state from Redux
+    const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Branch ID", freelancer, loginBranchID);
+
     useEffect(() => {
         // Fetch data from API
         const fetchServiceListData = async () => {
             try {
                 setLoading(true);
-                const data = await salesTransactionsList(Number(sessionLoginProviderID), currentPage);
+                const data = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage);
                 setSalesTransactionsData(data.results || []);
                 console.log("Fetched Service List data log:", data);
                 console.log("Fetched Booking List pagination count data log :", data.count);
@@ -130,7 +136,7 @@ export const SalesTransactionsTable: React.FC = () => {
         // Fetch default sales transactions without filters
         try {
             setLoading(true);
-            const response = await salesTransactionsList(Number(sessionLoginProviderID), currentPage);
+            const response = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage);
             setSalesTransactionsData(response.results || []);
         } catch (error: any) {
             // setError(error.message || "Failed to fetch default sales transactions.");

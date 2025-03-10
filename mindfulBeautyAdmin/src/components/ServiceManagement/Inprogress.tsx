@@ -241,14 +241,14 @@ export const Inprogress = () => {
   const { inprogressListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.inprogress);
 
   // Getting Freelancer state from Redux
-  const { freelancer } = useSelector((state: RootState) => state.login);
-  console.log("Freelancer boolean Status", freelancer);
+  const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
+  console.log("Freelancer boolean Status & Branch ID", freelancer, loginBranchID);
 
 
   // Fetch inprogress list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
-    dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, searchQuery, currentPage })).catch((error) => {
+    dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, branchID: Number(loginBranchID), searchQuery, currentPage })).catch((error) => {
       // dispatch(setError(error.message));
       NotifyError(error.message || "Failed to fetch inprogress list. Please try again."); // ✅ Show error via toast
     });

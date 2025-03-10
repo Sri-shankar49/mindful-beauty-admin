@@ -53,6 +53,7 @@ const generalInfoSchema = z.object({
 type GeneralFormData = z.infer<typeof generalInfoSchema>;
 
 export const GeneralInfo = () => {
+
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<GeneralFormData>({
         resolver: zodResolver(generalInfoSchema),
     });
@@ -127,6 +128,27 @@ export const GeneralInfo = () => {
             if (status === window.google.maps.GeocoderStatus.OK && results?.[0]) {
                 const { lat, lng } = results[0].geometry.location;
                 const fullAddress = results[0].formatted_address; // Full address
+
+                let city = "";
+                let state = ""; // Declare state variable
+                const addressComponents = results[0].address_components;
+
+                // Look for the 'locality' component (the city)
+                addressComponents.forEach((component) => {
+                    if (component.types.includes("locality")) {
+                        city = component.long_name; // The city
+                    }
+                    if (component.types.includes("administrative_area_level_1")) {
+                        state = component.long_name; // The state
+                    }
+                });
+
+                // If no city found, fallback to the state as city
+                if (!city) {
+                    city = state; // Use state as city
+                }
+
+                console.log("city", city);
 
                 // Store latitude and longitude in state (you can use these values for submission)
                 setLocationCoordinates({
@@ -228,12 +250,42 @@ export const GeneralInfo = () => {
         }
     };
 
+    // A helper function to extract the city if not already available
+    const extractCityFromLocation = (location: string): string => {
+        // You can implement a custom way to extract the city from the location string
+        // For example, split the address and check if the last part is a city
+        // (Adjust this based on your location format)
+        const parts = location.split(",");
+        return parts.length > 1 ? parts[parts.length - 3] : ""; // Assumes the city is second to last in the address
+    };
+
+    // A helper function to extract the state if not already available
+    const extractStateFromLocation = (location: string): string => {
+        const parts = location.split(",");
+        // Assuming the state is the second-to-last part of the address
+        return parts.length > 1 ? parts[parts.length - 2].trim() : "";
+    };
+
+
     const onSubmit = async (data: GeneralFormData) => {
         setIsSubmitting(true);
         setSubmitError(null);
         setSubmitSuccess(null);
         console.log("data  ===> ", data);
+
         try {
+
+            let city = selectedLocation
+                ? extractCityFromLocation(selectedLocation)
+                : ""; // If selectedLocation exists, extract city; else, set it to empty string.
+
+            // If no city is found, fallback to using the state as the city
+            if (!city) {
+                const state = extractStateFromLocation(selectedLocation);
+                city = state; // Use the state as the city
+            }
+
+
             const profileDataSave = await updateGeneralInfo({
                 "provider_id": Number(sessionProviderID),
                 "owner_name": data.ownersName,
@@ -244,6 +296,7 @@ export const GeneralInfo = () => {
                 "branch": selectedLocation,
                 "latitude": String(locationCoordinates.lat),
                 "longitude": String(locationCoordinates.lng),
+                "city": city,
 
                 "established_on": data.establishedOn,
                 "services_offered": data.servicesOffered,
@@ -563,7 +616,7 @@ export const GeneralInfo = () => {
                                                     {/* <div>
                                                                                                         <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                                     </div> */}
-                                                    <span className="text-md text-mindfulBlack">
+                                                    <span className="text-md text-mindfulBlack break-all px-2">
                                                         {/* {selectedFile["certifications"]?.name || 'Upload certification files here'} */}
                                                         {selectedFiles["image_url"]?.name || "Upload Salon logo here"}
 
@@ -782,7 +835,7 @@ export const GeneralInfo = () => {
                                                 {/* <div>
                                                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                             </div> */}
-                                                <span className="text-md text-mindfulBlack">
+                                                <span className="text-md text-mindfulBlack break-all px-2">
                                                     {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
                                                 </span>
                                             </label>
@@ -820,7 +873,7 @@ export const GeneralInfo = () => {
                                                 {/* <div>
                                                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                             </div> */}
-                                                <span className="text-md text-mindfulBlack">
+                                                <span className="text-md text-mindfulBlack break-all px-2">
                                                     {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
                                                 </span>
                                             </label>
@@ -949,7 +1002,7 @@ export const GeneralInfo = () => {
                                                 {/* <div>
                                                                                                     <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                                 </div> */}
-                                                <span className="text-md text-mindfulBlack">
+                                                <span className="text-md text-mindfulBlack break-all px-2">
                                                     {selectedFiles["address_file"]?.name || 'Upload a clear scan or photo of the document'}
                                                 </span>
                                             </label>
@@ -987,7 +1040,7 @@ export const GeneralInfo = () => {
                                                 {/* <div>
                                                         <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                     </div> */}
-                                                <span className="text-md text-mindfulBlack">
+                                                <span className="text-md text-mindfulBlack break-all px-2">
                                                     {selectedFiles["identity_file"]?.name || 'Upload a clear scan or photo of the ID'}
                                                 </span>
                                             </label>

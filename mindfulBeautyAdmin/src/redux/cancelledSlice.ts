@@ -47,12 +47,12 @@ const initialState: CancelledState = {
 export const fetchCancelledList = createAsyncThunk(
     'cancelled/fetchCancelledList',
     async (
-        { providerID, status, searchQuery, currentPage }:
-            { providerID: number; status: number; searchQuery: string; currentPage: number },
+        { providerID, status, branchID, searchQuery, currentPage }:
+            { providerID: number; status: number; branchID: number; searchQuery: string; currentPage: number },
         // { rejectWithValue }
     ) => {
         try {
-            const response = await cancelledList(providerID, status, searchQuery, currentPage);
+            const response = await cancelledList(providerID, status, branchID, searchQuery, currentPage);
             return response;
         } catch (error: any) {
             // return rejectWithValue(error.message || 'Failed to fetch cancelled list');

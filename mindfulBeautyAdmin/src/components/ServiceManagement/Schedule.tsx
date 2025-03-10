@@ -232,14 +232,14 @@ export const Schedule = () => {
   const { scheduleListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.schedule);
 
   // Getting Freelancer state from Redux
-  const { freelancer } = useSelector((state: RootState) => state.login);
-  console.log("Freelancer boolean Status", freelancer);
+  const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
+  console.log("Freelancer boolean Status & Branch ID", freelancer, loginBranchID);
 
 
   // Fetch schedule list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
-    dispatch(fetchScheduleList({ providerID: Number(sessionLoginProviderID), status: 1, searchQuery, currentPage })).catch((error) => {
+    dispatch(fetchScheduleList({ providerID: Number(sessionLoginProviderID), status: 1, branchID: Number(loginBranchID), searchQuery, currentPage })).catch((error) => {
       console.error("Error fetching schedule list:", error);
       // dispatch(setError(error.message));
       NotifyError(error.message || "Failed to fetch schedule list. Please try again."); // ✅ Show error via toast

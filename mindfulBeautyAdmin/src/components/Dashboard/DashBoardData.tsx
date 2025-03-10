@@ -52,8 +52,8 @@ interface BeauticiansDataProps {
 export const DashBoardData = () => {
 
     // Getting Freelancer state from Redux
-    const { freelancer } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status", freelancer);
+    const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Branch ID", freelancer, loginBranchID);
 
 
     // State declaration for Denial Popup
@@ -149,6 +149,7 @@ export const DashBoardData = () => {
         try {
             const data = await dashBoardBookingList(
                 Number(sessionLoginProviderID),
+                Number(loginBranchID),
             );
             // const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
             setDashboardBookingListData(data.bookings || []);    // Fallback to an empty array if data is null
@@ -164,17 +165,18 @@ export const DashBoardData = () => {
     const loadStylistList = async () => {
         setLoading(true);
         // Login Provider ID
-        const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
-        try {
-            const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
-            setBeauticiansListData(beauticiansData.data);
-        } catch (error: any) {
-            // setError(error.message || 'Failed to fetch staff list');
-            NotifyError(error.message || 'Failed to fetch staff list');
-        } finally {
-            setLoading(false); // Ensure loading is false after fetching
+        if (!freelancer) {
+            const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
+            try {
+                const beauticiansData = await beauticiansList(Number(sessionLoginProviderID));
+                setBeauticiansListData(beauticiansData.data);
+            } catch (error: any) {
+                // setError(error.message || 'Failed to fetch staff list');
+                NotifyError(error.message || 'Failed to fetch staff list');
+            } finally {
+                setLoading(false); // Ensure loading is false after fetching
+            }
         }
-
     }
 
 
@@ -207,7 +209,7 @@ export const DashBoardData = () => {
 
                     // Clear selected stylist after accepting the appointment
                     // setSelectedStylist(null);
-                    
+
                     // ✅ If NOT a freelancer, clear selected stylist after accepting
                     if (!freelancer) setSelectedStylist(null);
 

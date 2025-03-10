@@ -197,6 +197,11 @@ export const AddServices: React.FC = () => {
                 setcategoriesData(loadCategoriesData.data);
                 setStaffBranchListData(branchesData.data || []);
 
+                setCities(city);
+                if (city.length > 0) {
+                    setSelectedCity(city[0].city);
+                }
+
                 // ✅ Handle branch selection based on freelancer status
                 let defaultBranchID = null;
                 if (freelancer) {
@@ -216,15 +221,11 @@ export const AddServices: React.FC = () => {
                     );
 
                     setActiveServicesData(activeServicesListData || []);
-                    
+
                     console.log("Active Services list data log:", activeServicesListData);
 
                 }
 
-                setCities(city);
-                if (city.length > 0) {
-                    setSelectedCity(city[0].city);
-                }
 
                 console.log("Category list data log:", loadCategoriesData);
                 console.log("Staff branch list data log for select field:", branchesData);

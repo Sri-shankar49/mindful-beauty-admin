@@ -148,6 +148,13 @@ export const AddPackages = () => {
 
         setcategoriesData(loadCategoriesData.data);
         setStaffBranchListData(branchesData.data || []);
+        setCities(city); // Set the cities data
+        
+        console.log("City data log:", city);
+
+        if (city.length > 0) {
+          setSelectedCity(city[0].city); // Set default city
+        }
 
         // ✅ Handle branch selection based on freelancer status
         let defaultBranchID = null;
@@ -167,12 +174,6 @@ export const AddPackages = () => {
           setActivePackagesData(loadActivePackagesData.data || []);
         }
 
-        console.log("City data log:", city);
-        setCities(city); // Set the cities data
-
-        if (city.length > 0) {
-          setSelectedCity(city[0].city); // Set default city
-        }
 
       } catch (error: any) {
         setError(error.message);
@@ -406,7 +407,7 @@ export const AddPackages = () => {
 
     try {
       const formData = new FormData();
-      formData.append("provider", sessionProviderID || "");
+      formData.append("provider_id", sessionProviderID || "");
 
       formData.append("city", selectedCity); // Pass selected city
 

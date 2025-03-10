@@ -58,7 +58,7 @@ export const PackagesList = () => {
     //     setIsActive(!isActive); // Toggle the state on click
     // };
 
-    const handleToggle = async (service_id: number, currentStatus: string) => {
+    const handleToggle = async (provider_service_id: number, currentStatus: string) => {
 
         // Toggle between "Active" and "Inactive"
         const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
@@ -66,15 +66,15 @@ export const PackagesList = () => {
         // Optimistically update the state
         setActiveStates((prevState) => ({
             ...prevState,
-            [service_id]: newStatus,
+            [provider_service_id]: newStatus,
         }));
 
-        console.log("Package ID: ", service_id);
+        console.log("Package ID: ", provider_service_id);
         console.log("Package Status: ", newStatus);
 
 
         try {
-            const response = await packageStatusAction(service_id, newStatus);
+            const response = await packageStatusAction(provider_service_id, newStatus);
             console.log("Status updated successfully", response);
         } catch (error: any) {
             console.error("Error updating status:", error.message);
@@ -82,7 +82,7 @@ export const PackagesList = () => {
             // Revert the state if API call fails
             setActiveStates((prevState) => ({
                 ...prevState,
-                [service_id]: currentStatus,
+                [provider_service_id]: currentStatus,
             }));
         }
     };
@@ -455,10 +455,10 @@ export const PackagesList = () => {
                                         // const isActiveAPI = packageData.status; // Ensure it's correctly defined
 
                                         const isActiveAPI = packageData.status; // Initial status from API
-                                        const isActive = activeStates[packageData.service_id] ?? isActiveAPI; // Use state if changed
+                                        const isActive = activeStates[packageData.provider_service_id] ?? isActiveAPI; // Use state if changed
 
                                         return (
-                                            <tr key={packageData.service_id} className="border-b-2">
+                                            <tr key={packageData.provider_service_id} className="border-b-2">
                                                 <td className="w-96 text-start px-2 py-5">
                                                     <div className="flex items-center space-x-3">
                                                         <img src={rectangleBlack} alt="rectangle black" />
@@ -494,12 +494,12 @@ export const PackagesList = () => {
                                                         <div className={`toggle-switch-pkg ${isActive}`}>
                                                             <input
                                                                 className="toggle-input-pkg"
-                                                                id={`toggle-${packageData.service_id}`}
+                                                                id={`toggle-${packageData.provider_service_id}`}
                                                                 type="checkbox"
                                                                 checked={isActive === "Active"}
-                                                                onChange={() => handleToggle(packageData.service_id, isActive)}
+                                                                onChange={() => handleToggle(packageData.provider_service_id, isActive)}
                                                             />
-                                                            <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.service_id}`}></label>
+                                                            <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.provider_service_id}`}></label>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -507,7 +507,7 @@ export const PackagesList = () => {
                                                     <div className="flex items-center space-x-5">
                                                         <button
                                                             className="flex-shrink-0"
-                                                            onClick={() => openEditPackagesPopup(packageData.service_id)}
+                                                            onClick={() => openEditPackagesPopup(packageData.provider_service_id)}
                                                         // onClick={openEditPackagesPopup}
                                                         >
                                                             <img src={editButton} alt="Edit" />
@@ -515,7 +515,7 @@ export const PackagesList = () => {
                                                         <button
                                                             className="flex-shrink-0"
 
-                                                            onClick={() => openDeletePackagePopup(packageData.service_id)}>
+                                                            onClick={() => openDeletePackagePopup(packageData.provider_service_id)}>
                                                             <img src={deleteButton} alt="Delete" />
                                                         </button>
                                                     </div>

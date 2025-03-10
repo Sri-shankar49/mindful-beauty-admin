@@ -75,6 +75,7 @@ export const loginRegister = async (
   userPhoneNumber: number,
   serviceType: number,
   userLocation: string,
+  city: string,
   latitudeCoOrdinates: number,
   longitudeCoOrdinates: number,
 ) => {
@@ -85,6 +86,7 @@ export const loginRegister = async (
       phone: userPhoneNumber,
       service_type: serviceType,
       location: userLocation,
+      city: city,
       latitude: latitudeCoOrdinates,
       longitude: longitudeCoOrdinates
     });
@@ -369,6 +371,7 @@ export const onlineAction = async (branchID: number, serviceStatus: string) => {
 // GET Method from the API
 export const dashBoardBookingList = async (
   providerID: number,
+  branchID: number,
   // sortOrder: string
 ) => {
 
@@ -376,6 +379,7 @@ export const dashBoardBookingList = async (
     const response = await apiAxios.get(`/api/bookings/`, {
       params: {
         provider_id: providerID,
+        branch_id: branchID,
         // sort_order: sortOrder
       }
     });
@@ -1480,7 +1484,7 @@ export const deletePackage = async (packageID: number) => {
 
   try {
     const response = await apiAxios.delete(`/provider-api/delete-package/`, {
-      data: { service_id: packageID }, // Include branch_id in the data property
+      data: { provider_service_id: packageID }, // Include branch_id in the data property
 
     });
 
@@ -1631,7 +1635,7 @@ export const editPackages = async (formData: FormData): Promise<any> => {
 export const editPackage = async (providerPackageID: number): Promise<any> => {
   try {
     const response = await apiAxios.put(`/provider-api/edit-package/`, {
-      service_id: providerPackageID
+      provider_service_id: providerPackageID
     });
 
     console.log("Edit Selected Package PUT Method response", response.data);
@@ -1653,7 +1657,7 @@ export const editPackage = async (providerPackageID: number): Promise<any> => {
 export const editPackageUpdate = async (providerPackageID: number, packageTitle: string, price: number, selectedBranch: number, checkboxIDsString: string): Promise<any> => {
   try {
     const response = await apiAxios.put(`/provider-api/edit-package/`, {
-      service_id: providerPackageID,
+      provider_service_id: providerPackageID,
       branch_id: selectedBranch,
       package_name: packageTitle,
       price: price,
@@ -1678,12 +1682,13 @@ export const editPackageUpdate = async (providerPackageID: number, packageTitle:
 
 // Service Management Page -- --> All Booking List
 // GET Method from the API
-export const bookingsList = async (providerID: number, searchQuery: string, pageNumber: number) => {
+export const bookingsList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
+        branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
       }
@@ -1710,13 +1715,14 @@ export const bookingsList = async (providerID: number, searchQuery: string, page
 
 // Service Management Page -- --> Schedule List
 // GET Method from the API
-export const scheduleList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
+export const scheduleList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
       }
@@ -1771,13 +1777,14 @@ export const editServicesAppointment = async (formData: FormData): Promise<any> 
 
 // Service Management Page -- --> Inprogress List
 // GET Method from the API
-export const inprogressList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
+export const inprogressList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
 
@@ -1804,13 +1811,14 @@ export const inprogressList = async (providerID: number, status: number, searchQ
 
 // Service Management Page -- --> Completed List
 // GET Method from the API
-export const completedList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
+export const completedList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
       }
@@ -1836,13 +1844,14 @@ export const completedList = async (providerID: number, status: number, searchQu
 
 // Service Management Page -- --> Cancelled List
 // GET Method from the API
-export const cancelledList = async (providerID: number, status: number, searchQuery: string, pageNumber: number) => {
+export const cancelledList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
       params: {
         provider_id: providerID,
         status: status,
+        branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
       }
@@ -1968,12 +1977,13 @@ export const invoiceDetails = async (appointmentId: number) => {
 
 // Sales & Transactions Page
 // GET Method from the API
-export const salesTransactionsList = async (providerID: number, pageNumber: number) => {
+export const salesTransactionsList = async (providerID: number, branchID: number, pageNumber: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/sales-transactions/`, {
       params: {
         provider_id: providerID,
+        branch_id: branchID,
         page: pageNumber,
       },
     });
