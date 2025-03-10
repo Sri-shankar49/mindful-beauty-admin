@@ -104,8 +104,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
 
     // Getting Freelancer state from Redux
-    const { freelancer } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status", freelancer);
+    const { freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Main Branch", freelancer, mainBranch);
 
 
 
@@ -249,8 +249,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                         <div className="flex items-center space-x-5">
 
                             {/* Branch Select Field */}
-                            {freelancer !== true &&
-                                <div>
+                            {freelancer !== true && mainBranch &&
+                                (<div>
                                     {/* <SelectField
                                         label=""
                                         name="branch"
@@ -283,7 +283,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </div>)
                             }
 
 

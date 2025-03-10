@@ -111,6 +111,7 @@ export const SalesTransactionsTable: React.FC = () => {
             setLoading(true);
             const response = await fetchSalesTransactionsByFilters({
                 providerID: Number(sessionLoginProviderID),
+                branchID: Number(loginBranchID),
                 orderID,
                 customerMobile,
                 providerName,

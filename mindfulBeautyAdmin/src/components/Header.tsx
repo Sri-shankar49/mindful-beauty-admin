@@ -17,6 +17,11 @@ export const Header = () => {
     const { token, phoneNumber, permissions, providerLogo, providerOnlineStatus } = useSelector((state: RootState) => state.login);
     console.log("Permission check ==>", permissions, token, phoneNumber, providerLogo, providerOnlineStatus);
 
+
+    // Getting Freelancer state from Redux
+    const { freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Main Branch", freelancer, mainBranch);
+
     // ** Check session storage first, otherwise use providerOnlineStatus **
     const storedStatus = sessionStorage.getItem("isActiveStatus");
     const initialStatus = storedStatus !== null ? JSON.parse(storedStatus) : providerOnlineStatus === 1;
@@ -280,12 +285,19 @@ export const Header = () => {
                             <div>
                                 {profileHover && (
                                     <div className="absolute bottom-[-6.5rem] right-0 mt-2 w-48 bg-mindfulWhite rounded-md shadow-lg py-1 z-20">
+
+
                                         <Link
-                                            to="/MyAccount"
+                                            // to="/MyAccount"
+                                            to={mainBranch ? "/MyAccount" : "#"} // Prevents navigation when disabled
                                             aria-current="page"
                                         // className="active-nav 2xl:before:-bottom-7 max-2xl:before:-bottom-5"
                                         >
-                                            <div className="px-4 py-3 text-mindfulBlack hover:bg-gray-100">
+                                            <div
+                                                title={mainBranch ? "" : "You don't have permission to access this option."} // Tooltip when disabled
+                                                className={`px-4 py-3 text-mindfulBlack hover:bg-gray-100 
+                                                    ${mainBranch ? "" : "cursor-not-allowed opacity-50"}`} // Disables click & changes UI
+                                            >
                                                 My Account
                                             </div>
                                         </Link>

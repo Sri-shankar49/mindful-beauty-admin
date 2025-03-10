@@ -202,6 +202,27 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                 setValue(field, storedValue);
             }
         });
+
+        // ✅ Handle Travel Capability separately to ensure it's set correctly
+        // const storedDistance = sessionStorage.getItem("travelCapability");
+        // if (storedDistance) {
+        //     setDistance(parseInt(storedDistance, 10));  // Convert to number
+        //     setValue("travelCapability", storedDistance);  // Update form field
+        // }
+
+        const storedDistance = sessionStorage.getItem("travelCapability");
+
+        if (storedDistance !== null) {
+            const parsedDistance = parseInt(storedDistance, 10) || 33;  // Use stored value or default 33
+            setDistance(parsedDistance);
+            setValue("travelCapability", parsedDistance.toString());
+        } else {
+            // Set default if no stored value
+            sessionStorage.setItem("travelCapability", "33");
+            setDistance(33);
+            setValue("travelCapability", "33");
+        }
+
     }, [setValue]);
 
 
@@ -354,6 +375,8 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                 throw new Error("Provider ID is missing from session storage.");
             }
 
+            sessionStorage.setItem("travelCapability", String(distance)); // Ensure travel capability is stored
+
             // Prepare form data
             const formData = new FormData();
 
@@ -367,7 +390,8 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             formData.append("services_offered", data.servicesProvided || "");
             formData.append("years_of_experience", data.yearsOfExperience || "");
             formData.append("languages_spoken", data.languagesSpoken || "");
-            formData.append("travel_capability_kms", data.travelCapability || "");
+            // formData.append("travel_capability_kms", data.travelCapability || "");
+            formData.append("travel_capability_kms", String(distance));        // ✅ Use latest value
             // formData.append("certifications", data.certifications || "");
             formData.append("available_slots", data.slots || "");
             formData.append("willing_to_work_holidays", willingToWork.toString());
@@ -703,10 +727,16 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                 <div>
                                                     <div>
                                                         <Slider
-                                                            defaultValue={[33]}
+                                                            // defaultValue={[33]}
+                                                            defaultValue={[distance]} // ✅ Ensure the default value is correct
                                                             max={50}
                                                             step={1}
-                                                            onValueChange={(value) => setDistance(value[0])}
+                                                            // onValueChange={(value) => setDistance(value[0])}
+                                                            onValueChange={(value) => {
+                                                                setDistance(value[0]);  // ✅ Update state
+                                                                setValue("travelCapability", value[0].toString());  // ✅ Sync with form
+                                                                sessionStorage.setItem("travelCapability", value[0].toString());  // ✅ Save in sessionStorage
+                                                            }}
                                                         />
                                                     </div>
 

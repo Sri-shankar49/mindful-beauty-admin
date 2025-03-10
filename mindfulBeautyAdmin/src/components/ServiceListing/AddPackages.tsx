@@ -54,8 +54,8 @@ export const AddPackages = () => {
 
 
   // Getting Freelancer state from Redux
-  const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
-  console.log("Freelancer boolean Status & Branch ID", loginBranchID, freelancer);
+  const { loginBranchID, freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+  console.log("Freelancer boolean Status & Branch ID & Main Branch", loginBranchID, freelancer, mainBranch);
 
   const [categoriesData, setcategoriesData] = useState<categoriesDataProps[]>([]);
   const [subCategoriesData, setSubCategoriesData] = useState<SubCategoriesDataProps[]>([]);
@@ -149,7 +149,7 @@ export const AddPackages = () => {
         setcategoriesData(loadCategoriesData.data);
         setStaffBranchListData(branchesData.data || []);
         setCities(city); // Set the cities data
-        
+
         console.log("City data log:", city);
 
         if (city.length > 0) {
@@ -158,7 +158,7 @@ export const AddPackages = () => {
 
         // ✅ Handle branch selection based on freelancer status
         let defaultBranchID = null;
-        if (freelancer) {
+        if (freelancer && mainBranch) {
           defaultBranchID = loginBranchID; // If freelancer, use loginBranchID
         } else if (branchesData.data && branchesData.data.length > 0) {
           defaultBranchID = branchesData.data[0].branch_id; // Non-freelancer: Use first branch
@@ -183,7 +183,7 @@ export const AddPackages = () => {
     };
 
     loadCategorySelect();
-  }, [freelancer, loginBranchID]); // ✅ Dependencies added
+  }, [freelancer, mainBranch, loginBranchID]); // ✅ Dependencies added
 
 
 
@@ -413,7 +413,7 @@ export const AddPackages = () => {
 
       // formData.append("branch_id", selectedBranch);
       // ✅ Conditional branch_id logic
-      if (freelancer) {
+      if (freelancer && mainBranch) {
         formData.append("branch_id", String(loginBranchID || ""));
       } else {
         formData.append("branch_id", String(selectedBranch || ""));
@@ -593,10 +593,10 @@ export const AddPackages = () => {
                       {/* Grid Column One */}
                       <div className="space-y-5">
 
-                        {freelancer !== true &&
+                        {freelancer !== true && mainBranch &&
 
                           // {/* City */}
-                          <div>
+                          (<div>
                             <label
                               htmlFor="city"
                               className="text-md text-mindfulBlack font-semibold mb-1"
@@ -615,7 +615,7 @@ export const AddPackages = () => {
                               value={selectedCity}
                               onChange={handleCityChange}
                             />
-                          </div>
+                          </div>)
                         }
 
 
@@ -649,10 +649,10 @@ export const AddPackages = () => {
                       {/* Grid Column Two */}
                       <div className="space-y-5">
 
-                        {freelancer !== true &&
+                        {freelancer !== true && mainBranch &&
 
                           // {/* Branch */}
-                          <div>
+                          (<div>
                             <label
                               htmlFor="branch"
                               className="text-md text-mindfulBlack font-semibold mb-1"
@@ -692,7 +692,7 @@ export const AddPackages = () => {
                                 {validationErrors.branch}
                               </p>
                             )}
-                          </div>
+                          </div>)
                         }
 
 
@@ -940,8 +940,8 @@ export const AddPackages = () => {
                       <h5 className="text-2xl font-semibold py-3">Active Packages</h5>
                     </div>
 
-                    {freelancer !== true &&
-                      <div className="flex items-center space-x-5">
+                    {freelancer !== true && mainBranch &&
+                      (<div className="flex items-center space-x-5">
                         {/* Copy Services
                         <div
                           // onClick={openBranchPopup}
@@ -993,7 +993,7 @@ export const AddPackages = () => {
                             </option>
                           ))}
                         </select>
-                      </div>
+                      </div>)
                     }
 
                   </div>

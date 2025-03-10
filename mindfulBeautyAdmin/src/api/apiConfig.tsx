@@ -2012,7 +2012,8 @@ export const salesTransactionsList = async (providerID: number, branchID: number
 // GET Method from the API
 export const fetchSalesTransactionsByFilters = async (
   filters: {
-    providerID: number
+    providerID: number;
+    branchID: number;
     orderID: string;
     customerMobile: string;
     providerName: string;
@@ -2024,6 +2025,7 @@ export const fetchSalesTransactionsByFilters = async (
     const response = await apiAxios.get(`/provider-api/sales-transactions/`, {
       params: {
         provider_id: filters.providerID,
+        branch_id: filters.branchID,
         appointment_id: filters.orderID,
         customer_query: filters.customerMobile,
         branch_query: filters.providerName,

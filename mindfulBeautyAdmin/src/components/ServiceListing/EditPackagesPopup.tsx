@@ -49,8 +49,8 @@ interface checkboxDataProps {
 export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPackageID, closePopup }) => {
 
     // Getting Freelancer state from Redux
-    const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status & Branch ID", loginBranchID, freelancer);
+    const { loginBranchID, freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Branch ID & Main Branch", loginBranchID, freelancer, mainBranch);
 
 
     const navigate = useNavigate();
@@ -155,7 +155,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
     // 
 
-    // Based on Freelancer from Redux State
+    // Based on Freelancer & Main Branch from Redux State
     useEffect(() => {
         const loadCategorySelect = async () => {
             setLoading(true);
@@ -167,7 +167,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                 const city = await getProviderCities(Number(sessionProviderID));
 
                 console.log("Branches Data Response:", branchesData);
-                console.log("Freelancer Status:", freelancer, "Login Branch ID:", loginBranchID);
+                console.log("Freelancer Status:", freelancer, "Main Branch Status:", mainBranch, "Login Branch ID:", loginBranchID,);
 
                 setcategoriesData(loadCategoriesData.data);
                 setStaffBranchListData(branchesData.data || []);
@@ -179,7 +179,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
                 // ✅ Handle branch selection based on freelancer status
                 let defaultBranchID = null;
-                if (freelancer) {
+                if (freelancer && mainBranch) {
                     defaultBranchID = loginBranchID || null; // ✅ Use loginBranchID if freelancer
                 } else if (branchesData.data && branchesData.data.length > 0) {
                     defaultBranchID = branchesData.data[0].branch_id; // ✅ Non-freelancer: Use first branch
@@ -200,10 +200,10 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         };
 
         // ✅ Ensure useEffect runs when freelancer or loginBranchID changes
-        if (freelancer === false || (freelancer === true && loginBranchID !== null)) {
+        if (freelancer === false || (freelancer === true && mainBranch && loginBranchID !== null)) {
             loadCategorySelect();
         }
-    }, [freelancer, loginBranchID]); // ✅ Dependencies updated
+    }, [freelancer, mainBranch, loginBranchID]); // ✅ Dependencies updated
 
 
 
@@ -269,7 +269,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
                 // ✅ Freelancer Check - Use `loginBranchID`
                 let selectedBranchID = null;
-                if (freelancer) {
+                if (freelancer && mainBranch) {
                     selectedBranchID = loginBranchID || null;
                 } else {
                     // ✅ Find the branch if not a freelancer
@@ -319,7 +319,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         if (providerPackageID) {
             loadPackageData();
         }
-    }, [providerPackageID, freelancer, loginBranchID]); // ✅ Added dependencies
+    }, [providerPackageID, freelancer, mainBranch, loginBranchID]); // ✅ Added dependencies
 
 
     const validateForm = () => {
@@ -346,11 +346,11 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
         const checkboxIDsString = selectedCheckboxIDs.join(","); // Converts array to string
 
         // ✅ Handle branch ID assignment correctly
-        const branchIDToPass = freelancer ? loginBranchID : selectedBranch;
+        const branchIDToPass = freelancer && mainBranch ? loginBranchID : selectedBranch;
 
         console.log("Changed to string value", checkboxIDsString, selectedCheckboxIDs);
 
-        console.log("Freelancer:", freelancer, "Branch ID Passed:", branchIDToPass);
+        console.log("Freelancer:", freelancer, "Main Branch:", mainBranch, "Branch ID Passed:", branchIDToPass);
 
         console.log("Selected all ID", providerPackageID, formValues.packageTitle, Number(formValues.price), branchIDToPass, selectedCheckboxNames);
         try {
@@ -529,10 +529,10 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
 
                                                 {/* Grid Column One */}
                                                 <div className="space-y-5">
-                                                    {freelancer !== true &&
+                                                    {freelancer !== true && mainBranch &&
 
                                                         // {/* City */}
-                                                        <div>
+                                                        (<div>
                                                             <label
                                                                 htmlFor="city"
                                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -553,7 +553,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                 onChange={handleCityChange}
                                                             />
 
-                                                        </div>
+                                                        </div>)
                                                     }
 
 
@@ -586,10 +586,10 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                 {/* Grid Column Two */}
                                                 <div className="space-y-5">
 
-                                                    {freelancer !== true &&
+                                                    {freelancer !== true && mainBranch &&
 
                                                         //  {/* Branch */}
-                                                        <div>
+                                                        (<div>
                                                             <label
                                                                 htmlFor="branch"
                                                                 className="text-md text-mindfulBlack font-semibold mb-1"
@@ -621,7 +621,7 @@ export const EditPackagesPopup: React.FC<EditPackagesPopupProps> = ({ providerPa
                                                                               {validationErrors.branch}
                                                                   </p>
                                                               )} */}
-                                                        </div>
+                                                        </div>)
                                                     }
 
 

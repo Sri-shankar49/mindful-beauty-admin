@@ -78,8 +78,8 @@ export const AddServices: React.FC = () => {
 
 
     // Getting Freelancer state from Redux
-    const { loginBranchID, freelancer } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status & Branch ID", loginBranchID, freelancer);
+    const { loginBranchID, freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & Branch ID & Main Branch", loginBranchID, freelancer, mainBranch);
 
 
     const [showCopyServicesPopup, setShowCopyServicesPopup] = useState(false);
@@ -192,7 +192,7 @@ export const AddServices: React.FC = () => {
                 const branchesData = await staffBranchList();
                 const city = await getProviderCities(Number(sessionProviderID));
 
-                console.log("Freelancer:", freelancer, "Login Branch ID:", loginBranchID);
+                console.log("Freelancer:", freelancer, "Main Branch Status:", mainBranch, "Login Branch ID:", loginBranchID);
 
                 setcategoriesData(loadCategoriesData.data);
                 setStaffBranchListData(branchesData.data || []);
@@ -204,7 +204,7 @@ export const AddServices: React.FC = () => {
 
                 // ✅ Handle branch selection based on freelancer status
                 let defaultBranchID = null;
-                if (freelancer) {
+                if (freelancer && mainBranch) {
                     defaultBranchID = loginBranchID || null; // ✅ Use loginBranchID if freelancer
                 } else if (branchesData.data && branchesData.data.length > 0) {
                     defaultBranchID = branchesData.data[0].branch_id; // ✅ Non-freelancer: Use first branch
@@ -239,10 +239,10 @@ export const AddServices: React.FC = () => {
         };
 
         // ✅ Ensure useEffect runs when freelancer or loginBranchID changes
-        if (freelancer === false || (freelancer === true && loginBranchID !== null)) {
+        if (freelancer === false || (freelancer === true && mainBranch && loginBranchID !== null)) {
             loadCategorySelect();
         }
-    }, [freelancer, loginBranchID]); // ✅ Dependencies updated
+    }, [freelancer, mainBranch, loginBranchID]); // ✅ Dependencies updated
 
 
 
@@ -390,7 +390,7 @@ export const AddServices: React.FC = () => {
 
             // formData.append("branch_id", selectedBranch);
             // ✅ Conditional branch_id logic
-            if (freelancer) {
+            if (freelancer && mainBranch) {
                 formData.append("branch_id", String(loginBranchID || ""));
             } else {
                 formData.append("branch_id", String(selectedBranch || ""));
@@ -597,9 +597,9 @@ export const AddServices: React.FC = () => {
                                     {/* Grid Column One */}
                                     <div className="space-y-5">
 
-                                        {freelancer !== true &&
+                                        {freelancer !== true && mainBranch &&
                                             //  {/* City */}
-                                            <div>
+                                            (<div>
                                                 <label
                                                     htmlFor="city"
                                                     className="text-md text-mindfulBlack font-semibold mb-1"
@@ -623,7 +623,7 @@ export const AddServices: React.FC = () => {
                                                 {/* {error.city && (
                                                      <p className="text-sm text-red-600">{error.city}</p>
                                                  )} */}
-                                            </div>
+                                            </div>)
                                         }
 
 
@@ -664,7 +664,7 @@ export const AddServices: React.FC = () => {
                                     {/* Grid Column Two */}
                                     <div className="space-y-5">
 
-                                        {freelancer !== true &&
+                                        {freelancer !== true && mainBranch &&
                                             //    {/* Branch */}
                                             <div>
                                                 <label
@@ -825,8 +825,8 @@ export const AddServices: React.FC = () => {
                                     <h5 className="text-2xl font-semibold py-3">Active Services</h5>
                                 </div>
 
-                                {freelancer !== true &&
-                                    <div className="flex items-center space-x-5">
+                                {freelancer !== true && mainBranch &&
+                                    (<div className="flex items-center space-x-5">
 
                                         {/* Copy Services */}
                                         <div
@@ -884,7 +884,7 @@ export const AddServices: React.FC = () => {
                                                 ))}
                                             </select>
                                         </div>
-                                    </div>
+                                    </div>)
                                 }
 
 
