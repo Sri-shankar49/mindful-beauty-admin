@@ -5,46 +5,46 @@ import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+import * as z from "zod";
 import { generalInfo, googleMapApi } from "@/api/apiConfig";
 import { MdCloudUpload } from "react-icons/md";
 
 
 // Define Zod schema for validation
-const generalInfoSchema = zod.object({
-    ownersName: zod.string().min(1, "Owner's name is required"),
-    salonName: zod.string().min(1, "Salon name is required"),
-    contactNumber: zod.string().regex(/^[0-9]{10}$/, { message: "Contact number must be 10 digits" }),
-    emailAddress: zod.string().email("Invalid email address"),
-    salonLocation: zod.string().optional(),
-    establishedOn: zod.string().optional(),
-    salonAddress: zod.string().optional(),
-    servicesOffered: zod.string().optional(),
-    businessHours: zod.string().optional(),
-    staffInformation: zod.string().optional(),
-    salonFacilities: zod.string().optional(),
-    cancellationPolicy: zod.string().optional(),
-    // providerImage: zod.preprocess((val) => {
+const generalInfoSchema = z.object({
+    ownersName: z.string().min(1, "Owner's name is required"),
+    salonName: z.string().min(1, "Salon name is required"),
+    contactNumber: z.string().regex(/^[0-9]{10}$/, { message: "Contact number must be 10 digits" }),
+    emailAddress: z.string().email("Invalid email address"),
+    salonLocation: z.string().optional(),
+    establishedOn: z.string().optional(),
+    salonAddress: z.string().optional(),
+    servicesOffered: z.string().optional(),
+    businessHours: z.string().optional(),
+    staffInformation: z.string().optional(),
+    salonFacilities: z.string().optional(),
+    cancellationPolicy: z.string().optional(),
+    // providerImage: z.preprocess((val) => {
     //     if (typeof val === "string" && val.trim() === "") return undefined;
     //     return val;
     // },
-    //     zod.union([
-    //         zod.instanceof(File, { message: "Provider image is required" }),
-    //         zod.string().url({ message: "Provider image is required" })
+    //     z.union([
+    //         z.instanceof(File, { message: "Provider image is required" }),
+    //         z.string().url({ message: "Provider image is required" })
     //     ])
     // )
 
-    providerImage: zod.preprocess((val) => {
+    providerImage: z.preprocess((val) => {
         if (val instanceof File) return val;  // ✅ Keep File as is
         if (typeof val === "string" && val.trim() !== "") return val;  // ✅ Keep URL
         return undefined;  // ✅ Handle empty string properly
-    }, zod.union([
-        zod.instanceof(File, { message: "Provider image is required" }),
-        zod.string().url({ message: "Invalid image URL" })
+    }, z.union([
+        z.instanceof(File, { message: "Provider image is required" }),
+        z.string().url({ message: "Invalid image URL" })
     ]))
 });
 
-type GeneralInfoFormData = zod.infer<typeof generalInfoSchema>;
+type GeneralInfoFormData = z.infer<typeof generalInfoSchema>;
 
 export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
