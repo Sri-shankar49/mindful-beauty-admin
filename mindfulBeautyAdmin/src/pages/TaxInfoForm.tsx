@@ -7,7 +7,7 @@ import { MdCloudUpload } from "react-icons/md";
 import { SelectField } from "@/common/SelectField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import zod from "zod";
+import * as zod from "zod";
 import { taxInfo } from "@/api/apiConfig";
 
 interface TaxInfoResponse {
