@@ -5,20 +5,20 @@ import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+import * as z from "zod";
 import { bankAccInfo } from "@/api/apiConfig";
 
 // Define Zod schema for validation
-const bankAccInfoSchema = zod.object({
-    bankAccHolderName: zod.string().min(3, "Bank Account Holder Name is required"),
-    bankName: zod.string().min(3, "Bank Name is required"),
-    bankAccountNumber: zod.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
-    accountType: zod.string().min(1, "Account Type is required"),
-    bankBranch: zod.string().optional(),
-    ifscCode: zod.string().optional(),
+const bankAccInfoSchema = z.object({
+    bankAccHolderName: z.string().min(3, "Bank Account Holder Name is required"),
+    bankName: z.string().min(3, "Bank Name is required"),
+    bankAccountNumber: z.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
+    accountType: z.string().min(1, "Account Type is required"),
+    bankBranch: z.string().optional(),
+    ifscCode: z.string().optional(),
 });
 
-type BankAccInfoFormData = zod.infer<typeof bankAccInfoSchema>;
+type BankAccInfoFormData = z.infer<typeof bankAccInfoSchema>;
 
 
 export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {

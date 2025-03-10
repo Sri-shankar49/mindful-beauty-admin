@@ -7,7 +7,7 @@ import { MdCloudUpload } from "react-icons/md";
 import { SelectField } from "@/common/SelectField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+import * as z from "zod";
 import { taxInfo } from "@/api/apiConfig";
 
 interface TaxInfoResponse {
@@ -18,15 +18,15 @@ interface TaxInfoResponse {
 }
 
 // Define Zod schema for validation
-const taxInfoSchema = zod.object({
-    taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
-    gstNumber: zod.string().regex(/^[0-9]{15}$/, { message: "GST Number must be 15 digits" }),
-    proofOfIdentityType: zod.string().optional(),
-    proofOfIdentityNumber: zod.string().min(3, "ID Number must be 3 digits"),
-    proofOfAddressType: zod.string().optional(),
+const taxInfoSchema = z.object({
+    taxIdentificationNumber: z.string().min(3, "Tax Identification Number is required"),
+    gstNumber: z.string().regex(/^[0-9]{15}$/, { message: "GST Number must be 15 digits" }),
+    proofOfIdentityType: z.string().optional(),
+    proofOfIdentityNumber: z.string().min(3, "ID Number must be 3 digits"),
+    proofOfAddressType: z.string().optional(),
 });
 
-type TaxInfoFormData = zod.infer<typeof taxInfoSchema>;
+type TaxInfoFormData = z.infer<typeof taxInfoSchema>;
 
 export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
