@@ -5,7 +5,7 @@ import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+import zod from "zod";
 import { bankAccInfo } from "@/api/apiConfig";
 
 // Define Zod schema for validation
