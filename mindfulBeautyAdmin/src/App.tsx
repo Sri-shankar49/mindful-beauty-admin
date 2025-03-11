@@ -124,7 +124,16 @@ function App() {
             <TaxInfoForm
               taxIdentificationNumber={''}
               gstNumber={''}
-              proofOfIdentityNumber={''} />
+              proofOfIdentityNumber={''}
+              proofOfIdentityType={''}
+              proofOfAddressType={''}
+              tax_file={undefined}
+              gst_file={undefined}
+              // identity_file={undefined}
+              // address_file={undefined}
+              identity_file={new File([], "")}  // ✅ Empty file
+              address_file={new File([], "")}  // ✅ Empty file
+            />
           } />
 
           <Route path="/GeneralInfoFreelanceForm" element={
