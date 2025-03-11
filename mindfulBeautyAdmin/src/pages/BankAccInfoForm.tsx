@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
@@ -33,7 +33,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
     const navigate = useNavigate();
 
-    // const location = useLocation();
+    const location = useLocation();
 
     const [loading, setLoading] = useState(false);
     // const [error, setError] = useState<string | null>(null);
@@ -345,7 +345,14 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 {/* <Link to="/GeneralInfoForm"> */}
                                                 <Button
                                                     // onClick={handleBackButton}
-                                                    onClick={() => navigate('/TaxInfoForm')}
+                                                    // onClick={() => navigate('/TaxInfoForm')}
+                                                    onClick={() => {
+                                                        if (location.state?.skipTaxForm) {
+                                                            navigate("/GeneralInfoFreelanceForm"); // Go back to GeneralInfoFreelanceForm
+                                                        } else {
+                                                            navigate("/TaxInfoForm"); // Otherwise, go back to TaxInfoForm
+                                                        }
+                                                    }}
                                                     buttonType="button"
                                                     buttonTitle="Back"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"

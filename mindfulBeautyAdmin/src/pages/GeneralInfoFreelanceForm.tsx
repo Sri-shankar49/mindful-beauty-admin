@@ -442,7 +442,9 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
             // Navigate to the next step
             // navigate("/BankAccInfoForm");
             // navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
-            navigate("/TaxInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            // navigate("/TaxInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm", skipTaxForm: true } });
+
 
         }
 
