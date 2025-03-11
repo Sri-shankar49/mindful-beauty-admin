@@ -164,7 +164,7 @@ function App() {
               {/* Sub-routes */}
               <Route path="RolesManagement" element={<RolesManagement />} />
               <Route path="StaffManagement" element={<StaffManagement staff={0} name={''} role_name={''} branch_name={''} status={''} phone={''} photo={''} />} />
-              <Route path="BranchManagement" element={<BranchManagement branch_id={''} branch_name={''} phone={''} location={''} logo={''} latitude={0} longitude={0} staff={[]} />} />
+              <Route path="BranchManagement" element={<BranchManagement branch_id={''} branch_name={''} phone={''} location={''} logo={''} latitude={0} longitude={0} staff={[]} service_status={0} />} />
             </Route>
 
             <Route path="/ServiceListing" element={<ProtectedRoute permissionKey="service_listing"><ServiceListing /></ProtectedRoute>}>
