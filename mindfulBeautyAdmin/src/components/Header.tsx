@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FaBell } from "react-icons/fa6";
+// import { FaBell } from "react-icons/fa6";
 import { FaUserLarge } from "react-icons/fa6";
 import mindfulBeautyLogoSmall from "../assets/icons/mindfulBeautyLogoSmall.png";
 import ashtamudiLogo from "../assets/icons/ashtamudiLogo.png";
