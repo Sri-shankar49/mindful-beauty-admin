@@ -120,22 +120,24 @@ export const PackagesList = () => {
     const { packageListData, loading, searchQuery, currentPage, totalItems } = useSelector((state: RootState) => state.package);
 
     // Getting Freelancer state from Redux
-    const { freelancer, mainBranch } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status & Main Branch", freelancer, mainBranch);
+    const { loginBranchID, freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status  & loginBranchID & Main Branch", freelancer, loginBranchID, mainBranch);
 
+    // Determine the correct branch ID based on mainBranch state
+    const branchIDToUse = mainBranch ? selectedBranch : loginBranchID;
 
     // Fetch package data
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
         dispatch(fetchPackagesList({
-            providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage
+            providerID: Number(sessionLoginProviderID), branchID: String(branchIDToUse), searchQuery, currentPage
         }) as any)
             .catch((error: any) => {
                 // console.error("Error fetching package list:", error.message);
                 // dispatch(setError(error.message));
                 NotifyError(error.message || "Failed to fetch package list. Please try again."); // ✅ Show error via toast
             });
-    }, [dispatch, searchQuery, currentPage, sessionLoginProviderID, selectedBranch]);
+    }, [dispatch, searchQuery, currentPage, sessionLoginProviderID, branchIDToUse]);
 
 
     // useEffect(() => {

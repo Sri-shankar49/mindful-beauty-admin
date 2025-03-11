@@ -543,7 +543,7 @@ export const Completed = () => {
                         id="status"
                         options={[
                           { value: "Paid", label: "Paid" },
-                          { value: "Partly Paid", label: "Partly Paid" },
+                          { value: "Partly Paid", label: "Partially Paid" },
                           { value: "Not Paid", label: "Not Paid" },
                         ]}
                         value={completed.payment_status} // Set default value from API response

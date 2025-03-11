@@ -104,8 +104,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
 
 
     // Getting Freelancer state from Redux
-    const { freelancer, mainBranch } = useSelector((state: RootState) => state.login);
-    console.log("Freelancer boolean Status & Main Branch", freelancer, mainBranch);
+    const { loginBranchID, freelancer, mainBranch } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status & loginBranchID & Main Branch", freelancer, loginBranchID, mainBranch);
 
 
 
@@ -115,6 +115,10 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         dispatch(setSearchQuery(query));
     }, [dispatch]);
 
+
+    // Determine the correct branch ID based on mainBranch state
+    const branchIDToUse = mainBranch ? selectedBranch : loginBranchID;
+
     // Modify the search effect to avoid duplicate calls
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
@@ -123,7 +127,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         const delayDebounceFn = setTimeout(() => {
             dispatch(fetchServicesList({
                 providerID: Number(sessionLoginProviderID),
-                branchID: Number(selectedBranch),
+                // branchID: Number(selectedBranch),
+                branchID: Number(branchIDToUse),  // ✅ Use branchIDToUse instead of selectedBranch
                 searchQuery,
                 currentPage
             })).catch((error) => {
@@ -134,7 +139,7 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         }, 300); // 300ms delay
 
         return () => clearTimeout(delayDebounceFn);
-    }, [dispatch, searchQuery, sessionLoginProviderID, selectedBranch, currentPage]);
+    }, [dispatch, searchQuery, sessionLoginProviderID, branchIDToUse, currentPage]);
 
     useEffect(() => {
         // Fetch data from API
