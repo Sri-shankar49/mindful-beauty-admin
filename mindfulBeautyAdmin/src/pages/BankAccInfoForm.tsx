@@ -43,35 +43,11 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
     //     navigate("/GeneralInfoForm");
     // }
 
-    // const handleBackButton = () => {
-    //     console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
-
-    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
-    //         navigate("/GeneralInfoFreelanceForm");
-    //     } else {
-    //         navigate("/GeneralInfoForm");
-    //     }
-    // };
-
     const handleBackButton = () => {
         console.log("Location State:", location.state); // Debugging
 
-        if (location.state?.from === "GeneralInfoFreelanceForm") {
-            navigate("/GeneralInfoFreelanceForm"); // Go back to the correct form
-        } else {
-            navigate("/TaxInfoForm", { state: { from: "BankAccInfoForm" } });
-        }
+        navigate("/TaxInfoForm", { state: { from: location.state?.from || "GeneralInfoForm" } });
     };
-
-    // const handleBackButton = () => {
-    //     console.log("Location State:", location.state); // Debugging
-
-    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
-    //         navigate("/TaxInfoForm", { state: { hideGstField: true } }); // Hide GST field
-    //     } else {
-    //         navigate("/TaxInfoForm");
-    //     }
-    // };
 
 
 

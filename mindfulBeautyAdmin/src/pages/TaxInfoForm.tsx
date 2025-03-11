@@ -147,14 +147,16 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
 
     const handleBackButton = () => {
-        console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
+        console.log("Location State:", location.state); // Debugging
 
         if (location.state?.from === "GeneralInfoFreelanceForm") {
-            navigate("/GeneralInfoFreelanceForm");
+            navigate("/GeneralInfoFreelanceForm"); // ✅ Correctly go back to GeneralInfoFreelanceForm
         } else {
-            navigate("/GeneralInfoForm");
+            navigate("/GeneralInfoForm"); // ✅ Correctly go back to GeneralInfoForm
         }
     };
+
+
 
     // const onSubmit = async (data: TaxInfoFormData) => {
     //     setLoading(true);
@@ -267,7 +269,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
             // navigate("/Dashboard/ProfileProgress");
             // navigate("/Thankyou");
             // navigate("/BankAccInfoForm");
-            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            // navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            navigate("/BankAccInfoForm", { state: { from: location.state?.from || "GeneralInfoForm" } });
 
         }
 
