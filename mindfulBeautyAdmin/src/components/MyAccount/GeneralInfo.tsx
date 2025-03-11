@@ -591,21 +591,24 @@ export const GeneralInfo = () => {
                                     </div>
                                 )}
 
-                                {/* Staff Information */}
-                                <div>
-                                    <label
-                                        htmlFor="staffInformation"
-                                        className="text-lg text-mindfulBlack">
-                                        Staff Information
-                                    </label>
+                                {freelancer !== true &&
 
-                                    <textarea
-                                        rows={3}
-                                        {...register("staffInformation")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                    // {/* Staff Information */}
+                                    (<div>
+                                        <label
+                                            htmlFor="staffInformation"
+                                            className="text-lg text-mindfulBlack">
+                                            Staff Information
+                                        </label>
 
-                                    ></textarea>
-                                </div>
+                                        <textarea
+                                            rows={3}
+                                            {...register("staffInformation")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+
+                                        ></textarea>
+                                    </div>
+                                    )}
 
                                 {/* File Upload Area */}
                                 <div>
@@ -786,302 +789,304 @@ export const GeneralInfo = () => {
                     </div>
 
                     {/* Tax Information / GST Number */}
-                    <div>
+                    {freelancer !== true && (
                         <div>
-                            <h5 className="text-xl font-semibold py-5">Tax Information / GST Number</h5>
-                        </div>
-
-                        {loading ? (
-                            <div className="text-center py-4">
-                                <ShimmerTable
-                                    mode="light"
-                                    row={4}
-                                    col={2}
-                                    border={1}
-                                    borderColor={"#cbd5e1"}
-                                    rounded={0.25}
-                                    rowGap={16}
-                                    colPadding={[15, 5, 15, 5]}
-                                />
+                            <div>
+                                <h5 className="text-xl font-semibold py-5">Tax Information / GST Number</h5>
                             </div>
-                        ) : (
-                            <div className="grid grid-cols-2 gap-5 pb-10">
-                                {/* Tax Identification Number */}
-                                <div>
-                                    <label
-                                        htmlFor="taxIdentificationNumber"
-                                        className="text-lg text-mindfulBlack">
-                                        Tax Identification Number
-                                    </label>
-                                    <input
-                                        {...register("taxIdentificationNumber")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+
+                            {loading ? (
+                                <div className="text-center py-4">
+                                    <ShimmerTable
+                                        mode="light"
+                                        row={4}
+                                        col={2}
+                                        border={1}
+                                        borderColor={"#cbd5e1"}
+                                        rounded={0.25}
+                                        rowGap={16}
+                                        colPadding={[15, 5, 15, 5]}
                                     />
-                                    {errors.taxIdentificationNumber && <p className="text-sm text-red-600">{errors.taxIdentificationNumber.message}</p>}
                                 </div>
-
-                                {/* GST Number */}
-                                <div>
-                                    <label
-                                        htmlFor="gstNumber"
-                                        className="text-lg text-mindfulBlack">
-                                        GST Number
-                                    </label>
-                                    <input
-                                        {...register("gstNumber")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
-                                    />
-                                    {errors.gstNumber && <p className="text-sm text-red-600">{errors.gstNumber.message}</p>}
-
-                                </div>
-
-                                {/* File Upload Area One */}
-                                <div>
-                                    <div className="flex items-center space-x-5">
-                                        <div className="w-3/4">
-                                            <label
-                                                htmlFor="taxFile"
-                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                            >
-                                                {/* File Upload Icon */}
-                                                {/* <div>
-                                                                                                <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
-                                                                                            </div> */}
-                                                <span className="text-md text-mindfulBlack break-all px-2">
-                                                    {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
-                                                </span>
-                                            </label>
-
-                                            <input
-                                                id="taxFile"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "tax_file")}
-                                                className="hidden"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label
-                                                htmlFor="taxFile"
-                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                            >
-                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                Upload Files
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* File Upload Area Two */}
-                                <div>
-                                    <div className="flex items-center space-x-5">
-                                        <div className="w-3/4">
-                                            <label
-                                                htmlFor="gstFile"
-                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                            >
-                                                {/* File Upload Icon */}
-                                                {/* <div>
-                                                                                                <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
-                                                                                            </div> */}
-                                                <span className="text-md text-mindfulBlack break-all px-2">
-                                                    {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
-                                                </span>
-                                            </label>
-
-                                            <input
-                                                id="gstFile"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "gst_file")}
-                                                className="hidden"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label
-                                                htmlFor="gstFile"
-                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                            >
-                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                Upload Files
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                {/* Type of ID */}
-                                <div>
-                                    <div className="py-2">
-                                        <h5 className="text-lg text-mindfulBlack font-semibold py-2">
-                                            Proof of Identity
-                                        </h5>
-                                    </div>
-
-                                    {/*  Type of ID */}
+                            ) : (
+                                <div className="grid grid-cols-2 gap-5 pb-10">
+                                    {/* Tax Identification Number */}
                                     <div>
                                         <label
-                                            htmlFor="typeOfId"
-                                            className="text-md text-mindfulBlack font-semibold mb-1"
-                                        >
-                                            Type of ID
+                                            htmlFor="taxIdentificationNumber"
+                                            className="text-lg text-mindfulBlack">
+                                            Tax Identification Number
                                         </label>
-                                        <SelectField
-                                            label={''}
-                                            // name="typeOfId"
-                                            id="typeOfId"
-                                            options={[
-                                                { value: "id1", label: "ID 1" },
-                                                { value: "id2", label: "ID 2" },
-                                                { value: "id3", label: "ID 3" },
-                                                { value: "id4", label: "ID 4" },
-                                            ]}
-                                            className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                        <input
+                                            {...register("taxIdentificationNumber")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                         />
-                                        {/* <SelectField
+                                        {errors.taxIdentificationNumber && <p className="text-sm text-red-600">{errors.taxIdentificationNumber.message}</p>}
+                                    </div>
+
+                                    {/* GST Number */}
+                                    <div>
+                                        <label
+                                            htmlFor="gstNumber"
+                                            className="text-lg text-mindfulBlack">
+                                            GST Number
+                                        </label>
+                                        <input
+                                            {...register("gstNumber")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                        />
+                                        {errors.gstNumber && <p className="text-sm text-red-600">{errors.gstNumber.message}</p>}
+
+                                    </div>
+
+                                    {/* File Upload Area One */}
+                                    <div>
+                                        <div className="flex items-center space-x-5">
+                                            <div className="w-3/4">
+                                                <label
+                                                    htmlFor="taxFile"
+                                                    className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                >
+                                                    {/* File Upload Icon */}
+                                                    {/* <div>
+                                                                                                <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                                            </div> */}
+                                                    <span className="text-md text-mindfulBlack break-all px-2">
+                                                        {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
+                                                    </span>
+                                                </label>
+
+                                                <input
+                                                    id="taxFile"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange(e, "tax_file")}
+                                                    className="hidden"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    htmlFor="taxFile"
+                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                >
+                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                    Upload Files
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* File Upload Area Two */}
+                                    <div>
+                                        <div className="flex items-center space-x-5">
+                                            <div className="w-3/4">
+                                                <label
+                                                    htmlFor="gstFile"
+                                                    className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                >
+                                                    {/* File Upload Icon */}
+                                                    {/* <div>
+                                                                                                <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                                            </div> */}
+                                                    <span className="text-md text-mindfulBlack break-all px-2">
+                                                        {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
+                                                    </span>
+                                                </label>
+
+                                                <input
+                                                    id="gstFile"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange(e, "gst_file")}
+                                                    className="hidden"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    htmlFor="gstFile"
+                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                >
+                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                    Upload Files
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    {/* Type of ID */}
+                                    <div>
+                                        <div className="py-2">
+                                            <h5 className="text-lg text-mindfulBlack font-semibold py-2">
+                                                Proof of Identity
+                                            </h5>
+                                        </div>
+
+                                        {/*  Type of ID */}
+                                        <div>
+                                            <label
+                                                htmlFor="typeOfId"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                Type of ID
+                                            </label>
+                                            <SelectField
+                                                label={''}
+                                                // name="typeOfId"
+                                                id="typeOfId"
+                                                options={[
+                                                    { value: "id1", label: "Aadhar ID" },
+                                                    { value: "id2", label: "Voter ID" },
+                                                    { value: "id3", label: "Driving license" },
+                                                ]}
+                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                            />
+                                            {/* <SelectField
                                     {...register("typeOfId")}
                                     className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                 /> */}
-                                    </div>
-                                </div>
-
-                                {/* Proof of Address */}
-                                <div>
-                                    <div className="py-2">
-                                        <h5 className="text-lg text-mindfulBlack font-semibold py-2">
-                                            Proof of Address
-                                        </h5>
+                                        </div>
                                     </div>
 
-                                    {/*  Proof of Address */}
+                                    {/* Proof of Address */}
                                     <div>
-                                        <label
-                                            htmlFor="proofOfAddress"
-                                            className="text-md text-mindfulBlack font-semibold mb-1"
-                                        >
-                                            Type of Document
-                                        </label>
-                                        <SelectField
-                                            label={''}
-                                            // name="proofOfAddress"
-                                            id="proofOfAddress"
-                                            options={[
-                                                { value: "doctype1", label: "Document type 1" },
-                                                { value: "doctype2", label: "Document type 2" },
-                                                { value: "doctype3", label: "Document type 3" },
-                                                { value: "doctype4", label: "Document type 4" },
-                                            ]}
-                                            className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
-                                        />
-                                        {/* <SelectField
+                                        <div className="py-2">
+                                            <h5 className="text-lg text-mindfulBlack font-semibold py-2">
+                                                Proof of Address
+                                            </h5>
+                                        </div>
+
+                                        {/*  Proof of Address */}
+                                        <div>
+                                            <label
+                                                htmlFor="proofOfAddress"
+                                                className="text-md text-mindfulBlack font-semibold mb-1"
+                                            >
+                                                Type of Document
+                                            </label>
+                                            <SelectField
+                                                label={''}
+                                                // name="proofOfAddress"
+                                                id="proofOfAddress"
+                                                options={[
+                                                    { value: "doctype1", label: "Aadhaar Card" },
+                                                    { value: "doctype2", label: "Voter ID (EPIC Card)" },
+                                                    { value: "doctype3", label: "Passport" },
+                                                    { value: "doctype4", label: "Driving License" },
+                                                    { value: "doctype4", label: "Ration Card" },
+                                                ]}
+                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                            />
+                                            {/* <SelectField
                                     {...register("proofOfAddress")}
                                     className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                 /> */}
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* ID Number */}
-                                <div>
-                                    <label
-                                        htmlFor="idNumber"
-                                        className="text-lg text-mindfulBlack">
-                                        ID Number
-                                    </label>
-                                    <input
-                                        {...register("idNumber")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
-                                    />
-                                    {errors.idNumber && <p className="text-sm text-red-600">{errors.idNumber.message}</p>}
+                                    {/* ID Number */}
+                                    <div>
+                                        <label
+                                            htmlFor="idNumber"
+                                            className="text-lg text-mindfulBlack">
+                                            ID Number
+                                        </label>
+                                        <input
+                                            {...register("idNumber")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                        />
+                                        {errors.idNumber && <p className="text-sm text-red-600">{errors.idNumber.message}</p>}
 
-                                </div>
+                                    </div>
 
-                                {/* File Upload Area Three */}
-                                <div>
-                                    <label
-                                        htmlFor="idNumber"
-                                        className="text-lg text-mindfulBlack">
-                                        Upload a clear scan ot photo of the document
-                                    </label>
-                                    <div className="flex items-center space-x-5">
-                                        <div className="w-3/4">
-                                            <label
-                                                htmlFor="addressFile"
-                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                            >
-                                                {/* File Upload Icon */}
-                                                {/* <div>
+                                    {/* File Upload Area Three */}
+                                    <div>
+                                        <label
+                                            htmlFor="idNumber"
+                                            className="text-lg text-mindfulBlack">
+                                            Upload a clear scan ot photo of the document
+                                        </label>
+                                        <div className="flex items-center space-x-5">
+                                            <div className="w-3/4">
+                                                <label
+                                                    htmlFor="addressFile"
+                                                    className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                >
+                                                    {/* File Upload Icon */}
+                                                    {/* <div>
                                                                                                     <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                                                                 </div> */}
-                                                <span className="text-md text-mindfulBlack break-all px-2">
-                                                    {selectedFiles["address_file"]?.name || 'Upload a clear scan or photo of the document'}
-                                                </span>
-                                            </label>
+                                                    <span className="text-md text-mindfulBlack break-all px-2">
+                                                        {selectedFiles["address_file"]?.name || 'Upload a clear scan or photo of the document'}
+                                                    </span>
+                                                </label>
 
-                                            <input
-                                                id="addressFile"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "address_file")}
-                                                className="hidden"
-                                            />
-                                        </div>
+                                                <input
+                                                    id="addressFile"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange(e, "address_file")}
+                                                    className="hidden"
+                                                />
+                                            </div>
 
-                                        <div>
-                                            <label
-                                                htmlFor="addressFile"
-                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                            >
-                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                Upload Files
-                                            </label>
+                                            <div>
+                                                <label
+                                                    htmlFor="addressFile"
+                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                >
+                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                    Upload Files
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* File Upload Area Four */}
-                                <div>
-                                    <div className="flex items-center space-x-5">
-                                        <div className="w-3/4">
-                                            <label
-                                                htmlFor="identityFile"
-                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                            >
-                                                {/* File Upload Icon */}
-                                                {/* <div>
+                                    {/* File Upload Area Four */}
+                                    <div>
+                                        <div className="flex items-center space-x-5">
+                                            <div className="w-3/4">
+                                                <label
+                                                    htmlFor="identityFile"
+                                                    className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                >
+                                                    {/* File Upload Icon */}
+                                                    {/* <div>
                                                         <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                     </div> */}
-                                                <span className="text-md text-mindfulBlack break-all px-2">
-                                                    {selectedFiles["identity_file"]?.name || 'Upload a clear scan or photo of the ID'}
-                                                </span>
-                                            </label>
+                                                    <span className="text-md text-mindfulBlack break-all px-2">
+                                                        {selectedFiles["identity_file"]?.name || 'Upload a clear scan or photo of the ID'}
+                                                    </span>
+                                                </label>
 
-                                            <input
-                                                id="identityFile"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange(e, "identity_file")}
-                                                className="hidden"
-                                            />
-                                        </div>
+                                                <input
+                                                    id="identityFile"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange(e, "identity_file")}
+                                                    className="hidden"
+                                                />
+                                            </div>
 
-                                        <div>
-                                            <label
-                                                htmlFor="identityFile"
-                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                            >
-                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                Upload Files
-                                            </label>
+                                            <div>
+                                                <label
+                                                    htmlFor="identityFile"
+                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                >
+                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                    Upload Files
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
+                            )}
 
-                            </div>
-                        )}
-
-                    </div>
+                        </div>
+                    )}
 
                     <div>
                         {/* <Button
