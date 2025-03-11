@@ -21,10 +21,14 @@ interface BranchPropsCard {
     userName: string;
     userPhone: string;
     userRole: string;
+    BranchStatus: number;
 }
 
 
-export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }) => {
+export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo, userName, userPhone, userRole, BranchStatus }) => {
+
+    const statusText = BranchStatus === 1 ? "Active" : "Inactive";
+    const statusClass = BranchStatus === 1 ? "bg-mindfulGreen text-mindfulWhite" : "bg-gray-500 text-white";
 
     const [moreHover, setMoreHover] = useState(false);
 
@@ -46,7 +50,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
     const openViewBranchPopup = () => {
         setShowViewBranchPopup(true);
 
-        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }); // Pass branch data
+        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole, BranchStatus }); // Pass branch data
         console.log("Finding the selected branch object in an array", selectedBranch);
     }
 
@@ -56,7 +60,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
     const openEditBranchPopup = () => {
         setShowEditBranchPopup(true);
-        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }); // Pass branch data
+        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole, BranchStatus }); // Pass branch data
         console.log("Finding the selected branch object in an array", selectedBranch);
 
         // if (selectedBranch) {
@@ -123,9 +127,17 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
                 </div>
 
                 {/* Status */}
-                <div>
+                {/* <div>
                     <p className="text-sm text-mindfulAsh">Status</p>
                     <p className="bg-mindfulGreen text-sm text-mindfulWhite rounded-full px-3 py-0.5">Active</p>
+                </div> */}
+
+                <div>
+                    <p className="text-sm text-mindfulAsh">Status</p>
+                    <p className={`bg-mindfulGreen text-sm text-mindfulWhite rounded-full px-3 py-0.5 ${statusClass}`}>
+                        {/* Active */}
+                        {statusText}
+                    </p>
                 </div>
             </div>
 

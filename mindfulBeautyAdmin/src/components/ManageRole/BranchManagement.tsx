@@ -19,6 +19,7 @@ interface BranchCardProps {
     latitude: number;
     longitude: number;
     staff: Staff[];
+    service_status: number;
 }
 interface Staff {
     staff_id: string;
@@ -185,6 +186,7 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                             userName={branch.staff?.name || "N/A"}  // Accessing staff as an object
                             userPhone={branch.staff?.phone || "N/A"}
                             userRole={branch.staff?.role || "N/A"}
+                            BranchStatus={branch.service_status}
                         />
                     ))
                 ) : (

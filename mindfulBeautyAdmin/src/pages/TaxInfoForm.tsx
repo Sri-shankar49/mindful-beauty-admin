@@ -18,6 +18,11 @@ interface TaxInfoResponse {
     };
 }
 
+
+const fileSchema = zod
+    .custom<File>((file) => file instanceof File, { message: "File is required" })
+    .optional(); // ✅ Allows optional file uploads
+
 // Define Zod schema for validation
 const taxInfoSchema = zod.object({
     // taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
@@ -26,11 +31,44 @@ const taxInfoSchema = zod.object({
     // proofOfIdentityNumber: zod.string().min(3, "ID Number must be 3 digits"),
     // proofOfAddressType: zod.string().optional(),
 
+    // taxIdentificationNumber: zod.string().optional(),
+    // gstNumber: zod.string().optional(),
+    // proofOfIdentityType: zod.string().optional(),
+    // proofOfIdentityNumber: zod.string().optional(),
+    // proofOfAddressType: zod.string().optional(),
+
+    // taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
+    // gstNumber: zod.string().regex(/^[0-9]{15}$/, { message: "GST Number must be exactly 15 digits" }),
     taxIdentificationNumber: zod.string().optional(),
     gstNumber: zod.string().optional(),
-    proofOfIdentityType: zod.string().optional(),
-    proofOfIdentityNumber: zod.string().optional(),
-    proofOfAddressType: zod.string().optional(),
+    proofOfIdentityType: zod.string().min(1, "Proof of Identity Type is required"),
+    proofOfIdentityNumber: zod.string().min(3, "ID Number must be at least 3 digits"),
+    proofOfAddressType: zod.string().min(1, "Proof of Address Type is required"),
+
+
+    // tax_file: zod
+    //     .instanceof(File, { message: "Tax file is required" }),
+    // // .optional(), // If optional, otherwise remove `.optional()`
+
+    // gst_file: zod
+    //     .instanceof(File, { message: "GST file is required" }),
+    // .optional(), // If required, remove `.optional()`
+
+    // identity_file: zod
+    //     .instanceof(File, { message: "Identity proof file is required" }),
+    // // .optional(),
+
+    // address_file: zod
+    //     .instanceof(File, { message: "Address proof file is required" })
+    // // .optional(),
+
+    // ✅ Ensure File Uploads Work Correctly
+    tax_file: fileSchema, // ✅ Optional
+    gst_file: fileSchema, // ✅ Optional
+
+    identity_file: zod.custom<File>((file) => file instanceof File, { message: "Identity proof file is required" }),
+    address_file: zod.custom<File>((file) => file instanceof File, { message: "Address proof file is required" }),
+
 });
 
 type TaxInfoFormData = zod.infer<typeof taxInfoSchema>;
@@ -78,17 +116,11 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
     });
 
 
-    // Handle file change
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setSelectedFiles((prev) => ({ ...prev, [fileKey]: file }));
-        }
-    };
+
 
 
     // React Hook Form setup with Zod validation
-    const { register, handleSubmit, formState: { errors } } = useForm<TaxInfoFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<TaxInfoFormData>({
         resolver: zodResolver(taxInfoSchema),
         defaultValues: {
             // ownersName: registartionFormData.name || '',
@@ -100,6 +132,18 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
         },
     });
 
+
+    type FileKey = "tax_file" | "gst_file" | "identity_file" | "address_file";
+
+    // Handle file change
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fileKey: FileKey) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSelectedFiles((prev) => ({ ...prev, [fileKey]: file })); // ✅ Update local state
+            setValue(fileKey, file, { shouldValidate: true }); // ✅ Update React Hook Form & trigger validation
+            clearErrors(fileKey); // ✅ Remove error if file is uploaded
+        }
+    };
 
 
     const handleBackButton = () => {
@@ -222,7 +266,9 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
             // Navigate to the next step
             // navigate("/Dashboard/ProfileProgress");
             // navigate("/Thankyou");
-            navigate("/BankAccInfoForm");
+            // navigate("/BankAccInfoForm");
+            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+
         }
 
         catch (error: any) {
@@ -329,125 +375,144 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                 </div>
 
                                 {/* Sub Heading */}
-                                <div className="text-center py-2">
-                                    <h5 className="text-lg text-mindfulBlack font-semibold">Tax Information / GST Number</h5>
-                                </div>
+                                {location.state?.from !== "GeneralInfoFreelanceForm" &&
+                                    (<div className="text-center py-2">
+                                        <h5 className="text-lg text-mindfulBlack font-semibold">Tax Information / GST Number</h5>
+                                    </div>)
+                                }
+
 
                                 <div>
                                     <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
                                         <div className="grid grid-cols-2 gap-5">
 
-                                            {/* Tax Identification Number */}
-                                            <div>
-                                                <label
-                                                    htmlFor="taxIdentificationNumber"
-                                                    className="text-lg text-mindfulBlack">
-                                                    Tax Identification Number
-                                                </label>
-                                                <InputField
-                                                    label={''}
-                                                    // name="taxIdentificationNumber"
-                                                    id="taxIdentificationNumber"
-                                                    placeholder=""
-                                                    className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("taxIdentificationNumber")}
-                                                />
-                                                {errors.taxIdentificationNumber && <p className="text-sm text-red-600">{errors.taxIdentificationNumber.message}</p>}
-                                            </div>
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
 
-                                            {/* GST Number */}
-                                            <div>
-                                                <label
-                                                    htmlFor="gstNumber"
-                                                    className="text-lg text-mindfulBlack">
-                                                    GST Number
-                                                </label>
-                                                <InputField
-                                                    label={''}
-                                                    // name="gstNumber"
-                                                    id="gstNumber"
-                                                    placeholder=""
-                                                    className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
-                                                    {...register("gstNumber")}
-                                                />
-                                                {errors.gstNumber && <p className="text-sm text-red-600">{errors.gstNumber.message}</p>}
-                                            </div>
+                                                /* Tax Identification Number */
+                                                <div>
+                                                    <label
+                                                        htmlFor="taxIdentificationNumber"
+                                                        className="text-lg text-mindfulBlack">
+                                                        Tax Identification Number
+                                                    </label>
+                                                    <InputField
+                                                        label={''}
+                                                        // name="taxIdentificationNumber"
+                                                        id="taxIdentificationNumber"
+                                                        placeholder=""
+                                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("taxIdentificationNumber")}
+                                                    />
+                                                    {/* {errors.taxIdentificationNumber && <p className="text-sm text-red-600">{errors.taxIdentificationNumber.message}</p>} */}
+                                                </div>
+                                            }
 
-                                            {/* File Upload Area One */}
-                                            <div>
-                                                <div className="flex items-center space-x-5">
-                                                    <div className="w-3/4">
-                                                        <label
-                                                            htmlFor="taxFile"
-                                                            className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                                        >
-                                                            {/* File Upload Icon */}
-                                                            {/* <div>
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+
+                                                // GST Number
+                                                <div>
+                                                    <label
+                                                        htmlFor="gstNumber"
+                                                        className="text-lg text-mindfulBlack">
+                                                        GST Number
+                                                    </label>
+                                                    <InputField
+                                                        label={''}
+                                                        // name="gstNumber"
+                                                        id="gstNumber"
+                                                        placeholder=""
+                                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                                        {...register("gstNumber")}
+                                                    />
+                                                    {/* {errors.gstNumber && <p className="text-sm text-red-600">{errors.gstNumber.message}</p>} */}
+                                                </div>
+                                            }
+
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+
+                                                // File Upload Area One
+                                                <div>
+                                                    <div className="flex items-center space-x-5">
+                                                        <div className="w-3/4">
+                                                            <label
+                                                                htmlFor="tax_file"
+                                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                            >
+                                                                {/* File Upload Icon */}
+                                                                {/* <div>
                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                             </div> */}
-                                                            <span className="text-md text-mindfulBlack">
-                                                                {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
-                                                            </span>
-                                                        </label>
+                                                                <span className="text-md text-mindfulBlack">
+                                                                    {selectedFiles["tax_file"]?.name || 'Upload tax file here'}
+                                                                </span>
+                                                            </label>
 
-                                                        <input
-                                                            id="taxFile"
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={(e) => handleFileChange(e, "tax_file")}
-                                                            className="hidden"
-                                                        />
-                                                    </div>
+                                                            <input
+                                                                id="tax_file"
+                                                                type="file"
+                                                                accept="image/*"
+                                                                onChange={(e) => handleFileChange(e, "tax_file")}
+                                                                className="hidden"
+                                                            />
+                                                        </div>
 
-                                                    <div>
-                                                        <label
-                                                            htmlFor="taxFile"
-                                                            className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                                        >
-                                                            <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                            Upload Files
-                                                        </label>
+                                                        <div>
+                                                            <label
+                                                                htmlFor="tax_file"
+                                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                            >
+                                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                                Upload Files
+                                                            </label>
+                                                        </div>
                                                     </div>
+                                                    {/* {errors.tax_file && <p className="text-sm text-red-600">{errors.tax_file.message}</p>} */}
+
                                                 </div>
-                                            </div>
+                                            }
 
-                                            {/* File Upload Area Two */}
-                                            <div>
-                                                <div className="flex items-center space-x-5">
-                                                    <div className="w-3/4">
-                                                        <label
-                                                            htmlFor="gstFile"
-                                                            className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                                        >
-                                                            {/* File Upload Icon */}
-                                                            {/* <div>
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+
+                                                // File Upload Area Two
+                                                <div>
+                                                    <div className="flex items-center space-x-5">
+                                                        <div className="w-3/4">
+                                                            <label
+                                                                htmlFor="gst_file"
+                                                                className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                            >
+                                                                {/* File Upload Icon */}
+                                                                {/* <div>
                                                                 <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
                                                             </div> */}
-                                                            <span className="text-md text-mindfulBlack">
-                                                                {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
-                                                            </span>
-                                                        </label>
+                                                                <span className="text-md text-mindfulBlack">
+                                                                    {selectedFiles["gst_file"]?.name || 'Upload GST file here'}
+                                                                </span>
+                                                            </label>
 
-                                                        <input
-                                                            id="gstFile"
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={(e) => handleFileChange(e, "gst_file")}
-                                                            className="hidden"
-                                                        />
-                                                    </div>
+                                                            <input
+                                                                id="gst_file"
+                                                                type="file"
+                                                                accept="image/*"
+                                                                onChange={(e) => handleFileChange(e, "gst_file")}
+                                                                className="hidden"
+                                                            />
+                                                        </div>
 
-                                                    <div>
-                                                        <label
-                                                            htmlFor="gstFile"
-                                                            className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
-                                                        >
-                                                            <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                            Upload Files
-                                                        </label>
+                                                        <div>
+                                                            <label
+                                                                htmlFor="gst_file"
+                                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
+                                                            >
+                                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                                Upload Files
+                                                            </label>
+                                                        </div>
                                                     </div>
+                                                    {/* {errors.gst_file && <p className="text-sm text-red-600">{errors.gst_file.message}</p>} */}
+
                                                 </div>
-                                            </div>
+                                            }
 
                                         </div>
 
@@ -474,7 +539,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             htmlFor="typeOfId"
                                                             className="text-md text-mindfulBlack font-semibold mb-1"
                                                         >
-                                                            Type of ID
+                                                            Type of ID <span className="text-main"> *</span>
                                                         </label>
                                                         <SelectField
                                                             label={''}
@@ -489,6 +554,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             {...register("proofOfIdentityType")}
                                                         />
+                                                        {errors.proofOfIdentityType && <p className="text-sm text-red-600">{errors.proofOfIdentityType.message}</p>}
+
                                                     </div>
                                                 </div>
 
@@ -506,7 +573,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             htmlFor="proofOfAddress"
                                                             className="text-md text-mindfulBlack font-semibold mb-1"
                                                         >
-                                                            Type of Document
+                                                            Type of Document <span className="text-main"> *</span>
                                                         </label>
                                                         <SelectField
                                                             label={''}
@@ -522,6 +589,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                             {...register("proofOfAddressType")}
                                                         />
+                                                        {errors.proofOfAddressType && <p className="text-sm text-red-600">{errors.proofOfAddressType.message}</p>}
+
                                                     </div>
                                                 </div>
 
@@ -530,7 +599,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                     <label
                                                         htmlFor="idNumber"
                                                         className="text-lg text-mindfulBlack">
-                                                        ID Number
+                                                        ID Number <span className="text-main"> *</span>
                                                     </label>
                                                     <InputField
                                                         label={''}
@@ -549,12 +618,13 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                     <label
                                                         htmlFor="idNumber"
                                                         className="text-lg text-mindfulBlack">
-                                                        Upload a clear scan ot photo of the document
+                                                        Upload a clear scan ot photo of the document <span className="text-main"> *</span>
                                                     </label>
+
                                                     <div className="flex items-center space-x-5">
                                                         <div className="w-3/4">
                                                             <label
-                                                                htmlFor="addressFile"
+                                                                htmlFor="address_file"
                                                                 className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
                                                             >
                                                                 {/* File Upload Icon */}
@@ -567,7 +637,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             </label>
 
                                                             <input
-                                                                id="addressFile"
+                                                                id="address_file"
                                                                 type="file"
                                                                 accept="image/*"
                                                                 onChange={(e) => handleFileChange(e, "address_file")}
@@ -577,7 +647,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
                                                         <div>
                                                             <label
-                                                                htmlFor="addressFile"
+                                                                htmlFor="address_file"
                                                                 className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
                                                             >
                                                                 <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
@@ -585,6 +655,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             </label>
                                                         </div>
                                                     </div>
+                                                    {errors.address_file && <p className="text-sm text-red-600">{errors.address_file.message}</p>}
+
                                                 </div>
 
                                                 {/* File Upload Area Four */}
@@ -592,7 +664,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                     <div className="flex items-center space-x-5">
                                                         <div className="w-3/4">
                                                             <label
-                                                                htmlFor="identityFile"
+                                                                htmlFor="identity_file"
                                                                 className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-2 cursor-pointer hover:border-mindfulGreyTypeThree"
                                                             >
                                                                 {/* File Upload Icon */}
@@ -605,7 +677,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             </label>
 
                                                             <input
-                                                                id="identityFile"
+                                                                id="identity_file"
                                                                 type="file"
                                                                 accept="image/*"
                                                                 onChange={(e) => handleFileChange(e, "identity_file")}
@@ -615,7 +687,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
                                                         <div>
                                                             <label
-                                                                htmlFor="identityFile"
+                                                                htmlFor="identity_file"
                                                                 className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-[0.6rem] cursor-pointer"
                                                             >
                                                                 <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
@@ -623,6 +695,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                             </label>
                                                         </div>
                                                     </div>
+
+                                                    {errors.identity_file && <p className="text-sm text-red-600">{errors.identity_file.message}</p>}
                                                 </div>
                                             </div>
                                         </div>

@@ -7,6 +7,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectField } from "@/common/SelectField";
 import { ShimmerTable } from "shimmer-effects-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 // Define the validation schema
 const generalInfoSchema = z.object({
@@ -53,6 +55,10 @@ const generalInfoSchema = z.object({
 type GeneralFormData = z.infer<typeof generalInfoSchema>;
 
 export const GeneralInfo = () => {
+
+    // Getting Freelancer state from Redux
+    const { freelancer } = useSelector((state: RootState) => state.login);
+    console.log("Freelancer boolean Status", freelancer);
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<GeneralFormData>({
         resolver: zodResolver(generalInfoSchema),
@@ -548,37 +554,42 @@ export const GeneralInfo = () => {
                                     ></textarea>
                                 </div>
 
-                                {/* Salon Facilities */}
-                                <div>
-                                    <label
-                                        htmlFor="servicesOffered"
-                                        className="text-lg text-mindfulBlack">
-                                        Salon Facilities
-                                    </label>
+                                {freelancer !== true && (
+                                    // {/* Salon Facilities */ }
+                                    <div>
+                                        <label
+                                            htmlFor="servicesOffered"
+                                            className="text-lg text-mindfulBlack">
+                                            Salon Facilities
+                                        </label>
 
-                                    <textarea
-                                        rows={3}
-                                        {...register("salonFacilities")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                        <textarea
+                                            rows={3}
+                                            {...register("salonFacilities")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
 
-                                    ></textarea>
-                                </div>
+                                        ></textarea>
+                                    </div>
+                                )}
 
-                                {/* Cancellation Policy */}
-                                <div>
-                                    <label
-                                        htmlFor="cancellationPolicy"
-                                        className="text-lg text-mindfulBlack">
-                                        Cancellation Policy
-                                    </label>
 
-                                    <textarea
-                                        rows={3}
-                                        {...register("cancellationPolicy")}
-                                        className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+                                {freelancer !== true && (
+                                    // {/* Cancellation Policy */}
+                                    <div>
+                                        <label
+                                            htmlFor="cancellationPolicy"
+                                            className="text-lg text-mindfulBlack">
+                                            Cancellation Policy
+                                        </label>
 
-                                    ></textarea>
-                                </div>
+                                        <textarea
+                                            rows={3}
+                                            {...register("cancellationPolicy")}
+                                            className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
+
+                                        ></textarea>
+                                    </div>
+                                )}
 
                                 {/* Staff Information */}
                                 <div>

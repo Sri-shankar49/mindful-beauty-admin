@@ -53,6 +53,28 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
     //     }
     // };
 
+    // const handleBackButton = () => {
+    //     console.log("Location State:", location.state); // Debugging
+
+    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
+    //         navigate("/GeneralInfoFreelanceForm"); // Go back to the correct form
+    //     } else {
+    //         navigate("/TaxInfoForm", { state: { from: "BankAccInfoForm" } });
+    //     }
+    // };
+
+    const handleBackButton = () => {
+        console.log("Location State:", location.state); // Debugging
+
+        if (location.state?.from === "GeneralInfoFreelanceForm") {
+            navigate("/TaxInfoForm", { state: { hideGstField: true } }); // Hide GST field
+        } else {
+            navigate("/TaxInfoForm");
+        }
+    };
+
+
+
 
 
     // React Hook Form setup with Zod validation
@@ -344,15 +366,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 {/* Back Button */}
                                                 {/* <Link to="/GeneralInfoForm"> */}
                                                 <Button
-                                                    // onClick={handleBackButton}
+                                                    onClick={handleBackButton}
                                                     // onClick={() => navigate('/TaxInfoForm')}
-                                                    onClick={() => {
-                                                        if (location.state?.skipTaxForm) {
-                                                            navigate("/GeneralInfoFreelanceForm"); // Go back to GeneralInfoFreelanceForm
-                                                        } else {
-                                                            navigate("/TaxInfoForm"); // Otherwise, go back to TaxInfoForm
-                                                        }
-                                                    }}
                                                     buttonType="button"
                                                     buttonTitle="Back"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"

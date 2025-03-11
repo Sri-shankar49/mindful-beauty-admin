@@ -61,7 +61,8 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
     const { register, handleSubmit, formState: { errors }, reset } = useForm<creditsPopupFormData>({
         resolver: zodResolver(creditPopupSchema),
         defaultValues: {
-            requiredCredit: "",
+            // requiredCredit: "",
+            requiredCredit: "1000", // Set default value here
         },
     });
 
@@ -283,7 +284,7 @@ export const CreditsPopup: React.FC<CreditsPopupProps> = ({ closePopup, refreshW
                                             type="number"
                                             // name="requiredCredit"
                                             id="requiredCredit"
-                                            placeholder=""
+                                            placeholder="Enter the credit amount"
                                             className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                             {...register("requiredCredit")}
                                         />
