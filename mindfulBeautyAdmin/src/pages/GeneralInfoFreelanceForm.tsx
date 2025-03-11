@@ -780,8 +780,8 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                             >
                                                                 {/* File Upload Icon */}
                                                                 {/* <div>
-                                                                <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
-                                                            </div> */}
+                                                                    <MdFileUpload className="text-[36px] text-mindfulBlack mb-2" />
+                                                                </div> */}
                                                                 <span className="text-md text-mindfulBlack">
                                                                     {selectedFile["certifications"]?.name || 'Upload certification files here'}
                                                                 </span>

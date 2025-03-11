@@ -494,6 +494,7 @@ export const GeneralInfo = () => {
                                     </label>
 
                                     <input
+                                        type="date"
                                         {...register("establishedOn")}
                                         className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                     />
