@@ -386,7 +386,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                     <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
                                         <div className="grid grid-cols-2 gap-5">
 
-                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && location.state?.from !== "BankAccInfoForm" &&
 
                                                 /* Tax Identification Number */
                                                 <div>
@@ -407,7 +407,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                 </div>
                                             }
 
-                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && location.state?.from !== "BankAccInfoForm" &&
 
                                                 // GST Number
                                                 <div>
@@ -428,7 +428,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                 </div>
                                             }
 
-                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && location.state?.from !== "BankAccInfoForm" &&
 
                                                 // File Upload Area One
                                                 <div>
@@ -471,7 +471,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                 </div>
                                             }
 
-                                            {location.state?.from !== "GeneralInfoFreelanceForm" && !location.state?.hideGstField &&
+                                            {location.state?.from !== "GeneralInfoFreelanceForm" && location.state?.from !== "BankAccInfoForm" &&
 
                                                 // File Upload Area Two
                                                 <div>

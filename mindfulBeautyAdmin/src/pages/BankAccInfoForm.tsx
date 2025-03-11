@@ -53,25 +53,25 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
     //     }
     // };
 
-    // const handleBackButton = () => {
-    //     console.log("Location State:", location.state); // Debugging
-
-    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
-    //         navigate("/GeneralInfoFreelanceForm"); // Go back to the correct form
-    //     } else {
-    //         navigate("/TaxInfoForm", { state: { from: "BankAccInfoForm" } });
-    //     }
-    // };
-
     const handleBackButton = () => {
         console.log("Location State:", location.state); // Debugging
 
         if (location.state?.from === "GeneralInfoFreelanceForm") {
-            navigate("/TaxInfoForm", { state: { hideGstField: true } }); // Hide GST field
+            navigate("/GeneralInfoFreelanceForm"); // Go back to the correct form
         } else {
-            navigate("/TaxInfoForm");
+            navigate("/TaxInfoForm", { state: { from: "BankAccInfoForm" } });
         }
     };
+
+    // const handleBackButton = () => {
+    //     console.log("Location State:", location.state); // Debugging
+
+    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
+    //         navigate("/TaxInfoForm", { state: { hideGstField: true } }); // Hide GST field
+    //     } else {
+    //         navigate("/TaxInfoForm");
+    //     }
+    // };
 
 
 
