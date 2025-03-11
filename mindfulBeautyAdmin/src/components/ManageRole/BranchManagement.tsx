@@ -16,6 +16,15 @@ interface BranchCardProps {
     phone: string;
     location: string;
     logo: string;
+    latitude: number;
+    longitude: number;
+    staff: Staff[];
+}
+interface Staff {
+    staff_id: string;
+    name: string;
+    phone: string;
+    role: string;
 }
 
 export const BranchManagement: React.FC<BranchCardProps> = () => {
@@ -173,6 +182,9 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                             phone={branch.phone}
                             location={branch.location}
                             logo={branch.logo}
+                            userName={branch.staff?.name || "N/A"}  // Accessing staff as an object
+                            userPhone={branch.staff?.phone || "N/A"}
+                            userRole={branch.staff?.role || "N/A"}
                         />
                     ))
                 ) : (

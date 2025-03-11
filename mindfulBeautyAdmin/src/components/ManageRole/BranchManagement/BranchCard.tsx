@@ -18,10 +18,13 @@ interface BranchPropsCard {
     phone: string;
     location: string;
     logo: string;
+    userName: string;
+    userPhone: string;
+    userRole: string;
 }
 
 
-export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo }) => {
+export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }) => {
 
     const [moreHover, setMoreHover] = useState(false);
 
@@ -43,7 +46,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
     const openViewBranchPopup = () => {
         setShowViewBranchPopup(true);
 
-        setSelectedBranch({ branchID, branchName, phone, location, logo }); // Pass branch data
+        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }); // Pass branch data
         console.log("Finding the selected branch object in an array", selectedBranch);
     }
 
@@ -53,7 +56,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
     const openEditBranchPopup = () => {
         setShowEditBranchPopup(true);
-        setSelectedBranch({ branchID, branchName, phone, location, logo }); // Pass branch data
+        setSelectedBranch({ branchID, branchName, phone, location, logo, userName, userPhone, userRole }); // Pass branch data
         console.log("Finding the selected branch object in an array", selectedBranch);
 
         // if (selectedBranch) {
@@ -130,7 +133,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
             <div>
                 {/* <p className="text-sm text-mindfulAsh">Members</p> */}
 
-                <div className="flex items-center justify-end">
+                <div className="flex items-center justify-between">
                     {/* <div className="profile-image-group">
                         <div className="profile-image">
                             <img src={imgRounded} alt="Profile 1" />
@@ -145,6 +148,12 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
                             +3
                         </div>
                     </div> */}
+
+                    <div>
+                        <p className="text-md text-mindfulBlack capitalize">{userName}</p>
+                        <p className="text-sm text-mindfulAsh">{userRole}</p>
+                        <p className="text-sm text-mindfulBlack">{userPhone}</p>
+                    </div>
 
                     <div
                         className="relative"

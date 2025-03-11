@@ -213,7 +213,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="accHolderName"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Account Holder Name <span className="text-main"> *</span>
+                                                    Bank Account Holder Name
+                                                    {/* <span className="text-main"> *</span> */}
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -232,7 +233,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="bankName"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Name <span className="text-main"> *</span>
+                                                    Bank Name
+                                                    {/* <span className="text-main"> *</span> */}
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -251,7 +253,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="bankAccountNumber"
                                                     className="text-lg text-mindfulBlack">
-                                                    Bank Account Number <span className="text-main"> *</span>
+                                                    Bank Account Number
+                                                    {/* <span className="text-main"> *</span> */}
                                                 </label>
                                                 <InputField
                                                     label={''}
@@ -272,7 +275,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 <label
                                                     htmlFor="accountType"
                                                     className="text-lg text-mindfulBlack">
-                                                    Account Type <span className="text-main"> *</span>
+                                                    Account Type
+                                                    {/* <span className="text-main"> *</span> */}
                                                 </label>
                                                 <InputField
                                                     label={''}

@@ -259,9 +259,9 @@ export const Header = () => {
                         </div>
 
                         {/* Notification Bell Icon */}
-                        <div>
+                        {/* <div>
                             <FaBell className="text-[22px] text-mindfulBlue" />
-                        </div>
+                        </div> */}
 
                         {/* Profile Name */}
                         <div className="relative cursor-pointer"
