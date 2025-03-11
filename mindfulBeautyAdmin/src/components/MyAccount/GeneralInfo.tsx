@@ -463,7 +463,7 @@ export const GeneralInfo = () => {
 
                                     <input
                                         {...register("salonLocation")}
-                                        value={selectedLocation}
+                                        //value={selectedLocation}
                                         onChange={handleLocationChange} // Handle input change
                                         className="w-full rounded-[5px] border-[1px] border-mindfulBlack px-2 py-1.5 focus-within:outline-none"
                                     />

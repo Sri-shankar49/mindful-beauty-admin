@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { MdCloudUpload } from "react-icons/md";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { taxInfo } from "@/api/apiConfig";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 interface TaxInfoResponse {
     data: {
@@ -19,10 +20,16 @@ interface TaxInfoResponse {
 
 // Define Zod schema for validation
 const taxInfoSchema = zod.object({
-    taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
-    gstNumber: zod.string().regex(/^[0-9]{15}$/, { message: "GST Number must be 15 digits" }),
+    // taxIdentificationNumber: zod.string().min(3, "Tax Identification Number is required"),
+    // gstNumber: zod.string().regex(/^[0-9]{15}$/, { message: "GST Number must be 15 digits" }),
+    // proofOfIdentityType: zod.string().optional(),
+    // proofOfIdentityNumber: zod.string().min(3, "ID Number must be 3 digits"),
+    // proofOfAddressType: zod.string().optional(),
+
+    taxIdentificationNumber: zod.string().optional(),
+    gstNumber: zod.string().optional(),
     proofOfIdentityType: zod.string().optional(),
-    proofOfIdentityNumber: zod.string().min(3, "ID Number must be 3 digits"),
+    proofOfIdentityNumber: zod.string().optional(),
     proofOfAddressType: zod.string().optional(),
 });
 
@@ -31,9 +38,11 @@ type TaxInfoFormData = zod.infer<typeof taxInfoSchema>;
 export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     // const [selectedFile1, setSelectedFile1] = useState<File | null>(null);
     // const [selectedFile2, setSelectedFile2] = useState<File | null>(null);
@@ -91,6 +100,18 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
         },
     });
 
+
+
+    const handleBackButton = () => {
+        console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
+
+        if (location.state?.from === "GeneralInfoFreelanceForm") {
+            navigate("/GeneralInfoFreelanceForm");
+        } else {
+            navigate("/GeneralInfoForm");
+        }
+    };
+
     // const onSubmit = async (data: TaxInfoFormData) => {
     //     setLoading(true);
     //     setError(null);
@@ -145,7 +166,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
     const onSubmit = async (data: TaxInfoFormData) => {
 
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         console.log("Tax Info Form Submitted Data :", data);
 
@@ -161,8 +182,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
             // Append required fields
             formData.append("provider", sessionProviderID);
-            formData.append("tax_identification_number", data.taxIdentificationNumber);
-            formData.append("gst_number", data.gstNumber);
+            formData.append("tax_identification_number", data.taxIdentificationNumber || "");
+            formData.append("gst_number", data.gstNumber || "");
 
             // Append optional fields if they have values
             if (data.proofOfIdentityType) {
@@ -200,44 +221,47 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
             // Navigate to the next step
             // navigate("/Dashboard/ProfileProgress");
-            navigate("/Thankyou");
+            // navigate("/Thankyou");
+            navigate("/BankAccInfoForm");
         }
 
         catch (error: any) {
             console.log("Tax Info Form Error:", error);
-            setError(error.message || "Something went wrong.");
+            // setError(error.message || "Something went wrong.");
+            NotifyError(error.message || "Something went wrong.");
+
         } finally {
             setLoading(false);
         }
     }
 
     // Add a new useEffect to handle error message timeout
-    useEffect(() => {
-        if (error) {
-            const timer = setTimeout(() => {
-                setError(null);
-            }, 4000);
-            return () => clearTimeout(timer);
-        }
-    }, [error]);
+    // useEffect(() => {
+    //     if (error) {
+    //         const timer = setTimeout(() => {
+    //             setError(null);
+    //         }, 4000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [error]);
 
     // Update the ErrorMessage component to include a transition
-    const ErrorMessage = () => error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6 transition-opacity duration-500 ease-in-out">
-            <div className="flex">
-                <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                </div>
-                <div className="ml-3">
-                    <p className="text-sm text-red-600">
-                        {error}
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
+    // const ErrorMessage = () => error && (
+    //     <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6 transition-opacity duration-500 ease-in-out">
+    //         <div className="flex">
+    //             <div className="flex-shrink-0">
+    //                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+    //                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+    //                 </svg>
+    //             </div>
+    //             <div className="ml-3">
+    //                 <p className="text-sm text-red-600">
+    //                     {error}
+    //                 </p>
+    //             </div>
+    //         </div>
+    //     </div>
+    // );
 
     return (
         <div>
@@ -274,27 +298,27 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                             </div>
 
                                             {/* One Icon */}
-                                            <Link to="/GeneralInfoForm">
-                                                <div
-                                                    className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
-                                                >
-                                                    1
-                                                </div>
-                                            </Link>
+                                            {/* <Link to="/GeneralInfoForm"> */}
+                                            <div
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
+                                            >
+                                                1
+                                            </div>
+                                            {/* </Link> */}
 
                                             {/* Two Icon */}
-                                            <Link to="/BankAccInfoForm">
-                                                <div
-                                                    className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
-                                                >
-                                                    2
-                                                </div>
-                                            </Link>
+                                            {/* <Link to="/BankAccInfoForm"> */}
+                                            <div
+                                                className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
+                                            >
+                                                2
+                                            </div>
+                                            {/* </Link> */}
 
                                             {/* Three Icon */}
                                             {/* <Link to="/TaxInfoForm"> */}
                                             <div
-                                                className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
                                             >
                                                 3
                                             </div>
@@ -608,9 +632,10 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                         <div className="text-center py-10">
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Reset Button */}
-                                                <ErrorMessage />
+                                                {/* <ErrorMessage /> */}
+
                                                 <Button
-                                                    onClick={() => location.reload()}
+                                                    onClick={() => window.location.reload()}
                                                     buttonType="button"
                                                     buttonTitle="Reset"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
@@ -619,7 +644,8 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                 {/* Back Button */}
                                                 {/* <Link to="/BankAccInfoForm"> */}
                                                 <Button
-                                                    onClick={() => navigate('/BankAccInfoForm')}
+                                                    // onClick={() => navigate('/BankAccInfoForm')}
+                                                    onClick={handleBackButton}
                                                     buttonType="button"
                                                     buttonTitle="Back"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
@@ -630,7 +656,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                                 {/* <Link to="/Dashboard/ProfileProgress"> */}
                                                 <Button
                                                     buttonType="submit"
-                                                    buttonTitle={loading ? `Submitting...` : `Submit`}
+                                                    buttonTitle={loading ? `Submitting...` : `Next`}
                                                     className="bg-main text-md text-mindfulWhite  font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                                                 />
                                                 {/* </Link> */}

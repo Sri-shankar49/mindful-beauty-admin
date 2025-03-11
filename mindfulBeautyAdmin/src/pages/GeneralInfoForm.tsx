@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { generalInfo, googleMapApi } from "@/api/apiConfig";
 import { MdCloudUpload } from "react-icons/md";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 // Define Zod schema for validation
@@ -58,7 +59,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
 
     // Getting the ProviderID from session storage
     const sessionProviderID = sessionStorage.getItem("providerID");
@@ -402,7 +403,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
     const onSubmit = async (data: GeneralInfoFormData) => {
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         console.log("General Info Freelance Form Submitted Data:", data);
 
@@ -494,12 +495,15 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
 
             // Navigate to the next step
             // navigate("/BankAccInfoForm");
-            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoForm" } });
+            // navigate("/BankAccInfoForm", { state: { from: "GeneralInfoForm" } });
+            navigate("/TaxInfoForm", { state: { from: "GeneralInfoForm" } });
 
         }
 
         catch (error: any) {
-            setError(error.message || "Something went wrong");
+            // setError(error.message || "Something went wrong");
+            NotifyError(error.message || "Something went wrong");
+
         }
         finally {
             setLoading(false);
@@ -901,7 +905,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormData> = () => {
                                         </div>
 
                                         {/* Error Response from the API */}
-                                        {error && <p className="text-sm text-red-600">{error}</p>}
+                                        {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                                         {/* Buttons */}
                                         <div className="text-center py-10">

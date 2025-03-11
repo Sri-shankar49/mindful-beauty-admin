@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
 import salonChair from "../assets/icons/salonChair.svg";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InputField } from '@/common/InputField';
 import { Button } from '@/common/Button';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { bankAccInfo } from "@/api/apiConfig";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 // Define Zod schema for validation
 const bankAccInfoSchema = zod.object({
-    bankAccHolderName: zod.string().min(3, "Bank Account Holder Name is required"),
-    bankName: zod.string().min(3, "Bank Name is required"),
-    bankAccountNumber: zod.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
-    accountType: zod.string().min(1, "Account Type is required"),
+    // bankAccHolderName: zod.string().min(3, "Bank Account Holder Name is required"),
+    // bankName: zod.string().min(3, "Bank Name is required"),
+    // bankAccountNumber: zod.string().regex(/^[0-9]{12}$/, { message: "Bank Account Number must be 12 digits" }),
+    // accountType: zod.string().min(1, "Account Type is required"),
+    // bankBranch: zod.string().optional(),
+    // ifscCode: zod.string().optional(),
+
+    bankAccHolderName: zod.string().optional(),
+    bankName: zod.string().optional(),
+    bankAccountNumber: zod.string().optional(),
+    accountType: zod.string().optional(),
     bankBranch: zod.string().optional(),
     ifscCode: zod.string().optional(),
 });
@@ -25,25 +33,25 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
     const navigate = useNavigate();
 
-    const location = useLocation();
+    // const location = useLocation();
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
 
 
     // const handleBackButton = () => {
     //     navigate("/GeneralInfoForm");
     // }
 
-    const handleBackButton = () => {
-        console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
+    // const handleBackButton = () => {
+    //     console.log("Location State:", location.state); // Debugging: Check what’s inside location.state
 
-        if (location.state?.from === "GeneralInfoFreelanceForm") {
-            navigate("/GeneralInfoFreelanceForm");
-        } else {
-            navigate("/GeneralInfoForm");
-        }
-    };
+    //     if (location.state?.from === "GeneralInfoFreelanceForm") {
+    //         navigate("/GeneralInfoFreelanceForm");
+    //     } else {
+    //         navigate("/GeneralInfoForm");
+    //     }
+    // };
 
 
 
@@ -77,7 +85,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
     const onSubmit = async (data: BankAccInfoFormData) => {
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         console.log("Bank Account Info Form Submitted Data", data);
 
@@ -91,10 +99,10 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
             const bankAccInfoData = await bankAccInfo(
                 parseInt(sessionProviderID),
-                data.bankAccHolderName,
-                data.bankName,
-                data.bankAccountNumber,
-                data.accountType,
+                data.bankAccHolderName || "",
+                data.bankName || "",
+                data.bankAccountNumber || "",
+                data.accountType || "",
                 data.bankBranch || "", // Provide default value
                 data.ifscCode || "", // Provide default value
             );
@@ -110,11 +118,15 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
             sessionStorage.setItem("ifscCode", data.ifscCode || "");
 
             // Navigate to the next step
-            navigate("/TaxInfoForm");
+            // navigate("/TaxInfoForm");
+            navigate("/Thankyou");
+
         }
 
         catch (error: any) {
-            setError(error.message || "Something went wrong");
+            // setError(error.message || "Something went wrong");
+            NotifyError(error.message || "Something went wrong.");
+
         }
 
         finally {
@@ -162,24 +174,24 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                             </div>
 
                                             {/* One Icon */}
-                                            <Link to="/GeneralInfoForm">
-                                                <div
-                                                    className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
-                                                >
-                                                    1
-                                                </div>
-                                            </Link>
+                                            {/* <Link to="/GeneralInfoForm"> */}
+                                            <div
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center z-10 cursor-pointer"
+                                            >
+                                                1
+                                            </div>
+                                            {/* </Link> */}
 
                                             {/* Two Icon */}
                                             <div
-                                                className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
+                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full z-10 flex justify-center items-center"
                                             >
                                                 2
                                             </div>
 
                                             {/* Three Icon */}
                                             <div
-                                                className="bg-mindfulAsh text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center"
+                                                className="bg-mindfulBlue text-mindfulWhite w-[40px] h-[40px] rounded-full flex justify-center items-center"
                                             >
                                                 3
                                             </div>
@@ -312,7 +324,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
                                         </div>
 
-                                        {error && <p className="text-sm text-red-600">{error}</p>}
+                                        {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                                         {/* Buttons */}
                                         <div className="text-center pt-60 pb-10">
@@ -328,7 +340,8 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 {/* Back Button */}
                                                 {/* <Link to="/GeneralInfoForm"> */}
                                                 <Button
-                                                    onClick={handleBackButton}
+                                                    // onClick={handleBackButton}
+                                                    onClick={() => navigate('/TaxInfoForm')}
                                                     buttonType="button"
                                                     buttonTitle="Back"
                                                     className="bg-mindfulWhite text-md text-mindfulBlack border-[1px] border-mindfulBlack font-semibold rounded-sm px-8 py-2 focus-within:outline-none"
@@ -339,7 +352,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                                 {/* <Link to="/TaxInfoForm"> */}
                                                 <Button
                                                     buttonType="submit"
-                                                    buttonTitle={loading ? "Submitting" : "Next"}
+                                                    buttonTitle={loading ? "Submitting" : "Submit"}
                                                     className="bg-main text-md text-mindfulWhite  font-semibold rounded-sm px-8 py-2.5 focus-within:outline-none"
                                                 />
                                                 {/* </Link> */}

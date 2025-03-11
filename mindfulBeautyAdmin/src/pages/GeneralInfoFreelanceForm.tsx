@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { generalInfoFreelance, googleMapApi } from "@/api/apiConfig";
+import { NotifyError } from "@/common/Toast/ToastMessage";
 
 
 // Define Zod schema for validation
@@ -149,7 +150,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
     // const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
 
 
     // React Hook Form setup with Zod validation
@@ -352,7 +353,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
     const onSubmit = async (data: GeneralInfoFreelanceFormData) => {
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         console.log("General Info Freelance Form Submitted Data:", data);
 
@@ -440,12 +441,14 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
             // Navigate to the next step
             // navigate("/BankAccInfoForm");
-            navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            // navigate("/BankAccInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
+            navigate("/TaxInfoForm", { state: { from: "GeneralInfoFreelanceForm" } });
 
         }
 
         catch (error: any) {
-            setError(error.message || "Something went wrong");
+            // setError(error.message || "Something went wrong");
+            NotifyError(error.message || "Something went wrong");
         }
         finally {
             setLoading(false);
@@ -766,7 +769,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
                                                     Certifications
                                                 </label>
 
-                                                <div className="flex items-start space-x-5">
+                                                <div className="flex flex-wrap gap-3 items-start space-x-5">
 
                                                     <div>
                                                         <div className="w-64">
@@ -945,7 +948,7 @@ export const GeneralInfoFreelanceForm: React.FC<GeneralInfoFreelanceFormData> = 
 
 
                                         {/* Error Response from the API */}
-                                        {error && <p className="text-sm text-red-600">{error}</p>}
+                                        {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                                         {/* Buttons */}
                                         <div className="text-center py-10">
