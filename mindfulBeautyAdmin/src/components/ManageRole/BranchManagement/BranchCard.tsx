@@ -28,7 +28,7 @@ interface BranchPropsCard {
 export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo, userName, userPhone, userRole, BranchStatus }) => {
 
     const statusText = BranchStatus === 1 ? "Active" : "Inactive";
-    const statusClass = BranchStatus === 1 ? "bg-mindfulGreen text-mindfulWhite" : "bg-gray-500 text-white";
+    const statusClass = BranchStatus === 1 ? "bg-mindfulGreen text-mindfulWhite" : "bg-mindfulgrey text-mindfulWhite";
 
     const [moreHover, setMoreHover] = useState(false);
 

@@ -300,7 +300,7 @@ export const Register: React.FC<RegisterFormData> = () => {
           </div>
 
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
 
 
 

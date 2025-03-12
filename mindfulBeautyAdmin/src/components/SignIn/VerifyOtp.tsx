@@ -131,8 +131,8 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
     return (
         <div>
             <div>
-                <h5 className="text-[20px] text-mindfulWhite font-semibold pt-5 pb-1.5">OTP Verification</h5>
-                <p className="text-lg text-mindfulWhite pb-1.5 flex items-center">Enter the OTP sent to
+                <h5 className="text-[20px] text-mindfulWhite font-semibold pt-5 pb-1.5 max-lg:text-base *:">OTP Verification</h5>
+                <p className="text-lg text-mindfulWhite pb-1.5 flex items-center max-lg:text-base max-md:flex-col max-md:items-start">Enter the OTP sent to
 
                     <span className="font-semibold flex items-center ml-1"> +91 {phoneNumber}
                         <MdModeEdit
@@ -193,7 +193,7 @@ export const VerifyOtp: React.FC<VerifyOtpProps> = ({ onVerifyOtp }) => {
 
                     {/* Din't receive OTP */}
                     <div className="pb-5">
-                        <p className="text-lg text-mindfulWhite">Didn't receive OTP? {" "}
+                        <p className="text-lg text-mindfulWhite max-lg:text-base">Didn't receive OTP? {" "}
                             {isResendEnabled ? (
                                 <span className="underline cursor-pointer hover:no-underline"
                                     onClick={handleResendOtp}
