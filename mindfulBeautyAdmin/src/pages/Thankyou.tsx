@@ -32,9 +32,9 @@ export const Thankyou = () => {
 
     return (
         <div>
-            <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
+            <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh py-5 flex items-center">
 
-                <div className="w-3/4 mx-auto h-dvh flex items-center">
+                <div className="w-3/4 mx-auto h-dvh flex items-center max-2xl:h-[80%]">
                     <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg z-0">
 
                         <div className="flex flex-col items-center justify-center w-full bg-mindfulLightgrey px-4 py-40">

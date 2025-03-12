@@ -139,9 +139,9 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
     return (
 
         <div>
-            <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
+            <div className="bg-SignInBgImg bg-cover bg-no-repeat py-5">
 
-                <div className="w-3/4 mx-auto h-dvh flex items-center">
+                <div className="w-3/4 mx-auto flex items-center max-xl:w-[85%]">
                     <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg z-0">
                         {/* <div className="bg-mindfulWhite rounded-lg drop-shadow-md"> */}
 
@@ -204,7 +204,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
 
                                 <div>
                                     <form onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="grid grid-cols-3 gap-5">
+                                        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
 
                                             {/* Bank Account Holder Name */}
                                             <div>
@@ -329,7 +329,7 @@ export const BankAccInfoForm: React.FC<BankAccInfoFormData> = () => {
                                         {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                                         {/* Buttons */}
-                                        <div className="text-center pt-60 pb-10">
+                                        <div className="text-center pt-40 pb-10 max-xl:pt-20">
                                             <div className="flex items-center justify-center space-x-5">
                                                 {/* Reset Button */}
                                                 <Button

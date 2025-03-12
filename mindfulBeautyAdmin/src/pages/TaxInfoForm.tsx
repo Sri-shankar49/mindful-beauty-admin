@@ -314,9 +314,9 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
     return (
         <div>
-            <div className="bg-SignInBgImg bg-cover bg-no-repeat h-dvh">
+            <div className="bg-SignInBgImg bg-cover bg-no-repeat py-5">
 
-                <div className="w-3/4 mx-auto h-dvh flex items-center">
+                <div className="w-3/4 mx-auto  flex items-center max-xl:w-[85%]">
                     <div className="w-full flex justify-center items-center bg-mindfulWhite rounded-lg shadow-lg z-0">
                         {/* <div className="bg-mindfulWhite rounded-lg drop-shadow-md"> */}
 
@@ -387,7 +387,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
 
                                 <div>
                                     <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="grid grid-cols-2 gap-5">
+                                        <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
 
                                             {location.state?.from !== "GeneralInfoFreelanceForm" && location.state?.from !== "BankAccInfoForm" &&
 
@@ -526,7 +526,7 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                         </div>
 
                                         <div>
-                                            <div className="grid grid-cols-2 gap-5">
+                                            <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
 
                                                 {/* Type of ID */}
                                                 <div>
