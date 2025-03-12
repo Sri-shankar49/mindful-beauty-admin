@@ -113,7 +113,8 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
                     {/* <h5 className="text-sm text-mindfulBlack font-semibold">Paul Williams</h5> */}
                     {/* <p>Manager</p> */}
                     {/* <p>+91 98847 19615</p> */}
-                    <p>{phone}</p>
+                    {/* <p>{phone}</p> */}
+                    <p>{userPhone}</p>
                 </div>
             </div>
 
@@ -164,7 +165,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
                     <div>
                         <p className="text-md text-mindfulBlack capitalize">{userName}</p>
                         <p className="text-sm text-mindfulAsh">{userRole}</p>
-                        <p className="text-sm text-mindfulBlack">{userPhone}</p>
+                        {/* <p className="text-sm text-mindfulBlack">{userPhone}</p> */}
                     </div>
 
                     <div

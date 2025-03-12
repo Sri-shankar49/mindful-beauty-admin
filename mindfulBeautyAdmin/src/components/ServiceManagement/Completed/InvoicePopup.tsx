@@ -4,6 +4,10 @@ import { invoiceDetails, salesTransactionsInvoice } from '@/api/apiConfig';
 import { useEffect, useState } from 'react';
 import { ShimmerTable } from 'shimmer-effects-react';
 import { NotifyError } from '@/common/Toast/ToastMessage';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import mindfulBeautyLogoSmall from "../../../assets/icons/mindfulBeautyLogoSmall.png";
+import ashtamudiLogo from "../../../assets/icons/ashtamudiLogo.png";
 
 interface InvoicePopupProps {
     closePopup: () => void;
@@ -64,6 +68,9 @@ const numberToWords = (num: number): string => {
 };
 
 export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointmentId }) => {
+
+    const { providerLogo } = useSelector((state: RootState) => state.login);
+    console.log("Provider logo ==>", providerLogo);
 
     const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -130,6 +137,31 @@ export const InvoicePopup: React.FC<InvoicePopupProps> = ({ closePopup, appointm
         <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
             {/* <div className="container mx-auto"> */}
             <div className="relative bg-white rounded-[5px] w-[40%] mx-auto px-10 py-10 my-5 overflow-y-auto h-[90%]">
+                <div className="flex gap-4 items-center">
+                    <div >
+                        <div>
+                            <img
+                                src={mindfulBeautyLogoSmall}
+                                alt="mindful beauty logo"
+                                className="object-contain w-[100px] h-[70px]"
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Vertical line */}
+                    <div className="bg-mindfulgrey w-[1px] h-10"></div>
+
+                    {/* Astamudi Wellness Logo */}
+                    <div>
+                        <img
+                            src={`${providerLogo || ashtamudiLogo}`}
+                            alt="ashtamudi logo"
+                            className="object-contain w-[100px] h-[70px]"
+                            loading="lazy"
+                        />
+                    </div>
+                </div>
                 {/* Close Button */}
                 <div onClick={closePopup} className="absolute top-5 right-5 w-fit cursor-pointer">
                     <IoCloseCircle className="text-mindfulGrey text-[32px]" />

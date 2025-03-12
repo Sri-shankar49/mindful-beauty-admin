@@ -349,7 +349,7 @@ export const PackagesList = () => {
 
                     </div>
 
-                    <div className="my-5 2xl:overflow-x-auto">
+                    <div className="my-5 overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-mindfulLightgrey">
                                 <tr className="">
@@ -512,13 +512,13 @@ export const PackagesList = () => {
                                                             onClick={() => openEditPackagesPopup(packageData.provider_service_id)}
                                                         // onClick={openEditPackagesPopup}
                                                         >
-                                                            <img src={editButton} alt="Edit" />
+                                                            <img className="w-16" src={editButton} alt="Edit" />
                                                         </button>
                                                         <button
                                                             className="flex-shrink-0"
 
                                                             onClick={() => openDeletePackagePopup(packageData.provider_service_id)}>
-                                                            <img src={deleteButton} alt="Delete" />
+                                                            <img className="w-16" src={deleteButton} alt="Delete" />
                                                         </button>
                                                     </div>
                                                 </td>

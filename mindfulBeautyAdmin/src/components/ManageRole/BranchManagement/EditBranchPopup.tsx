@@ -247,26 +247,26 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
         <div>
             <div>
                 <div className="fixed inset-0 bg-mindfulBlack bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="container mx-auto">
+                    {/* <div className="container mx-auto"> */}
 
-                        <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10">
+                    <div className="relative bg-white rounded-[5px] w-7/12 mx-auto px-10 py-10 max-2xl:overflow-y-auto max-2xl:h-[85%]">
 
-                            {/* Close Button */}
-                            <div
-                                onClick={closePopup}
-                                className="absolute top-5 right-5 w-fit cursor-pointer"
-                            >
-                                <IoCloseCircle className="text-mindfulGrey text-[32px]" />
-                            </div>
+                        {/* Close Button */}
+                        <div
+                            onClick={closePopup}
+                            className="absolute top-5 right-5 w-fit cursor-pointer"
+                        >
+                            <IoCloseCircle className="text-mindfulGrey text-[32px]" />
+                        </div>
 
-                            <div className="grid grid-cols-2 items-center gap-5">
-                                <div>
-                                    {/* <div className="w-fit mx-auto">
+                        <div className="grid grid-cols-2 items-center gap-5">
+                            <div>
+                                {/* <div className="w-fit mx-auto">
                                         <img src={ashtamudiLogo} alt="ashtamudi logo" />
                                     </div> */}
 
-                                    {/* File Upload Area */}
-                                    {/* <div>
+                                {/* File Upload Area */}
+                                {/* <div>
                                         <div className="">
                                             <label
                                                 htmlFor="upload-photo"
@@ -297,207 +297,207 @@ export const EditBranchPopup: React.FC<EditBranchPopupProps> = ({ closePopup, br
                                         </div>
                                     </div> */}
 
-                                    <div>
-                                        {/* Logo Display Area */}
-                                        <div className="w-fit mx-auto pb-5">
-                                            <img src={`${logo}`} alt="Uploaded logo" className="w-full h-full rounded-md object-cover" />
-                                        </div>
+                                <div>
+                                    {/* Logo Display Area */}
+                                    <div className="w-fit mx-auto pb-5">
+                                        <img src={`${logo}`} alt="Uploaded logo" className="w-full h-full rounded-md object-cover" />
+                                    </div>
 
-                                        {/* File Upload Area */}
-                                        <div>
-                                            <div className="">
-                                                <label
-                                                    htmlFor="upload-photo"
-                                                    // className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-5 cursor-pointer hover:border-mindfulGreyTypeThree"
-                                                    className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2 cursor-pointer"
-                                                >
-                                                    {/* Upload Button */}
-                                                    {/* <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
+                                    {/* File Upload Area */}
+                                    <div>
+                                        <div className="">
+                                            <label
+                                                htmlFor="upload-photo"
+                                                // className="w-full border-2 border-dashed border-gray-300 rounded-[12px] flex flex-col justify-center items-center py-5 cursor-pointer hover:border-mindfulGreyTypeThree"
+                                                className="w-fit mx-auto text-sm text-mindfulWhite uppercase flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2 cursor-pointer"
+                                            >
+                                                {/* Upload Button */}
+                                                {/* <div className="flex items-center bg-mindfulSecondaryBlue rounded-sm px-4 py-2">
                                                         <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
                                                         <button className="text-sm text-mindfulWhite uppercase">Upload Logo</button>
                                                     </div> */}
-                                                    <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
-                                                    Upload Logo
-                                                </label>
-                                                <input
-                                                    id="upload-photo"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={handleFileChange}
-                                                    className="hidden"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                                <div>
-                                    <div className="relative mb-16">
-                                        <h2 className="text-2xl text-mindfulBlack font-semibold">
-                                            Edit Branch
-                                        </h2>
-
-                                        <div
-                                            className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5"
-                                        >
-                                        </div>
-                                    </div>
-
-                                    {/* Add Branch Form */}
-                                    {loading ? (
-                                        <div>
-                                            <ShimmerTable
-                                                mode="light"
-                                                row={6}
-                                                col={1}
-                                                border={1}
-                                                borderColor={"#cbd5e1"}
-                                                rounded={0.25}
-                                                rowGap={16}
-                                                colPadding={[15, 5, 15, 5]}
+                                                <MdCloudUpload className="text-[18px] text-mindfulWhite mr-2" />
+                                                Upload Logo
+                                            </label>
+                                            <input
+                                                id="upload-photo"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
                                             />
                                         </div>
-                                    ) : (
-                                        <div>
-                                            <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
-                                                <div className="space-y-5">
-                                                    {/* Branch Name */}
-                                                    <div>
-                                                        <label
-                                                            htmlFor="branchName"
-                                                            className="text-lg text-mindfulBlack font-semibold">
-                                                            Branch Name
-                                                        </label>
-
-                                                        <InputField
-                                                            label=""
-                                                            // name="branchName"
-                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                            {...register('branchName')}
-                                                        />
-
-                                                        {errors.branchName && (
-                                                            <p className="text-sm text-red-600">{errors.branchName.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Branch Phone Number */}
-                                                    <div>
-                                                        <label
-                                                            htmlFor="branchPhoneNumber"
-                                                            className="text-lg text-mindfulBlack font-semibold">
-                                                            Branch Phone Number
-                                                        </label>
-
-                                                        <InputField
-                                                            label=""
-                                                            // name="branchPhoneNumber"
-                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                            {...register('branchPhoneNumber')}
-                                                        />
-
-                                                        {errors.branchPhoneNumber && (
-                                                            <p className="text-sm text-red-600">{errors.branchPhoneNumber.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Branch Address */}
-                                                    <div>
-                                                        <label
-                                                            htmlFor="branchAddress"
-                                                            className="text-lg text-mindfulBlack font-semibold">
-                                                            Branch Address
-                                                        </label>
-
-                                                        <textarea
-                                                            // name="branchAddress"
-                                                            id="branchAddress"
-                                                            rows={4}
-                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                            {...register('branchAddress')}
-                                                        >
-                                                        </textarea>
-
-                                                        {errors.branchAddress && (
-                                                            <p className="text-sm text-red-600">{errors.branchAddress.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Branch Location */}
-                                                    <div className="relative">
-                                                        <label
-                                                            htmlFor="branchLocation"
-                                                            className="text-lg text-mindfulBlack font-semibold">
-                                                            Branch Location
-                                                        </label>
-
-                                                        <InputField
-                                                            label=""
-                                                            // name="branchLocation"
-                                                            className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
-                                                            {...register('branchLocation')}
-                                                            value={selectedLocation}
-                                                            onChange={handleLocationChange} // Handle input change
-                                                        />
-
-                                                        {locationSuggestions.length > 0 && (
-                                                            <ul className="absolute left-0 right-0 top-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-50">
-
-                                                                {locationSuggestions.map((location, index) => (
-                                                                    <li
-                                                                        key={index}
-                                                                        className="cursor-pointer px-2 py-1 hover:bg-gray-200"
-                                                                        onClick={() => handleLocationSelect(location)} // Handle suggestion click
-                                                                    >
-                                                                        {location}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
 
-                                                        {errors.branchLocation && (
-                                                            <p className="text-sm text-red-600">{errors.branchLocation.message}</p>
-                                                        )}
 
-                                                    </div>
+                            <div>
+                                <div className="relative mb-16">
+                                    <h2 className="text-2xl text-mindfulBlack font-semibold">
+                                        Edit Branch
+                                    </h2>
 
-                                                    {/* Error Response from the API */}
-                                                    {error && <p className="text-sm text-red-600">{error}</p>}
+                                    <div
+                                        className="absolute inset-x-0 bottom-[-20px] mx-auto bg-mindfulgrey rounded-md w-full h-0.5"
+                                    >
+                                    </div>
+                                </div>
 
-                                                    {/* Buttons */}
-                                                    <div>
-                                                        <div className="flex items-center justify-center space-x-5">
-                                                            {/* Cancel Button */}
-                                                            <Button
-                                                                onClick={closePopup}
-                                                                buttonType="button"
-                                                                buttonTitle="Cancel"
-                                                                className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                                            />
+                                {/* Add Branch Form */}
+                                {loading ? (
+                                    <div>
+                                        <ShimmerTable
+                                            mode="light"
+                                            row={6}
+                                            col={1}
+                                            border={1}
+                                            borderColor={"#cbd5e1"}
+                                            rounded={0.25}
+                                            rowGap={16}
+                                            colPadding={[15, 5, 15, 5]}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
+                                            <div className="space-y-5">
+                                                {/* Branch Name */}
+                                                <div>
+                                                    <label
+                                                        htmlFor="branchName"
+                                                        className="text-lg text-mindfulBlack font-semibold">
+                                                        Branch Name
+                                                    </label>
 
-                                                            {/* Submit Button */}
-                                                            <Button
-                                                                buttonType="submit"
-                                                                buttonTitle="Update"
-                                                                className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
-                                                            />
-                                                        </div>
-                                                    </div>
+                                                    <InputField
+                                                        label=""
+                                                        // name="branchName"
+                                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                        {...register('branchName')}
+                                                    />
+
+                                                    {errors.branchName && (
+                                                        <p className="text-sm text-red-600">{errors.branchName.message}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Branch Phone Number */}
+                                                <div>
+                                                    <label
+                                                        htmlFor="branchPhoneNumber"
+                                                        className="text-lg text-mindfulBlack font-semibold">
+                                                        Branch Phone Number
+                                                    </label>
+
+                                                    <InputField
+                                                        label=""
+                                                        // name="branchPhoneNumber"
+                                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                        {...register('branchPhoneNumber')}
+                                                    />
+
+                                                    {errors.branchPhoneNumber && (
+                                                        <p className="text-sm text-red-600">{errors.branchPhoneNumber.message}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Branch Address */}
+                                                <div>
+                                                    <label
+                                                        htmlFor="branchAddress"
+                                                        className="text-lg text-mindfulBlack font-semibold">
+                                                        Branch Address
+                                                    </label>
+
+                                                    <textarea
+                                                        // name="branchAddress"
+                                                        id="branchAddress"
+                                                        rows={4}
+                                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                        {...register('branchAddress')}
+                                                    >
+                                                    </textarea>
+
+                                                    {errors.branchAddress && (
+                                                        <p className="text-sm text-red-600">{errors.branchAddress.message}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Branch Location */}
+                                                <div className="relative">
+                                                    <label
+                                                        htmlFor="branchLocation"
+                                                        className="text-lg text-mindfulBlack font-semibold">
+                                                        Branch Location
+                                                    </label>
+
+                                                    <InputField
+                                                        label=""
+                                                        // name="branchLocation"
+                                                        className="w-full rounded-[5px] border-2 border-mindfulgrey px-2 py-3 focus-within:outline-none"
+                                                        {...register('branchLocation')}
+                                                        value={selectedLocation}
+                                                        onChange={handleLocationChange} // Handle input change
+                                                    />
+
+                                                    {locationSuggestions.length > 0 && (
+                                                        <ul className="absolute left-0 right-0 top-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-white shadow-lg z-50">
+
+                                                            {locationSuggestions.map((location, index) => (
+                                                                <li
+                                                                    key={index}
+                                                                    className="cursor-pointer px-2 py-1 hover:bg-gray-200"
+                                                                    onClick={() => handleLocationSelect(location)} // Handle suggestion click
+                                                                >
+                                                                    {location}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+
+
+                                                    {errors.branchLocation && (
+                                                        <p className="text-sm text-red-600">{errors.branchLocation.message}</p>
+                                                    )}
 
                                                 </div>
-                                            </form>
-                                        </div>
-                                    )}
 
-                                </div>
+                                                {/* Error Response from the API */}
+                                                {error && <p className="text-sm text-red-600">{error}</p>}
+
+                                                {/* Buttons */}
+                                                <div>
+                                                    <div className="flex items-center justify-center space-x-5">
+                                                        {/* Cancel Button */}
+                                                        <Button
+                                                            onClick={closePopup}
+                                                            buttonType="button"
+                                                            buttonTitle="Cancel"
+                                                            className="bg-mindfulWhite text-md text-mindfulBlack rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                        />
+
+                                                        {/* Submit Button */}
+                                                        <Button
+                                                            buttonType="submit"
+                                                            buttonTitle="Update"
+                                                            className="bg-mindfulBlue text-md text-mindfulWhite rounded-sm px-4 py-1.5 focus-within:outline-none"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                )}
+
                             </div>
                         </div>
                     </div>
-                </div >
+                </div>
             </div >
+            {/* </div > */}
         </div >
     )
 }
