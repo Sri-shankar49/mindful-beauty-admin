@@ -130,7 +130,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                 // branchID: Number(selectedBranch),
                 branchID: Number(branchIDToUse),  // ✅ Use branchIDToUse instead of selectedBranch
                 searchQuery,
-                currentPage
+                currentPage,
+                pageSize: itemsPerPage
             })).catch((error) => {
                 console.error("Error fetching services list:", error);
                 // dispatch(setError(error.message));
@@ -139,14 +140,14 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
         }, 300); // 300ms delay
 
         return () => clearTimeout(delayDebounceFn);
-    }, [dispatch, searchQuery, sessionLoginProviderID, branchIDToUse, currentPage]);
+    }, [dispatch, searchQuery, sessionLoginProviderID, branchIDToUse, currentPage, itemsPerPage]);
 
     useEffect(() => {
         // Fetch data from API
         const fetchServiceListData = async () => {
 
             try {
-                const data = await servicesList(Number(sessionLoginProviderID), 0, searchQuery, currentPage);
+                const data = await servicesList(Number(sessionLoginProviderID), 0, searchQuery, currentPage, itemsPerPage);
 
                 const branchdata = await staffBranchList();
                 setStaffBranchListData(branchdata.data || []);
@@ -177,7 +178,8 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
             providerID: Number(sessionLoginProviderID),
             branchID: Number(selectedBranchId),
             searchQuery,
-            currentPage
+            currentPage,
+            pageSize: itemsPerPage
         }));
     };
 

@@ -130,14 +130,14 @@ export const PackagesList = () => {
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
         dispatch(fetchPackagesList({
-            providerID: Number(sessionLoginProviderID), branchID: String(branchIDToUse), searchQuery, currentPage
+            providerID: Number(sessionLoginProviderID), branchID: String(branchIDToUse), searchQuery, currentPage, pageSize: itemsPerPage
         }) as any)
             .catch((error: any) => {
                 // console.error("Error fetching package list:", error.message);
                 // dispatch(setError(error.message));
                 NotifyError(error.message || "Failed to fetch package list. Please try again."); // ✅ Show error via toast
             });
-    }, [dispatch, searchQuery, currentPage, sessionLoginProviderID, branchIDToUse]);
+    }, [dispatch, searchQuery, currentPage, sessionLoginProviderID, branchIDToUse, itemsPerPage]);
 
 
     // useEffect(() => {
@@ -235,7 +235,7 @@ export const PackagesList = () => {
         try {
             dispatch(setLoading(true)); // ✅ Show loading state before fetching
 
-            await dispatch(fetchPackagesList({ providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage }) as any);
+            await dispatch(fetchPackagesList({ providerID: Number(sessionLoginProviderID), branchID: selectedBranch, searchQuery, currentPage, pageSize: itemsPerPage }) as any);
 
             console.log("Packages data refreshed.");
         } catch (error: any) {

@@ -694,7 +694,7 @@ export const getProviderPermissions = async (providerId: number) => {
 
 // Manage Role Page -- --> Staff Management
 // GET Method from the API
-export const staffList = async (searchByName: string, pageNumber: number) => {
+export const staffList = async (searchByName: string, pageNumber: number, pageSize: number) => {
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -706,6 +706,7 @@ export const staffList = async (searchByName: string, pageNumber: number) => {
         // Add any additional parameters as needed
         search: searchByName,
         page: pageNumber,
+        page_size: pageSize,
 
       },
     });
@@ -1077,7 +1078,7 @@ export const deleteBranch = async (branchID: number) => {
 
 // Service Listing Page -- --> Services List
 // GET Method from the API
-export const servicesList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const servicesList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/provider-services/`, {
@@ -1085,7 +1086,8 @@ export const servicesList = async (providerID: number, branchID: number, searchQ
         provider_id: providerID,
         branch_id: branchID,
         search: searchQuery,
-        page: pageNumber
+        page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1423,7 +1425,7 @@ export const copyServices = async (sourceBranchId: number, targetBranchIds: stri
 //   }
 // }
 
-export const packagesList = async (providerID: number, branchID: string, searchQuery: string, pageNumber: number) => {
+export const packagesList = async (providerID: number, branchID: string, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/packages-list/`, {
@@ -1431,7 +1433,8 @@ export const packagesList = async (providerID: number, branchID: string, searchQ
         provider_id: providerID,
         branch_id: branchID,
         search: searchQuery,
-        page: pageNumber
+        page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1682,7 +1685,7 @@ export const editPackageUpdate = async (providerPackageID: number, packageTitle:
 
 // Service Management Page -- --> All Booking List
 // GET Method from the API
-export const bookingsList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const bookingsList = async (providerID: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
@@ -1691,6 +1694,7 @@ export const bookingsList = async (providerID: number, branchID: number, searchQ
         branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1715,7 +1719,7 @@ export const bookingsList = async (providerID: number, branchID: number, searchQ
 
 // Service Management Page -- --> Schedule List
 // GET Method from the API
-export const scheduleList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const scheduleList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
@@ -1725,6 +1729,7 @@ export const scheduleList = async (providerID: number, status: number, branchID:
         branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1777,7 +1782,7 @@ export const editServicesAppointment = async (formData: FormData): Promise<any> 
 
 // Service Management Page -- --> Inprogress List
 // GET Method from the API
-export const inprogressList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const inprogressList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
@@ -1787,7 +1792,7 @@ export const inprogressList = async (providerID: number, status: number, branchI
         branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
-
+        page_size: pageSize,
       }
     });
 
@@ -1811,7 +1816,7 @@ export const inprogressList = async (providerID: number, status: number, branchI
 
 // Service Management Page -- --> Completed List
 // GET Method from the API
-export const completedList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const completedList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
@@ -1821,6 +1826,7 @@ export const completedList = async (providerID: number, status: number, branchID
         branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1844,7 +1850,7 @@ export const completedList = async (providerID: number, status: number, branchID
 
 // Service Management Page -- --> Cancelled List
 // GET Method from the API
-export const cancelledList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number) => {
+export const cancelledList = async (providerID: number, status: number, branchID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/appointments/`, {
@@ -1854,6 +1860,7 @@ export const cancelledList = async (providerID: number, status: number, branchID
         branch_id: branchID,
         search: searchQuery,
         page: pageNumber,
+        page_size: pageSize,
       }
     });
 
@@ -1977,7 +1984,7 @@ export const invoiceDetails = async (appointmentId: number) => {
 
 // Sales & Transactions Page
 // GET Method from the API
-export const salesTransactionsList = async (providerID: number, branchID: number, pageNumber: number) => {
+export const salesTransactionsList = async (providerID: number, branchID: number, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/sales-transactions/`, {
@@ -1985,6 +1992,7 @@ export const salesTransactionsList = async (providerID: number, branchID: number
         provider_id: providerID,
         branch_id: branchID,
         page: pageNumber,
+        page_size: pageSize,
       },
     });
 
@@ -2112,7 +2120,7 @@ export const salesTransactionsInvoice = async (appointmentID: number) => {
 
 // Ratings & Reviews Page
 // GET Method from the API
-export const reviewsList = async (providerID: number, searchQuery: string, pageNumber: number) => {
+export const reviewsList = async (providerID: number, searchQuery: string, pageNumber: number, pageSize: number) => {
 
   try {
     const response = await apiAxios.get(`/provider-api/reviews/`, {
@@ -2120,6 +2128,7 @@ export const reviewsList = async (providerID: number, searchQuery: string, pageN
         provider_id: providerID,
         search: searchQuery,
         page: pageNumber,
+        page_size: pageSize,
       },
     });
 

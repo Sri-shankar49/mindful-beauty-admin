@@ -131,7 +131,7 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
 
     useEffect(() => {
         dispatch(setLoading(true)); // Ensure UI updates before fetching
-        dispatch(fetchStaffList({ searchQuery, currentPage })).catch((error) => {
+        dispatch(fetchStaffList({ searchQuery, currentPage, pageSize: itemsPerPage })).catch((error) => {
             console.error("Error fetching staff list:", error);
             // dispatch(setError(error.message));
             NotifyError(error.message || "Failed to fetch staff list. Please try again."); // ✅ Show error via toast

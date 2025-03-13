@@ -58,7 +58,7 @@ export const SalesTransactionsTable: React.FC = () => {
         const fetchServiceListData = async () => {
             try {
                 setLoading(true);
-                const data = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage);
+                const data = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage, itemsPerPage);
                 setSalesTransactionsData(data.results || []);
                 console.log("Fetched Service List data log:", data);
                 console.log("Fetched Booking List pagination count data log :", data.count);
@@ -137,7 +137,7 @@ export const SalesTransactionsTable: React.FC = () => {
         // Fetch default sales transactions without filters
         try {
             setLoading(true);
-            const response = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage);
+            const response = await salesTransactionsList(Number(sessionLoginProviderID), Number(loginBranchID), currentPage, itemsPerPage);
             setSalesTransactionsData(response.results || []);
         } catch (error: any) {
             // setError(error.message || "Failed to fetch default sales transactions.");

@@ -47,12 +47,12 @@ const initialState: AllbookingState = {
 export const fetchBookingList = createAsyncThunk(
     'allbooking/fetchBookingList',
     async (
-        { providerID, branchID, searchQuery, currentPage }:
-            { providerID: number; branchID: number; searchQuery: string; currentPage: number },
+        { providerID, branchID, searchQuery, currentPage, pageSize }:
+            { providerID: number; branchID: number; searchQuery: string; currentPage: number; pageSize: number },
         // { rejectWithValue }
     ) => {
         try {
-            const response = await bookingsList(providerID, branchID, searchQuery, currentPage);
+            const response = await bookingsList(providerID, branchID, searchQuery, currentPage, pageSize);
             return response;
         } catch (error: any) {
             // return rejectWithValue(error.message || 'Failed to fetch booking list');

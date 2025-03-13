@@ -47,12 +47,12 @@ const initialState: ScheduleState = {
 export const fetchScheduleList = createAsyncThunk(
     'schedule/fetchScheduleList',
     async (
-        { providerID, status, branchID, searchQuery, currentPage }:
-            { providerID: number; status: number; branchID: number; searchQuery: string; currentPage: number },
+        { providerID, status, branchID, searchQuery, currentPage, pageSize }:
+            { providerID: number; status: number; branchID: number; searchQuery: string; currentPage: number; pageSize: number },
         // { rejectWithValue }
     ) => {
         try {
-            const response = await scheduleList(providerID, status, branchID, searchQuery, currentPage);
+            const response = await scheduleList(providerID, status, branchID, searchQuery, currentPage, pageSize);
             return response;
         } catch (error: any) {
             // return rejectWithValue(error.message || 'Failed to fetch schedule list');

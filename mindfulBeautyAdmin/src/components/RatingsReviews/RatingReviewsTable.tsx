@@ -60,7 +60,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
     const fetchReviewsList = async () => {
       setLoading(true); // Set loading to true before fetching
       try {
-        const data = await reviewsList(Number(sessionLoginProviderID), "", currentPage);
+        const data = await reviewsList(Number(sessionLoginProviderID), "", currentPage, itemsPerPage);
 
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
         setTotalItems(data.count);
@@ -99,7 +99,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
       setLoading(true);
 
       try {
-        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage);
+        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage, itemsPerPage);
 
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
         setTotalItems(data.count);
@@ -117,7 +117,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
 
     fetchFilteredData();      // Always fetch, even if searchQuery is empty
 
-  }, [searchQuery, currentPage]);
+  }, [searchQuery, currentPage, itemsPerPage]);
 
 
   const handlePageChange = (page: number) => {
@@ -145,7 +145,7 @@ export const RatingReviewsTable: React.FC<RatingReviewsTableProps> = () => {
       console.log("Review Action data log:", response);
 
       if (response?.status === "success") {
-        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage);
+        const data = await reviewsList(Number(sessionLoginProviderID), searchQuery, currentPage, itemsPerPage);
         setReviewsListData(data.results || []); // Fallback to an empty array if data is null
         setTotalItems(data.count);
         console.log("Refreshed the reviews list data log:", data);

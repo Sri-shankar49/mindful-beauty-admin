@@ -294,12 +294,12 @@ export const AllBooking = () => {
   // Fetch allbooking list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
-    dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), branchID: Number(loginBranchID), searchQuery, currentPage })).catch((error) => {
+    dispatch(fetchBookingList({ providerID: Number(sessionLoginProviderID), branchID: Number(loginBranchID), searchQuery, currentPage, pageSize: itemsPerPage })).catch((error) => {
       // dispatch(setError(error.message));
       NotifyError(error.message || "Failed to fetch all booking list. Please try again."); // ✅ Show error via toast
 
     });;
-  }, [dispatch, searchQuery, currentPage]);
+  }, [dispatch, searchQuery, currentPage, itemsPerPage]);
 
 
   useEffect(() => {

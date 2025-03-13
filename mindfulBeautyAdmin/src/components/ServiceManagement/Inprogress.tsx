@@ -248,11 +248,11 @@ export const Inprogress = () => {
   // Fetch inprogress list on mount and when dependencies change
   useEffect(() => {
     dispatch(setLoading(true)); // Ensure UI updates before fetching
-    dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, branchID: Number(loginBranchID), searchQuery, currentPage })).catch((error) => {
+    dispatch(fetchInprogressList({ providerID: Number(sessionLoginProviderID), status: 2, branchID: Number(loginBranchID), searchQuery, currentPage, pageSize: itemsPerPage })).catch((error) => {
       // dispatch(setError(error.message));
       NotifyError(error.message || "Failed to fetch inprogress list. Please try again."); // ✅ Show error via toast
     });
-  }, [dispatch, searchQuery, currentPage]);
+  }, [dispatch, searchQuery, currentPage, itemsPerPage]);
 
   // Function call to get the inprogress list
   useEffect(() => {

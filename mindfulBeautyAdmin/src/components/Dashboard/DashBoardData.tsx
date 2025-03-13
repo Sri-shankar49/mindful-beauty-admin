@@ -36,6 +36,7 @@ interface DashBoardDataProps {
     service_names: Service[];
     branch_city: string;
     stylist_id?: any;
+    reference_image?: any;
 }
 
 interface BeauticiansDataProps {
@@ -278,6 +279,7 @@ export const DashBoardData = () => {
                                     <th className="text-start px-2 py-3">Branch</th>
                                     <th className="text-start px-2 py-3">Cust. Name</th>
                                     <th className="text-start px-2 py-3">Cust. Mobile</th>
+                                    <th className="text-start px-2 py-3">Referece Image</th>
                                     <th className="text-start px-2 py-3">Service</th>
                                     {freelancer !== true && <th className="text-start px-2 py-3">Assign Stylist</th>}
                                     <th className="text-start px-2 py-3">Action</th>
@@ -289,11 +291,11 @@ export const DashBoardData = () => {
                                 {/* Content & Checkbox */}
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={9} className="text-center px-2 py-5">
+                                        <td colSpan={10} className="text-center px-2 py-5">
                                             <ShimmerTable
                                                 mode="light"
                                                 row={dashboardBookingListData.length + 1} // Adjust based on expected staff rows
-                                                col={9} // Matches table columns
+                                                col={10} // Matches table columns
                                                 border={1}
                                                 borderColor={"#cbd5e1"}
                                                 rounded={0.25}
@@ -312,7 +314,21 @@ export const DashBoardData = () => {
                                                 <td className="text-start px-2 py-5">{dashboardData.branch_city}</td>
                                                 <td className="text-start px-2 py-5">{dashboardData.user_name}</td>
                                                 <td className="text-start px-2 py-5">{dashboardData.user_phone}</td>
-                                                {/* <td className="text-start px-2 py-5">{dashboardData.service_names}</td> */}
+
+                                                <td className="text-start px-2 py-5">
+                                                    {dashboardData.reference_image ? (
+                                                        <div className="flex items-center">
+                                                            <img
+                                                                src={dashboardData.reference_image}
+                                                                alt="Reference-image"
+                                                                className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-gray-300 hover:opacity-80 transition"
+                                                                onClick={() => window.open(dashboardData.reference_image, "_blank")}
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        "No Image Available"
+                                                    )}
+                                                </td>
 
                                                 <td className="text-start px-2 py-5">
                                                     <ul>
@@ -400,7 +416,7 @@ export const DashBoardData = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={9} className="text-center py-5">
+                                            <td colSpan={10} className="text-center py-5">
                                                 No Bookings found.
                                             </td>
                                         </tr>

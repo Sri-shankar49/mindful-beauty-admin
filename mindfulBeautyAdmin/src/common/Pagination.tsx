@@ -16,15 +16,15 @@ export const Pagination: React.FC<PaginationProps> = (
         totalItems,
         itemsPerPage,
         onPageChange,
-        // onItemsPerPageChange
+        onItemsPerPageChange
     }
 ) => {
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // const handleItemsPerPageChange = (value: string) => {
-    //     onItemsPerPageChange(Number(value));
-    // };
+    const handleItemsPerPageChange = (value: string) => {
+        onItemsPerPageChange(Number(value));
+    };
 
     const handlePreviousPage = () => {
         if (currentPage > 1) {
@@ -55,12 +55,12 @@ export const Pagination: React.FC<PaginationProps> = (
                             label={""}
                             options={[
                                 { value: "10", label: "10" },
-                                // { value: "20", label: "20" },
-                                // { value: "30", label: "30" },
+                                { value: "50", label: "50" },
+                                { value: "100", label: "100" },
                             ]}
                             className="w-full rounded-[5px] border-2 border-mindfulgrey px-3 py-1 focus-within:outline-none"
-                        // onChange={(e) => handleItemsPerPageChange(e.target.value)}
-                        // value={itemsPerPage.toString()}
+                            onChange={(e) => handleItemsPerPageChange(e.target.value)}
+                            value={itemsPerPage.toString()}
                         />
                     </div>
                 </div>

@@ -25,12 +25,12 @@ const initialState: PackagesState = {
 export const fetchPackagesList = createAsyncThunk(
     'packages/fetchPackagesList',
     async (
-        { providerID, branchID, searchQuery, currentPage }:
-            { providerID: number; branchID: string; searchQuery: string; currentPage: number },
+        { providerID, branchID, searchQuery, currentPage, pageSize }:
+            { providerID: number; branchID: string; searchQuery: string; currentPage: number, pageSize: number },
         // { rejectWithValue }
     ) => {
         try {
-            const response = await packagesList(providerID, branchID, searchQuery, currentPage);
+            const response = await packagesList(providerID, branchID, searchQuery, currentPage, pageSize);
             return response;
         } catch (error: any) {
             // return rejectWithValue(error.message || 'Failed to fetch packages list');

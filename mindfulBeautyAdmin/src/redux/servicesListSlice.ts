@@ -24,14 +24,14 @@ const initialState: ServicesState = {
 // Async thunk for fetching services list
 export const fetchServicesList = createAsyncThunk(
     'services/fetchServicesList',
-    async ({ providerID, branchID, searchQuery, currentPage }:
+    async ({ providerID, branchID, searchQuery, currentPage, pageSize }:
         {
-            providerID: number; branchID: number; searchQuery: string; currentPage: number;
+            providerID: number; branchID: number; searchQuery: string; currentPage: number; pageSize: number;
         },
         // { rejectWithValue }
     ) => {
         try {
-            const response = await servicesList(providerID, branchID, searchQuery, currentPage);
+            const response = await servicesList(providerID, branchID, searchQuery, currentPage, pageSize);
             return response;
         } catch (error: any) {
             // return rejectWithValue(error.message || 'Failed to fetch services list');
