@@ -18,6 +18,7 @@ interface CompletedItem {
     stylist: string;
     stylist_id?: string;
     payment_status: string;
+    reference_image?: any;
 }
 
 interface Service {

@@ -419,6 +419,7 @@ export const Schedule = () => {
               <th className="text-start px-2 py-3">Branch</th>
               <th className="text-start px-2 py-3">Customer Name</th>
               <th className="text-start px-2 py-3">Customer Mobile</th>
+              <th className="text-start px-2 py-3">Reference Image</th>
               <th className="text-start px-2 py-3">Service</th>
               <th className="text-start px-2 py-3">Amount</th>
               {freelancer !== true && <th className="text-start px-2 py-3">Assign Stylist</th>}
@@ -436,7 +437,7 @@ export const Schedule = () => {
                   <ShimmerTable
                     mode="light"
                     row={scheduleListData.length + 1} // Adjust based on expected staff rows
-                    col={11} // Matches table columns
+                    col={12} // Matches table columns
                     border={1}
                     borderColor={"#cbd5e1"}
                     rounded={0.25}
@@ -463,7 +464,21 @@ export const Schedule = () => {
                     <td className="text-start px-2 py-5">{schedule.location}</td>
                     <td className="text-start px-2 py-5">{schedule.name}</td>
                     <td className="text-start px-2 py-5">{schedule.phone}</td>
-                    {/* <td className="text-start px-2 py-5">{schedule.services}</td> */}
+
+                    <td className="text-start px-2 py-5">
+                      {schedule.reference_image ? (
+                        <div className="flex items-center">
+                          <img
+                            src={schedule.reference_image}
+                            alt="Reference-image"
+                            className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-gray-300 hover:opacity-80 transition"
+                            onClick={() => window.open(schedule.reference_image, "_blank")}
+                          />
+                        </div>
+                      ) : (
+                        "No Image Available"
+                      )}
+                    </td>
 
                     <td className="text-start px-2 py-5">
                       <ul>
@@ -600,7 +615,7 @@ export const Schedule = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={11} className="text-center py-5">
+                  <td colSpan={12} className="text-center py-5">
                     No Schedule Booking data available.
                   </td>
                 </tr>

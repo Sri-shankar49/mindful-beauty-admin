@@ -28,7 +28,7 @@ interface BranchPropsCard {
 export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, phone, location, logo, userName, userPhone, userRole, BranchStatus }) => {
 
     const statusText = BranchStatus === 1 ? "Active" : "Inactive";
-    const statusClass = BranchStatus === 1 ? "bg-mindfulGreen text-mindfulWhite" : "bg-mindfulgrey text-mindfulWhite";
+    const statusClass = BranchStatus === 1 ? "bg-mindfulGreen" : "bg-mindfulgrey";
 
     const [moreHover, setMoreHover] = useState(false);
 
@@ -135,7 +135,7 @@ export const BranchCard: React.FC<BranchPropsCard> = ({ branchID, branchName, ph
 
                 <div>
                     <p className="text-sm text-mindfulAsh">Status</p>
-                    <p className={`bg-mindfulGreen text-sm text-mindfulWhite rounded-full px-3 py-0.5 ${statusClass}`}>
+                    <p className={`${statusClass} text-sm text-mindfulWhite rounded-full px-3 py-0.5`}>
                         {/* Active */}
                         {statusText}
                     </p>

@@ -401,10 +401,16 @@ export const ServiceList: React.FC<ServiceListProps> = () => {
                                         </td>
                                         <td className="px-2 py-5">
                                             <div className="flex items-center space-x-5">
-                                                <button onClick={() => openEditService(Number(service.provider_service_id))}>
+                                                <button
+                                                    className="flex-shrink-0"
+                                                    onClick={() => openEditService(Number(service.provider_service_id))}
+                                                >
                                                     <img src={editButton} alt="editButton" />
                                                 </button>
-                                                <button onClick={() => openDeleteServicePopup(Number(service.provider_service_id))}>
+                                                <button
+                                                    className="flex-shrink-0"
+                                                    onClick={() => openDeleteServicePopup(Number(service.provider_service_id))}
+                                                >
                                                     <img src={deleteButton} alt="deleteButton" />
                                                 </button>
                                             </div>

@@ -470,6 +470,7 @@ export const AllBooking = () => {
               <th className="text-start px-2 py-3">Branch</th>
               <th className="text-start px-2 py-3">Customer Name</th>
               <th className="text-start px-2 py-3">Customer Mobile</th>
+              <th className="text-start px-2 py-3">Reference Image</th>
               <th className="text-start px-2 py-3">Service</th>
               <th className="text-start px-2 py-3">Amount</th>
               <th className="text-start px-2 py-3">Status</th>
@@ -515,7 +516,20 @@ export const AllBooking = () => {
                     <td className="text-start px-2 py-5">{bookingData.name}</td>
                     <td className="text-start px-2 py-5">{bookingData.phone}</td>
 
-                    {/* <td className="text-start px-2 py-5">{bookingData.services}</td> */}
+                    <td className="text-start px-2 py-5">
+                      {bookingData.reference_image ? (
+                        <div className="flex items-center">
+                          <img
+                            src={bookingData.reference_image}
+                            alt="Reference-image"
+                            className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-gray-300 hover:opacity-80 transition"
+                            onClick={() => window.open(bookingData.reference_image, "_blank")}
+                          />
+                        </div>
+                      ) : (
+                        "No Image Available"
+                      )}
+                    </td>
 
                     <td className="text-start px-2 py-5">
                       <ul>

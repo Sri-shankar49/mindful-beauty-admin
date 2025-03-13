@@ -17,6 +17,7 @@ interface InprogressItem {
     modify_status: string;
     stylist: string;
     stylist_id?: string;
+    reference_image?: any;
 }
 
 interface Service {

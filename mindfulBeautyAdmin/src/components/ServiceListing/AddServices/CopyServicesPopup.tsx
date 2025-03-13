@@ -194,7 +194,7 @@ export const CopyServicesPopup: React.FC<CopyServicesPopupProps> = ({
                         onClick={handleSubmit}
                         buttonType="button"
                         buttonTitle={"Copy"}
-                        className="bg-mindfulBlue text-mindfulBlack px-6 py-2 rounded-sm"
+                        className="bg-mindfulBlue text-mindfulWhite px-6 py-2 rounded-sm"
                         disabled={isCopyingServices}
                     />
                 </div>

@@ -396,6 +396,7 @@ export const Cancelled = () => {
               <th className="text-start px-2 py-3">Branch</th>
               <th className="text-start px-2 py-3">Customer Name</th>
               <th className="text-start px-2 py-3">Customer Mobile</th>
+              <th className="text-start px-2 py-3">Reference Image</th>
               <th className="text-start px-2 py-3">Service</th>
               <th className="text-start px-2 py-3">Amount</th>
               {/* <th className="text-start px-2 py-3">Assign Stylist</th> */}
@@ -408,11 +409,11 @@ export const Cancelled = () => {
             {/* Content */}
             {loading ? (
               <tr>
-                <td colSpan={11} className="text-center px-2 py-5">
+                <td colSpan={10} className="text-center px-2 py-5">
                   <ShimmerTable
                     mode="light"
                     row={cancelledListData.length + 1} // Adjust based on expected staff rows
-                    col={11} // Matches table columns
+                    col={10} // Matches table columns
                     border={1}
                     borderColor={"#cbd5e1"}
                     rounded={0.25}
@@ -438,6 +439,21 @@ export const Cancelled = () => {
                     <td className="text-start px-2 py-5">{cancelled.location}</td>
                     <td className="text-start px-2 py-5">{cancelled.name}</td>
                     <td className="text-start px-2 py-5">{cancelled.phone}</td>
+
+                    <td className="text-start px-2 py-5">
+                      {cancelled.reference_image ? (
+                        <div className="flex items-center">
+                          <img
+                            src={cancelled.reference_image}
+                            alt="Reference-image"
+                            className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-gray-300 hover:opacity-80 transition"
+                            onClick={() => window.open(cancelled.reference_image, "_blank")}
+                          />
+                        </div>
+                      ) : (
+                        "No Image Available"
+                      )}
+                    </td>
 
                     <td className="text-start px-2 py-5">
                       <ul>

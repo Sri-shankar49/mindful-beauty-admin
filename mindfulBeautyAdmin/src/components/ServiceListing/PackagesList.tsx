@@ -87,6 +87,10 @@ export const PackagesList = () => {
         }
     };
 
+    // Commented out the following code
+    console.log(handleToggle, "handleToggle");
+
+
     const [showEditPackagesPopup, setShowEditPackagesPopup] = React.useState(false);
 
     // Trigger the Edit Packages Popup
@@ -464,7 +468,7 @@ export const PackagesList = () => {
                                                 <td className="w-96 text-start px-2 py-5">
                                                     <div className="flex items-center space-x-3">
                                                         <img src={rectangleBlack} alt="rectangle black" />
-                                                        <p className="text-md text-mindfulBlack">{packageData.service_name}</p>
+                                                        <p className="text-md text-mindfulBlack">{packageData.service_name || "N/A"}</p>
                                                     </div>
                                                 </td>
                                                 <td className="w-[36rem] text-start px-2 py-5">
@@ -472,27 +476,12 @@ export const PackagesList = () => {
                                                 </td>
                                                 <td className="w-72 text-start px-2 py-5">{packageData.price}</td>
                                                 <td className="w-52 text-start px-2 py-5">
-                                                    {/* <div className="flex items-center">
-                                                        <p className={`text-md font-semibold ${isActive ? "text-mindfulBlack" : "text-mindfulgrey"}`}>
-                                                            {isActive ? 'Active' : 'Inactive'}
-                                                        </p>
-                                                        <div className={`toggle-switch-pkg ${isActive ? 'Active' : 'Inactive'}`}>
-                                                            <input
-                                                                className="toggle-input-pkg"
-                                                                id={`toggle-${packageData.service_id}`}
-                                                                type="checkbox"
-                                                                checked={isActive}
-                                                                onChange={() => handleToggle(Number(packageData.service_id), isActive)}
-                                                            // onChange={handleToggle}
-                                                            />
-                                                            <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.service_id}`}></label>
-                                                        </div>
-                                                    </div> */}
 
-                                                    <div className="flex items-center">
+                                                    {/* <div className="flex items-center">
                                                         <p className={`text-md font-semibold ${isActive === "Active" ? "text-mindfulBlack" : "text-mindfulgrey"}`}>
                                                             {isActive}
                                                         </p>
+
                                                         <div className={`toggle-switch-pkg ${isActive}`}>
                                                             <input
                                                                 className="toggle-input-pkg"
@@ -503,7 +492,19 @@ export const PackagesList = () => {
                                                             />
                                                             <label className="toggle-label-pkg" htmlFor={`toggle-${packageData.provider_service_id}`}></label>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
+
+                                                    {isActive === "Active" ? (
+                                                        <Button
+                                                            buttonType="button"
+                                                            buttonTitle={"Active"}
+                                                            className="text-md text-mindfulGreen font-semibold border-[1px] border-mindfulGreen rounded-sm px-3 py-1 cursor-default"
+                                                        />
+                                                    ) : (<Button
+                                                        buttonType="button"
+                                                        buttonTitle={"InActive"}
+                                                        className="text-md text-mindfulRed font-semibold border-[1px] border-mindfulRed rounded-sm px-3 py-1 cursor-default"
+                                                    />)}
                                                 </td>
                                                 <td className="text-start px-2 py-5">
                                                     <div className="flex items-center space-x-5">
@@ -512,13 +513,13 @@ export const PackagesList = () => {
                                                             onClick={() => openEditPackagesPopup(packageData.provider_service_id)}
                                                         // onClick={openEditPackagesPopup}
                                                         >
-                                                            <img className="w-16" src={editButton} alt="Edit" />
+                                                            <img className="" src={editButton} alt="Edit" />
                                                         </button>
                                                         <button
                                                             className="flex-shrink-0"
 
                                                             onClick={() => openDeletePackagePopup(packageData.provider_service_id)}>
-                                                            <img className="w-16" src={deleteButton} alt="Delete" />
+                                                            <img className="" src={deleteButton} alt="Delete" />
                                                         </button>
                                                     </div>
                                                 </td>

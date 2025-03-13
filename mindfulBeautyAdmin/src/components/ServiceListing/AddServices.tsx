@@ -868,7 +868,7 @@ export const AddServices: React.FC = () => {
                                             <select
                                                 // name=""
                                                 id=""
-                                                className="w-full rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
+                                                className="w-[26rem] rounded-sm border-[1px] border-mindfulgrey px-2 py-1.5 focus-within:outline-none"
                                                 value={selectedBranch}
                                                 onChange={handleBranchChange} // Call on change
 

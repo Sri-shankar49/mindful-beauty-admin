@@ -257,10 +257,16 @@ export const StaffManagement: React.FC<StaffManagementProps> = () => {
                                             {/* <button>
                                             <img src={resetPasswordButton} alt="Reset Password" />
                                         </button> */}
-                                            <button onClick={() => openEditStaffPopup(Number(staff.staff))}>
+                                            <button
+                                                className="flex-shrink-0"
+                                                onClick={() => openEditStaffPopup(Number(staff.staff))}
+                                            >
                                                 <img src={editButton} alt="Edit" />
                                             </button>
-                                            <button onClick={() => openDeleteStaffPopup(Number(staff.staff))}>
+                                            <button
+                                                className="flex-shrink-0"
+                                                onClick={() => openDeleteStaffPopup(Number(staff.staff))}
+                                            >
                                                 <img src={deleteButton} alt="Delete" />
                                             </button>
                                         </div>
