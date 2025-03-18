@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 // import { FaBell } from "react-icons/fa6";
 import { FaUserLarge } from "react-icons/fa6";
-import mindfulBeautyLogoSmall from "../assets/icons/mindfulBeautyLogoSmall.png";
+// import mindfulBeautyLogoSmall from "../assets/icons/mindfulBeautyLogoSmall.png";
+import mindfulBeautyLogoSmallNew from "../assets/icons/mindfulBeautyLogoSmallNew.png";
 import ashtamudiLogo from "../assets/icons/ashtamudiLogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor, RootState } from "@/redux/store";
@@ -122,7 +123,7 @@ export const Header = () => {
                         <Link to="/Dashboard">
                             <div>
                                 <img
-                                    src={mindfulBeautyLogoSmall}
+                                    src={mindfulBeautyLogoSmallNew}
                                     alt="mindful beauty logo"
                                     className="object-contain w-28 max-2xl:w-32 max-2xl:h-20"
                                     loading="lazy"
