@@ -16,6 +16,7 @@ import { RootState, AppDispatch } from '@/redux/store';
 import { fetchScheduleList, setCurrentPage, setLoading } from '@/redux/scheduleSlice';
 import { EditAppSchedulePopup } from "./Schedule/EditAppSchedulePopup";
 import { NotifyError } from "@/common/Toast/ToastMessage";
+import { DenialPopup } from "../Dashboard/DashBoardData/DenialPopup";
 
 
 interface StatusListDataProps {
@@ -207,7 +208,8 @@ export const Schedule = () => {
   const [showEditAppointmentPopup, setShowEditAppointmentPopup] = useState<boolean>(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null); // State to hold selected appointment details
 
-
+  const [showDenialPopup, setShowDenialPopup] = useState(false);
+  const [selectedAppointmentID, setSelectedAppointmentID] = useState<string | null>(null);
 
   const openEditAppointmentPopup = (appointmentDetails: any) => {
     setSelectedAppointment(appointmentDetails); // Store appointment details
@@ -220,6 +222,18 @@ export const Schedule = () => {
     setShowEditAppointmentPopup(false);
     setSelectedAppointment(null); // Clear the selected data when closing
   }
+
+
+  const openDenialPopup = (appointmentID: string) => {
+    setSelectedAppointmentID(appointmentID);
+    setShowDenialPopup(true);
+  };
+
+  const closeDenialPopup = () => {
+    setShowDenialPopup(false);
+    setSelectedAppointmentID(null);
+  };
+
 
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
@@ -326,6 +340,14 @@ export const Schedule = () => {
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
+
+    // If the new status is "Cancelled", open the denial popup before proceeding
+    if (newStatusId === "4") {  // Assuming status_id "4" corresponds to "Cancelled"
+      openDenialPopup(appointmentID);
+      return; // Stop further execution until user confirms denial
+    }
+
+
     try {
       // setLoading(true);
 
@@ -889,6 +911,10 @@ export const Schedule = () => {
           appointmentDetails={selectedAppointment} // Pass selected data 
         // refreshData={fetchRefreshedScheduleListData}
         />}
+
+      {showDenialPopup && selectedAppointmentID !== null && (
+        <DenialPopup closePopup={closeDenialPopup} appointmentID={selectedAppointmentID} />
+      )}
 
 
       {/* Pagination */}

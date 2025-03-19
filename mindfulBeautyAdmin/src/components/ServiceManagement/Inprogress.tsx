@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { fetchInprogressList, setCurrentPage, setLoading } from '@/redux/inprogressSlice';
 import { NotifyError } from "@/common/Toast/ToastMessage";
+import { DenialPopup } from "../Dashboard/DashBoardData/DenialPopup";
 // import { EditAppInprogressPopup } from "./Inprogress/EditAppInprogressPopup";
 
 
@@ -230,6 +231,20 @@ export const Inprogress = () => {
   // }
 
 
+  const [showDenialPopup, setShowDenialPopup] = useState(false);
+  const [selectedAppointmentID, setSelectedAppointmentID] = useState<string | null>(null);
+
+
+  const openDenialPopup = (appointmentID: string) => {
+    setSelectedAppointmentID(appointmentID);
+    setShowDenialPopup(true);
+  };
+
+  const closeDenialPopup = () => {
+    setShowDenialPopup(false);
+    setSelectedAppointmentID(null);
+  };
+
   // Login Provider ID
   const sessionLoginProviderID = sessionStorage.getItem("loginProviderID");
   console.log("Login Provider ID from session storage", sessionLoginProviderID);
@@ -332,6 +347,13 @@ export const Inprogress = () => {
 
     // Optional: Update the status in the backend or state
     // API call or local state update logic here
+
+    // If the new status is "Cancelled", open the denial popup before proceeding
+    if (newStatusId === "4") {  // Assuming status_id "4" corresponds to "Cancelled"
+      openDenialPopup(appointmentID);
+      return; // Stop further execution until user confirms denial
+    }
+
     try {
       // setLoading(true);
 
@@ -890,6 +912,11 @@ export const Inprogress = () => {
           closePopup={closeEditAppointmentPopup}
           appointmentDetails={selectedAppointment} // Pass selected data 
         />} */}
+
+
+      {showDenialPopup && selectedAppointmentID !== null && (
+        <DenialPopup closePopup={closeDenialPopup} appointmentID={selectedAppointmentID} />
+      )}
 
       {/* Pagination */}
       <div>
