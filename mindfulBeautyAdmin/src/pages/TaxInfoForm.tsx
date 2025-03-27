@@ -332,7 +332,12 @@ export const TaxInfoForm: React.FC<TaxInfoFormData> = () => {
                                         />
                                     </div>
 
-                                    <h5 className="text-3xl text-mindfulWhite">Salon Service Registration Forms</h5>
+                                    {/* <h5 className="text-3xl text-mindfulWhite">Salon Service Registration Forms</h5> */}
+                                    <h5 className="text-3xl text-mindfulWhite">
+                                        {location.state?.from === "GeneralInfoFreelanceForm"
+                                            ? "Freelancer Service Registration Forms"
+                                            : "Salon Service Registration Forms"}
+                                    </h5>
                                 </div>
 
                                 {/* Steps Indicator */}
