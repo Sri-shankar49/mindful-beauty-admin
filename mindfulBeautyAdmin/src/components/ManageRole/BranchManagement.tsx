@@ -183,9 +183,9 @@ export const BranchManagement: React.FC<BranchCardProps> = () => {
                             phone={branch.phone}
                             location={branch.location}
                             logo={branch.logo}
-                            userName={branch.staff?.name || "N/A"}  // Accessing staff as an object
-                            userPhone={branch.staff?.phone || "N/A"}
-                            userRole={branch.staff?.role || "N/A"}
+                            userName={branch.staff?.name || "Manager Name - N/A"}  // Accessing staff as an object
+                            userPhone={branch.staff?.phone || "Phone - N/A"}
+                            userRole={branch.staff?.role || "Role - N/A"}
                             BranchStatus={branch.service_status}
                         />
                     ))
